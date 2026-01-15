@@ -186,22 +186,17 @@ startOfDay(zoned); // 2025-01-20T00:00:00-05:00[America/New_York]
 endOfDay(zoned);   // 2025-01-20T23:59:59.999999999-05:00[America/New_York]
 ```
 
-#### `startOfWeek(input, options?)` / `endOfWeek(input, options?)`
+#### `startOfWeek(input)` / `endOfWeek(input)`
 
-Get the start or end of the week. Customize the week start day (defaults to Sunday).
+Get the start or end of the week. Uses ISO 8601 week definition (Monday to Sunday).
 
 ```typescript
 import { startOfWeek, endOfWeek } from '@gobrand/tiempo';
 
-const zoned = Temporal.ZonedDateTime.from('2025-01-20T15:30:00-05:00[America/New_York]');
+const zoned = Temporal.ZonedDateTime.from('2025-01-20T15:30:00-05:00[America/New_York]'); // Monday
 
-// Default: Sunday start
-startOfWeek(zoned); // 2025-01-19T00:00:00-05:00[America/New_York]
-endOfWeek(zoned);   // 2025-01-25T23:59:59.999999999-05:00[America/New_York]
-
-// Custom: Monday start
-startOfWeek(zoned, { weekStartsOn: 1 }); // 2025-01-20T00:00:00-05:00[America/New_York]
-endOfWeek(zoned, { weekStartsOn: 1 });   // 2025-01-26T23:59:59.999999999-05:00[America/New_York]
+startOfWeek(zoned); // 2025-01-20T00:00:00-05:00[America/New_York] (Monday)
+endOfWeek(zoned);   // 2025-01-26T23:59:59.999999999-05:00[America/New_York] (Sunday)
 ```
 
 #### `startOfMonth(input)` / `endOfMonth(input)`
@@ -288,24 +283,32 @@ const instant2 = Temporal.Instant.from('2025-01-20T23:00:00Z');
 isSameDay(instant1, instant2); // true (both Jan 20 in UTC)
 ```
 
-## Complete Workflow Example
+## Real World Example
+
+This example demonstrates the complete workflow of working with datetimes in a frontend application: receiving a UTC ISO 8601 string from your backend, converting it to a Temporal object in the user's timezone, formatting it for display, manipulating it based on user input, and sending it back to your backend as a UTC ISO 8601 string.
 
 ```typescript
-import { toZonedTime, toUtcString } from '@gobrand/tiempo';
+import { toZonedTime, toUtcString, format } from '@gobrand/tiempo';
 
-// 1. Receive UTC datetime from backend
+// 1. Receive UTC ISO 8601 string from backend
 const scheduledAtUTC = "2025-01-20T20:00:00.000Z";
 
-// 2. Convert to user's timezone for display/editing
+// 2. Convert to user's timezone (Temporal.ZonedDateTime)
 const userTimezone = "America/New_York";
 const zonedDateTime = toZonedTime(scheduledAtUTC, userTimezone);
 
-console.log(`Scheduled for: ${zonedDateTime.hour}:00`); // "Scheduled for: 15:00"
+// 3. Format for display in the UI
+const displayTime = format(zonedDateTime, "EEEE, MMMM do 'at' h:mm a");
+console.log(displayTime); // "Monday, January 20th at 3:00 PM"
 
-// 3. User modifies the time
+// 4. User reschedules to 4:00 PM their time
 const updatedZoned = zonedDateTime.with({ hour: 16 });
 
-// 4. Convert back to UTC for sending to backend
+// 5. Format the updated time for confirmation
+const confirmTime = format(updatedZoned, "h:mm a");
+console.log(`Rescheduled to ${confirmTime}`); // "Rescheduled to 4:00 PM"
+
+// 6. Convert back to UTC ISO 8601 string for backend
 const updatedUTC = toUtcString(updatedZoned);
 console.log(updatedUTC); // "2025-01-20T21:00:00Z"
 ```
