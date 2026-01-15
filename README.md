@@ -29,14 +29,14 @@ The Temporal API is already designed for timezone conversions, but it requires u
 ## Quick Start
 
 ```typescript
-import { toZonedTime, toIso8601 } from '@gobrand/tiempo';
+import { toZonedTime, toUtcString } from '@gobrand/tiempo';
 
 // Backend sends: "2025-01-20T20:00:00.000Z"
 const zoned = toZonedTime("2025-01-20T20:00:00.000Z", "America/New_York");
 console.log(zoned.hour); // 15 (3 PM in New York)
 
 // Send back to backend:
-const utc = toIso8601(zoned);
+const utc = toUtcString(zoned);
 console.log(utc); // "2025-01-20T20:00:00Z"
 ```
 
@@ -92,7 +92,7 @@ const instant2 = toUtc(zoned);
 // Both represent the same UTC moment: 2025-01-20T20:00:00Z
 ```
 
-### `toIso8601(input)`
+### `toUtcString(input)`
 
 Convert a Temporal.Instant or ZonedDateTime to a UTC ISO 8601 string.
 
@@ -103,23 +103,23 @@ Convert a Temporal.Instant or ZonedDateTime to a UTC ISO 8601 string.
 
 **Example:**
 ```typescript
-import { toIso8601 } from '@gobrand/tiempo';
+import { toUtcString } from '@gobrand/tiempo';
 
 // From ZonedDateTime
 const zoned = Temporal.ZonedDateTime.from("2025-01-20T15:00:00-05:00[America/New_York]");
-const iso = toIso8601(zoned);
+const iso = toUtcString(zoned);
 console.log(iso); // "2025-01-20T20:00:00Z"
 
 // From Instant
 const instant = Temporal.Instant.from("2025-01-20T20:00:00Z");
-const iso2 = toIso8601(instant);
+const iso2 = toUtcString(instant);
 console.log(iso2); // "2025-01-20T20:00:00Z"
 ```
 
 ## Complete Workflow Example
 
 ```typescript
-import { toZonedTime, toIso8601 } from '@gobrand/tiempo';
+import { toZonedTime, toUtcString } from '@gobrand/tiempo';
 
 // 1. Receive UTC datetime from backend
 const scheduledAtUTC = "2025-01-20T20:00:00.000Z";
@@ -134,7 +134,7 @@ console.log(`Scheduled for: ${zonedDateTime.hour}:00`); // "Scheduled for: 15:00
 const updatedZoned = zonedDateTime.with({ hour: 16 });
 
 // 4. Convert back to UTC for sending to backend
-const updatedUTC = toIso8601(updatedZoned);
+const updatedUTC = toUtcString(updatedZoned);
 console.log(updatedUTC); // "2025-01-20T21:00:00Z"
 ```
 

@@ -1,6 +1,6 @@
 {
   "name": "@gobrand/tiempo",
-  "version": "1.0.1",
+  "version": "0.0.1",
   "description": "Lightweight utility functions for converting between UTC and timezone-aware datetimes using the Temporal API",
   "private": false,
   "publishConfig": {

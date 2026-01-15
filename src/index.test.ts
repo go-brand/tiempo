@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { toZonedTime, toUtc, toIso8601 } from './index';
+import { toZonedTime, toUtc, toUtcString } from './index';
 import { Temporal } from '@js-temporal/polyfill';
 
 describe('tiempo', () => {
@@ -144,13 +144,13 @@ describe('tiempo', () => {
     });
   });
 
-  describe('toIso8601', () => {
+  describe('toUtcString', () => {
     describe('from Temporal.ZonedDateTime', () => {
       it('converts ZonedDateTime to UTC ISO string', () => {
         const zoned = Temporal.ZonedDateTime.from(
           '2025-01-20T15:00:00-05:00[America/New_York]'
         );
-        const iso = toIso8601(zoned);
+        const iso = toUtcString(zoned);
 
         expect(typeof iso).toBe('string');
         expect(iso).toBe('2025-01-20T20:00:00Z');
@@ -159,7 +159,7 @@ describe('tiempo', () => {
       it('handles milliseconds correctly', () => {
         const utcString = '2025-01-20T20:00:00.123Z';
         const zoned = toZonedTime(utcString, 'Europe/Paris');
-        const backToIso = toIso8601(zoned);
+        const backToIso = toUtcString(zoned);
 
         expect(backToIso).toBe(utcString);
       });
@@ -172,16 +172,16 @@ describe('tiempo', () => {
         const london = toZonedTime(original, 'Europe/London');
 
         // All should convert back to the same UTC ISO string
-        expect(toIso8601(ny)).toBe(original);
-        expect(toIso8601(tokyo)).toBe(original);
-        expect(toIso8601(london)).toBe(original);
+        expect(toUtcString(ny)).toBe(original);
+        expect(toUtcString(tokyo)).toBe(original);
+        expect(toUtcString(london)).toBe(original);
       });
     });
 
     describe('from Temporal.Instant', () => {
       it('converts Instant to UTC ISO string', () => {
         const instant = Temporal.Instant.from('2025-01-20T20:00:00Z');
-        const iso = toIso8601(instant);
+        const iso = toUtcString(instant);
 
         expect(typeof iso).toBe('string');
         expect(iso).toBe('2025-01-20T20:00:00Z');
@@ -189,7 +189,7 @@ describe('tiempo', () => {
 
       it('handles milliseconds correctly', () => {
         const instant = Temporal.Instant.from('2025-01-20T20:00:00.456Z');
-        const iso = toIso8601(instant);
+        const iso = toUtcString(instant);
 
         expect(iso).toBe('2025-01-20T20:00:00.456Z');
       });
@@ -201,9 +201,9 @@ describe('tiempo', () => {
       const original = '2025-03-15T09:45:30.5Z';
 
       const step1 = toZonedTime(original, 'America/New_York');
-      const step2 = toIso8601(step1);
+      const step2 = toUtcString(step1);
       const step3 = toZonedTime(step2, 'Asia/Tokyo');
-      const final = toIso8601(step3);
+      const final = toUtcString(step3);
 
       expect(final).toBe(original);
     });
@@ -214,7 +214,7 @@ describe('tiempo', () => {
       const instant1 = toUtc(original);
       const zoned = toZonedTime(instant1, 'America/New_York');
       const instant2 = toUtc(zoned);
-      const final = toIso8601(instant2);
+      const final = toUtcString(instant2);
 
       expect(final).toBe(original);
     });
@@ -233,7 +233,7 @@ describe('tiempo', () => {
       const fromZoned = toZonedTime(fromInstant, 'America/Los_Angeles');
 
       // All should represent the same instant
-      const finalIso = toIso8601(fromZoned);
+      const finalIso = toUtcString(fromZoned);
       expect(finalIso).toBe(originalIso);
     });
   });
