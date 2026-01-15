@@ -1,0 +1,124 @@
+import { describe, expect, it } from 'vitest';
+import { Temporal } from '@js-temporal/polyfill';
+import { toUtc } from './toUtc';
+import { toZonedTime } from './toZonedTime';
+import { toUtcString } from './toUtcString';
+
+describe('toUtc', () => {
+  describe('from ISO string', () => {
+    it('converts UTC ISO string to Temporal.Instant', () => {
+      const utcString = '2025-01-20T20:00:00Z';
+      const instant = toUtc(utcString);
+
+      expect(instant).toBeInstanceOf(Temporal.Instant);
+      expect(instant.toString()).toBe(utcString);
+    });
+
+    it('handles milliseconds correctly', () => {
+      const utcString = '2025-01-20T20:00:00.123Z';
+      const instant = toUtc(utcString);
+
+      expect(instant.toString()).toBe(utcString);
+    });
+  });
+
+  describe('from Temporal.ZonedDateTime', () => {
+    it('converts ZonedDateTime to Temporal.Instant', () => {
+      const zoned = Temporal.ZonedDateTime.from(
+        '2025-01-20T15:00:00-05:00[America/New_York]'
+      );
+      const instant = toUtc(zoned);
+
+      expect(instant).toBeInstanceOf(Temporal.Instant);
+      expect(instant.toString()).toBe('2025-01-20T20:00:00Z');
+    });
+
+    it('preserves the same instant across timezone conversions', () => {
+      const original = '2025-06-15T14:30:00Z';
+
+      // Convert through multiple timezones
+      const ny = toZonedTime(original, 'America/New_York');
+      const tokyo = toZonedTime(original, 'Asia/Tokyo');
+      const london = toZonedTime(original, 'Europe/London');
+
+      // All should convert back to the same UTC instant
+      expect(toUtc(ny).toString()).toBe(original);
+      expect(toUtc(tokyo).toString()).toBe(original);
+      expect(toUtc(london).toString()).toBe(original);
+    });
+  });
+
+  describe('Instant vs ZonedDateTime[UTC] equivalence', () => {
+    it('proves Instant and ZonedDateTime[UTC] represent the same moment', () => {
+      const utcString = '2025-01-20T20:00:00.123Z';
+
+      // Create both types from the same ISO string
+      const instant = Temporal.Instant.from(utcString);
+      const zonedUTC = Temporal.ZonedDateTime.from(`${utcString}[UTC]`);
+
+      // Both should serialize to the same UTC string via toUtcString
+      expect(toUtcString(instant)).toBe(utcString);
+      expect(toUtcString(zonedUTC)).toBe(utcString);
+    });
+
+    it('proves toUtc(string) and Instant.from(string) are equivalent', () => {
+      const utcString = '2025-01-20T15:30:45.999Z';
+
+      const viaToUtc = toUtc(utcString);
+      const viaInstantFrom = Temporal.Instant.from(utcString);
+
+      // Both paths produce identical results
+      expect(toUtcString(viaToUtc)).toBe(toUtcString(viaInstantFrom));
+      expect(viaToUtc.toString()).toBe(viaInstantFrom.toString());
+    });
+
+    it('proves toUtc(zoned) and zoned.toInstant() are equivalent', () => {
+      const zoned = Temporal.ZonedDateTime.from(
+        '2025-01-20T15:00:00-05:00[America/New_York]'
+      );
+
+      const viaToUtc = toUtc(zoned);
+      const viaToInstant = zoned.toInstant();
+
+      // Both paths produce identical results
+      expect(toUtcString(viaToUtc)).toBe(toUtcString(viaToInstant));
+      expect(viaToUtc.toString()).toBe(viaToInstant.toString());
+    });
+
+    it('proves Instant is timezone-agnostic while ZonedDateTime[UTC] is timezone-aware', () => {
+      const utcString = '2025-01-20T12:00:00Z';
+
+      const instant = Temporal.Instant.from(utcString);
+      const zonedUTC = Temporal.ZonedDateTime.from(`${utcString}[UTC]`);
+
+      // Instant has no timezone property
+      expect('timeZoneId' in instant).toBe(false);
+
+      // ZonedDateTime is aware of its UTC timezone
+      expect(zonedUTC.timeZoneId).toBe('UTC');
+
+      // But they represent the exact same moment
+      expect(toUtcString(instant)).toBe(toUtcString(zonedUTC));
+      expect(instant.epochMilliseconds).toBe(zonedUTC.epochMilliseconds);
+    });
+
+    it('proves both types survive round-trip conversions identically', () => {
+      const original = '2025-03-15T18:45:12.5Z';
+
+      // Round-trip via Instant
+      const instant = Temporal.Instant.from(original);
+      const zonedFromInstant = toZonedTime(instant, 'America/Denver');
+      const backToInstant = toUtc(zonedFromInstant);
+
+      // Round-trip via ZonedDateTime[UTC]
+      const zonedUTC = Temporal.ZonedDateTime.from(`${original}[UTC]`);
+      const zonedFromUTC = toZonedTime(zonedUTC, 'America/Denver');
+      const backToUTC = toUtc(zonedFromUTC);
+
+      // Both produce identical results
+      expect(toUtcString(backToInstant)).toBe(original);
+      expect(toUtcString(backToUTC)).toBe(original);
+      expect(toUtcString(backToInstant)).toBe(toUtcString(backToUTC));
+    });
+  });
+});

@@ -116,6 +116,55 @@ const iso2 = toUtcString(instant);
 console.log(iso2); // "2025-01-20T20:00:00Z"
 ```
 
+### `format(input, formatStr, options?)`
+
+Format a Temporal.Instant or ZonedDateTime using date-fns-like format tokens.
+
+**Parameters:**
+- `input` (Temporal.Instant | Temporal.ZonedDateTime): A Temporal.Instant or Temporal.ZonedDateTime to format
+- `formatStr` (string): Format string using date-fns tokens (e.g., "yyyy-MM-dd HH:mm:ss")
+- `options` (FormatOptions, optional): Configuration for locale and timezone
+  - `locale` (string): BCP 47 language tag (default: "en-US")
+  - `timeZone` (string): IANA timezone identifier to convert to before formatting
+
+**Returns:** `string` - Formatted date string
+
+**Supported tokens:**
+- **Year**: `yyyy` (2025), `yy` (25), `y` (2025)
+- **Month**: `MMMM` (January), `MMM` (Jan), `MM` (01), `M` (1), `Mo` (1st)
+- **Day**: `dd` (20), `d` (20), `do` (20th)
+- **Weekday**: `EEEE` (Monday), `EEE` (Mon), `EEEEE` (M)
+- **Hour**: `HH` (15, 24h), `H` (15), `hh` (03, 12h), `h` (3)
+- **Minute**: `mm` (30), `m` (30)
+- **Second**: `ss` (45), `s` (45)
+- **AM/PM**: `a` (PM), `aa` (PM), `aaa` (pm), `aaaa` (p.m.), `aaaaa` (p)
+- **Timezone**: `xxx` (-05:00), `xx` (-0500), `XXX` (Z or -05:00), `zzzz` (Eastern Standard Time)
+- **Quarter**: `Q` (1), `QQQ` (Q1), `QQQQ` (1st quarter)
+- **Milliseconds**: `SSS` (123)
+- **Timestamp**: `T` (milliseconds), `t` (seconds)
+- **Escape text**: Use single quotes `'...'`, double single quotes `''` for literal quote
+
+**Example:**
+```typescript
+import { format } from '@gobrand/tiempo';
+
+const zoned = Temporal.ZonedDateTime.from("2025-01-20T15:30:45-05:00[America/New_York]");
+
+format(zoned, "yyyy-MM-dd"); // "2025-01-20"
+format(zoned, "MMMM d, yyyy"); // "January 20, 2025"
+format(zoned, "h:mm a"); // "3:30 PM"
+format(zoned, "EEEE, MMMM do, yyyy 'at' h:mm a"); // "Monday, January 20th, 2025 at 3:30 PM"
+
+// With locale
+format(zoned, "MMMM d, yyyy", { locale: "es-ES" }); // "enero 20, 2025"
+format(zoned, "EEEE", { locale: "fr-FR" }); // "lundi"
+
+// Format Instant with timezone conversion
+const instant = Temporal.Instant.from("2025-01-20T20:30:45Z");
+format(instant, "yyyy-MM-dd HH:mm", { timeZone: "America/New_York" }); // "2025-01-20 15:30"
+format(instant, "yyyy-MM-dd HH:mm", { timeZone: "Asia/Tokyo" }); // "2025-01-21 05:30"
+```
+
 ## Complete Workflow Example
 
 ```typescript

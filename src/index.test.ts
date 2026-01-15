@@ -2,200 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { toZonedTime, toUtc, toUtcString } from './index';
 import { Temporal } from '@js-temporal/polyfill';
 
-describe('tiempo', () => {
-  describe('toZonedTime', () => {
-    describe('from ISO string', () => {
-      it('converts UTC ISO string to ZonedDateTime in specified timezone', () => {
-        const utcString = '2025-01-20T20:00:00.000Z';
-        const zoned = toZonedTime(utcString, 'America/New_York');
-
-        expect(zoned).toBeInstanceOf(Temporal.ZonedDateTime);
-        expect(zoned.hour).toBe(15); // 3 PM in New York (EST: UTC-5)
-        expect(zoned.day).toBe(20);
-        expect(zoned.month).toBe(1);
-        expect(zoned.year).toBe(2025);
-        expect(zoned.timeZoneId).toBe('America/New_York');
-      });
-
-      it('handles different timezones correctly', () => {
-        const utcString = '2025-01-20T12:00:00.000Z';
-
-        const tokyo = toZonedTime(utcString, 'Asia/Tokyo');
-        expect(tokyo.hour).toBe(21); // JST: UTC+9
-
-        const london = toZonedTime(utcString, 'Europe/London');
-        expect(london.hour).toBe(12); // GMT: UTC+0
-
-        const losAngeles = toZonedTime(utcString, 'America/Los_Angeles');
-        expect(losAngeles.hour).toBe(4); // PST: UTC-8
-      });
-
-      it('handles daylight saving time transitions', () => {
-        // Summer time (EDT: UTC-4)
-        const summer = toZonedTime(
-          '2025-07-20T20:00:00.000Z',
-          'America/New_York'
-        );
-        expect(summer.hour).toBe(16); // 4 PM in EDT
-
-        // Winter time (EST: UTC-5)
-        const winter = toZonedTime(
-          '2025-01-20T20:00:00.000Z',
-          'America/New_York'
-        );
-        expect(winter.hour).toBe(15); // 3 PM in EST
-      });
-    });
-
-    describe('from Temporal.Instant', () => {
-      it('converts Instant to ZonedDateTime in specified timezone', () => {
-        const instant = Temporal.Instant.from('2025-01-20T20:00:00Z');
-        const zoned = toZonedTime(instant, 'America/New_York');
-
-        expect(zoned).toBeInstanceOf(Temporal.ZonedDateTime);
-        expect(zoned.hour).toBe(15); // 3 PM in New York
-        expect(zoned.timeZoneId).toBe('America/New_York');
-      });
-
-      it('handles multiple timezone conversions from same instant', () => {
-        const instant = Temporal.Instant.from('2025-01-20T12:00:00Z');
-
-        const tokyo = toZonedTime(instant, 'Asia/Tokyo');
-        const newYork = toZonedTime(instant, 'America/New_York');
-
-        expect(tokyo.hour).toBe(21);
-        expect(newYork.hour).toBe(7);
-      });
-    });
-
-    describe('from Temporal.ZonedDateTime', () => {
-      it('converts ZonedDateTime to different timezone', () => {
-        const nyTime = Temporal.ZonedDateTime.from(
-          '2025-01-20T15:00:00-05:00[America/New_York]'
-        );
-        const tokyoTime = toZonedTime(nyTime, 'Asia/Tokyo');
-
-        expect(tokyoTime).toBeInstanceOf(Temporal.ZonedDateTime);
-        expect(tokyoTime.timeZoneId).toBe('Asia/Tokyo');
-        expect(tokyoTime.hour).toBe(5); // 5 AM next day in Tokyo
-        expect(tokyoTime.day).toBe(21);
-      });
-
-      it('preserves the same instant when converting timezones', () => {
-        const original = Temporal.ZonedDateTime.from(
-          '2025-01-20T15:00:00-05:00[America/New_York]'
-        );
-        const tokyo = toZonedTime(original, 'Asia/Tokyo');
-        const london = toZonedTime(original, 'Europe/London');
-
-        // All represent the same instant
-        expect(original.toInstant().toString()).toBe(
-          tokyo.toInstant().toString()
-        );
-        expect(original.toInstant().toString()).toBe(
-          london.toInstant().toString()
-        );
-      });
-    });
-  });
-
-  describe('toUtc', () => {
-    describe('from ISO string', () => {
-      it('converts UTC ISO string to Temporal.Instant', () => {
-        const utcString = '2025-01-20T20:00:00Z';
-        const instant = toUtc(utcString);
-
-        expect(instant).toBeInstanceOf(Temporal.Instant);
-        expect(instant.toString()).toBe(utcString);
-      });
-
-      it('handles milliseconds correctly', () => {
-        const utcString = '2025-01-20T20:00:00.123Z';
-        const instant = toUtc(utcString);
-
-        expect(instant.toString()).toBe(utcString);
-      });
-    });
-
-    describe('from Temporal.ZonedDateTime', () => {
-      it('converts ZonedDateTime to Temporal.Instant', () => {
-        const zoned = Temporal.ZonedDateTime.from(
-          '2025-01-20T15:00:00-05:00[America/New_York]'
-        );
-        const instant = toUtc(zoned);
-
-        expect(instant).toBeInstanceOf(Temporal.Instant);
-        expect(instant.toString()).toBe('2025-01-20T20:00:00Z');
-      });
-
-      it('preserves the same instant across timezone conversions', () => {
-        const original = '2025-06-15T14:30:00Z';
-
-        // Convert through multiple timezones
-        const ny = toZonedTime(original, 'America/New_York');
-        const tokyo = toZonedTime(original, 'Asia/Tokyo');
-        const london = toZonedTime(original, 'Europe/London');
-
-        // All should convert back to the same UTC instant
-        expect(toUtc(ny).toString()).toBe(original);
-        expect(toUtc(tokyo).toString()).toBe(original);
-        expect(toUtc(london).toString()).toBe(original);
-      });
-    });
-  });
-
-  describe('toUtcString', () => {
-    describe('from Temporal.ZonedDateTime', () => {
-      it('converts ZonedDateTime to UTC ISO string', () => {
-        const zoned = Temporal.ZonedDateTime.from(
-          '2025-01-20T15:00:00-05:00[America/New_York]'
-        );
-        const iso = toUtcString(zoned);
-
-        expect(typeof iso).toBe('string');
-        expect(iso).toBe('2025-01-20T20:00:00Z');
-      });
-
-      it('handles milliseconds correctly', () => {
-        const utcString = '2025-01-20T20:00:00.123Z';
-        const zoned = toZonedTime(utcString, 'Europe/Paris');
-        const backToIso = toUtcString(zoned);
-
-        expect(backToIso).toBe(utcString);
-      });
-
-      it('preserves the same instant across timezone conversions', () => {
-        const original = '2025-06-15T14:30:00Z';
-
-        const ny = toZonedTime(original, 'America/New_York');
-        const tokyo = toZonedTime(original, 'Asia/Tokyo');
-        const london = toZonedTime(original, 'Europe/London');
-
-        // All should convert back to the same UTC ISO string
-        expect(toUtcString(ny)).toBe(original);
-        expect(toUtcString(tokyo)).toBe(original);
-        expect(toUtcString(london)).toBe(original);
-      });
-    });
-
-    describe('from Temporal.Instant', () => {
-      it('converts Instant to UTC ISO string', () => {
-        const instant = Temporal.Instant.from('2025-01-20T20:00:00Z');
-        const iso = toUtcString(instant);
-
-        expect(typeof iso).toBe('string');
-        expect(iso).toBe('2025-01-20T20:00:00Z');
-      });
-
-      it('handles milliseconds correctly', () => {
-        const instant = Temporal.Instant.from('2025-01-20T20:00:00.456Z');
-        const iso = toUtcString(instant);
-
-        expect(iso).toBe('2025-01-20T20:00:00.456Z');
-      });
-    });
-  });
-
+describe('tiempo integration', () => {
   describe('round-trip conversions', () => {
     it('maintains data integrity: ISO -> ZonedTime -> ISO', () => {
       const original = '2025-03-15T09:45:30.5Z';
@@ -235,6 +42,75 @@ describe('tiempo', () => {
       // All should represent the same instant
       const finalIso = toUtcString(fromZoned);
       expect(finalIso).toBe(originalIso);
+    });
+
+    it('handles complex timezone hopping without data loss', () => {
+      const original = '2025-12-25T00:00:00.999Z';
+
+      // Christmas midnight UTC through various timezones
+      const step1 = toZonedTime(original, 'Pacific/Auckland'); // +13
+      const step2 = toZonedTime(step1, 'America/Los_Angeles'); // -8
+      const step3 = toZonedTime(step2, 'Europe/Paris'); // +1
+      const step4 = toZonedTime(step3, 'Asia/Kolkata'); // +5:30
+      const final = toUtcString(step4);
+
+      expect(final).toBe(original);
+    });
+
+    it('preserves millisecond precision through conversions', () => {
+      const original = '2025-01-20T15:30:45.123456789Z';
+
+      const instant = Temporal.Instant.from(original);
+      const zoned1 = toZonedTime(instant, 'America/New_York');
+      const zoned2 = toZonedTime(zoned1, 'Asia/Tokyo');
+      const backToInstant = toUtc(zoned2);
+
+      // Temporal.Instant preserves nanosecond precision
+      expect(backToInstant.epochNanoseconds).toBe(instant.epochNanoseconds);
+    });
+  });
+
+  describe('cross-function consistency', () => {
+    it('ensures toUtc and toUtcString produce consistent results', () => {
+      const zoned = Temporal.ZonedDateTime.from(
+        '2025-01-20T15:00:00-05:00[America/New_York]'
+      );
+
+      const viaToUtc = toUtc(zoned).toString();
+      const viaToUtcString = toUtcString(zoned);
+
+      expect(viaToUtc).toBe(viaToUtcString);
+    });
+
+    it('ensures all functions handle the same instant consistently', () => {
+      const isoString = '2025-06-15T10:30:00Z';
+      const instant = Temporal.Instant.from(isoString);
+      const zoned = Temporal.ZonedDateTime.from(`${isoString}[UTC]`);
+
+      // All functions should produce identical UTC strings
+      expect(toUtcString(instant)).toBe(isoString);
+      expect(toUtcString(zoned)).toBe(isoString);
+      expect(toUtc(isoString).toString()).toBe(isoString);
+      expect(toUtc(zoned).toString()).toBe(isoString);
+    });
+
+    it('ensures toZonedTime produces identical instants from all input types', () => {
+      const isoString = '2025-01-20T12:00:00Z';
+      const instant = Temporal.Instant.from(isoString);
+      const zonedUTC = Temporal.ZonedDateTime.from(`${isoString}[UTC]`);
+
+      const fromString = toZonedTime(isoString, 'America/New_York');
+      const fromInstant = toZonedTime(instant, 'America/New_York');
+      const fromZoned = toZonedTime(zonedUTC, 'America/New_York');
+
+      // All should represent the same instant
+      expect(toUtcString(fromString)).toBe(isoString);
+      expect(toUtcString(fromInstant)).toBe(isoString);
+      expect(toUtcString(fromZoned)).toBe(isoString);
+
+      // All should have identical epoch milliseconds
+      expect(fromString.epochMilliseconds).toBe(fromInstant.epochMilliseconds);
+      expect(fromString.epochMilliseconds).toBe(fromZoned.epochMilliseconds);
     });
   });
 });
