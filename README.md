@@ -42,7 +42,9 @@ console.log(utc); // "2025-01-20T20:00:00Z"
 
 ## API
 
-### `toZonedTime(input, timezone)`
+### Core Conversions
+
+#### `toZonedTime(input, timezone)`
 
 Convert a UTC ISO string, Instant, or ZonedDateTime to a ZonedDateTime in the specified timezone.
 
@@ -70,7 +72,7 @@ const nyTime = Temporal.ZonedDateTime.from("2025-01-20T15:00:00-05:00[America/Ne
 const tokyoTime = toZonedTime(nyTime, "Asia/Tokyo");
 ```
 
-### `toUtc(input)`
+#### `toUtc(input)`
 
 Convert a UTC ISO string or ZonedDateTime to a Temporal.Instant (UTC).
 
@@ -92,7 +94,7 @@ const instant2 = toUtc(zoned);
 // Both represent the same UTC moment: 2025-01-20T20:00:00Z
 ```
 
-### `toUtcString(input)`
+#### `toUtcString(input)`
 
 Convert a Temporal.Instant or ZonedDateTime to a UTC ISO 8601 string.
 
@@ -116,7 +118,9 @@ const iso2 = toUtcString(instant);
 console.log(iso2); // "2025-01-20T20:00:00Z"
 ```
 
-### `format(input, formatStr, options?)`
+### Formatting
+
+#### `format(input, formatStr, options?)`
 
 Format a Temporal.Instant or ZonedDateTime using date-fns-like format tokens.
 
@@ -165,6 +169,123 @@ format(zoned, "EEEE", { locale: "fr-FR" }); // "lundi"
 const instant = toUtc(isoString);
 format(instant, "yyyy-MM-dd HH:mm", { timeZone: "America/New_York" }); // "2025-01-20 15:30"
 format(instant, "yyyy-MM-dd HH:mm", { timeZone: "Asia/Tokyo" }); // "2025-01-21 05:30"
+```
+
+### Start/End Utilities
+
+#### `startOfDay(input)` / `endOfDay(input)`
+
+Get the start or end of the day for a given datetime.
+
+```typescript
+import { startOfDay, endOfDay } from '@gobrand/tiempo';
+
+const zoned = Temporal.ZonedDateTime.from('2025-01-20T15:30:00-05:00[America/New_York]');
+
+startOfDay(zoned); // 2025-01-20T00:00:00-05:00[America/New_York]
+endOfDay(zoned);   // 2025-01-20T23:59:59.999999999-05:00[America/New_York]
+```
+
+#### `startOfWeek(input, options?)` / `endOfWeek(input, options?)`
+
+Get the start or end of the week. Customize the week start day (defaults to Sunday).
+
+```typescript
+import { startOfWeek, endOfWeek } from '@gobrand/tiempo';
+
+const zoned = Temporal.ZonedDateTime.from('2025-01-20T15:30:00-05:00[America/New_York]');
+
+// Default: Sunday start
+startOfWeek(zoned); // 2025-01-19T00:00:00-05:00[America/New_York]
+endOfWeek(zoned);   // 2025-01-25T23:59:59.999999999-05:00[America/New_York]
+
+// Custom: Monday start
+startOfWeek(zoned, { weekStartsOn: 1 }); // 2025-01-20T00:00:00-05:00[America/New_York]
+endOfWeek(zoned, { weekStartsOn: 1 });   // 2025-01-26T23:59:59.999999999-05:00[America/New_York]
+```
+
+#### `startOfMonth(input)` / `endOfMonth(input)`
+
+Get the start or end of the month.
+
+```typescript
+import { startOfMonth, endOfMonth } from '@gobrand/tiempo';
+
+const zoned = Temporal.ZonedDateTime.from('2025-01-20T15:30:00-05:00[America/New_York]');
+
+startOfMonth(zoned); // 2025-01-01T00:00:00-05:00[America/New_York]
+endOfMonth(zoned);   // 2025-01-31T23:59:59.999999999-05:00[America/New_York]
+```
+
+#### `startOfYear(input)` / `endOfYear(input)`
+
+Get the start or end of the year.
+
+```typescript
+import { startOfYear, endOfYear } from '@gobrand/tiempo';
+
+const zoned = Temporal.ZonedDateTime.from('2025-01-20T15:30:00-05:00[America/New_York]');
+
+startOfYear(zoned); // 2025-01-01T00:00:00-05:00[America/New_York]
+endOfYear(zoned);   // 2025-12-31T23:59:59.999999999-05:00[America/New_York]
+```
+
+### Comparison Utilities
+
+#### `isBefore(date1, date2)`
+
+Check if the first datetime is before the second. Compares the underlying instant in time.
+
+```typescript
+import { isBefore } from '@gobrand/tiempo';
+
+const earlier = Temporal.ZonedDateTime.from('2025-01-20T10:00:00-05:00[America/New_York]');
+const later = Temporal.ZonedDateTime.from('2025-01-20T15:00:00-05:00[America/New_York]');
+
+isBefore(earlier, later); // true
+isBefore(later, earlier); // false
+```
+
+#### `isAfter(date1, date2)`
+
+Check if the first datetime is after the second. Compares the underlying instant in time.
+
+```typescript
+import { isAfter } from '@gobrand/tiempo';
+
+const earlier = Temporal.ZonedDateTime.from('2025-01-20T10:00:00-05:00[America/New_York]');
+const later = Temporal.ZonedDateTime.from('2025-01-20T15:00:00-05:00[America/New_York]');
+
+isAfter(later, earlier); // true
+isAfter(earlier, later); // false
+```
+
+#### `isSameDay(date1, date2)`
+
+Check if two datetimes fall on the same calendar day. Compares year, month, and day fields directly.
+
+**Important:** For ZonedDateTime inputs with different timezones, each date is compared in its own timezone. Convert to a common timezone first if you need a specific perspective.
+
+```typescript
+import { isSameDay } from '@gobrand/tiempo';
+
+// Same timezone, same day
+const morning = Temporal.ZonedDateTime.from('2025-01-20T08:00:00Z[UTC]');
+const evening = Temporal.ZonedDateTime.from('2025-01-20T23:00:00Z[UTC]');
+isSameDay(morning, evening); // true
+
+// Different timezones - compares in their respective timezones
+const ny = Temporal.ZonedDateTime.from('2025-01-20T23:00:00-05:00[America/New_York]');
+const tokyo = Temporal.ZonedDateTime.from('2025-01-21T13:00:00+09:00[Asia/Tokyo]');
+isSameDay(ny, tokyo); // false (Jan 20 in NY, Jan 21 in Tokyo)
+
+// Convert to UTC to compare in UTC timezone
+isSameDay(ny.withTimeZone('UTC'), tokyo.withTimeZone('UTC')); // true (both Jan 21 in UTC)
+
+// Instant inputs are automatically converted to UTC
+const instant1 = Temporal.Instant.from('2025-01-20T10:00:00Z');
+const instant2 = Temporal.Instant.from('2025-01-20T23:00:00Z');
+isSameDay(instant1, instant2); // true (both Jan 20 in UTC)
 ```
 
 ## Complete Workflow Example

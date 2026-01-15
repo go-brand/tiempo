@@ -1,4 +1,5 @@
 import { Temporal } from '@js-temporal/polyfill';
+import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
 
 export interface FormatOptions {
   locale?: string;
@@ -34,15 +35,15 @@ export function format(
 ): string {
   const { locale = 'en-US', timeZone } = options;
 
-  // Convert Instant to ZonedDateTime if needed
+  // Convert to ZonedDateTime, applying custom timezone if provided
   let zonedDateTime: Temporal.ZonedDateTime;
-  if (input instanceof Temporal.Instant) {
-    const tz = timeZone || 'UTC';
-    zonedDateTime = input.toZonedDateTimeISO(tz);
+  if (timeZone) {
+    // If custom timezone specified, convert via Instant
+    const instant = input instanceof Temporal.Instant ? input : input.toInstant();
+    zonedDateTime = instant.toZonedDateTimeISO(timeZone);
   } else {
-    zonedDateTime = timeZone
-      ? input.toInstant().toZonedDateTimeISO(timeZone)
-      : input;
+    // No custom timezone: normalize to ZonedDateTime (Instant -> UTC, ZonedDateTime -> keep as-is)
+    zonedDateTime = normalizeTemporalInput(input);
   }
 
   let result = '';
