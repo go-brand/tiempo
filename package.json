@@ -33,7 +33,8 @@
     "build": "tsup && tsc --emitDeclarationOnly",
     "clean": "git clean -xdf .cache .turbo dist node_modules tsconfig.tsbuildinfo",
     "test": "vitest",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "release": "bash scripts/release.sh"
   },
   "dependencies": {
     "@js-temporal/polyfill": "^0.5.1"
