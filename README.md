@@ -4,7 +4,7 @@
 [![CI](https://github.com/go-brand/tiempo/actions/workflows/ci.yml/badge.svg)](https://github.com/go-brand/tiempo/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Lightweight utility functions for converting between UTC and timezone-aware datetimes using the [Temporal API](https://tc39.es/proposal-temporal/docs/).
+Lightweight utilities for timezones and datetimes with the [Temporal API](https://tc39.es/proposal-temporal/docs/).
 
 ## Installation
 
@@ -18,7 +18,7 @@ yarn add @gobrand/tiempo
 
 ## Why tiempo?
 
-The Temporal API is already designed for timezone conversions, but it requires understanding its various methods and objects. `tiempo` provides a simple, focused API for the most common use case: converting between UTC ISO strings (from your backend) and timezone-aware ZonedDateTime objects (for your frontend).
+The Temporal API is powerful but requires understanding its various methods and objects. `tiempo` provides intuitive utilities for common datetime tasks: timezone conversions, formatting, start/end calculations, and comparisons. Whether you're converting UTC strings from your backend or formatting dates for display, tiempo makes working with timezones straightforward.
 
 **Perfect for:**
 - Social media scheduling apps
