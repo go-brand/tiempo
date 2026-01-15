@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Lightweight utility functions for converting between UTC and timezone-aware datetimes using the Temporal API">
+    <title>tiempo - Timezone conversion made simple</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #0a0a0a;
+            --text: #e4e4e7;
+            --text-muted: #a1a1aa;
+            --accent: #3b82f6;
+            --accent-hover: #2563eb;
+            --code-bg: #18181b;
+            --border: #27272a;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 4rem;
+            padding-top: 2rem;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .tagline {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+        }
+
+        .badges {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .badges img {
+            height: 20px;
+        }
+
+        .cta {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+
+        .btn-secondary:hover {
+            background: var(--code-bg);
+        }
+
+        section {
+            margin-bottom: 4rem;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text);
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .feature {
+            padding: 1.5rem;
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+        }
+
+        .feature h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: var(--accent);
+        }
+
+        .feature p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        pre {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            overflow-x: auto;
+            margin-bottom: 1.5rem;
+        }
+
+        code {
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .install-cmd {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .install-cmd code {
+            color: var(--text);
+        }
+
+        .copy-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: var(--border);
+            color: var(--text);
+        }
+
+        .example {
+            margin-bottom: 2rem;
+        }
+
+        .example h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.75rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem 0;
+            border-top: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        .highlight-blue { color: #3b82f6; }
+        .highlight-purple { color: #a855f7; }
+        .highlight-green { color: #10b981; }
+        .highlight-yellow { color: #f59e0b; }
+        .highlight-gray { color: #9ca3af; }
+
+        @media (max-width: 640px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .tagline {
+                font-size: 1.1rem;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>tiempo</h1>
+            <p class="tagline">Lightweight timezone conversion using the Temporal API</p>
+
+            <div class="badges">
+                <img src="https://img.shields.io/npm/v/@gobrand/tiempo.svg" alt="npm version">
+                <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="MIT License">
+                <img src="https://img.shields.io/npm/dm/@gobrand/tiempo.svg" alt="downloads">
+            </div>
+
+            <div class="cta">
+                <a href="https://github.com/go-brand/tiempo" class="btn btn-primary" target="_blank">View on GitHub</a>
+                <a href="https://www.npmjs.com/package/@gobrand/tiempo" class="btn btn-secondary" target="_blank">npm Package</a>
+            </div>
+        </header>
+
+        <section>
+            <h2>Installation</h2>
+            <div class="install-cmd">
+                <code>npm install @gobrand/tiempo</code>
+                <button class="copy-btn" onclick="copy('npm install @gobrand/tiempo')">Copy</button>
+            </div>
+            <div class="install-cmd">
+                <code>pnpm add @gobrand/tiempo</code>
+                <button class="copy-btn" onclick="copy('pnpm add @gobrand/tiempo')">Copy</button>
+            </div>
+        </section>
+
+        <section>
+            <h2>Why tiempo?</h2>
+            <div class="feature-grid">
+                <div class="feature">
+                    <h3>Minimal</h3>
+                    <p>Simple, focused API for the most common timezone conversion use cases</p>
+                </div>
+                <div class="feature">
+                    <h3>Modern</h3>
+                    <p>Built on the Temporal API - the future of date/time in JavaScript</p>
+                </div>
+                <div class="feature">
+                    <h3>Type-safe</h3>
+                    <p>Full TypeScript support with proper Temporal types</p>
+                </div>
+                <div class="feature">
+                    <h3>Zero deps</h3>
+                    <p>Only includes the Temporal polyfill - no date-fns, no moment.js</p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Quick Start</h2>
+
+            <div class="example">
+                <h3>Convert UTC to timezone</h3>
+                <pre><code><span class="highlight-purple">import</span> { <span class="highlight-blue">toZonedTime</span> } <span class="highlight-purple">from</span> <span class="highlight-green">'@gobrand/tiempo'</span>;
+
+<span class="highlight-gray">// Backend sends: "2025-01-20T20:00:00.000Z"</span>
+<span class="highlight-purple">const</span> zoned = <span class="highlight-blue">toZonedTime</span>(
+  <span class="highlight-green">"2025-01-20T20:00:00.000Z"</span>,
+  <span class="highlight-green">"America/New_York"</span>
+);
+
+<span class="highlight-yellow">console</span>.<span class="highlight-blue">log</span>(zoned.hour); <span class="highlight-gray">// 15 (3 PM in New York)</span></code></pre>
+            </div>
+
+            <div class="example">
+                <h3>Convert timezone to UTC string</h3>
+                <pre><code><span class="highlight-purple">import</span> { <span class="highlight-blue">toUtcString</span> } <span class="highlight-purple">from</span> <span class="highlight-green">'@gobrand/tiempo'</span>;
+
+<span class="highlight-gray">// Send back to backend:</span>
+<span class="highlight-purple">const</span> utc = <span class="highlight-blue">toUtcString</span>(zoned);
+<span class="highlight-yellow">console</span>.<span class="highlight-blue">log</span>(utc); <span class="highlight-gray">// "2025-01-20T20:00:00Z"</span></code></pre>
+            </div>
+
+            <div class="example">
+                <h3>Complete workflow</h3>
+                <pre><code><span class="highlight-purple">import</span> { <span class="highlight-blue">toZonedTime</span>, <span class="highlight-blue">toUtcString</span> } <span class="highlight-purple">from</span> <span class="highlight-green">'@gobrand/tiempo'</span>;
+
+<span class="highlight-gray">// 1. Receive UTC from backend</span>
+<span class="highlight-purple">const</span> scheduledAtUTC = <span class="highlight-green">"2025-01-20T20:00:00.000Z"</span>;
+
+<span class="highlight-gray">// 2. Convert to user's timezone</span>
+<span class="highlight-purple">const</span> zonedDateTime = <span class="highlight-blue">toZonedTime</span>(scheduledAtUTC, <span class="highlight-green">"America/New_York"</span>);
+
+<span class="highlight-gray">// 3. User modifies the time</span>
+<span class="highlight-purple">const</span> updatedZoned = zonedDateTime.<span class="highlight-blue">with</span>({ hour: <span class="highlight-yellow">16</span> });
+
+<span class="highlight-gray">// 4. Convert back to UTC for backend</span>
+<span class="highlight-purple">const</span> updatedUTC = <span class="highlight-blue">toUtcString</span>(updatedZoned);
+<span class="highlight-yellow">console</span>.<span class="highlight-blue">log</span>(updatedUTC); <span class="highlight-gray">// "2025-01-20T21:00:00Z"</span></code></pre>
+            </div>
+        </section>
+
+        <section>
+            <h2>Perfect for</h2>
+            <div class="feature-grid">
+                <div class="feature">
+                    <h3>Social media scheduling</h3>
+                    <p>Schedule posts across timezones with confidence</p>
+                </div>
+                <div class="feature">
+                    <h3>Calendar apps</h3>
+                    <p>Handle meetings and events in any timezone</p>
+                </div>
+                <div class="feature">
+                    <h3>Booking systems</h3>
+                    <p>Manage appointments with timezone-aware dates</p>
+                </div>
+                <div class="feature">
+                    <h3>Any global app</h3>
+                    <p>Perfect for apps with users in multiple timezones</p>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <p>Built and maintained by <a href="https://gobrand.app" target="_blank">Go Brand</a></p>
+            <p style="margin-top: 0.5rem;">MIT License &copy; 2025</p>
+        </footer>
+    </div>
+
+    <script>
+        function copy(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                event.target.textContent = 'Copied!';
+                setTimeout(() => {
+                    event.target.textContent = 'Copy';
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
