@@ -1,0 +1,15 @@
+- This is tiempo, a lightweight utility library for converting between UTC and timezone-aware datetimes using the Temporal API.
+- Tech stack: TypeScript, Vitest for testing, tsup for building, published as npm package.
+- This library exclusively uses the Temporal API for datetime handling. No Date objects, no date-fns, no moment.js.
+- **`src/index.ts`** - Main library exports: `utcToZonedTime()` and `zonedTimeToUtc()` functions
+- **`src/index.test.ts`** - Vitest test suite for timezone conversion functions
+- **`src/temporal.d.ts`** - TypeScript type declarations for Temporal API
+- **Minimal API surface**
+- **Zero abstractions**: Direct use of Temporal API primitives (Instant, ZonedDateTime)
+- **Type-safe**: Full TypeScript support with proper Temporal types
+- **Polyfill included**: Uses `@js-temporal/polyfill` for browser compatibility
+- **Rob Pike's principles**: Always aim for idiomatic code. Simple, clear, direct. No unnecessary complexity or "future-proofing"
+- Function signatures should be obvious: take what you need, return what you produce
+- No error handling for impossible states: trust the Temporal API primitives
+- No configuration objects: parameters are direct and explicit
+- Code should read like documentation: the implementation should explain itself

@@ -1,8 +1,11 @@
 {
-  "name": "@acme/tiempo",
+  "name": "@gobrand/tiempo",
   "version": "0.1.0",
   "description": "Lightweight utility functions for converting between UTC and timezone-aware datetimes using the Temporal API",
-  "private": true,
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

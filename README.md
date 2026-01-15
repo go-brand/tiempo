@@ -1,6 +1,6 @@
 # tiempo
 
-[![npm version](https://img.shields.io/npm/v/@acme/tiempo.svg)](https://www.npmjs.com/package/@acme/tiempo)
+[![npm version](https://img.shields.io/npm/v/@gobrand/tiempo.svg)](https://www.npmjs.com/package/@gobrand/tiempo)
 [![CI](https://github.com/go-brand/tiempo/actions/workflows/ci.yml/badge.svg)](https://github.com/go-brand/tiempo/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -9,11 +9,11 @@ Lightweight utility functions for converting between UTC and timezone-aware date
 ## Installation
 
 ```bash
-npm install @acme/tiempo
+npm install @gobrand/tiempo
 # or
-pnpm add @acme/tiempo
+pnpm add @gobrand/tiempo
 # or
-yarn add @acme/tiempo
+yarn add @gobrand/tiempo
 ```
 
 ## Why tiempo?
@@ -29,7 +29,7 @@ The Temporal API is already designed for timezone conversions, but it requires u
 ## Quick Start
 
 ```typescript
-import { utcToZonedTime, zonedTimeToUtc } from '@acme/tiempo';
+import { utcToZonedTime, zonedTimeToUtc } from '@gobrand/tiempo';
 
 // Backend sends: "2025-01-20T20:00:00.000Z"
 const zoned = utcToZonedTime("2025-01-20T20:00:00.000Z", "America/New_York");
@@ -54,7 +54,7 @@ Convert a UTC ISO string to a ZonedDateTime in the given timezone.
 
 **Example:**
 ```typescript
-import { utcToZonedTime } from '@acme/tiempo';
+import { utcToZonedTime } from '@gobrand/tiempo';
 
 // Backend sends: "2025-01-20T20:00:00.000Z"
 const zoned = utcToZonedTime("2025-01-20T20:00:00.000Z", "America/New_York");
@@ -74,7 +74,7 @@ Convert a ZonedDateTime to a UTC ISO string.
 
 **Example:**
 ```typescript
-import { zonedTimeToUtc, utcToZonedTime } from '@acme/tiempo';
+import { zonedTimeToUtc, utcToZonedTime } from '@gobrand/tiempo';
 
 const zoned = utcToZonedTime("2025-01-20T20:00:00.000Z", "America/New_York");
 
@@ -86,7 +86,7 @@ console.log(utc); // "2025-01-20T20:00:00Z"
 ## Complete Workflow Example
 
 ```typescript
-import { utcToZonedTime, zonedTimeToUtc } from '@acme/tiempo';
+import { utcToZonedTime, zonedTimeToUtc } from '@gobrand/tiempo';
 
 // 1. Receive UTC datetime from backend
 const scheduledAtUTC = "2025-01-20T20:00:00.000Z";
@@ -123,4 +123,4 @@ MIT © [Go Brand](https://github.com/go-brand)
 
 ## Built by Go Brand
 
-tiempo is built and maintained by [Go Brand](https://gobrand.com) - a modern social media management platform.
+tiempo is built and maintained by [Go Brand](https://gobrand.app) - a modern social media management platform.
