@@ -29,71 +29,104 @@ The Temporal API is already designed for timezone conversions, but it requires u
 ## Quick Start
 
 ```typescript
-import { utcToZonedTime, zonedTimeToUtc } from '@gobrand/tiempo';
+import { toZonedTime, toIso8601 } from '@gobrand/tiempo';
 
 // Backend sends: "2025-01-20T20:00:00.000Z"
-const zoned = utcToZonedTime("2025-01-20T20:00:00.000Z", "America/New_York");
+const zoned = toZonedTime("2025-01-20T20:00:00.000Z", "America/New_York");
 console.log(zoned.hour); // 15 (3 PM in New York)
 
 // Send back to backend:
-const utc = zonedTimeToUtc(zoned);
+const utc = toIso8601(zoned);
 console.log(utc); // "2025-01-20T20:00:00Z"
 ```
 
 ## API
 
-### `utcToZonedTime(isoString, timezone)`
+### `toZonedTime(input, timezone)`
 
-Convert a UTC ISO string to a ZonedDateTime in the given timezone.
+Convert a UTC ISO string, Instant, or ZonedDateTime to a ZonedDateTime in the specified timezone.
 
 **Parameters:**
-- `isoString` (string): A UTC ISO 8601 string (e.g., `"2025-01-20T20:00:00.000Z"`)
+- `input` (string | Temporal.Instant | Temporal.ZonedDateTime): A UTC ISO 8601 string, Temporal.Instant, or Temporal.ZonedDateTime
 - `timezone` (string): An IANA timezone identifier (e.g., `"America/New_York"`, `"Europe/London"`)
 
 **Returns:** `Temporal.ZonedDateTime` - The same instant in the specified timezone
 
 **Example:**
 ```typescript
-import { utcToZonedTime } from '@gobrand/tiempo';
+import { toZonedTime } from '@gobrand/tiempo';
 
-// Backend sends: "2025-01-20T20:00:00.000Z"
-const zoned = utcToZonedTime("2025-01-20T20:00:00.000Z", "America/New_York");
-
+// From ISO string
+const zoned = toZonedTime("2025-01-20T20:00:00.000Z", "America/New_York");
 console.log(zoned.hour); // 15 (3 PM in New York)
 console.log(zoned.toString()); // "2025-01-20T15:00:00-05:00[America/New_York]"
+
+// From Instant
+const instant = Temporal.Instant.from("2025-01-20T20:00:00Z");
+const zoned2 = toZonedTime(instant, "Asia/Tokyo");
+
+// From ZonedDateTime (convert to different timezone)
+const nyTime = Temporal.ZonedDateTime.from("2025-01-20T15:00:00-05:00[America/New_York]");
+const tokyoTime = toZonedTime(nyTime, "Asia/Tokyo");
 ```
 
-### `zonedTimeToUtc(zonedDateTime)`
+### `toUtc(input)`
 
-Convert a ZonedDateTime to a UTC ISO string.
+Convert a UTC ISO string or ZonedDateTime to a Temporal.Instant (UTC).
 
 **Parameters:**
-- `zonedDateTime` (`Temporal.ZonedDateTime`): A Temporal.ZonedDateTime instance
+- `input` (string | Temporal.ZonedDateTime): A UTC ISO 8601 string or Temporal.ZonedDateTime
 
-**Returns:** `string` - A UTC ISO 8601 string representation of the instant
+**Returns:** `Temporal.Instant` - A Temporal.Instant representing the same moment in UTC
 
 **Example:**
 ```typescript
-import { zonedTimeToUtc, utcToZonedTime } from '@gobrand/tiempo';
+import { toUtc } from '@gobrand/tiempo';
 
-const zoned = utcToZonedTime("2025-01-20T20:00:00.000Z", "America/New_York");
+// From ISO string
+const instant = toUtc("2025-01-20T20:00:00.000Z");
 
-// Send back to backend:
-const utc = zonedTimeToUtc(zoned);
-console.log(utc); // "2025-01-20T20:00:00Z"
+// From ZonedDateTime
+const zoned = Temporal.ZonedDateTime.from("2025-01-20T15:00:00-05:00[America/New_York]");
+const instant2 = toUtc(zoned);
+// Both represent the same UTC moment: 2025-01-20T20:00:00Z
+```
+
+### `toIso8601(input)`
+
+Convert a Temporal.Instant or ZonedDateTime to a UTC ISO 8601 string.
+
+**Parameters:**
+- `input` (Temporal.Instant | Temporal.ZonedDateTime): A Temporal.Instant or Temporal.ZonedDateTime
+
+**Returns:** `string` - A UTC ISO 8601 string representation
+
+**Example:**
+```typescript
+import { toIso8601 } from '@gobrand/tiempo';
+
+// From ZonedDateTime
+const zoned = Temporal.ZonedDateTime.from("2025-01-20T15:00:00-05:00[America/New_York]");
+const iso = toIso8601(zoned);
+console.log(iso); // "2025-01-20T20:00:00Z"
+
+// From Instant
+const instant = Temporal.Instant.from("2025-01-20T20:00:00Z");
+const iso2 = toIso8601(instant);
+console.log(iso2); // "2025-01-20T20:00:00Z"
 ```
 
 ## Complete Workflow Example
 
 ```typescript
-import { utcToZonedTime, zonedTimeToUtc } from '@gobrand/tiempo';
+import { toZonedTime, toIso8601 } from '@gobrand/tiempo';
 
 // 1. Receive UTC datetime from backend
 const scheduledAtUTC = "2025-01-20T20:00:00.000Z";
 
 // 2. Convert to user's timezone for display/editing
 const userTimezone = "America/New_York";
-const zonedDateTime = utcToZonedTime(scheduledAtUTC, userTimezone);
+const zonedDateTime = toZonedTime(scheduledAtUTC, userTimezone);
 
 console.log(`Scheduled for: ${zonedDateTime.hour}:00`); // "Scheduled for: 15:00"
 
@@ -101,7 +134,7 @@ console.log(`Scheduled for: ${zonedDateTime.hour}:00`); // "Scheduled for: 15:00
 const updatedZoned = zonedDateTime.with({ hour: 16 });
 
 // 4. Convert back to UTC for sending to backend
-const updatedUTC = zonedTimeToUtc(updatedZoned);
+const updatedUTC = toIso8601(updatedZoned);
 console.log(updatedUTC); // "2025-01-20T21:00:00Z"
 ```
 
