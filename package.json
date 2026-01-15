@@ -1,0 +1,52 @@
+{
+  "name": "@acme/tiempo",
+  "version": "0.1.0",
+  "description": "Lightweight utility functions for converting between UTC and timezone-aware datetimes using the Temporal API",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/go-brand/tiempo.git"
+  },
+  "bugs": {
+    "url": "https://github.com/go-brand/tiempo/issues"
+  },
+  "homepage": "https://github.com/go-brand/tiempo#readme",
+  "scripts": {
+    "build": "tsup && tsc --emitDeclarationOnly",
+    "clean": "git clean -xdf .cache .turbo dist node_modules tsconfig.tsbuildinfo",
+    "test": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@js-temporal/polyfill": "^0.5.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "tsup": "^8.5.0",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
+  },
+  "keywords": [
+    "temporal",
+    "timezone",
+    "utc",
+    "datetime",
+    "zoned-datetime",
+    "time-conversion"
+  ]
+}
