@@ -146,9 +146,11 @@ Format a Temporal.Instant or ZonedDateTime using date-fns-like format tokens.
 
 **Example:**
 ```typescript
-import { format } from '@gobrand/tiempo';
+import { format, toZonedTime, toUtc } from '@gobrand/tiempo';
 
-const zoned = Temporal.ZonedDateTime.from("2025-01-20T15:30:45-05:00[America/New_York]");
+// From ISO string to ZonedDateTime, then format
+const isoString = "2025-01-20T20:30:45.000Z";
+const zoned = toZonedTime(isoString, "America/New_York");
 
 format(zoned, "yyyy-MM-dd"); // "2025-01-20"
 format(zoned, "MMMM d, yyyy"); // "January 20, 2025"
@@ -159,8 +161,8 @@ format(zoned, "EEEE, MMMM do, yyyy 'at' h:mm a"); // "Monday, January 20th, 2025
 format(zoned, "MMMM d, yyyy", { locale: "es-ES" }); // "enero 20, 2025"
 format(zoned, "EEEE", { locale: "fr-FR" }); // "lundi"
 
-// Format Instant with timezone conversion
-const instant = Temporal.Instant.from("2025-01-20T20:30:45Z");
+// From ISO string to Instant (UTC), then format with timezone conversion
+const instant = toUtc(isoString);
 format(instant, "yyyy-MM-dd HH:mm", { timeZone: "America/New_York" }); // "2025-01-20 15:30"
 format(instant, "yyyy-MM-dd HH:mm", { timeZone: "Asia/Tokyo" }); // "2025-01-21 05:30"
 ```
