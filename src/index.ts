@@ -2,6 +2,7 @@ export { toZonedTime } from './toZonedTime';
 export { toUtc } from './toUtc';
 export { toUtcString } from './toUtcString';
 export { format, type FormatOptions } from './format';
+export { getToday } from './getToday';
 export { startOfDay } from './startOfDay';
 export { endOfDay } from './endOfDay';
 export { startOfWeek } from './startOfWeek';
