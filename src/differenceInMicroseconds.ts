@@ -1,0 +1,47 @@
+import { Temporal } from '@js-temporal/polyfill';
+import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
+
+/**
+ * Returns the number of microseconds between two datetimes.
+ * The result is positive if laterDate is after earlierDate, negative if before.
+ *
+ * @param laterDate - The later datetime (Instant or ZonedDateTime)
+ * @param earlierDate - The earlier datetime (Instant or ZonedDateTime)
+ * @returns The number of microseconds between the dates
+ *
+ * @example
+ * ```ts
+ * const later = Temporal.Instant.from('2025-01-20T12:30:20.001000Z');
+ * const earlier = Temporal.Instant.from('2025-01-20T12:30:20.000000Z');
+ *
+ * differenceInMicroseconds(later, earlier); // 1000
+ * ```
+ *
+ * @example
+ * ```ts
+ * // Works with ZonedDateTime
+ * const later = Temporal.ZonedDateTime.from('2025-01-20T15:00:00.000500-05:00[America/New_York]');
+ * const earlier = Temporal.ZonedDateTime.from('2025-01-20T15:00:00.000000-05:00[America/New_York]');
+ *
+ * differenceInMicroseconds(later, earlier); // 500
+ * ```
+ *
+ * @example
+ * ```ts
+ * // Handles different timezones - compares by instant
+ * const tokyo = Temporal.ZonedDateTime.from('2025-01-21T00:00:00+09:00[Asia/Tokyo]');
+ * const ny = Temporal.ZonedDateTime.from('2025-01-20T10:00:00-05:00[America/New_York]');
+ *
+ * differenceInMicroseconds(tokyo, ny); // 0 (same instant)
+ * ```
+ */
+export function differenceInMicroseconds(
+  laterDate: Temporal.Instant | Temporal.ZonedDateTime,
+  earlierDate: Temporal.Instant | Temporal.ZonedDateTime
+): number {
+  const zoned1 = normalizeTemporalInput(laterDate);
+  const zoned2 = normalizeTemporalInput(earlierDate);
+
+  const diffNanos = zoned1.epochNanoseconds - zoned2.epochNanoseconds;
+  return Number(diffNanos / 1000n);
+}

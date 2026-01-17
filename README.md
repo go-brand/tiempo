@@ -270,32 +270,178 @@ endOfYear(zoned);   // 2025-12-31T23:59:59.999999999-05:00[America/New_York]
 
 ### Comparison Utilities
 
-#### `isBefore(date1, date2)`
+#### `isBefore(date1, date2)` / `isAfter(date1, date2)`
 
-Check if the first datetime is before the second. Compares the underlying instant in time.
+Check if the first datetime is before or after the second. Compares the underlying instant in time.
 
 ```typescript
-import { isBefore } from '@gobrand/tiempo';
+import { isBefore, isAfter } from '@gobrand/tiempo';
 
 const earlier = Temporal.ZonedDateTime.from('2025-01-20T10:00:00-05:00[America/New_York]');
 const later = Temporal.ZonedDateTime.from('2025-01-20T15:00:00-05:00[America/New_York]');
 
 isBefore(earlier, later); // true
 isBefore(later, earlier); // false
-```
-
-#### `isAfter(date1, date2)`
-
-Check if the first datetime is after the second. Compares the underlying instant in time.
-
-```typescript
-import { isAfter } from '@gobrand/tiempo';
-
-const earlier = Temporal.ZonedDateTime.from('2025-01-20T10:00:00-05:00[America/New_York]');
-const later = Temporal.ZonedDateTime.from('2025-01-20T15:00:00-05:00[America/New_York]');
 
 isAfter(later, earlier); // true
 isAfter(earlier, later); // false
+```
+
+### Difference Utilities
+
+All difference functions compare the underlying instant in time and return a positive value if laterDate is after earlierDate, negative if before.
+
+#### Time-based precision (instant comparison)
+
+##### `differenceInNanoseconds(laterDate, earlierDate)`
+
+Returns the difference in nanoseconds as a BigInt. Provides the highest precision available in Temporal.
+
+```typescript
+import { differenceInNanoseconds } from '@gobrand/tiempo';
+
+const later = Temporal.Instant.from('2025-01-20T12:30:20.000000500Z');
+const earlier = Temporal.Instant.from('2025-01-20T12:30:20.000000000Z');
+differenceInNanoseconds(later, earlier); // 500n
+```
+
+##### `differenceInMicroseconds(laterDate, earlierDate)`
+
+Returns the difference in microseconds (1/1,000,000 second).
+
+```typescript
+import { differenceInMicroseconds } from '@gobrand/tiempo';
+
+const later = Temporal.Instant.from('2025-01-20T12:30:20.001000Z');
+const earlier = Temporal.Instant.from('2025-01-20T12:30:20.000000Z');
+differenceInMicroseconds(later, earlier); // 1000
+```
+
+##### `differenceInMilliseconds(laterDate, earlierDate)`
+
+Returns the difference in milliseconds (1/1,000 second).
+
+```typescript
+import { differenceInMilliseconds } from '@gobrand/tiempo';
+
+const later = Temporal.Instant.from('2025-01-20T12:30:21.700Z');
+const earlier = Temporal.Instant.from('2025-01-20T12:30:20.600Z');
+differenceInMilliseconds(later, earlier); // 1100
+```
+
+##### `differenceInSeconds(laterDate, earlierDate)`
+
+Returns the difference in seconds (truncates sub-second precision).
+
+```typescript
+import { differenceInSeconds } from '@gobrand/tiempo';
+
+const later = Temporal.Instant.from('2025-01-20T12:30:25Z');
+const earlier = Temporal.Instant.from('2025-01-20T12:30:20Z');
+differenceInSeconds(later, earlier); // 5
+```
+
+##### `differenceInMinutes(laterDate, earlierDate)`
+
+Returns the difference in minutes (truncates sub-minute precision).
+
+```typescript
+import { differenceInMinutes } from '@gobrand/tiempo';
+
+const later = Temporal.Instant.from('2025-01-20T12:45:00Z');
+const earlier = Temporal.Instant.from('2025-01-20T12:30:00Z');
+differenceInMinutes(later, earlier); // 15
+```
+
+##### `differenceInHours(laterDate, earlierDate)`
+
+Returns the difference in hours (truncates sub-hour precision).
+
+```typescript
+import { differenceInHours } from '@gobrand/tiempo';
+
+const later = Temporal.Instant.from('2025-01-20T18:00:00Z');
+const earlier = Temporal.Instant.from('2025-01-20T15:00:00Z');
+differenceInHours(later, earlier); // 3
+```
+
+#### Calendar-aware precision
+
+These functions use Temporal's `until()` method to account for variable-length calendar units.
+
+##### `differenceInDays(laterDate, earlierDate)`
+
+Returns the difference in days. Calendar-aware, so it properly handles DST transitions where days can be 23, 24, or 25 hours.
+
+```typescript
+import { differenceInDays } from '@gobrand/tiempo';
+
+const later = Temporal.Instant.from('2025-01-25T12:00:00Z');
+const earlier = Temporal.Instant.from('2025-01-20T12:00:00Z');
+differenceInDays(later, earlier); // 5
+
+// Handles DST transitions correctly
+const afterDst = Temporal.ZonedDateTime.from('2025-03-10T12:00:00-04:00[America/New_York]');
+const beforeDst = Temporal.ZonedDateTime.from('2025-03-08T12:00:00-05:00[America/New_York]');
+differenceInDays(afterDst, beforeDst); // 2 (calendar days, not 48 hours)
+```
+
+##### `differenceInWeeks(laterDate, earlierDate)`
+
+Returns the difference in weeks (7-day periods).
+
+```typescript
+import { differenceInWeeks } from '@gobrand/tiempo';
+
+const later = Temporal.Instant.from('2025-02-10T12:00:00Z');
+const earlier = Temporal.Instant.from('2025-01-20T12:00:00Z');
+differenceInWeeks(later, earlier); // 3
+```
+
+##### `differenceInMonths(laterDate, earlierDate)`
+
+Returns the difference in months. Calendar-aware, properly handling months with different numbers of days (28-31).
+
+```typescript
+import { differenceInMonths } from '@gobrand/tiempo';
+
+const later = Temporal.Instant.from('2025-04-20T12:00:00Z');
+const earlier = Temporal.Instant.from('2025-01-20T12:00:00Z');
+differenceInMonths(later, earlier); // 3
+```
+
+##### `differenceInYears(laterDate, earlierDate)`
+
+Returns the difference in years. Calendar-aware, properly handling leap years (366 days) and regular years (365 days).
+
+```typescript
+import { differenceInYears } from '@gobrand/tiempo';
+
+const later = Temporal.Instant.from('2028-01-20T12:00:00Z');
+const earlier = Temporal.Instant.from('2025-01-20T12:00:00Z');
+differenceInYears(later, earlier); // 3
+
+// Calculate age
+const today = Temporal.ZonedDateTime.from('2025-01-20T12:00:00Z[UTC]');
+const birthdate = Temporal.ZonedDateTime.from('1990-01-20T12:00:00Z[UTC]');
+differenceInYears(today, birthdate); // 35
+```
+
+#### `isFuture(date)` / `isPast(date)`
+
+Check if a datetime is in the future or past relative to the current moment. Compares against `Temporal.Now.instant()`.
+
+```typescript
+import { isFuture, isPast } from '@gobrand/tiempo';
+
+const tomorrow = Temporal.Now.zonedDateTimeISO().add({ days: 1 });
+const yesterday = Temporal.Now.zonedDateTimeISO().subtract({ days: 1 });
+
+isFuture(tomorrow); // true
+isFuture(yesterday); // false
+
+isPast(yesterday); // true
+isPast(tomorrow); // false
 ```
 
 #### `isSameDay(date1, date2)`
