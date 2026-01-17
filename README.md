@@ -173,6 +173,49 @@ format(instant, "yyyy-MM-dd HH:mm", { timeZone: "Asia/Tokyo" }); // "2025-01-21 
 
 ### Start/End Utilities
 
+#### `today(timezone?)`
+
+Get today's date in the system's local timezone or a specified timezone.
+
+**Parameters:**
+- `timezone` (string, optional): An IANA timezone identifier (e.g., `"America/New_York"`, `"Europe/Madrid"`) or `"UTC"`. If not provided, uses the system's local timezone.
+
+**Returns:** `Temporal.PlainDate` - A Temporal.PlainDate representing today's date
+
+**Example:**
+```typescript
+import { today } from '@gobrand/tiempo';
+
+const date = today(); // 2025-01-20
+date.year;      // 2025
+date.month;     // 1
+date.day;       // 20
+
+// Get today in a specific timezone
+const dateInTokyo = today("Asia/Tokyo"); // 2025-01-21 (next day due to timezone)
+```
+
+#### `now(timezone?)`
+
+Get the current date and time in the system's local timezone or a specified timezone.
+
+**Parameters:**
+- `timezone` (string, optional): An IANA timezone identifier (e.g., `"America/New_York"`, `"Europe/Madrid"`) or `"UTC"`. If not provided, uses the system's local timezone.
+
+**Returns:** `Temporal.ZonedDateTime` - A Temporal.ZonedDateTime representing the current date and time
+
+**Example:**
+```typescript
+import { now } from '@gobrand/tiempo';
+
+const current = now(); // 2025-01-20T15:30:45.123-05:00[America/New_York]
+current.hour;   // 15
+current.minute; // 30
+
+// Get current time in a specific timezone
+const currentInTokyo = now("Asia/Tokyo"); // 2025-01-21T05:30:45.123+09:00[Asia/Tokyo]
+```
+
 #### `startOfDay(input)` / `endOfDay(input)`
 
 Get the start or end of the day for a given datetime.

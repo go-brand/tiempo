@@ -9,16 +9,16 @@ import { Temporal } from '@js-temporal/polyfill';
  * @example
  * ```typescript
  * // Get today in local timezone
- * const today = getToday();
+ * const date = today();
  *
  * // Get today in Madrid
- * const todayInMadrid = getToday("Europe/Madrid");
+ * const todayInMadrid = today("Europe/Madrid");
  *
  * // Get today in UTC
- * const todayUtc = getToday("UTC");
+ * const todayUtc = today("UTC");
  * ```
  */
-export function getToday(timezone?: "UTC" | string): Temporal.PlainDate {
+export function today(timezone?: "UTC" | string): Temporal.PlainDate {
   if (timezone) {
     return Temporal.Now.zonedDateTimeISO(timezone).toPlainDate();
   }
