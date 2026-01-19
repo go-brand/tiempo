@@ -27,3 +27,7 @@ export { differenceInDays } from './differenceInDays';
 export { differenceInWeeks } from './differenceInWeeks';
 export { differenceInMonths } from './differenceInMonths';
 export { differenceInYears } from './differenceInYears';
+export {
+  intlFormatDistance,
+  type IntlFormatDistanceOptions,
+} from './intlFormatDistance';

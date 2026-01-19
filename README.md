@@ -120,6 +120,84 @@ console.log(iso2); // "2025-01-20T20:00:00Z"
 
 ### Formatting
 
+#### `intlFormatDistance(laterDate, earlierDate, options?)`
+
+Format the distance between two dates as a human-readable, internationalized string using `Intl.RelativeTimeFormat`. Automatically selects the most appropriate unit (seconds, minutes, hours, days, weeks, months, years) based on the distance.
+
+**Parameters:**
+- `laterDate` (Temporal.Instant | Temporal.ZonedDateTime): The later date to compare
+- `earlierDate` (Temporal.Instant | Temporal.ZonedDateTime): The earlier date to compare with
+- `options` (IntlFormatDistanceOptions, optional): Formatting options
+  - `unit` (Intl.RelativeTimeFormatUnit): Force a specific unit instead of automatic selection
+  - `locale` (string | string[]): Locale for formatting (default: system locale)
+  - `numeric` ('always' | 'auto'): Use numeric values always or allow natural language like "tomorrow" (default: 'auto')
+  - `style` ('long' | 'short' | 'narrow'): Formatting style (default: 'long')
+  - `localeMatcher` ('best fit' | 'lookup'): Locale matching algorithm
+
+**Returns:** `string` - Formatted relative time string
+
+**Automatic unit selection:**
+- < 60 seconds → "in X seconds" / "X seconds ago"
+- < 60 minutes → "in X minutes" / "X minutes ago"
+- < 24 hours → "in X hours" / "X hours ago"
+- < 7 days → "tomorrow" / "yesterday" / "in X days" / "X days ago"
+- < 4 weeks → "next week" / "last week" / "in X weeks" / "X weeks ago"
+- < 12 months → "next month" / "last month" / "in X months" / "X months ago"
+- ≥ 12 months → "next year" / "last year" / "in X years" / "X years ago"
+
+**Example:**
+```typescript
+import { intlFormatDistance } from '@gobrand/tiempo';
+
+const later = Temporal.Instant.from('2025-01-20T12:00:00Z');
+const earlier = Temporal.Instant.from('2025-01-20T11:00:00Z');
+
+// Basic usage
+intlFormatDistance(later, earlier);
+// => "in 1 hour"
+
+intlFormatDistance(earlier, later);
+// => "1 hour ago"
+
+// With different locales
+intlFormatDistance(later, earlier, { locale: 'es' });
+// => "dentro de 1 hora"
+
+intlFormatDistance(later, earlier, { locale: 'ja' });
+// => "1 時間後"
+
+// Force numeric format
+const tomorrow = Temporal.Instant.from('2025-01-21T00:00:00Z');
+const today = Temporal.Instant.from('2025-01-20T00:00:00Z');
+
+intlFormatDistance(tomorrow, today, { numeric: 'auto' });
+// => "tomorrow"
+
+intlFormatDistance(tomorrow, today, { numeric: 'always' });
+// => "in 1 day"
+
+// Different styles
+const future = Temporal.Instant.from('2027-01-20T00:00:00Z');
+const now = Temporal.Instant.from('2025-01-20T00:00:00Z');
+
+intlFormatDistance(future, now, { style: 'long' });
+// => "in 2 years"
+
+intlFormatDistance(future, now, { style: 'short' });
+// => "in 2 yr."
+
+intlFormatDistance(future, now, { style: 'narrow' });
+// => "in 2y"
+
+// Force specific units
+intlFormatDistance(future, now, { unit: 'quarter' });
+// => "in 8 quarters"
+
+const dayLater = Temporal.Instant.from('2025-01-21T00:00:00Z');
+intlFormatDistance(dayLater, today, { unit: 'hour' });
+// => "in 24 hours"
+```
+
 #### `format(input, formatStr, options?)`
 
 Format a Temporal.Instant or ZonedDateTime using date-fns-like format tokens.
