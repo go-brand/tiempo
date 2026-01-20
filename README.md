@@ -1,10 +1,10 @@
-# tiempo
+# @gobrand/tiempo
 
 [![npm version](https://img.shields.io/npm/v/@gobrand/tiempo.svg)](https://www.npmjs.com/package/@gobrand/tiempo)
 [![CI](https://github.com/go-brand/tiempo/actions/workflows/ci.yml/badge.svg)](https://github.com/go-brand/tiempo/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Lightweight utilities for timezones and datetimes with the [Temporal API](https://tc39.es/proposal-temporal/docs/).
+Comprehensive datetime utilities for the [Temporal API](https://tc39.es/proposal-temporal/docs/). Full timezone support, nanosecond precision, and 54+ utility functions with a familiar API.
 
 ## Installation
 
@@ -18,12 +18,30 @@ yarn add @gobrand/tiempo
 
 ## Why tiempo?
 
-The Temporal API is powerful but requires understanding its various methods and objects. `tiempo` provides intuitive utilities for common datetime tasks: timezone conversions, formatting, start/end calculations, and comparisons. Whether you're converting UTC strings from your backend or formatting dates for display, tiempo makes working with timezones straightforward.
+The Temporal API is powerful but requires understanding its various methods and objects. **tiempo** (`@gobrand/tiempo`) provides 54+ intuitive utilities for every datetime task:
+
+- **🌍 Timezone conversions** - Convert between UTC and any timezone effortlessly
+- **➕ Complete arithmetic** - Add/subtract any time unit from nanoseconds to years
+- **📅 Calendar operations** - Start/end of day, week, month, year with DST handling
+- **🔍 Comparisons** - Check if dates are before, after, same day, future, or past
+- **📊 Differences** - Calculate precise differences in any time unit
+- **🎨 Formatting** - Format dates with date-fns-style tokens or Intl
+- **⚡️ Type-safe** - Full TypeScript support with proper Temporal types
+- **🎯 Zero config** - Simple, direct function signatures
+
+**Key features:**
+- ✅ Native timezone support with Temporal API
+- ✅ DST transitions handled automatically
+- ✅ Nanosecond precision (beyond milliseconds)
+- ✅ Calendar-aware arithmetic (leap years, month-end dates)
+- ✅ Familiar date-fns-style API, built for the future
 
 **Perfect for:**
 - Social media scheduling apps
 - Calendar applications
 - Booking systems
+- Time tracking tools
+- Analytics dashboards
 - Any app that needs to handle user timezones
 
 ## Quick Start
@@ -346,6 +364,138 @@ startOfYear(zoned); // 2025-01-01T00:00:00-05:00[America/New_York]
 endOfYear(zoned);   // 2025-12-31T23:59:59.999999999-05:00[America/New_York]
 ```
 
+### Addition/Subtraction Utilities
+
+tiempo provides comprehensive datetime arithmetic functions for all time units, from nanoseconds to years. All functions:
+- Accept `Temporal.Instant` or `Temporal.ZonedDateTime` as input
+- Return `Temporal.ZonedDateTime` preserving the original timezone
+- Properly handle DST transitions, leap years, and month-end edge cases
+- Support negative values for subtraction
+
+#### Addition Functions
+
+##### `addYears(input, years)` / `addMonths(input, months)` / `addWeeks(input, weeks)` / `addDays(input, days)`
+
+Add calendar units (years, months, weeks, or days) to a datetime.
+
+```typescript
+import { addYears, addMonths, addWeeks, addDays } from '@gobrand/tiempo';
+
+const date = Temporal.Instant.from('2025-01-20T12:00:00Z');
+
+addYears(date, 2);   // 2027-01-20T12:00:00Z[UTC] (2 years later)
+addMonths(date, 3);  // 2025-04-20T12:00:00Z[UTC] (3 months later)
+addWeeks(date, 2);   // 2025-02-03T12:00:00Z[UTC] (2 weeks later)
+addDays(date, 5);    // 2025-01-25T12:00:00Z[UTC] (5 days later)
+
+// Handle month-end edge cases automatically
+const endOfJan = Temporal.Instant.from('2025-01-31T12:00:00Z');
+addMonths(endOfJan, 1); // 2025-02-28T12:00:00Z[UTC] (Jan 31 → Feb 28)
+
+// Negative values subtract
+addMonths(date, -3); // 2024-10-20T12:00:00Z[UTC] (3 months earlier)
+```
+
+##### `addHours(input, hours)` / `addMinutes(input, minutes)` / `addSeconds(input, seconds)`
+
+Add time units (hours, minutes, or seconds) to a datetime.
+
+```typescript
+import { addHours, addMinutes, addSeconds } from '@gobrand/tiempo';
+
+const time = Temporal.Instant.from('2025-01-20T12:00:00Z');
+
+addHours(time, 3);    // 2025-01-20T15:00:00Z[UTC] (3 hours later)
+addMinutes(time, 30); // 2025-01-20T12:30:00Z[UTC] (30 minutes later)
+addSeconds(time, 45); // 2025-01-20T12:00:45Z[UTC] (45 seconds later)
+
+// Works with ZonedDateTime and preserves timezone
+const ny = Temporal.ZonedDateTime.from('2025-01-20T15:00:00-05:00[America/New_York]');
+addHours(ny, 2); // 2025-01-20T17:00:00-05:00[America/New_York]
+```
+
+##### `addMilliseconds(input, ms)` / `addMicroseconds(input, μs)` / `addNanoseconds(input, ns)`
+
+Add sub-second precision units (milliseconds, microseconds, or nanoseconds) to a datetime.
+
+```typescript
+import { addMilliseconds, addMicroseconds, addNanoseconds } from '@gobrand/tiempo';
+
+const precise = Temporal.Instant.from('2025-01-20T12:00:00Z');
+
+addMilliseconds(precise, 500); // 2025-01-20T12:00:00.500Z[UTC]
+addMicroseconds(precise, 500); // 2025-01-20T12:00:00.000500Z[UTC]
+addNanoseconds(precise, 500);  // 2025-01-20T12:00:00.000000500Z[UTC]
+```
+
+#### Subtraction Functions
+
+All subtraction functions are convenience wrappers that call their corresponding addition functions with negated values.
+
+##### `subYears(input, years)` / `subMonths(input, months)` / `subWeeks(input, weeks)` / `subDays(input, days)`
+
+```typescript
+import { subYears, subMonths, subWeeks, subDays } from '@gobrand/tiempo';
+
+const date = Temporal.Instant.from('2025-01-20T12:00:00Z');
+
+subYears(date, 2);  // 2023-01-20T12:00:00Z[UTC] (2 years earlier)
+subMonths(date, 3); // 2024-10-20T12:00:00Z[UTC] (3 months earlier)
+subWeeks(date, 2);  // 2025-01-06T12:00:00Z[UTC] (2 weeks earlier)
+subDays(date, 5);   // 2025-01-15T12:00:00Z[UTC] (5 days earlier)
+```
+
+##### `subHours(input, hours)` / `subMinutes(input, minutes)` / `subSeconds(input, seconds)`
+
+```typescript
+import { subHours, subMinutes, subSeconds } from '@gobrand/tiempo';
+
+const time = Temporal.Instant.from('2025-01-20T12:00:00Z');
+
+subHours(time, 3);    // 2025-01-20T09:00:00Z[UTC] (3 hours earlier)
+subMinutes(time, 30); // 2025-01-20T11:30:00Z[UTC] (30 minutes earlier)
+subSeconds(time, 45); // 2025-01-20T11:59:15Z[UTC] (45 seconds earlier)
+```
+
+##### `subMilliseconds(input, ms)` / `subMicroseconds(input, μs)` / `subNanoseconds(input, ns)`
+
+```typescript
+import { subMilliseconds, subMicroseconds, subNanoseconds } from '@gobrand/tiempo';
+
+const precise = Temporal.Instant.from('2025-01-20T12:00:00.500Z');
+
+subMilliseconds(precise, 250); // 2025-01-20T12:00:00.250Z[UTC]
+subMicroseconds(precise, 250); // 2025-01-20T12:00:00.499750Z[UTC]
+subNanoseconds(precise, 250);  // 2025-01-20T12:00:00.499999750Z[UTC]
+```
+
+#### Real-world Example: Meeting Scheduler
+
+```typescript
+import {
+  toZonedTime,
+  addDays,
+  addMinutes,
+  format
+} from '@gobrand/tiempo';
+
+// User's current meeting time
+const meeting = toZonedTime('2025-01-20T15:00:00Z', 'America/New_York');
+// 2025-01-20T10:00:00-05:00[America/New_York] (10 AM in NY)
+
+// Reschedule to tomorrow, same time
+const tomorrow = addDays(meeting, 1);
+format(tomorrow, 'EEEE, MMMM do'); // "Tuesday, January 21st"
+
+// Add 30-minute buffer before the meeting
+const arriveBy = subMinutes(tomorrow, 30);
+format(arriveBy, 'h:mm a'); // "9:30 AM"
+
+// Schedule follow-up 2 weeks later
+const followUp = addWeeks(tomorrow, 2);
+format(followUp, 'MMM d'); // "Feb 4"
+```
+
 ### Comparison Utilities
 
 #### `isBefore(date1, date2)` / `isAfter(date1, date2)`
@@ -550,12 +700,21 @@ const instant2 = Temporal.Instant.from('2025-01-20T23:00:00Z');
 isSameDay(instant1, instant2); // true (both Jan 20 in UTC)
 ```
 
-## Real World Example
+## Real World Examples
 
-This example demonstrates the complete workflow of working with datetimes in a frontend application: receiving a UTC ISO 8601 string from your backend, converting it to a Temporal object in the user's timezone, formatting it for display, manipulating it based on user input, and sending it back to your backend as a UTC ISO 8601 string.
+### Example 1: Social Media Post Scheduler
+
+This example demonstrates the complete workflow of working with datetimes in a frontend application: receiving a UTC ISO 8601 string from your backend, converting it to a Temporal object in the user's timezone, formatting it for display, manipulating it with tiempo's arithmetic functions, and sending it back to your backend as a UTC ISO 8601 string.
 
 ```typescript
-import { toZonedTime, toUtcString, format } from '@gobrand/tiempo';
+import {
+  toZonedTime,
+  toUtcString,
+  format,
+  addDays,
+  addHours,
+  subMinutes
+} from '@gobrand/tiempo';
 
 // 1. Receive UTC ISO 8601 string from backend
 const scheduledAtUTC = "2025-01-20T20:00:00.000Z";
@@ -568,16 +727,53 @@ const zonedDateTime = toZonedTime(scheduledAtUTC, userTimezone);
 const displayTime = format(zonedDateTime, "EEEE, MMMM do 'at' h:mm a");
 console.log(displayTime); // "Monday, January 20th at 3:00 PM"
 
-// 4. User reschedules to 4:00 PM their time
-const updatedZoned = zonedDateTime.with({ hour: 16 });
+// 4. User wants to reschedule to tomorrow, 2 hours later
+const tomorrow = addDays(zonedDateTime, 1);
+const twoHoursLater = addHours(tomorrow, 2);
 
 // 5. Format the updated time for confirmation
-const confirmTime = format(updatedZoned, "h:mm a");
-console.log(`Rescheduled to ${confirmTime}`); // "Rescheduled to 4:00 PM"
+const confirmTime = format(twoHoursLater, "EEEE 'at' h:mm a");
+console.log(`Rescheduled to ${confirmTime}`); // "Tuesday at 5:00 PM"
 
 // 6. Convert back to UTC ISO 8601 string for backend
-const updatedUTC = toUtcString(updatedZoned);
-console.log(updatedUTC); // "2025-01-20T21:00:00Z"
+const updatedUTC = toUtcString(twoHoursLater);
+console.log(updatedUTC); // "2025-01-21T22:00:00Z"
+```
+
+### Example 2: Meeting Reminder System
+
+```typescript
+import {
+  toZonedTime,
+  format,
+  subMinutes,
+  subHours,
+  differenceInMinutes,
+  isFuture
+} from '@gobrand/tiempo';
+
+// Meeting scheduled for 2 PM
+const meeting = toZonedTime('2025-01-20T19:00:00Z', 'America/New_York');
+// 2025-01-20T14:00:00-05:00[America/New_York]
+
+// Send reminders at multiple intervals
+const reminders = [
+  { time: subMinutes(meeting, 15), label: '15 minutes before' },
+  { time: subHours(meeting, 1), label: '1 hour before' },
+  { time: subHours(meeting, 24), label: '1 day before' },
+];
+
+reminders.forEach(({ time, label }) => {
+  if (isFuture(time)) {
+    const formatted = format(time, 'MMM d, h:mm a');
+    console.log(`Send reminder "${label}" at ${formatted}`);
+  }
+});
+
+// Calculate time until meeting
+const now = Temporal.Now.zonedDateTimeISO('America/New_York');
+const minutesUntil = differenceInMinutes(meeting, now);
+console.log(`Meeting starts in ${minutesUntil} minutes`);
 ```
 
 ## Browser Support
