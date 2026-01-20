@@ -98,6 +98,46 @@ describe('toZonedTime', () => {
     });
   });
 
+  describe('from Date', () => {
+    it('converts Date object to ZonedDateTime in specified timezone', () => {
+      const date = new Date('2025-01-20T20:00:00.000Z');
+      const zoned = toZonedTime(date, 'America/New_York');
+
+      expect(zoned).toBeInstanceOf(Temporal.ZonedDateTime);
+      expect(zoned.hour).toBe(15); // 3 PM in New York (EST: UTC-5)
+      expect(zoned.day).toBe(20);
+      expect(zoned.month).toBe(1);
+      expect(zoned.year).toBe(2025);
+      expect(zoned.timeZoneId).toBe('America/New_York');
+    });
+
+    it('handles Date from Drizzle ORM (timestamptz)', () => {
+      // Simulating a Date object returned from Drizzle with mode: 'date'
+      const drizzleDate = new Date('2025-01-20T20:00:00.000Z');
+
+      const tokyo = toZonedTime(drizzleDate, 'Asia/Tokyo');
+      expect(tokyo.hour).toBe(5); // 5 AM next day in Tokyo (JST: UTC+9)
+      expect(tokyo.day).toBe(21);
+
+      const newYork = toZonedTime(drizzleDate, 'America/New_York');
+      expect(newYork.hour).toBe(15); // 3 PM in New York
+      expect(newYork.day).toBe(20);
+    });
+
+    it('preserves the same instant when converting Date to different timezones', () => {
+      const date = new Date('2025-01-20T12:00:00.000Z');
+
+      const tokyo = toZonedTime(date, 'Asia/Tokyo');
+      const london = toZonedTime(date, 'Europe/London');
+      const newYork = toZonedTime(date, 'America/New_York');
+
+      // All represent the same instant
+      expect(tokyo.toInstant().toString()).toBe(london.toInstant().toString());
+      expect(london.toInstant().toString()).toBe(newYork.toInstant().toString());
+      expect(tokyo.toInstant().toString()).toBe('2025-01-20T12:00:00Z');
+    });
+  });
+
   describe('timezone conversion with toUtc', () => {
     it('converts ZonedDateTime to different timezone while preserving instant', () => {
       const ny = Temporal.ZonedDateTime.from('2025-01-20T15:00:00-05:00[America/New_York]');

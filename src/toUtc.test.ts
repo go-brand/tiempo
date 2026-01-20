@@ -48,6 +48,45 @@ describe('toUtc', () => {
     });
   });
 
+  describe('from Date', () => {
+    it('converts Date object to Temporal.Instant', () => {
+      const date = new Date('2025-01-20T20:00:00.000Z');
+      const instant = toUtc(date);
+
+      expect(instant).toBeInstanceOf(Temporal.Instant);
+      expect(instant.toString()).toBe('2025-01-20T20:00:00Z');
+    });
+
+    it('handles Date from Drizzle ORM (timestamptz)', () => {
+      // Simulating a Date object returned from Drizzle with mode: 'date'
+      const drizzleDate = new Date('2025-01-20T20:00:00.000Z');
+      const instant = toUtc(drizzleDate);
+
+      expect(instant).toBeInstanceOf(Temporal.Instant);
+      expect(instant.toString()).toBe('2025-01-20T20:00:00Z');
+      expect(instant.epochMilliseconds).toBe(drizzleDate.getTime());
+    });
+
+    it('preserves millisecond precision from Date', () => {
+      const date = new Date('2025-01-20T20:00:00.123Z');
+      const instant = toUtc(date);
+
+      expect(instant.toString()).toBe('2025-01-20T20:00:00.123Z');
+    });
+
+    it('handles Date round-trip conversion', () => {
+      const originalDate = new Date('2025-01-20T12:30:45.678Z');
+
+      // Date → Instant → ZonedDateTime → Instant
+      const instant1 = toUtc(originalDate);
+      const zoned = toZonedTime(instant1, 'America/New_York');
+      const instant2 = toUtc(zoned);
+
+      expect(instant1.toString()).toBe(instant2.toString());
+      expect(instant1.epochMilliseconds).toBe(originalDate.getTime());
+    });
+  });
+
   describe('Instant vs ZonedDateTime[UTC] equivalence', () => {
     it('proves Instant and ZonedDateTime[UTC] represent the same moment', () => {
       const utcString = '2025-01-20T20:00:00.123Z';

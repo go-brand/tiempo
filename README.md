@@ -47,15 +47,24 @@ The Temporal API is powerful but requires understanding its various methods and 
 ## Quick Start
 
 ```typescript
-import { toZonedTime, toUtcString } from '@gobrand/tiempo';
+import { toZonedTime, toUtcString, toUtc, toDate } from '@gobrand/tiempo';
 
-// Backend sends: "2025-01-20T20:00:00.000Z"
+// From ISO string (typical backend API)
 const zoned = toZonedTime("2025-01-20T20:00:00.000Z", "America/New_York");
 console.log(zoned.hour); // 15 (3 PM in New York)
 
-// Send back to backend:
-const utc = toUtcString(zoned);
-console.log(utc); // "2025-01-20T20:00:00Z"
+// From Date object (e.g., Drizzle ORM)
+const date = new Date("2025-01-20T20:00:00.000Z");
+const zonedFromDate = toZonedTime(date, "America/New_York");
+console.log(zonedFromDate.hour); // 15 (3 PM in New York)
+
+// Back to ISO string
+const utcString = toUtcString(zoned);
+console.log(utcString); // "2025-01-20T20:00:00Z"
+
+// Back to Date object (for Drizzle ORM)
+const backToDate = toDate(zoned);
+console.log(backToDate.toISOString()); // "2025-01-20T20:00:00.000Z"
 ```
 
 ## API
@@ -64,10 +73,10 @@ console.log(utc); // "2025-01-20T20:00:00Z"
 
 #### `toZonedTime(input, timezone)`
 
-Convert a UTC ISO string, Instant, or ZonedDateTime to a ZonedDateTime in the specified timezone.
+Convert a UTC ISO string, Date, Instant, or ZonedDateTime to a ZonedDateTime in the specified timezone.
 
 **Parameters:**
-- `input` (string | Temporal.Instant | Temporal.ZonedDateTime): A UTC ISO 8601 string, Temporal.Instant, or Temporal.ZonedDateTime
+- `input` (string | Date | Temporal.Instant | Temporal.ZonedDateTime): A UTC ISO 8601 string, Date object, Temporal.Instant, or Temporal.ZonedDateTime
 - `timezone` (string): An IANA timezone identifier (e.g., `"America/New_York"`, `"Europe/London"`)
 
 **Returns:** `Temporal.ZonedDateTime` - The same instant in the specified timezone
@@ -81,9 +90,14 @@ const zoned = toZonedTime("2025-01-20T20:00:00.000Z", "America/New_York");
 console.log(zoned.hour); // 15 (3 PM in New York)
 console.log(zoned.toString()); // "2025-01-20T15:00:00-05:00[America/New_York]"
 
+// From Date (e.g., from Drizzle ORM)
+const date = new Date("2025-01-20T20:00:00.000Z");
+const zoned2 = toZonedTime(date, "America/New_York");
+console.log(zoned2.hour); // 15 (3 PM in New York)
+
 // From Instant
 const instant = Temporal.Instant.from("2025-01-20T20:00:00Z");
-const zoned2 = toZonedTime(instant, "Asia/Tokyo");
+const zoned3 = toZonedTime(instant, "Asia/Tokyo");
 
 // From ZonedDateTime (convert to different timezone)
 const nyTime = Temporal.ZonedDateTime.from("2025-01-20T15:00:00-05:00[America/New_York]");
@@ -92,10 +106,10 @@ const tokyoTime = toZonedTime(nyTime, "Asia/Tokyo");
 
 #### `toUtc(input)`
 
-Convert a UTC ISO string or ZonedDateTime to a Temporal.Instant (UTC).
+Convert a UTC ISO string, Date, or ZonedDateTime to a Temporal.Instant (UTC).
 
 **Parameters:**
-- `input` (string | Temporal.ZonedDateTime): A UTC ISO 8601 string or Temporal.ZonedDateTime
+- `input` (string | Date | Temporal.ZonedDateTime): A UTC ISO 8601 string, Date object, or Temporal.ZonedDateTime
 
 **Returns:** `Temporal.Instant` - A Temporal.Instant representing the same moment in UTC
 
@@ -106,10 +120,14 @@ import { toUtc } from '@gobrand/tiempo';
 // From ISO string
 const instant = toUtc("2025-01-20T20:00:00.000Z");
 
+// From Date (e.g., from Drizzle ORM)
+const date = new Date("2025-01-20T20:00:00.000Z");
+const instant2 = toUtc(date);
+
 // From ZonedDateTime
 const zoned = Temporal.ZonedDateTime.from("2025-01-20T15:00:00-05:00[America/New_York]");
-const instant2 = toUtc(zoned);
-// Both represent the same UTC moment: 2025-01-20T20:00:00Z
+const instant3 = toUtc(zoned);
+// All represent the same UTC moment: 2025-01-20T20:00:00Z
 ```
 
 #### `toUtcString(input)`
@@ -134,6 +152,35 @@ console.log(iso); // "2025-01-20T20:00:00Z"
 const instant = Temporal.Instant.from("2025-01-20T20:00:00Z");
 const iso2 = toUtcString(instant);
 console.log(iso2); // "2025-01-20T20:00:00Z"
+```
+
+#### `toDate(input)`
+
+Convert a Temporal.Instant or ZonedDateTime to a Date object.
+
+**Parameters:**
+- `input` (Temporal.Instant | Temporal.ZonedDateTime): A Temporal.Instant or Temporal.ZonedDateTime
+
+**Returns:** `Date` - A Date object representing the same moment in time
+
+**Example:**
+```typescript
+import { toDate } from '@gobrand/tiempo';
+
+// From Instant
+const instant = Temporal.Instant.from("2025-01-20T20:00:00Z");
+const date = toDate(instant);
+console.log(date.toISOString()); // "2025-01-20T20:00:00.000Z"
+
+// From ZonedDateTime
+const zoned = Temporal.ZonedDateTime.from("2025-01-20T15:00:00-05:00[America/New_York]");
+const date2 = toDate(zoned);
+console.log(date2.toISOString()); // "2025-01-20T20:00:00.000Z"
+
+// Use with Drizzle ORM (for storing back to database)
+const instant = Temporal.Instant.from("2025-01-20T20:00:00Z");
+const dateForDb = toDate(instant);
+await db.update(posts).set({ publishedAt: dateForDb });
 ```
 
 ### Formatting
@@ -699,6 +746,36 @@ const instant1 = Temporal.Instant.from('2025-01-20T10:00:00Z');
 const instant2 = Temporal.Instant.from('2025-01-20T23:00:00Z');
 isSameDay(instant1, instant2); // true (both Jan 20 in UTC)
 ```
+
+## Drizzle ORM Integration
+
+tiempo seamlessly integrates with Drizzle ORM for database datetime operations. When using Drizzle with PostgreSQL `timestamptz` columns and `mode: 'date'`, tiempo provides utilities to convert between Date objects and Temporal.
+
+```typescript
+import { toZonedTime, toUtc, toDate } from '@gobrand/tiempo';
+
+// 1. Reading from database (Drizzle returns Date with mode: 'date')
+const post = await db.query.posts.findFirst();
+const publishedAt = post.publishedAt; // Date object
+
+// 2. Convert to user's timezone for display
+const userTimezone = "America/New_York";
+const zonedTime = toZonedTime(publishedAt, userTimezone);
+console.log(zonedTime.hour); // Local hour in user's timezone
+
+// 3. User reschedules post to tomorrow at 3 PM their time
+const rescheduled = zonedTime.add({ days: 1 }).with({ hour: 15, minute: 0 });
+
+// 4. Convert back to Date for database storage
+const dateForDb = toDate(rescheduled);
+await db.update(posts).set({ publishedAt: dateForDb }).where(eq(posts.id, post.id));
+```
+
+**Why this works:**
+- Drizzle's `mode: 'date'` returns JavaScript `Date` objects (timestamps)
+- `toZonedTime(date, tz)` converts the Date to a timezone-aware Temporal object
+- Work with Temporal's powerful API for date arithmetic and manipulation
+- `toDate(temporal)` converts back to Date for Drizzle storage
 
 ## Real World Examples
 

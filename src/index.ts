@@ -1,6 +1,7 @@
 export { toZonedTime } from './toZonedTime';
 export { toUtc } from './toUtc';
 export { toUtcString } from './toUtcString';
+export { toDate } from './toDate';
 export { format, type FormatOptions } from './format';
 export { today } from './today';
 export { now } from './now';
