@@ -853,6 +853,44 @@ const minutesUntil = differenceInMinutes(meeting, now);
 console.log(`Meeting starts in ${minutesUntil} minutes`);
 ```
 
+### PlainDate Comparisons
+
+For comparing calendar dates without time or timezone considerations, tiempo provides dedicated PlainDate comparison functions. These are useful for calendars, date pickers, and scheduling UIs where you work with pure dates.
+
+#### `isPlainDateBefore(date1, date2)` / `isPlainDateAfter(date1, date2)` / `isPlainDateEqual(date1, date2)`
+
+Compare two `Temporal.PlainDate` values. Unlike `isBefore`/`isAfter` which compare instants in time, these functions compare pure calendar dates.
+
+```typescript
+import { isPlainDateBefore, isPlainDateAfter, isPlainDateEqual } from '@gobrand/tiempo';
+
+const jan20 = Temporal.PlainDate.from('2025-01-20');
+const jan25 = Temporal.PlainDate.from('2025-01-25');
+
+isPlainDateBefore(jan20, jan25); // true
+isPlainDateBefore(jan25, jan20); // false
+
+isPlainDateAfter(jan25, jan20); // true
+isPlainDateAfter(jan20, jan25); // false
+
+isPlainDateEqual(jan20, Temporal.PlainDate.from('2025-01-20')); // true
+isPlainDateEqual(jan20, jan25); // false
+```
+
+**When to use PlainDate vs Instant/ZonedDateTime:**
+- Use `isPlainDateBefore`/`isPlainDateAfter` when comparing calendar dates (e.g., "Is January 20th before January 25th?")
+- Use `isBefore`/`isAfter` when comparing specific moments in time (e.g., "Did event A happen before event B?")
+
+```typescript
+// Calendar UI: Disable dates before today
+const isDateDisabled = (date: Temporal.PlainDate) =>
+  isPlainDateBefore(date, today());
+
+// Booking system: Check if selected date is in the past
+const isPastDate = (date: Temporal.PlainDate) =>
+  isPlainDateBefore(date, today());
+```
+
 ## Browser Support
 
 The Temporal API is a Stage 3 TC39 proposal. The polyfill `@js-temporal/polyfill` is included as a dependency, so you're ready to go!

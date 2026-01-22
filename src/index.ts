@@ -61,3 +61,6 @@ export {
   intlFormatDistance,
   type IntlFormatDistanceOptions,
 } from './intlFormatDistance';
+export { isPlainDateBefore } from './isPlainDateBefore';
+export { isPlainDateAfter } from './isPlainDateAfter';
+export { isPlainDateEqual } from './isPlainDateEqual';
