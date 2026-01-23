@@ -4,7 +4,7 @@
 [![CI](https://github.com/go-brand/tiempo/actions/workflows/ci.yml/badge.svg)](https://github.com/go-brand/tiempo/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Comprehensive datetime utilities for the [Temporal API](https://tc39.es/proposal-temporal/docs/). Full timezone support, nanosecond precision, and 54+ utility functions with a familiar API.
+Comprehensive datetime utilities for the [Temporal API](https://tc39.es/proposal-temporal/docs/). Full timezone support, nanosecond precision, and a familiar API.
 
 ## Installation
 
@@ -18,7 +18,7 @@ yarn add @gobrand/tiempo
 
 ## Why tiempo?
 
-The Temporal API is powerful but requires understanding its various methods and objects. **tiempo** (`@gobrand/tiempo`) provides 54+ intuitive utilities for every datetime task:
+The Temporal API is powerful but requires understanding its various methods and objects. **tiempo** (`@gobrand/tiempo`) provides intuitive utilities for every datetime task:
 
 - **🌍 Timezone conversions** - Convert between UTC and any timezone effortlessly
 - **➕ Complete arithmetic** - Add/subtract any time unit from nanoseconds to years
@@ -353,6 +353,54 @@ formatPlainDate(date, "EEEE", { locale: "de-DE" }); // "Montag"
 // Use with today()
 const todayFormatted = formatPlainDate(today(), "EEEE, MMMM do");
 // "Thursday, January 23rd"
+```
+
+#### `simpleFormat(input, options?)`
+
+Format a Temporal date in a human-friendly way: "Dec 23" or "Dec 23, 2020". By default, shows the year only if the date is not in the current year. Optionally includes time in 12-hour or 24-hour format.
+
+**Parameters:**
+- `input` (Temporal.PlainDate | Temporal.ZonedDateTime | Temporal.Instant): The date to format
+- `options` (object, optional): Formatting options
+  - `locale` (string): BCP 47 language tag (default: "en-US")
+  - `year` ('auto' | 'always' | 'never'): Control year display (default: 'auto')
+  - `time` ('12h' | '24h'): Include time in output (not available for PlainDate)
+  - `timeZone` (string): IANA timezone identifier (required for Instant, optional for ZonedDateTime)
+
+**Returns:** `string` - Human-friendly formatted date string
+
+**Example:**
+```typescript
+import { simpleFormat, today, now } from '@gobrand/tiempo';
+
+// Assuming current year is 2026
+const date2026 = Temporal.ZonedDateTime.from("2026-12-23T15:30:00[America/New_York]");
+const date2020 = Temporal.ZonedDateTime.from("2020-12-23T15:30:00[America/New_York]");
+
+// Basic usage - year shown only for past years
+simpleFormat(date2026); // "Dec 23"
+simpleFormat(date2020); // "Dec 23, 2020"
+
+// With time
+simpleFormat(date2026, { time: '12h' }); // "Dec 23, 3:30 PM"
+simpleFormat(date2026, { time: '24h' }); // "Dec 23, 15:30"
+
+// Control year display
+simpleFormat(date2026, { year: 'always' }); // "Dec 23, 2026"
+simpleFormat(date2020, { year: 'never' }); // "Dec 23"
+
+// With Instant (timeZone required)
+const instant = Temporal.Instant.from("2026-12-23T20:30:00Z");
+simpleFormat(instant, { timeZone: 'America/New_York' }); // "Dec 23"
+simpleFormat(instant, { timeZone: 'America/New_York', time: '12h' }); // "Dec 23, 3:30 PM"
+
+// With PlainDate (no time option available)
+const plain = Temporal.PlainDate.from("2020-12-23");
+simpleFormat(plain); // "Dec 23, 2020"
+
+// Different locales
+simpleFormat(date2020, { locale: 'es-ES' }); // "23 dic 2020"
+simpleFormat(date2020, { locale: 'de-DE' }); // "23. Dez. 2020"
 ```
 
 ### Start/End Utilities
