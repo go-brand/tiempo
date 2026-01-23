@@ -314,6 +314,47 @@ format(instant, "yyyy-MM-dd HH:mm", { timeZone: "America/New_York" }); // "2025-
 format(instant, "yyyy-MM-dd HH:mm", { timeZone: "Asia/Tokyo" }); // "2025-01-21 05:30"
 ```
 
+#### `formatPlainDate(date, formatStr, options?)`
+
+Format a Temporal.PlainDate using date-fns-like format tokens. Only supports date-related tokens (no time or timezone tokens).
+
+**Parameters:**
+- `date` (Temporal.PlainDate): A Temporal.PlainDate to format
+- `formatStr` (string): Format string using date-fns tokens (e.g., "yyyy-MM-dd")
+- `options` (FormatPlainDateOptions, optional): Configuration for locale
+  - `locale` (string): BCP 47 language tag (default: "en-US")
+
+**Returns:** `string` - Formatted date string
+
+**Supported tokens:**
+- **Year**: `yyyy` (2025), `yy` (25), `y` (2025)
+- **Month**: `MMMM` (January), `MMM` (Jan), `MM` (01), `M` (1), `Mo` (1st)
+- **Day**: `dd` (20), `d` (20), `do` (20th)
+- **Weekday**: `EEEE` (Monday), `EEE` (Mon), `EEEEE` (M)
+- **Quarter**: `Q` (1), `QQQ` (Q1), `QQQQ` (1st quarter)
+- **Era**: `G` (AD), `GGGG` (Anno Domini)
+- **Escape text**: Use single quotes `'...'`, double single quotes `''` for literal quote
+
+**Example:**
+```typescript
+import { formatPlainDate, today } from '@gobrand/tiempo';
+
+const date = Temporal.PlainDate.from("2025-01-20");
+
+formatPlainDate(date, "yyyy-MM-dd"); // "2025-01-20"
+formatPlainDate(date, "MMMM d, yyyy"); // "January 20, 2025"
+formatPlainDate(date, "EEEE, MMMM do, yyyy"); // "Monday, January 20th, 2025"
+formatPlainDate(date, "MM/dd/yyyy"); // "01/20/2025"
+
+// With locale
+formatPlainDate(date, "MMMM d, yyyy", { locale: "es-ES" }); // "enero 20, 2025"
+formatPlainDate(date, "EEEE", { locale: "de-DE" }); // "Montag"
+
+// Use with today()
+const todayFormatted = formatPlainDate(today(), "EEEE, MMMM do");
+// "Thursday, January 23rd"
+```
+
 ### Start/End Utilities
 
 #### `today(timezone?)`
