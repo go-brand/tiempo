@@ -1,0 +1,6 @@
+{
+  "title": "Conversion",
+  "description": "Convert between UTC, timezones, Date objects, and Temporal types",
+  "icon": "ArrowLeftRight",
+  "pages": ["to-zoned-time", "to-utc", "to-utc-string", "to-date"]
+}

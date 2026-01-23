@@ -1,0 +1,42 @@
+---
+title: now
+description: Get the current date and time as a ZonedDateTime
+---
+
+Get the current date and time as a `ZonedDateTime`.
+
+## Signature
+
+```ts
+function now(timezone?: 'UTC' | string): Temporal.ZonedDateTime
+```
+
+## Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `timezone` | `string` | Optional IANA timezone identifier |
+
+## Returns
+
+A `Temporal.ZonedDateTime` representing the current moment.
+
+## Examples
+
+### Get now in local timezone
+
+```ts
+import { now } from '@gobrand/tiempo';
+
+const current = now();
+```
+
+### Get now in a specific timezone
+
+```ts
+// Get now in Madrid
+const nowInMadrid = now("Europe/Madrid");
+
+// Get now in UTC
+const nowUtc = now("UTC");
+```

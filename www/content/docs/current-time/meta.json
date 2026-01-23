@@ -1,0 +1,6 @@
+{
+  "title": "Current Time",
+  "description": "Get the current time and today's date",
+  "icon": "Clock",
+  "pages": ["now", "today"]
+}

@@ -1,0 +1,81 @@
+---
+title: High Precision
+description: Add and subtract milliseconds, microseconds, and nanoseconds
+---
+
+tiempo provides high-precision arithmetic functions for sub-second operations.
+
+## Add Functions
+
+### addMilliseconds
+
+```ts
+function addMilliseconds(
+  input: Temporal.Instant | Temporal.ZonedDateTime,
+  milliseconds: number
+): Temporal.ZonedDateTime
+```
+
+### addMicroseconds
+
+```ts
+function addMicroseconds(
+  input: Temporal.Instant | Temporal.ZonedDateTime,
+  microseconds: number
+): Temporal.ZonedDateTime
+```
+
+### addNanoseconds
+
+```ts
+function addNanoseconds(
+  input: Temporal.Instant | Temporal.ZonedDateTime,
+  nanoseconds: number
+): Temporal.ZonedDateTime
+```
+
+## Subtract Functions
+
+### subMilliseconds
+
+```ts
+function subMilliseconds(
+  input: Temporal.Instant | Temporal.ZonedDateTime,
+  milliseconds: number
+): Temporal.ZonedDateTime
+```
+
+### subMicroseconds
+
+```ts
+function subMicroseconds(
+  input: Temporal.Instant | Temporal.ZonedDateTime,
+  microseconds: number
+): Temporal.ZonedDateTime
+```
+
+### subNanoseconds
+
+```ts
+function subNanoseconds(
+  input: Temporal.Instant | Temporal.ZonedDateTime,
+  nanoseconds: number
+): Temporal.ZonedDateTime
+```
+
+## Examples
+
+```ts
+import { addMilliseconds, addMicroseconds, addNanoseconds } from '@gobrand/tiempo';
+
+const instant = Temporal.Instant.from('2025-01-20T12:00:00Z');
+
+addMilliseconds(instant, 500);
+// 2025-01-20T12:00:00.500Z[UTC]
+
+addMicroseconds(instant, 1500);
+// 2025-01-20T12:00:00.001500Z[UTC]
+
+addNanoseconds(instant, 1500);
+// 2025-01-20T12:00:00.000001500Z[UTC]
+```

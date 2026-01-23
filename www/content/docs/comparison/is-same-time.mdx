@@ -1,0 +1,89 @@
+---
+title: Time Precision Equality
+description: Check if two datetimes are in the same hour, minute, second, etc.
+---
+
+tiempo provides high-precision equality checks for comparing datetimes at various time granularities.
+
+## Available Functions
+
+### isSameHour
+
+Returns true if both datetimes are in the same hour.
+
+```ts
+function isSameHour(
+  date1: Temporal.Instant | Temporal.ZonedDateTime,
+  date2: Temporal.Instant | Temporal.ZonedDateTime
+): boolean
+```
+
+### isSameMinute
+
+Returns true if both datetimes are in the same minute.
+
+```ts
+function isSameMinute(
+  date1: Temporal.Instant | Temporal.ZonedDateTime,
+  date2: Temporal.Instant | Temporal.ZonedDateTime
+): boolean
+```
+
+### isSameSecond
+
+Returns true if both datetimes are in the same second.
+
+```ts
+function isSameSecond(
+  date1: Temporal.Instant | Temporal.ZonedDateTime,
+  date2: Temporal.Instant | Temporal.ZonedDateTime
+): boolean
+```
+
+### isSameMillisecond
+
+Returns true if both datetimes are in the same millisecond.
+
+```ts
+function isSameMillisecond(
+  date1: Temporal.Instant | Temporal.ZonedDateTime,
+  date2: Temporal.Instant | Temporal.ZonedDateTime
+): boolean
+```
+
+### isSameMicrosecond
+
+Returns true if both datetimes are in the same microsecond.
+
+```ts
+function isSameMicrosecond(
+  date1: Temporal.Instant | Temporal.ZonedDateTime,
+  date2: Temporal.Instant | Temporal.ZonedDateTime
+): boolean
+```
+
+### isSameNanosecond
+
+Returns true if both datetimes are in the same nanosecond.
+
+```ts
+function isSameNanosecond(
+  date1: Temporal.Instant | Temporal.ZonedDateTime,
+  date2: Temporal.Instant | Temporal.ZonedDateTime
+): boolean
+```
+
+## Examples
+
+```ts
+import { isSameHour, isSameMinute, isSameSecond } from '@gobrand/tiempo';
+
+const time1 = Temporal.ZonedDateTime.from('2025-01-20T15:30:45.123Z[UTC]');
+const time2 = Temporal.ZonedDateTime.from('2025-01-20T15:30:45.456Z[UTC]');
+const time3 = Temporal.ZonedDateTime.from('2025-01-20T15:31:00.000Z[UTC]');
+
+isSameHour(time1, time2);   // true
+isSameMinute(time1, time2); // true
+isSameSecond(time1, time2); // true
+isSameMinute(time1, time3); // false (different minute)
+```

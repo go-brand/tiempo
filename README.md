@@ -18,31 +18,39 @@ yarn add @gobrand/tiempo
 
 ## Why tiempo?
 
-The Temporal API is powerful but requires understanding its various methods and objects. **tiempo** (`@gobrand/tiempo`) provides intuitive utilities for every datetime task:
+JavaScript's `Date` object was modeled after a Java class that was deprecated over 25 years ago. It conflates timestamps with calendar dates, only works in UTC or device-local time, and its mutating methods cause countless bugs. The [Temporal API](https://tc39.es/proposal-temporal/docs/) is the modern replacement, designed from the ground up to fix these problems.
 
-- **🌍 Timezone conversions** - Convert between UTC and any timezone effortlessly
-- **➕ Complete arithmetic** - Add/subtract any time unit from nanoseconds to years
-- **📅 Calendar operations** - Start/end of day, week, month, year with DST handling
-- **🔍 Comparisons** - Check if dates are before, after, same day, future, or past
-- **📊 Differences** - Calculate precise differences in any time unit
-- **🎨 Formatting** - Format dates with date-fns-style tokens or Intl
-- **⚡️ Type-safe** - Full TypeScript support with proper Temporal types
-- **🎯 Zero config** - Simple, direct function signatures
+**tiempo** makes Temporal accessible with an intuitive, date-fns-style API:
 
-**Key features:**
-- ✅ Native timezone support with Temporal API
-- ✅ DST transitions handled automatically
-- ✅ Nanosecond precision (beyond milliseconds)
-- ✅ Calendar-aware arithmetic (leap years, month-end dates)
-- ✅ Familiar date-fns-style API, built for the future
+### The Temporal Advantage
 
-**Perfect for:**
-- Social media scheduling apps
-- Calendar applications
-- Booking systems
-- Time tracking tools
-- Analytics dashboards
-- Any app that needs to handle user timezones
+| Problem with `Date` | Temporal Solution | tiempo API |
+|---------------------|-------------------|------------|
+| Only UTC or local time | Any IANA timezone | `toZonedTime(date, "America/New_York")` |
+| Millisecond precision | Nanosecond precision | `addNanoseconds()`, `differenceInNanoseconds()` |
+| Mutating methods | Immutable operations | All functions return new values |
+| Ambiguous representations | Distinct types for each use case | `Instant`, `ZonedDateTime`, `PlainDate` |
+| DST bugs everywhere | DST-aware arithmetic | `addDays()` respects timezone rules |
+| Gregorian calendar only | Multi-calendar support | Works with Hebrew, Chinese, Japanese, and more |
+
+### Features
+
+- **First-class timezone support** - Convert, compare, and calculate across any of 400+ IANA timezones with confidence
+- **Nanosecond precision** - Beyond milliseconds for scientific computing, financial systems, and high-frequency operations
+- **DST-safe arithmetic** - Adding days means calendar days, not 24-hour periods that break at clock changes
+- **Immutable by design** - No mutations, no side effects, no surprises
+- **Type-safe** - Full TypeScript support catches datetime errors at compile time
+- **Familiar API** - date-fns-style functions built on modern foundations
+- **Zero dependencies** - Only the Temporal polyfill for browser compatibility
+
+### Perfect for
+
+- **Scheduling apps** - Social media, meetings, reminders with proper timezone handling
+- **Booking systems** - Hotels, flights, events across global timezones
+- **Calendar applications** - Date math that respects DST and leap years
+- **Time tracking** - Precise duration calculations with nanosecond accuracy
+- **Analytics dashboards** - Aggregate by day/week/month in user timezones
+- **Global applications** - Any app serving users across multiple timezones
 
 ## Quick Start
 

@@ -1,0 +1,15 @@
+{
+  "title": "Difference",
+  "description": "Calculate the difference between two dates in various units",
+  "icon": "Minus",
+  "pages": [
+    "difference-in-years",
+    "difference-in-months",
+    "difference-in-weeks",
+    "difference-in-days",
+    "difference-in-hours",
+    "difference-in-minutes",
+    "difference-in-seconds",
+    "difference-in-precision"
+  ]
+}

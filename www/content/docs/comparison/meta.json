@@ -1,0 +1,17 @@
+{
+  "title": "Comparison",
+  "description": "Compare dates and check temporal relationships",
+  "icon": "Scale",
+  "pages": [
+    "is-before",
+    "is-after",
+    "is-future",
+    "is-past",
+    "is-same-day",
+    "is-same-month",
+    "is-same-year",
+    "is-same-week",
+    "is-same-time",
+    "plain-date-comparisons"
+  ]
+}

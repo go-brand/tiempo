@@ -1,0 +1,16 @@
+{
+  "title": "Arithmetic",
+  "description": "Add and subtract time units with DST-safe precision",
+  "icon": "Calculator",
+  "pages": [
+    "add-years",
+    "add-months",
+    "add-weeks",
+    "add-days",
+    "add-hours",
+    "add-minutes",
+    "add-seconds",
+    "add-sub-precision",
+    "subtract-functions"
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "pages": [
+    "index",
+    "---Getting Started---",
+    "installation",
+    "---Conversion---",
+    "...conversion",
+    "---Formatting---",
+    "...formatting",
+    "---Current Time---",
+    "...current-time",
+    "---Boundaries---",
+    "...boundaries",
+    "---Arithmetic---",
+    "...arithmetic",
+    "---Comparison---",
+    "...comparison",
+    "---Difference---",
+    "...difference",
+    "---Relative Time---",
+    "...relative-time"
+  ]
+}

@@ -1,0 +1,49 @@
+---
+title: Installation
+description: Get started with tiempo in your project
+icon: Download
+---
+
+## Install
+
+```package-install
+@gobrand/tiempo
+```
+
+## Requirements
+
+- Node.js 18+ or modern browser
+- TypeScript 5.0+ (recommended)
+
+## Polyfill
+
+tiempo includes the `@js-temporal/polyfill` package, which provides Temporal API support until it becomes natively available in JavaScript runtimes. The polyfill is automatically loaded when you import from tiempo.
+
+## Usage with ORMs
+
+tiempo works seamlessly with ORMs like Drizzle that use JavaScript `Date` objects:
+
+```ts
+import { toZonedTime, toDate } from '@gobrand/tiempo';
+
+// Reading from database (Date → ZonedDateTime)
+const post = await db.query.posts.findFirst();
+const publishedAt = toZonedTime(post.publishedAt, 'America/New_York');
+
+// Writing to database (ZonedDateTime → Date)
+const newDate = toDate(publishedAt);
+await db.update(posts).set({ publishedAt: newDate });
+```
+
+## TypeScript Support
+
+tiempo is written in TypeScript and includes full type definitions. All functions are fully typed with proper Temporal types from the polyfill.
+
+```ts
+import { Temporal } from '@js-temporal/polyfill';
+import { toZonedTime, format } from '@gobrand/tiempo';
+
+// Types are inferred correctly
+const zoned: Temporal.ZonedDateTime = toZonedTime(new Date(), 'UTC');
+const formatted: string = format(zoned, 'yyyy-MM-dd');
+```

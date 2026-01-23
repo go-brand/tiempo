@@ -1,0 +1,15 @@
+{
+  "title": "Boundaries",
+  "description": "Get start and end of time periods",
+  "icon": "Brackets",
+  "pages": [
+    "start-of-day",
+    "end-of-day",
+    "start-of-week",
+    "end-of-week",
+    "start-of-month",
+    "end-of-month",
+    "start-of-year",
+    "end-of-year"
+  ]
+}

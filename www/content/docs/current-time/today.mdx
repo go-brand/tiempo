@@ -1,0 +1,42 @@
+---
+title: today
+description: Get today's date as a PlainDate
+---
+
+Get today's date as a `PlainDate`.
+
+## Signature
+
+```ts
+function today(timezone?: 'UTC' | string): Temporal.PlainDate
+```
+
+## Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `timezone` | `string` | Optional IANA timezone identifier |
+
+## Returns
+
+A `Temporal.PlainDate` representing today's date.
+
+## Examples
+
+### Get today in local timezone
+
+```ts
+import { today } from '@gobrand/tiempo';
+
+const date = today();
+```
+
+### Get today in a specific timezone
+
+```ts
+// Get today in Madrid
+const todayInMadrid = today("Europe/Madrid");
+
+// Get today in UTC
+const todayUtc = today("UTC");
+```
