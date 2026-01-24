@@ -14,6 +14,10 @@
   },
   "routes": [
     {
+      "pattern": "eng.gobrand.app/tiempo",
+      "zone_name": "gobrand.app"
+    },
+    {
       "pattern": "eng.gobrand.app/tiempo/*",
       "zone_name": "gobrand.app"
     }
