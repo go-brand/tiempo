@@ -34,66 +34,88 @@ function ClockVisualization({ variant = 'dark' }: { variant?: 'dark' | 'light' }
 
   return (
     <div className="relative w-[380px] h-[380px] md:w-[500px] md:h-[500px]">
-      {/* Aura rings - soft glowing shadows */}
+      {/* Aura rings - soft glowing shadows with wavy ripple effect */}
       <motion.div
         className={`absolute inset-[-30px] md:inset-[-50px] rounded-full ${isLight ? 'shadow-[0_0_40px_8px_rgba(255,255,255,0.15)]' : 'shadow-[0_0_40px_8px_rgba(251,191,36,0.15)]'}`}
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.7, ease: 'easeOut' }}
+        initial={{ opacity: 0, scale: 0.7, filter: 'blur(12px)' }}
+        animate={{ opacity: 1, scale: [0.7, 1.08, 0.96, 1.02, 1], filter: 'blur(0px)' }}
+        transition={{
+          duration: 1.2,
+          ease: [0.22, 1, 0.36, 1],
+          scale: { duration: 1.4, times: [0, 0.4, 0.6, 0.8, 1], ease: 'easeOut' }
+        }}
       />
       <motion.div
         className={`absolute inset-[-70px] md:inset-[-110px] rounded-full ${isLight ? 'shadow-[0_0_60px_12px_rgba(255,255,255,0.08)]' : 'shadow-[0_0_60px_12px_rgba(251,191,36,0.08)]'}`}
-        initial={{ opacity: 0, scale: 0.7 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.7, ease: 'easeOut', delay: 0.1 }}
+        initial={{ opacity: 0, scale: 0.7, filter: 'blur(16px)' }}
+        animate={{ opacity: 1, scale: [0.7, 1.06, 0.97, 1.01, 1], filter: 'blur(0px)' }}
+        transition={{
+          duration: 1.2,
+          ease: [0.22, 1, 0.36, 1],
+          delay: 0.12,
+          scale: { duration: 1.4, times: [0, 0.4, 0.6, 0.8, 1], ease: 'easeOut', delay: 0.12 }
+        }}
       />
       <motion.div
         className={`absolute inset-[-120px] md:inset-[-180px] rounded-full ${isLight ? 'shadow-[0_0_80px_16px_rgba(255,255,255,0.04)]' : 'shadow-[0_0_80px_16px_rgba(251,191,36,0.04)]'}`}
-        initial={{ opacity: 0, scale: 0.6 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.7, ease: 'easeOut', delay: 0.2 }}
+        initial={{ opacity: 0, scale: 0.7, filter: 'blur(20px)' }}
+        animate={{ opacity: 1, scale: [0.7, 1.04, 0.98, 1], filter: 'blur(0px)' }}
+        transition={{
+          duration: 1.2,
+          ease: [0.22, 1, 0.36, 1],
+          delay: 0.24,
+          scale: { duration: 1.4, times: [0, 0.45, 0.7, 1], ease: 'easeOut', delay: 0.24 }
+        }}
       />
 
       {/* Outer glow - only for dark variant */}
       {!isLight && (
         <motion.div
           className="absolute inset-0 rounded-full blur-3xl bg-gradient-to-br from-amber-500/20 via-orange-500/10 to-transparent"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.7, ease: 'easeOut' }}
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
         />
       )}
 
-      {/* Clock face */}
+      {/* Clock face - border only first, then background fades in */}
       <motion.div
-        className={`absolute inset-4 rounded-full border ${isLight ? 'border-white/40 bg-white/15' : 'border-amber-500/20 bg-gradient-to-br from-neutral-900/80 to-neutral-950/90 backdrop-blur-sm'}`}
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5, ease: 'easeOut' }}
+        className={`absolute inset-4 rounded-full border ${isLight ? 'border-white/40' : 'border-amber-500/20'} overflow-hidden`}
+        initial={{ opacity: 0, scale: 0.9, filter: 'blur(6px)' }}
+        animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 1.0 }}
       >
-        {/* Hour markers - positioned at edge of clock face */}
-        {HOUR_MARKERS.map((hour, index) => (
+        {/* Background layer - fades in after border */}
+        <motion.div
+          className={`absolute inset-0 ${isLight ? 'bg-white/15' : 'bg-gradient-to-br from-neutral-900/80 to-neutral-950/90 backdrop-blur-sm'}`}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 1.3 }}
+        />
+
+        {/* Hour markers - outer lines, appear first */}
+        {HOUR_MARKERS.map((hour) => (
           <motion.div
             key={`hour-${hour}`}
             className={`absolute inset-0 flex justify-center ${isLight ? 'text-white/60' : 'text-amber-500/40'}`}
             style={{ transform: `rotate(${hour * 30}deg)` }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, ease: 'easeOut', delay: 0.3 + index * 0.03 }}
+            initial={{ opacity: 0, filter: 'blur(4px)' }}
+            animate={{ opacity: 1, filter: 'blur(0px)' }}
+            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: 1.5 }}
           >
             <div className="w-0.5 h-4 mt-2 bg-current" />
           </motion.div>
         ))}
 
-        {/* Minute markers - positioned at edge of clock face */}
-        {MINUTE_MARKERS.map((minute, index) => (
+        {/* Minute markers - inner lines, appear after hour markers */}
+        {MINUTE_MARKERS.map((minute) => (
           <motion.div
             key={`minute-${minute}`}
             className={`absolute inset-0 flex justify-center ${isLight ? 'text-white/30' : 'text-amber-500/20'}`}
             style={{ transform: `rotate(${minute * 6}deg)` }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, ease: 'easeOut', delay: 0.4 + index * 0.01 }}
+            initial={{ opacity: 0, filter: 'blur(3px)' }}
+            animate={{ opacity: 1, filter: 'blur(0px)' }}
+            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: 1.7 }}
           >
             <div className="w-px h-2 mt-3 bg-current" />
           </motion.div>
@@ -103,9 +125,9 @@ function ClockVisualization({ variant = 'dark' }: { variant?: 'dark' | 'light' }
         <motion.div
           className={`absolute left-1/2 top-1/2 w-3 h-3 rounded-full ${isLight ? 'bg-white' : 'bg-amber-500 shadow-lg shadow-amber-500/50'}`}
           style={{ x: '-50%', y: '-50%' }}
-          initial={{ opacity: 0, scale: 0 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.3, ease: 'easeOut', delay: 0.6 }}
+          initial={{ opacity: 0, scale: 0, filter: 'blur(4px)' }}
+          animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1], delay: 1.9 }}
         />
 
         {/* Hour hand - rotates from center, extends upward */}
@@ -117,9 +139,9 @@ function ClockVisualization({ variant = 'dark' }: { variant?: 'dark' | 'light' }
             rotate: hourDeg,
             transformOrigin: 'center bottom',
           }}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, ease: 'easeOut', delay: 0.7 }}
+          initial={{ opacity: 0, scaleY: 0, filter: 'blur(3px)' }}
+          animate={{ opacity: 1, scaleY: 1, filter: 'blur(0px)' }}
+          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: 2.0 }}
         />
 
         {/* Minute hand - rotates from center, extends upward */}
@@ -131,9 +153,9 @@ function ClockVisualization({ variant = 'dark' }: { variant?: 'dark' | 'light' }
             rotate: minuteDeg,
             transformOrigin: 'center bottom',
           }}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, ease: 'easeOut', delay: 0.8 }}
+          initial={{ opacity: 0, scaleY: 0, filter: 'blur(3px)' }}
+          animate={{ opacity: 1, scaleY: 1, filter: 'blur(0px)' }}
+          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: 2.05 }}
         />
 
         {/* Second hand - rotates from center, extends upward */}
@@ -145,30 +167,31 @@ function ClockVisualization({ variant = 'dark' }: { variant?: 'dark' | 'light' }
             rotate: secondDeg,
             transformOrigin: 'center bottom',
           }}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, ease: 'easeOut', delay: 0.9 }}
+          initial={{ opacity: 0, scaleY: 0, filter: 'blur(2px)' }}
+          animate={{ opacity: 1, scaleY: 1, filter: 'blur(0px)' }}
+          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: 2.1 }}
         />
       </motion.div>
 
-      {/* Orbiting timezone indicators */}
+      {/* Orbiting timezone indicators - coordinated orbits at harmonic ratios */}
       <motion.div
-        className="absolute inset-0 animate-[spin_60s_linear_infinite]"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5, ease: 'easeOut', delay: 1.0 }}
+        className="absolute inset-0 animate-[spin_120s_linear_infinite]"
+        initial={{ opacity: 0, filter: 'blur(4px)' }}
+        animate={{ opacity: 1, filter: 'blur(0px)' }}
+        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 2.3 }}
       >
         <div className={`absolute top-0 left-1/2 -translate-x-1/2 -translate-y-2 px-2 py-0.5 rounded-full text-[10px] font-mono ${isLight ? 'bg-white/20 border border-white/30 text-white/80' : 'bg-amber-500/10 border border-amber-500/20 text-amber-400/70'}`}>
           UTC
         </div>
       </motion.div>
       <motion.div
-        className="absolute inset-0 animate-[spin_45s_linear_infinite_reverse]"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5, ease: 'easeOut', delay: 1.1 }}
+        className="absolute inset-0 animate-[spin_120s_linear_infinite]"
+        style={{ animationDelay: '-60s' }}
+        initial={{ opacity: 0, filter: 'blur(4px)' }}
+        animate={{ opacity: 1, filter: 'blur(0px)' }}
+        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 2.4 }}
       >
-        <div className={`absolute bottom-0 left-1/2 -translate-x-1/2 -translate-y-6 px-2 py-0.5 rounded-full text-[10px] font-mono ${isLight ? 'bg-white/20 border border-white/30 text-white/80' : 'bg-orange-500/10 border border-orange-500/20 text-orange-400/70'}`}>
+        <div className={`absolute top-0 left-1/2 -translate-x-1/2 -translate-y-2 px-2 py-0.5 rounded-full text-[10px] font-mono ${isLight ? 'bg-white/20 border border-white/30 text-white/80' : 'bg-orange-500/10 border border-orange-500/20 text-orange-400/70'}`}>
           PST
         </div>
       </motion.div>
