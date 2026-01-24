@@ -14,3 +14,7 @@
 - No error handling for impossible states: trust the Temporal API primitives
 - No configuration objects: parameters are direct and explicit
 - Code should read like documentation: the implementation should explain itself
+
+## LLM Documentation
+
+For comprehensive API documentation in LLM-friendly format, see: https://eng.gobrand.app/tiempo/llms.txt

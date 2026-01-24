@@ -16,13 +16,7 @@ export function baseOptions(): BaseLayoutProps {
       ),
     },
     githubUrl: 'https://github.com/go-brand/tiempo',
-    links: [
-      {
-        text: 'Documentation',
-        url: '/docs',
-        active: 'nested-url',
-      },
-    ],
+    links: [],
     // Disable theme toggle since we're forcing dark theme only
     themeSwitch: {
       enabled: false,

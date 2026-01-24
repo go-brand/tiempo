@@ -1,14 +1,15 @@
-# @gobrand/tiempo
+# tiempo
 
 [![npm version](https://img.shields.io/npm/v/@gobrand/tiempo.svg)](https://www.npmjs.com/package/@gobrand/tiempo)
 [![CI](https://github.com/go-brand/tiempo/actions/workflows/ci.yml/badge.svg)](https://github.com/go-brand/tiempo/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-![tiempo banner](./tiempo_banner.png)
-
 **Timezone conversions that don't suck.** Built on the [Temporal API](https://tc39.es/proposal-temporal/docs/).
 
 👉 **[Documentation](https://eng.gobrand.app/tiempo)**
+
+![tiempo banner](./tiempo_banner.png)
+
 
 - **Zero timezone bugs** - Real IANA timezone support, not UTC offset hacks
 - **DST-aware math** - `addDays(1)` means tomorrow, even across clock changes

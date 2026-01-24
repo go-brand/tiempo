@@ -277,9 +277,9 @@ function highlightCode(code: string): React.ReactNode[] {
 // Code example with syntax highlighting
 function CodeExample({ code }: { code: string }) {
   return (
-    <div className="rounded-xl border border-neutral-800 overflow-hidden h-full">
+    <div className="rounded-xl border border-neutral-800 overflow-hidden h-full w-full">
       <pre className="p-4 overflow-x-auto text-sm">
-        <code className="font-mono text-neutral-300">{highlightCode(code)}</code>
+        <code className="font-mono text-neutral-300 block">{highlightCode(code)}</code>
       </pre>
     </div>
   );
@@ -498,7 +498,7 @@ const sameDay = isSameDay(localDate, remoteDate);`;
             </p>
           </div>
 
-          <div className="space-y-8">
+          <div className="space-y-8 overflow-hidden">
             {/* Timezone Conversion */}
             <div className="grid lg:grid-cols-5 gap-6 lg:gap-16 items-start">
               <div className="lg:col-span-2 flex flex-col justify-center lg:py-4">
@@ -507,7 +507,7 @@ const sameDay = isSameDay(localDate, remoteDate);`;
                   Convert times between any timezone with precision. Get the current time in New York, format it beautifully, or find today's date in Tokyo.
                 </p>
               </div>
-              <div className="lg:col-span-3">
+              <div className="lg:col-span-3 min-w-0">
                 <CodeExample code={usageCode} />
               </div>
             </div>
@@ -520,7 +520,7 @@ const sameDay = isSameDay(localDate, remoteDate);`;
                   Add, subtract, and compare dates naturally. Calculate differences, check if dates fall on the same day—all with DST-safe precision.
                 </p>
               </div>
-              <div className="lg:col-span-3">
+              <div className="lg:col-span-3 min-w-0">
                 <CodeExample code={temporalCode} />
               </div>
             </div>

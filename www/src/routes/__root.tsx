@@ -63,6 +63,11 @@ function RootDocument({ children }: { children: React.ReactNode }) {
             enableSystem: false,
             attribute: 'class',
           }}
+          search={{
+            options: {
+              api: '/tiempo/api/search',
+            },
+          }}
         >
           {children}
         </RootProvider>
