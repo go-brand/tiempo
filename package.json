@@ -28,7 +28,7 @@
   "bugs": {
     "url": "https://github.com/go-brand/tiempo/issues"
   },
-  "homepage": "https://github.com/go-brand/tiempo#readme",
+  "homepage": "https://eng.gobrand.app/tiempo",
   "scripts": {
     "build": "tsup && tsc --emitDeclarationOnly",
     "clean": "git clean -xdf .cache .turbo dist node_modules tsconfig.tsbuildinfo",
