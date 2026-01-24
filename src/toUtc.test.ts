@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { Temporal } from '@js-temporal/polyfill';
 import { toUtc } from './toUtc';
 import { toZonedTime } from './toZonedTime';
-import { toUtcString } from './toUtcString';
+import { toIso } from './toIso';
 
 describe('toUtc', () => {
   describe('from ISO string', () => {
@@ -95,9 +95,9 @@ describe('toUtc', () => {
       const instant = Temporal.Instant.from(utcString);
       const zonedUTC = Temporal.ZonedDateTime.from(`${utcString}[UTC]`);
 
-      // Both should serialize to the same UTC string via toUtcString
-      expect(toUtcString(instant)).toBe(utcString);
-      expect(toUtcString(zonedUTC)).toBe(utcString);
+      // Both should serialize to the same UTC string via toIso
+      expect(toIso(instant)).toBe(utcString);
+      expect(toIso(zonedUTC)).toBe(utcString);
     });
 
     it('proves toUtc(string) and Instant.from(string) are equivalent', () => {
@@ -107,7 +107,7 @@ describe('toUtc', () => {
       const viaInstantFrom = Temporal.Instant.from(utcString);
 
       // Both paths produce identical results
-      expect(toUtcString(viaToUtc)).toBe(toUtcString(viaInstantFrom));
+      expect(toIso(viaToUtc)).toBe(toIso(viaInstantFrom));
       expect(viaToUtc.toString()).toBe(viaInstantFrom.toString());
     });
 
@@ -120,7 +120,7 @@ describe('toUtc', () => {
       const viaToInstant = zoned.toInstant();
 
       // Both paths produce identical results
-      expect(toUtcString(viaToUtc)).toBe(toUtcString(viaToInstant));
+      expect(toIso(viaToUtc)).toBe(toIso(viaToInstant));
       expect(viaToUtc.toString()).toBe(viaToInstant.toString());
     });
 
@@ -137,7 +137,7 @@ describe('toUtc', () => {
       expect(zonedUTC.timeZoneId).toBe('UTC');
 
       // But they represent the exact same moment
-      expect(toUtcString(instant)).toBe(toUtcString(zonedUTC));
+      expect(toIso(instant)).toBe(toIso(zonedUTC));
       expect(instant.epochMilliseconds).toBe(zonedUTC.epochMilliseconds);
     });
 
@@ -155,9 +155,9 @@ describe('toUtc', () => {
       const backToUTC = toUtc(zonedFromUTC);
 
       // Both produce identical results
-      expect(toUtcString(backToInstant)).toBe(original);
-      expect(toUtcString(backToUTC)).toBe(original);
-      expect(toUtcString(backToInstant)).toBe(toUtcString(backToUTC));
+      expect(toIso(backToInstant)).toBe(original);
+      expect(toIso(backToUTC)).toBe(original);
+      expect(toIso(backToInstant)).toBe(toIso(backToUTC));
     });
   });
 });

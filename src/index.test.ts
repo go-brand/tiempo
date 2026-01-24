@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { toZonedTime, toUtc, toUtcString } from './index';
+import { toZonedTime, toUtc, toIso } from './index';
 import { Temporal } from '@js-temporal/polyfill';
 
 describe('tiempo integration', () => {
@@ -8,9 +8,9 @@ describe('tiempo integration', () => {
       const original = '2025-03-15T09:45:30.5Z';
 
       const step1 = toZonedTime(original, 'America/New_York');
-      const step2 = toUtcString(step1);
+      const step2 = toIso(step1);
       const step3 = toZonedTime(step2, 'Asia/Tokyo');
-      const final = toUtcString(step3);
+      const final = toIso(step3);
 
       expect(final).toBe(original);
     });
@@ -21,7 +21,7 @@ describe('tiempo integration', () => {
       const instant1 = toUtc(original);
       const zoned = toZonedTime(instant1, 'America/New_York');
       const instant2 = toUtc(zoned);
-      const final = toUtcString(instant2);
+      const final = toIso(instant2);
 
       expect(final).toBe(original);
     });
@@ -40,7 +40,7 @@ describe('tiempo integration', () => {
       const fromZoned = toZonedTime(fromInstant, 'America/Los_Angeles');
 
       // All should represent the same instant
-      const finalIso = toUtcString(fromZoned);
+      const finalIso = toIso(fromZoned);
       expect(finalIso).toBe(originalIso);
     });
 
@@ -52,7 +52,7 @@ describe('tiempo integration', () => {
       const step2 = toZonedTime(step1, 'America/Los_Angeles'); // -8
       const step3 = toZonedTime(step2, 'Europe/Paris'); // +1
       const step4 = toZonedTime(step3, 'Asia/Kolkata'); // +5:30
-      const final = toUtcString(step4);
+      const final = toIso(step4);
 
       expect(final).toBe(original);
     });
@@ -71,13 +71,13 @@ describe('tiempo integration', () => {
   });
 
   describe('cross-function consistency', () => {
-    it('ensures toUtc and toUtcString produce consistent results', () => {
+    it('ensures toUtc and toIso produce consistent results', () => {
       const zoned = Temporal.ZonedDateTime.from(
         '2025-01-20T15:00:00-05:00[America/New_York]'
       );
 
       const viaToUtc = toUtc(zoned).toString();
-      const viaToUtcString = toUtcString(zoned);
+      const viaToUtcString = toIso(zoned);
 
       expect(viaToUtc).toBe(viaToUtcString);
     });
@@ -88,8 +88,8 @@ describe('tiempo integration', () => {
       const zoned = Temporal.ZonedDateTime.from(`${isoString}[UTC]`);
 
       // All functions should produce identical UTC strings
-      expect(toUtcString(instant)).toBe(isoString);
-      expect(toUtcString(zoned)).toBe(isoString);
+      expect(toIso(instant)).toBe(isoString);
+      expect(toIso(zoned)).toBe(isoString);
       expect(toUtc(isoString).toString()).toBe(isoString);
       expect(toUtc(zoned).toString()).toBe(isoString);
     });
@@ -104,9 +104,9 @@ describe('tiempo integration', () => {
       const fromZoned = toZonedTime(zonedUTC, 'America/New_York');
 
       // All should represent the same instant
-      expect(toUtcString(fromString)).toBe(isoString);
-      expect(toUtcString(fromInstant)).toBe(isoString);
-      expect(toUtcString(fromZoned)).toBe(isoString);
+      expect(toIso(fromString)).toBe(isoString);
+      expect(toIso(fromInstant)).toBe(isoString);
+      expect(toIso(fromZoned)).toBe(isoString);
 
       // All should have identical epoch milliseconds
       expect(fromString.epochMilliseconds).toBe(fromInstant.epochMilliseconds);

@@ -17,7 +17,7 @@
 - **Familiar API** - If you've used date-fns, you already know this
 
 ```typescript
-import { toZonedTime, addDays, format, toUtcString } from '@gobrand/tiempo';
+import { toZonedTime, addDays, format, toIso } from '@gobrand/tiempo';
 
 // Backend sends UTC
 const utc = "2025-03-09T07:00:00Z";
@@ -27,8 +27,8 @@ const userTime = toZonedTime(utc, "America/New_York");
 const tomorrow = addDays(userTime, 1);  // DST transition handled correctly
 const display = format(tomorrow, "EEEE 'at' h:mm a");  // "Monday at 2:00 AM"
 
-// Send back to backend as UTC
-const payload = toUtcString(tomorrow);  // "2025-03-10T06:00:00Z"
+// Send back to backend as ISO 8601 string
+const payload = toIso(tomorrow);  // "2025-03-10T06:00:00Z"
 ```
 
 ## Install

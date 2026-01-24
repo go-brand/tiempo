@@ -1,6 +1,12 @@
 export { toZonedTime } from './toZonedTime';
 export { toUtc } from './toUtc';
-export { toUtcString } from './toUtcString';
+export { toIso, type IsoMode, type ToIsoOptions } from './toIso';
+export {
+  toIso9075,
+  type ToIso9075Options,
+  type Iso9075Representation,
+  type Iso9075Mode,
+} from './toIso9075';
 export { toDate } from './toDate';
 export { format, type FormatOptions } from './format';
 export { formatPlainDate, type FormatPlainDateOptions } from './formatPlainDate';
