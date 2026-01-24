@@ -10,8 +10,10 @@ Convert a UTC ISO string, Date, Instant, or ZonedDateTime to a `ZonedDateTime` i
 ```ts
 function toZonedTime(
   input: string | Date | Temporal.Instant | Temporal.ZonedDateTime,
-  timezone: string
+  timezone: Timezone
 ): Temporal.ZonedDateTime
+
+type Timezone = 'UTC' | string;
 ```
 
 ## Parameters
@@ -19,7 +21,7 @@ function toZonedTime(
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `input` | `string \| Date \| Temporal.Instant \| Temporal.ZonedDateTime` | A UTC ISO 8601 string, Date object, Temporal.Instant, or Temporal.ZonedDateTime |
-| `timezone` | `string` | IANA timezone identifier (e.g., "America/New_York", "Europe/London") |
+| `timezone` | `Timezone` | IANA timezone identifier (e.g., "America/New_York", "Europe/London") or "UTC" |
 
 ## Returns
 
@@ -27,13 +29,29 @@ A `Temporal.ZonedDateTime` in the specified timezone.
 
 ## Examples
 
-### From ISO string
+### Server-side: Convert to UTC
 
 ```ts
 import { toZonedTime } from '@gobrand/tiempo';
 
-const zoned = toZonedTime("2025-01-20T20:00:00.000Z", "America/New_York");
-// zoned.hour === 15 (3 PM in New York)
+const utcTime = toZonedTime("2025-01-20T20:00:00Z", "UTC");
+```
+
+### Server-side: Convert to user's timezone
+
+```ts
+import { toZonedTime } from '@gobrand/tiempo';
+
+// Get timezone from user preferences (stored in DB)
+const userTime = toZonedTime("2025-01-20T20:00:00Z", user.timezone);
+```
+
+### Client-side: Convert to browser's timezone
+
+```ts
+import { toZonedTime, browserTimezone } from '@gobrand/tiempo';
+
+const localTime = toZonedTime("2025-01-20T20:00:00Z", browserTimezone());
 ```
 
 ### From Date (e.g., from Drizzle ORM)

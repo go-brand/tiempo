@@ -1,25 +1,46 @@
 import { Temporal } from '@js-temporal/polyfill';
 
 /**
+ * IANA timezone identifier or "UTC".
+ *
+ * Common timezones:
+ * - "UTC" - Coordinated Universal Time
+ * - "America/New_York" - US Eastern
+ * - "America/Los_Angeles" - US Pacific
+ * - "Europe/London" - UK
+ * - "Europe/Paris" - Central European
+ * - "Asia/Tokyo" - Japan
+ * - "Asia/Shanghai" - China
+ */
+export type Timezone = 'UTC' | (string & {});
+
+/**
  * Convert a UTC ISO string, Date, Instant, or ZonedDateTime to a ZonedDateTime in the specified timezone.
  *
  * @param input - A UTC ISO 8601 string, Date object, Temporal.Instant, or Temporal.ZonedDateTime
- * @param timezone - IANA timezone identifier (e.g., "America/New_York", "Europe/London")
+ * @param timezone - IANA timezone identifier (e.g., "America/New_York", "Europe/London") or "UTC"
  * @returns A Temporal.ZonedDateTime in the specified timezone
  *
  * @example
  * ```typescript
- * // From ISO string
- * const zoned = toZonedTime("2025-01-20T20:00:00.000Z", "America/New_York");
- * // zoned.hour === 15 (3 PM in New York)
+ * import { toZonedTime, browserTimezone } from '@gobrand/tiempo';
+ *
+ * // Server-side: Convert to UTC
+ * const utcTime = toZonedTime("2025-01-20T20:00:00Z", "UTC");
+ *
+ * // Server-side: Convert to user's timezone (from DB/preferences)
+ * const userTime = toZonedTime("2025-01-20T20:00:00Z", user.timezone);
+ *
+ * // Client-side: Convert to browser's timezone
+ * const localTime = toZonedTime("2025-01-20T20:00:00Z", browserTimezone());
  *
  * // From Date (e.g., from Drizzle ORM)
  * const date = new Date("2025-01-20T20:00:00.000Z");
- * const zoned2 = toZonedTime(date, "America/New_York");
+ * const zoned = toZonedTime(date, "America/New_York");
  *
  * // From Instant
  * const instant = Temporal.Instant.from("2025-01-20T20:00:00Z");
- * const zoned3 = toZonedTime(instant, "Asia/Tokyo");
+ * const zoned = toZonedTime(instant, "Asia/Tokyo");
  *
  * // From ZonedDateTime (convert to different timezone)
  * const nyTime = Temporal.ZonedDateTime.from("2025-01-20T15:00:00-05:00[America/New_York]");
@@ -28,7 +49,7 @@ import { Temporal } from '@js-temporal/polyfill';
  */
 export function toZonedTime(
   input: string | Date | Temporal.Instant | Temporal.ZonedDateTime,
-  timezone: string
+  timezone: Timezone
 ): Temporal.ZonedDateTime {
   if (typeof input === 'string') {
     return Temporal.Instant.from(input).toZonedDateTimeISO(timezone);

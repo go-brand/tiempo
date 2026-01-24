@@ -1,4 +1,5 @@
-export { toZonedTime } from './toZonedTime';
+export { toZonedTime, type Timezone } from './toZonedTime';
+export { browserTimezone } from './browserTimezone';
 export { toUtc } from './toUtc';
 export { toIso, type IsoMode, type ToIsoOptions } from './toIso';
 export {

@@ -1,0 +1,6 @@
+{
+  "title": "Utilities",
+  "description": "Helper functions for timezone detection and other utilities",
+  "icon": "Wrench",
+  "pages": ["browser-timezone"]
+}
