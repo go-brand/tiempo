@@ -1,4 +1,5 @@
 export { toZonedTime } from './toZonedTime';
+export { toPlainTime } from './toPlainTime';
 export type { Timezone, IANATimezone } from './types';
 export { browserTimezone } from './browserTimezone';
 export { toUtc } from './toUtc';
@@ -74,3 +75,6 @@ export {
 export { isPlainDateBefore } from './isPlainDateBefore';
 export { isPlainDateAfter } from './isPlainDateAfter';
 export { isPlainDateEqual } from './isPlainDateEqual';
+export { isPlainTimeBefore } from './isPlainTimeBefore';
+export { isPlainTimeAfter } from './isPlainTimeAfter';
+export { isPlainTimeEqual } from './isPlainTimeEqual';

@@ -306,8 +306,45 @@ function FeatureCard({
   );
 }
 
+// Testimonial data
+const TESTIMONIALS = [
+  {
+    quote: "Tiempo = game changer",
+    name: "Manav Gandhi",
+    image: "/tiempo/testimonials/gandhi.jpeg",
+  },
+] as const;
+
+// Testimonial card
+function TestimonialCard({
+  quote,
+  name,
+  image,
+}: {
+  quote: string;
+  name: string;
+  image: string;
+}) {
+  return (
+    <div className="relative p-8 rounded-2xl bg-gradient-to-br from-neutral-900/50 to-neutral-950/50 border border-neutral-800/50">
+      <div className="absolute top-6 left-6 text-amber-500/20 text-6xl font-serif leading-none">"</div>
+      <blockquote className="relative z-10 text-xl md:text-2xl font-medium text-neutral-100 mb-6 pt-4">
+        {quote}
+      </blockquote>
+      <div className="flex items-center gap-4">
+        <img
+          src={image}
+          alt={name}
+          className="w-12 h-12 rounded-full object-cover border-2 border-amber-500/20"
+        />
+        <span className="text-neutral-300 font-medium">{name}</span>
+      </div>
+    </div>
+  );
+}
+
 function Home() {
-  const usageCode = `import { toZonedTime, format, today } from 'tiempo';
+  const usageCode = `import { toZonedTime, format, today } from '@gobrand/tiempo';
 
 // Get current time in a timezone
 const nyTime = toZonedTime(new Date(), 'America/New_York');
@@ -319,7 +356,7 @@ const formatted = format(nyTime, 'EEEE, MMMM d, yyyy h:mm a');
 // Today's date in any timezone
 const tokyoToday = today('Asia/Tokyo');`;
 
-  const temporalCode = `import { addDays, differenceInHours, isSameDay } from 'tiempo';
+  const temporalCode = `import { addDays, differenceInHours, isSameDay } from '@gobrand/tiempo';
 
 // Add time with precision
 const nextWeek = addDays(now, 7);
@@ -527,6 +564,33 @@ const sameDay = isSameDay(localDate, remoteDate);`;
           </div>
         </div>
       </section>
+
+      {/* Testimonials section - development only */}
+      {import.meta.env.DEV && (
+        <section className="relative py-24 px-4">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold text-neutral-100 mb-3">
+                What developers say
+              </h2>
+              <p className="text-lg text-neutral-400">
+                Join the growing community using tiempo.
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {TESTIMONIALS.map((testimonial) => (
+                <TestimonialCard
+                  key={testimonial.name}
+                  quote={testimonial.quote}
+                  name={testimonial.name}
+                  image={testimonial.image}
+                />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* CTA section */}
       <section className="relative py-24 px-4">

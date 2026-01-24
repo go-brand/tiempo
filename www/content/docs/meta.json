@@ -1,9 +1,11 @@
 {
   "pages": [
+    "---Getting Started---",
     "index",
     "installation",
     "typescript",
-    "llms",
+    "recipes",
+    "ai-resources",
     "---Conversion---",
     "...conversion",
     "---Formatting---",

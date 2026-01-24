@@ -1,0 +1,95 @@
+---
+title: toPlainTime
+description: Extract wall-clock time from a ZonedDateTime or convert to a timezone and extract time
+---
+
+Extract the wall-clock time from a `ZonedDateTime` or convert a UTC ISO string, Date, Instant, or ZonedDateTime to a specified timezone and extract the time.
+
+## Signature
+
+```ts
+import { Temporal } from '@js-temporal/polyfill';
+
+// From ZonedDateTime (no timezone needed)
+function toPlainTime(input: Temporal.ZonedDateTime): Temporal.PlainTime
+
+// From other types (timezone required)
+function toPlainTime(
+  input: string | Date | Temporal.Instant | Temporal.ZonedDateTime,
+  timezone: Timezone
+): Temporal.PlainTime
+
+type Timezone = 'UTC' | string;
+```
+
+## Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `input` | `string \| Date \| Temporal.Instant \| Temporal.ZonedDateTime` | A UTC ISO 8601 string, Date object, Temporal.Instant, or Temporal.ZonedDateTime |
+| `timezone` | `Timezone` | IANA timezone identifier. Required unless input is a ZonedDateTime. |
+
+## Returns
+
+A `Temporal.PlainTime` representing the wall-clock time.
+
+## Examples
+
+### From ZonedDateTime (no timezone needed)
+
+```ts
+import { toPlainTime, toZonedTime } from '@gobrand/tiempo';
+
+const zdt = toZonedTime("2025-01-20T15:30:00Z", "America/New_York");
+const time = toPlainTime(zdt); // 10:30
+```
+
+### From UTC string with timezone
+
+```ts
+import { toPlainTime } from '@gobrand/tiempo';
+
+const time = toPlainTime("2025-01-20T15:30:00Z", "America/New_York"); // 10:30
+```
+
+### From Date with timezone
+
+```ts
+import { toPlainTime } from '@gobrand/tiempo';
+
+const date = new Date("2025-01-20T15:30:00.000Z");
+const time = toPlainTime(date, "Europe/London"); // 15:30
+```
+
+### From Instant with timezone
+
+```ts
+import { toPlainTime } from '@gobrand/tiempo';
+import { Temporal } from '@js-temporal/polyfill';
+
+const instant = Temporal.Instant.from("2025-01-20T15:30:00Z");
+const time = toPlainTime(instant, "Asia/Tokyo"); // 00:30
+```
+
+## Common Patterns
+
+### Extract time for display
+
+```ts
+import { toPlainTime, now } from '@gobrand/tiempo';
+
+const currentTime = toPlainTime(now('America/New_York'));
+console.log(currentTime.toString()); // "14:30:00"
+```
+
+### Compare times across timezones
+
+```ts
+import { toPlainTime, isPlainTimeAfter } from '@gobrand/tiempo';
+
+const nyTime = toPlainTime("2025-01-20T20:00:00Z", "America/New_York"); // 15:00
+const londonTime = toPlainTime("2025-01-20T20:00:00Z", "Europe/London"); // 20:00
+
+// Compare wall-clock times (ignoring that they represent the same instant)
+isPlainTimeAfter(londonTime, nyTime); // true
+```

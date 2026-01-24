@@ -13,6 +13,7 @@ tiempo provides a familiar date-fns-style API while leveraging the modern Tempor
 ## Conversion
 
 - [toZonedTime](https://eng.gobrand.app/tiempo/docs/conversion/to-zoned-time): Convert UTC/Date to timezone-aware ZonedDateTime
+- [toPlainTime](https://eng.gobrand.app/tiempo/docs/conversion/to-plain-time): Extract wall-clock time as PlainTime (timezone optional for ZonedDateTime)
 - [toUtc](https://eng.gobrand.app/tiempo/docs/conversion/to-utc): Convert ZonedDateTime back to UTC Instant
 - [toDate](https://eng.gobrand.app/tiempo/docs/conversion/to-date): Convert Temporal types to JavaScript Date
 - [toIso](https://eng.gobrand.app/tiempo/docs/conversion/to-iso): Convert to ISO 8601 string format
@@ -103,3 +104,6 @@ tiempo provides a familiar date-fns-style API while leveraging the modern Tempor
 - [isPlainDateBefore](https://eng.gobrand.app/tiempo/docs/comparison/is-plain-date-before): Check if PlainDate is before another
 - [isPlainDateAfter](https://eng.gobrand.app/tiempo/docs/comparison/is-plain-date-after): Check if PlainDate is after another
 - [isPlainDateEqual](https://eng.gobrand.app/tiempo/docs/comparison/is-plain-date-equal): Check if two PlainDates are equal
+- [isPlainTimeBefore](https://eng.gobrand.app/tiempo/docs/comparison/is-plain-time-before): Check if PlainTime is before another
+- [isPlainTimeAfter](https://eng.gobrand.app/tiempo/docs/comparison/is-plain-time-after): Check if PlainTime is after another
+- [isPlainTimeEqual](https://eng.gobrand.app/tiempo/docs/comparison/is-plain-time-equal): Check if two PlainTimes are equal

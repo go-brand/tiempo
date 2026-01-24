@@ -24,6 +24,7 @@ npm install @gobrand/tiempo
 | Function | Description | Reference |
 |----------|-------------|-----------|
 | `toZonedTime(input, timezone)` | Convert UTC string/Date/Instant to timezone-aware ZonedDateTime | [details](references/conversion/to-zoned-time.md) |
+| `toPlainTime(input, timezone?)` | Extract wall-clock time as PlainTime (timezone optional if input is ZonedDateTime) | [details](references/conversion/to-plain-time.md) |
 | `toUtc(input)` | Convert ZonedDateTime to UTC Instant | [details](references/conversion/to-utc.md) |
 | `toIso(input, options?)` | Convert to ISO 8601 string (e.g., "2025-01-20T15:00:00Z") | [details](references/conversion/to-iso.md) |
 | `toIso9075(input, options?)` | Convert to SQL-compatible format (e.g., "2025-01-20 15:00:00") | [details](references/conversion/to-iso9075.md) |
@@ -122,6 +123,14 @@ Compare datetimes or check if a datetime is past/future. [Overview](references/c
 | `isPlainDateBefore(a, b)` | Check if PlainDate a is before b |
 | `isPlainDateAfter(a, b)` | Check if PlainDate a is after b |
 | `isPlainDateEqual(a, b)` | Check if PlainDates are equal |
+
+### PlainTime Comparison
+
+| Function | Description |
+|----------|-------------|
+| `isPlainTimeBefore(a, b)` | Check if PlainTime a is before b |
+| `isPlainTimeAfter(a, b)` | Check if PlainTime a is after b |
+| `isPlainTimeEqual(a, b)` | Check if PlainTimes are equal |
 
 ## Difference
 

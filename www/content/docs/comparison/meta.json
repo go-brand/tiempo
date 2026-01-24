@@ -19,6 +19,9 @@
     "is-same-nanosecond",
     "is-plain-date-before",
     "is-plain-date-after",
-    "is-plain-date-equal"
+    "is-plain-date-equal",
+    "is-plain-time-before",
+    "is-plain-time-after",
+    "is-plain-time-equal"
   ]
 }

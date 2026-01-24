@@ -1,0 +1,136 @@
+---
+title: Recipes
+description: Common patterns for datetime operations using tiempo and the Temporal API
+---
+
+Common patterns that combine tiempo utilities with native Temporal API methods. These patterns are intentionally not wrapped in utility functions—they're simple enough to write inline and teach you the underlying Temporal API.
+
+## Schedule at a Specific Time
+
+Convert a time string (like "09:00") on a specific date in a timezone to a UTC instant. Useful for scheduling systems, queues, and recurring events.
+
+```ts
+import { today, toIso } from '@gobrand/tiempo';
+import { Temporal } from '@js-temporal/polyfill';
+
+const timezone = 'America/New_York';
+
+// Get today's date in the target timezone
+const date = today(timezone);
+
+// Combine date + time + timezone into a ZonedDateTime
+const zdt = date.toPlainDateTime('09:00').toZonedDateTime(timezone);
+
+// Convert to UTC for storage/scheduling
+const utcIso = toIso(zdt);
+// → "2025-01-24T14:00:00Z" (UTC equivalent of 9am New York)
+```
+
+---
+
+## Parse Time String to PlainTime
+
+Convert a time string like "09:00" or "14:30" into a Temporal.PlainTime for further manipulation.
+
+```ts
+import { Temporal } from '@js-temporal/polyfill';
+
+// From HH:mm string
+const time = Temporal.PlainTime.from('09:00');
+
+// From HH:mm:ss string
+const timeWithSeconds = Temporal.PlainTime.from('09:00:00');
+
+// Access components
+time.hour;   // 9
+time.minute; // 0
+```
+
+---
+
+## Get Time Component from ZonedDateTime
+
+Extract just the time portion from a ZonedDateTime for display or comparison.
+
+```ts
+import { now, format } from '@gobrand/tiempo';
+
+const zdt = now('America/New_York');
+
+// As formatted string
+const timeStr = format(zdt, 'HH:mm');
+// → "14:30"
+
+// As PlainTime object
+const plainTime = zdt.toPlainTime();
+plainTime.hour;   // 14
+plainTime.minute; // 30
+```
+
+---
+
+## Combine Separate Date and Time Inputs
+
+Combine date and time from separate form fields or API inputs into a single ZonedDateTime.
+
+```ts
+import { toIso } from '@gobrand/tiempo';
+import { Temporal } from '@js-temporal/polyfill';
+
+// From form inputs
+const dateInput = '2025-03-15';  // from date picker
+const timeInput = '14:30';       // from time picker
+const timezone = 'Europe/London';
+
+// Parse and combine
+const date = Temporal.PlainDate.from(dateInput);
+const zdt = date.toPlainDateTime(timeInput).toZonedDateTime(timezone);
+
+// Ready for storage
+const utcIso = toIso(zdt);
+```
+
+---
+
+## Check if Time Falls Within a Range
+
+Determine if a time (ignoring date) falls within business hours or a time window.
+
+```ts
+import { now, isPlainTimeBefore } from '@gobrand/tiempo';
+import { Temporal } from '@js-temporal/polyfill';
+
+const currentTime = now('America/New_York').toPlainTime();
+const openTime = Temporal.PlainTime.from('09:00');
+const closeTime = Temporal.PlainTime.from('17:00');
+
+// Check if current time is within business hours
+const isOpen = !isPlainTimeBefore(currentTime, openTime) &&
+               isPlainTimeBefore(currentTime, closeTime);
+```
+
+---
+
+## Next Occurrence of a Daily Time
+
+Find the next occurrence of a specific time (e.g., next 9am).
+
+```ts
+import { today, now, addDays, toIso, isAfter } from '@gobrand/tiempo';
+
+const timezone = 'America/New_York';
+const targetTime = '09:00';
+
+// Get current moment and today's target time
+const currentZdt = now(timezone);
+const todayTarget = today(timezone)
+  .toPlainDateTime(targetTime)
+  .toZonedDateTime(timezone);
+
+// If target time already passed today, use tomorrow
+const nextOccurrence = isAfter(currentZdt, todayTarget)
+  ? addDays(todayTarget, 1)
+  : todayTarget;
+
+const utcIso = toIso(nextOccurrence);
+```
