@@ -1,14 +1,16 @@
 # toPlainTime
 
-Extract the wall-clock time from a ZonedDateTime, or convert an input to a timezone and extract the time.
+Extract the wall-clock time from a `ZonedDateTime` or convert a UTC ISO string, Date, Instant, or ZonedDateTime to a specified timezone and extract the time.
 
 ## Signature
 
 ```ts
-// From ZonedDateTime (timezone optional)
+import { Temporal } from '@js-temporal/polyfill';
+
+// From ZonedDateTime (no timezone needed)
 function toPlainTime(input: Temporal.ZonedDateTime): Temporal.PlainTime
 
-// From other inputs (timezone required)
+// From other types (timezone required)
 function toPlainTime(
   input: string | Date | Temporal.Instant | Temporal.ZonedDateTime,
   timezone: Timezone
@@ -63,37 +65,28 @@ import { toPlainTime } from '@gobrand/tiempo';
 import { Temporal } from '@js-temporal/polyfill';
 
 const instant = Temporal.Instant.from("2025-01-20T15:30:00Z");
-const time = toPlainTime(instant, "Asia/Tokyo"); // 00:30 (next day)
+const time = toPlainTime(instant, "Asia/Tokyo"); // 00:30
 ```
 
 ## Common Patterns
 
-### Business hours check
+### Extract time for display
 
 ```ts
-import { toPlainTime, isPlainTimeBefore } from '@gobrand/tiempo';
-import { Temporal } from '@js-temporal/polyfill';
+import { toPlainTime, now } from '@gobrand/tiempo';
 
-const openTime = Temporal.PlainTime.from('09:00');
-const closeTime = Temporal.PlainTime.from('17:00');
-
-// Get current time in store's timezone
-const currentTime = toPlainTime(new Date(), 'America/New_York');
-
-const isOpen = !isPlainTimeBefore(currentTime, openTime) &&
-               isPlainTimeBefore(currentTime, closeTime);
+const currentTime = toPlainTime(now('America/New_York'));
+console.log(currentTime.toString()); // "14:30:00"
 ```
 
-### Schedule comparison
+### Compare times across timezones
 
 ```ts
-import { toPlainTime, isPlainTimeBefore } from '@gobrand/tiempo';
-import { Temporal } from '@js-temporal/polyfill';
+import { toPlainTime, isPlainTimeAfter } from '@gobrand/tiempo';
 
-const scheduledTime = Temporal.PlainTime.from('14:30');
-const userTime = toPlainTime(eventUtcTimestamp, userTimezone);
+const nyTime = toPlainTime("2025-01-20T20:00:00Z", "America/New_York"); // 15:00
+const londonTime = toPlainTime("2025-01-20T20:00:00Z", "Europe/London"); // 20:00
 
-if (isPlainTimeBefore(userTime, scheduledTime)) {
-  console.log('Event has not started yet');
-}
+// Compare wall-clock times (ignoring that they represent the same instant)
+isPlainTimeAfter(londonTime, nyTime); // true
 ```

@@ -23,129 +23,112 @@ npm install @gobrand/tiempo
 
 | Function | Description | Reference |
 |----------|-------------|-----------|
-| `toZonedTime(input, timezone)` | Convert UTC string/Date/Instant to timezone-aware ZonedDateTime | [details](references/conversion/to-zoned-time.md) |
-| `toPlainTime(input, timezone?)` | Extract wall-clock time as PlainTime (timezone optional if input is ZonedDateTime) | [details](references/conversion/to-plain-time.md) |
-| `toUtc(input)` | Convert ZonedDateTime to UTC Instant | [details](references/conversion/to-utc.md) |
-| `toIso(input, options?)` | Convert to ISO 8601 string (e.g., "2025-01-20T15:00:00Z") | [details](references/conversion/to-iso.md) |
-| `toIso9075(input, options?)` | Convert to SQL-compatible format (e.g., "2025-01-20 15:00:00") | [details](references/conversion/to-iso9075.md) |
-| `toDate(input)` | Convert to JavaScript Date (for ORM compatibility) | [details](references/conversion/to-date.md) |
+| `toZonedTime()` | Convert to a timezone-aware ZonedDateTime | [details](references/conversion/to-zoned-time.md) |
+| `toPlainTime()` | Extract wall-clock time from a ZonedDateTime or convert to a timezone and extract time | [details](references/conversion/to-plain-time.md) |
+| `toUtc()` | Convert to a UTC Instant | [details](references/conversion/to-utc.md) |
+| `toIso()` | Convert to an ISO 8601 string | [details](references/conversion/to-iso.md) |
+| `toIso9075()` | Convert to ISO 9075 (SQL) format string | [details](references/conversion/to-iso9075.md) |
+| `toDate()` | Convert to a JavaScript Date object | [details](references/conversion/to-date.md) |
 
 ## Current Time
 
 | Function | Description | Reference |
 |----------|-------------|-----------|
-| `now(timezone)` | Get current time as ZonedDateTime in specified timezone | [details](references/current-time/now.md) |
-| `today(timezone)` | Get today's date as PlainDate in specified timezone | [details](references/current-time/today.md) |
-
-## Utilities
-
-| Function | Description | Reference |
-|----------|-------------|-----------|
-| `browserTimezone()` | Get browser's IANA timezone (e.g., "America/New_York") | [details](references/utilities/browser-timezone.md) |
+| `now()` | Get the current date and time as a ZonedDateTime | [details](references/current-time/now.md) |
+| `today()` | Get today's date as a PlainDate | [details](references/current-time/today.md) |
 
 ## Formatting
 
 | Function | Description | Reference |
 |----------|-------------|-----------|
-| `format(input, formatStr, options?)` | Format using date-fns tokens (yyyy-MM-dd, h:mm a, etc.) | [details](references/formatting/format.md) |
-| `simpleFormat(input, pattern)` | Simple format with presets: "date", "time", "datetime" | [details](references/formatting/simple-format.md) |
-| `formatPlainDate(date, formatStr, options?)` | Format a PlainDate using date-fns tokens | [details](references/formatting/format-plain-date.md) |
-| `intlFormatDistance(date, base, options?)` | Relative time ("2 days ago", "in 3 hours") | [details](references/formatting/intl-format-distance.md) |
+| `format()` | Format a datetime using date-fns-like format tokens | [details](references/formatting/format.md) |
+| `formatPlainDate()` | Format a PlainDate using date-fns-like format tokens | [details](references/formatting/format-plain-date.md) |
+| `simpleFormat()` | Human-friendly date formatting like "Dec 23" or "Dec 23, 2020" | [details](references/formatting/simple-format.md) |
+| `intlFormatDistance()` | Format the distance between dates as human-readable, internationalized strings | [details](references/formatting/intl-format-distance.md) |
 
 ## Arithmetic
 
-All arithmetic functions are DST-safe—they add calendar units, not fixed durations. [Overview](references/arithmetic/arithmetic-overview.md)
-
-### Add Functions
-
-| Function | Description |
-|----------|-------------|
-| `addYears(input, years)` | Add years to datetime |
-| `addMonths(input, months)` | Add months (handles month boundaries) |
-| `addWeeks(input, weeks)` | Add weeks |
-| `addDays(input, days)` | Add calendar days (not 24-hour periods) - [DST example](references/arithmetic/add-days.md) |
-| `addHours(input, hours)` | Add hours |
-| `addMinutes(input, minutes)` | Add minutes |
-| `addSeconds(input, seconds)` | Add seconds |
-| `addMilliseconds/Microseconds/Nanoseconds` | Add sub-second units |
-
-### Subtract Functions
-
-| Function | Description |
-|----------|-------------|
-| `subYears/Months/Weeks/Days` | Subtract calendar units |
-| `subHours/Minutes/Seconds` | Subtract time units |
-| `subMilliseconds/Microseconds/Nanoseconds` | Subtract sub-second units |
+| Function | Description | Reference |
+|----------|-------------|-----------|
+| `addYears()` | Add years to a datetime | [details](references/arithmetic/add-years.md) |
+| `addMonths()` | Add months to a datetime | [details](references/arithmetic/add-months.md) |
+| `addWeeks()` | Add weeks to a datetime | [details](references/arithmetic/add-weeks.md) |
+| `addDays()` | Add days to a datetime (DST-safe) | [details](references/arithmetic/add-days.md) |
+| `addHours()` | Add hours to a datetime | [details](references/arithmetic/add-hours.md) |
+| `addMinutes()` | Add minutes to a datetime | [details](references/arithmetic/add-minutes.md) |
+| `addSeconds()` | Add seconds to a datetime | [details](references/arithmetic/add-seconds.md) |
+| `addMilliseconds()` | Add milliseconds to a datetime | [details](references/arithmetic/add-milliseconds.md) |
+| `addMicroseconds()` | Add microseconds to a datetime | [details](references/arithmetic/add-microseconds.md) |
+| `addNanoseconds()` | Add nanoseconds to a datetime | [details](references/arithmetic/add-nanoseconds.md) |
+| `subYears()` | Subtract years from a datetime | [details](references/arithmetic/sub-years.md) |
+| `subMonths()` | Subtract months from a datetime | [details](references/arithmetic/sub-months.md) |
+| `subWeeks()` | Subtract weeks from a datetime | [details](references/arithmetic/sub-weeks.md) |
+| `subDays()` | Subtract days from a datetime | [details](references/arithmetic/sub-days.md) |
+| `subHours()` | Subtract hours from a datetime | [details](references/arithmetic/sub-hours.md) |
+| `subMinutes()` | Subtract minutes from a datetime | [details](references/arithmetic/sub-minutes.md) |
+| `subSeconds()` | Subtract seconds from a datetime | [details](references/arithmetic/sub-seconds.md) |
+| `subMilliseconds()` | Subtract milliseconds from a datetime | [details](references/arithmetic/sub-milliseconds.md) |
+| `subMicroseconds()` | Subtract microseconds from a datetime | [details](references/arithmetic/sub-microseconds.md) |
+| `subNanoseconds()` | Subtract nanoseconds from a datetime | [details](references/arithmetic/sub-nanoseconds.md) |
 
 ## Boundaries
 
-Get start/end of time periods. [Overview](references/boundaries/boundaries-overview.md)
-
-| Function | Description |
-|----------|-------------|
-| `startOfDay(input)` | Get 00:00:00.000000000 of the day |
-| `endOfDay(input)` | Get 23:59:59.999999999 of the day |
-| `startOfWeek(input)` | Get start of week (Sunday) |
-| `endOfWeek(input)` | Get end of week (Saturday) |
-| `startOfMonth(input)` | Get first day of month at 00:00:00 |
-| `endOfMonth(input)` | Get last day of month at 23:59:59 |
-| `startOfYear(input)` | Get Jan 1 at 00:00:00 |
-| `endOfYear(input)` | Get Dec 31 at 23:59:59 |
+| Function | Description | Reference |
+|----------|-------------|-----------|
+| `startOfDay()` | Get the first moment of the day | [details](references/boundaries/start-of-day.md) |
+| `endOfDay()` | Get the last moment of the day | [details](references/boundaries/end-of-day.md) |
+| `startOfWeek()` | Get the first moment of the week (Monday) | [details](references/boundaries/start-of-week.md) |
+| `endOfWeek()` | Get the last moment of the week (Sunday) | [details](references/boundaries/end-of-week.md) |
+| `startOfMonth()` | Get the first moment of the month | [details](references/boundaries/start-of-month.md) |
+| `endOfMonth()` | Get the last moment of the month | [details](references/boundaries/end-of-month.md) |
+| `startOfYear()` | Get the first moment of the year | [details](references/boundaries/start-of-year.md) |
+| `endOfYear()` | Get the last moment of the year | [details](references/boundaries/end-of-year.md) |
 
 ## Comparison
 
-Compare datetimes or check if a datetime is past/future. [Overview](references/comparison/comparison-overview.md)
-
-### Order Comparison
-
-| Function | Description |
-|----------|-------------|
-| `isBefore(a, b)` | Check if a is before b |
-| `isAfter(a, b)` | Check if a is after b |
-| `isFuture(input)` | Check if datetime is in the future |
-| `isPast(input)` | Check if datetime is in the past |
-
-### Same Period Comparison
-
-| Function | Description |
-|----------|-------------|
-| `isSameDay(a, b)` | Check if same calendar day |
-| `isSameWeek(a, b)` | Check if same calendar week |
-| `isSameMonth(a, b)` | Check if same calendar month |
-| `isSameYear(a, b)` | Check if same calendar year |
-| `isSameHour/Minute/Second` | Check if same hour/minute/second |
-| `isSameMillisecond/Microsecond/Nanosecond` | Check if same sub-second unit |
-
-### PlainDate Comparison
-
-| Function | Description |
-|----------|-------------|
-| `isPlainDateBefore(a, b)` | Check if PlainDate a is before b |
-| `isPlainDateAfter(a, b)` | Check if PlainDate a is after b |
-| `isPlainDateEqual(a, b)` | Check if PlainDates are equal |
-
-### PlainTime Comparison
-
-| Function | Description |
-|----------|-------------|
-| `isPlainTimeBefore(a, b)` | Check if PlainTime a is before b |
-| `isPlainTimeAfter(a, b)` | Check if PlainTime a is after b |
-| `isPlainTimeEqual(a, b)` | Check if PlainTimes are equal |
+| Function | Description | Reference |
+|----------|-------------|-----------|
+| `isBefore()` | Check if one datetime is before another | [details](references/comparison/is-before.md) |
+| `isAfter()` | Check if one datetime is after another | [details](references/comparison/is-after.md) |
+| `isFuture()` | Check if a datetime is in the future | [details](references/comparison/is-future.md) |
+| `isPast()` | Check if a datetime is in the past | [details](references/comparison/is-past.md) |
+| `isSameDay()` | Check if two datetimes are on the same calendar day | [details](references/comparison/is-same-day.md) |
+| `isSameWeek()` | Check if two datetimes are in the same ISO week | [details](references/comparison/is-same-week.md) |
+| `isSameMonth()` | Check if two datetimes are in the same calendar month | [details](references/comparison/is-same-month.md) |
+| `isSameYear()` | Check if two datetimes are in the same calendar year | [details](references/comparison/is-same-year.md) |
+| `isSameHour()` | Check if two datetimes are in the same hour | [details](references/comparison/is-same-hour.md) |
+| `isSameMinute()` | Check if two datetimes are in the same minute | [details](references/comparison/is-same-minute.md) |
+| `isSameSecond()` | Check if two datetimes are in the same second | [details](references/comparison/is-same-second.md) |
+| `isSameMillisecond()` | Check if two datetimes are in the same millisecond | [details](references/comparison/is-same-millisecond.md) |
+| `isSameMicrosecond()` | Check if two datetimes are in the same microsecond | [details](references/comparison/is-same-microsecond.md) |
+| `isSameNanosecond()` | Check if two datetimes are in the same nanosecond | [details](references/comparison/is-same-nanosecond.md) |
+| `isPlainDateBefore()` | Check if a PlainDate is before another PlainDate | [details](references/comparison/is-plain-date-before.md) |
+| `isPlainDateAfter()` | Check if a PlainDate is after another PlainDate | [details](references/comparison/is-plain-date-after.md) |
+| `isPlainDateEqual()` | Check if two PlainDates are equal | [details](references/comparison/is-plain-date-equal.md) |
+| `isPlainTimeBefore()` | Check if a PlainTime is before another PlainTime | [details](references/comparison/is-plain-time-before.md) |
+| `isPlainTimeAfter()` | Check if a PlainTime is after another PlainTime | [details](references/comparison/is-plain-time-after.md) |
+| `isPlainTimeEqual()` | Check if two PlainTimes are equal | [details](references/comparison/is-plain-time-equal.md) |
 
 ## Difference
 
-Calculate the difference between two datetimes. [Overview](references/difference/difference-overview.md)
+| Function | Description | Reference |
+|----------|-------------|-----------|
+| `differenceInYears()` | Calculate the difference between two dates in years | [details](references/difference/difference-in-years.md) |
+| `differenceInMonths()` | Calculate the difference between two dates in months | [details](references/difference/difference-in-months.md) |
+| `differenceInWeeks()` | Calculate the difference between two dates in weeks | [details](references/difference/difference-in-weeks.md) |
+| `differenceInDays()` | Calculate the difference between two dates in days | [details](references/difference/difference-in-days.md) |
+| `differenceInHours()` | Calculate the difference between two dates in hours | [details](references/difference/difference-in-hours.md) |
+| `differenceInMinutes()` | Calculate the difference between two dates in minutes | [details](references/difference/difference-in-minutes.md) |
+| `differenceInSeconds()` | Calculate the difference between two dates in seconds | [details](references/difference/difference-in-seconds.md) |
+| `differenceInMilliseconds()` | Calculate the difference between two datetimes in milliseconds | [details](references/difference/difference-in-milliseconds.md) |
+| `differenceInMicroseconds()` | Calculate the difference between two datetimes in microseconds | [details](references/difference/difference-in-microseconds.md) |
+| `differenceInNanoseconds()` | Calculate the difference between two datetimes in nanoseconds | [details](references/difference/difference-in-nanoseconds.md) |
 
-| Function | Description |
-|----------|-------------|
-| `differenceInYears(later, earlier)` | Get difference in years |
-| `differenceInMonths(later, earlier)` | Get difference in months |
-| `differenceInWeeks(later, earlier)` | Get difference in weeks |
-| `differenceInDays(later, earlier)` | Get difference in days (DST-aware) |
-| `differenceInHours(later, earlier)` | Get difference in hours |
-| `differenceInMinutes(later, earlier)` | Get difference in minutes |
-| `differenceInSeconds(later, earlier)` | Get difference in seconds |
-| `differenceInMilliseconds/Microseconds/Nanoseconds` | Get sub-second differences |
+## Utilities
+
+| Function | Description | Reference |
+|----------|-------------|-----------|
+| `browserTimezone()` | Get the browser/device timezone | [details](references/utilities/browser-timezone.md) |
 
 ## Types
 

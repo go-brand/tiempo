@@ -31,7 +31,8 @@
   "homepage": "https://eng.gobrand.app/tiempo",
   "scripts": {
     "generate:timezones": "tsx scripts/generate-timezone-types.ts",
-    "build": "pnpm generate:timezones && tsup && tsc --emitDeclarationOnly",
+    "generate:docs": "tsx scripts/generate-docs.ts",
+    "build": "pnpm generate:timezones && pnpm generate:docs && tsup && tsc --emitDeclarationOnly",
     "clean": "git clean -xdf .cache .turbo dist node_modules tsconfig.tsbuildinfo",
     "test": "vitest",
     "typecheck": "tsc --noEmit",

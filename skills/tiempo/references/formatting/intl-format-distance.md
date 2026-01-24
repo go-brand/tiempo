@@ -180,3 +180,25 @@ const due = formatDueDate(task.dueDate);
 // or
 // { text: "2 days ago", isOverdue: true }
 ```
+
+### Internationalized timestamps
+
+```ts
+import { intlFormatDistance } from '@gobrand/tiempo';
+
+function getLocalizedRelativeTime(
+  date: Temporal.ZonedDateTime,
+  userLocale: string
+): string {
+  const now = Temporal.Now.zonedDateTimeISO();
+  return intlFormatDistance(date, now, { locale: userLocale });
+}
+
+// For a Spanish-speaking user
+getLocalizedRelativeTime(post.createdAt, 'es');
+// => "hace 2 horas"
+
+// For a Japanese-speaking user
+getLocalizedRelativeTime(post.createdAt, 'ja');
+// => "2 時間前"
+```

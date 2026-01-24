@@ -12,24 +12,24 @@ tiempo provides a familiar date-fns-style API while leveraging the modern Tempor
 
 ## Conversion
 
-- [toZonedTime](https://eng.gobrand.app/tiempo/docs/conversion/to-zoned-time): Convert UTC/Date to timezone-aware ZonedDateTime
-- [toPlainTime](https://eng.gobrand.app/tiempo/docs/conversion/to-plain-time): Extract wall-clock time as PlainTime (timezone optional for ZonedDateTime)
-- [toUtc](https://eng.gobrand.app/tiempo/docs/conversion/to-utc): Convert ZonedDateTime back to UTC Instant
-- [toDate](https://eng.gobrand.app/tiempo/docs/conversion/to-date): Convert Temporal types to JavaScript Date
-- [toIso](https://eng.gobrand.app/tiempo/docs/conversion/to-iso): Convert to ISO 8601 string format
-- [toIso9075](https://eng.gobrand.app/tiempo/docs/conversion/to-iso9075): Convert to SQL-compatible ISO 9075 format
+- [toZonedTime](https://eng.gobrand.app/tiempo/docs/conversion/to-zoned-time): Convert to a timezone-aware ZonedDateTime
+- [toPlainTime](https://eng.gobrand.app/tiempo/docs/conversion/to-plain-time): Extract wall-clock time from a ZonedDateTime or convert to a timezone and extract time
+- [toUtc](https://eng.gobrand.app/tiempo/docs/conversion/to-utc): Convert to a UTC Instant
+- [toIso](https://eng.gobrand.app/tiempo/docs/conversion/to-iso): Convert to an ISO 8601 string
+- [toIso9075](https://eng.gobrand.app/tiempo/docs/conversion/to-iso9075): Convert to ISO 9075 (SQL) format string
+- [toDate](https://eng.gobrand.app/tiempo/docs/conversion/to-date): Convert to a JavaScript Date object
 
 ## Current Time
 
-- [now](https://eng.gobrand.app/tiempo/docs/current-time/now): Get current time as ZonedDateTime in a timezone
-- [today](https://eng.gobrand.app/tiempo/docs/current-time/today): Get today's date as PlainDate in a timezone
+- [now](https://eng.gobrand.app/tiempo/docs/current-time/now): Get the current date and time as a ZonedDateTime
+- [today](https://eng.gobrand.app/tiempo/docs/current-time/today): Get today's date as a PlainDate
 
 ## Formatting
 
-- [format](https://eng.gobrand.app/tiempo/docs/formatting/format): Format dates with date-fns-like tokens (yyyy, MM, dd, etc.)
-- [simpleFormat](https://eng.gobrand.app/tiempo/docs/formatting/simple-format): Simple formatting with common patterns
-- [formatPlainDate](https://eng.gobrand.app/tiempo/docs/formatting/format-plain-date): Format PlainDate values
-- [intlFormatDistance](https://eng.gobrand.app/tiempo/docs/formatting/intl-format-distance): Relative time formatting ("2 days ago")
+- [format](https://eng.gobrand.app/tiempo/docs/formatting/format): Format a datetime using date-fns-like format tokens
+- [formatPlainDate](https://eng.gobrand.app/tiempo/docs/formatting/format-plain-date): Format a PlainDate using date-fns-like format tokens
+- [simpleFormat](https://eng.gobrand.app/tiempo/docs/formatting/simple-format): Human-friendly date formatting like "Dec 23" or "Dec 23, 2020"
+- [intlFormatDistance](https://eng.gobrand.app/tiempo/docs/formatting/intl-format-distance): Format the distance between dates as human-readable, internationalized strings
 
 ## Arithmetic
 
@@ -50,39 +50,39 @@ tiempo provides a familiar date-fns-style API while leveraging the modern Tempor
 
 ## Boundaries
 
-- [startOfDay](https://eng.gobrand.app/tiempo/docs/boundaries/start-of-day): Get start of day (00:00:00)
-- [endOfDay](https://eng.gobrand.app/tiempo/docs/boundaries/end-of-day): Get end of day (23:59:59.999999999)
-- [startOfWeek](https://eng.gobrand.app/tiempo/docs/boundaries/start-of-week): Get start of week
-- [endOfWeek](https://eng.gobrand.app/tiempo/docs/boundaries/end-of-week): Get end of week
-- [startOfMonth](https://eng.gobrand.app/tiempo/docs/boundaries/start-of-month): Get first moment of the month
-- [endOfMonth](https://eng.gobrand.app/tiempo/docs/boundaries/end-of-month): Get last moment of the month
-- [startOfYear](https://eng.gobrand.app/tiempo/docs/boundaries/start-of-year): Get first moment of the year
-- [endOfYear](https://eng.gobrand.app/tiempo/docs/boundaries/end-of-year): Get last moment of the year
+- [startOfDay](https://eng.gobrand.app/tiempo/docs/boundaries/start-of-day): Get the first moment of the day
+- [endOfDay](https://eng.gobrand.app/tiempo/docs/boundaries/end-of-day): Get the last moment of the day
+- [startOfWeek](https://eng.gobrand.app/tiempo/docs/boundaries/start-of-week): Get the first moment of the week (Monday)
+- [endOfWeek](https://eng.gobrand.app/tiempo/docs/boundaries/end-of-week): Get the last moment of the week (Sunday)
+- [startOfMonth](https://eng.gobrand.app/tiempo/docs/boundaries/start-of-month): Get the first moment of the month
+- [endOfMonth](https://eng.gobrand.app/tiempo/docs/boundaries/end-of-month): Get the last moment of the month
+- [startOfYear](https://eng.gobrand.app/tiempo/docs/boundaries/start-of-year): Get the first moment of the year
+- [endOfYear](https://eng.gobrand.app/tiempo/docs/boundaries/end-of-year): Get the last moment of the year
 
 ## Comparison
 
-- [isBefore](https://eng.gobrand.app/tiempo/docs/comparison/is-before): Check if datetime is before another
-- [isAfter](https://eng.gobrand.app/tiempo/docs/comparison/is-after): Check if datetime is after another
-- [isFuture](https://eng.gobrand.app/tiempo/docs/comparison/is-future): Check if datetime is in the future
-- [isPast](https://eng.gobrand.app/tiempo/docs/comparison/is-past): Check if datetime is in the past
-- [isSameDay](https://eng.gobrand.app/tiempo/docs/comparison/is-same-day): Check if two datetimes are the same day
-- [isSameWeek](https://eng.gobrand.app/tiempo/docs/comparison/is-same-week): Check if two datetimes are in the same week
-- [isSameMonth](https://eng.gobrand.app/tiempo/docs/comparison/is-same-month): Check if two datetimes are in the same month
-- [isSameYear](https://eng.gobrand.app/tiempo/docs/comparison/is-same-year): Check if two datetimes are in the same year
+- [isBefore](https://eng.gobrand.app/tiempo/docs/comparison/is-before): Check if one datetime is before another
+- [isAfter](https://eng.gobrand.app/tiempo/docs/comparison/is-after): Check if one datetime is after another
+- [isFuture](https://eng.gobrand.app/tiempo/docs/comparison/is-future): Check if a datetime is in the future
+- [isPast](https://eng.gobrand.app/tiempo/docs/comparison/is-past): Check if a datetime is in the past
+- [isSameDay](https://eng.gobrand.app/tiempo/docs/comparison/is-same-day): Check if two datetimes are on the same calendar day
+- [isSameWeek](https://eng.gobrand.app/tiempo/docs/comparison/is-same-week): Check if two datetimes are in the same ISO week
+- [isSameMonth](https://eng.gobrand.app/tiempo/docs/comparison/is-same-month): Check if two datetimes are in the same calendar month
+- [isSameYear](https://eng.gobrand.app/tiempo/docs/comparison/is-same-year): Check if two datetimes are in the same calendar year
 
 ## Difference
 
-- [differenceInYears](https://eng.gobrand.app/tiempo/docs/difference/difference-in-years): Get difference in years
-- [differenceInMonths](https://eng.gobrand.app/tiempo/docs/difference/difference-in-months): Get difference in months
-- [differenceInWeeks](https://eng.gobrand.app/tiempo/docs/difference/difference-in-weeks): Get difference in weeks
-- [differenceInDays](https://eng.gobrand.app/tiempo/docs/difference/difference-in-days): Get difference in days
-- [differenceInHours](https://eng.gobrand.app/tiempo/docs/difference/difference-in-hours): Get difference in hours
-- [differenceInMinutes](https://eng.gobrand.app/tiempo/docs/difference/difference-in-minutes): Get difference in minutes
-- [differenceInSeconds](https://eng.gobrand.app/tiempo/docs/difference/difference-in-seconds): Get difference in seconds
+- [differenceInYears](https://eng.gobrand.app/tiempo/docs/difference/difference-in-years): Calculate the difference between two dates in years
+- [differenceInMonths](https://eng.gobrand.app/tiempo/docs/difference/difference-in-months): Calculate the difference between two dates in months
+- [differenceInWeeks](https://eng.gobrand.app/tiempo/docs/difference/difference-in-weeks): Calculate the difference between two dates in weeks
+- [differenceInDays](https://eng.gobrand.app/tiempo/docs/difference/difference-in-days): Calculate the difference between two dates in days
+- [differenceInHours](https://eng.gobrand.app/tiempo/docs/difference/difference-in-hours): Calculate the difference between two dates in hours
+- [differenceInMinutes](https://eng.gobrand.app/tiempo/docs/difference/difference-in-minutes): Calculate the difference between two dates in minutes
+- [differenceInSeconds](https://eng.gobrand.app/tiempo/docs/difference/difference-in-seconds): Calculate the difference between two dates in seconds
 
 ## Utilities
 
-- [browserTimezone](https://eng.gobrand.app/tiempo/docs/utilities/browser-timezone): Get the browser's current IANA timezone
+- [browserTimezone](https://eng.gobrand.app/tiempo/docs/utilities/browser-timezone): Get the browser/device timezone
 
 ## Optional
 
@@ -92,18 +92,18 @@ tiempo provides a familiar date-fns-style API while leveraging the modern Tempor
 - [subMilliseconds](https://eng.gobrand.app/tiempo/docs/arithmetic/sub-milliseconds): Subtract milliseconds from a datetime
 - [subMicroseconds](https://eng.gobrand.app/tiempo/docs/arithmetic/sub-microseconds): Subtract microseconds from a datetime
 - [subNanoseconds](https://eng.gobrand.app/tiempo/docs/arithmetic/sub-nanoseconds): Subtract nanoseconds from a datetime
-- [differenceInMilliseconds](https://eng.gobrand.app/tiempo/docs/difference/difference-in-milliseconds): Get difference in milliseconds
-- [differenceInMicroseconds](https://eng.gobrand.app/tiempo/docs/difference/difference-in-microseconds): Get difference in microseconds
-- [differenceInNanoseconds](https://eng.gobrand.app/tiempo/docs/difference/difference-in-nanoseconds): Get difference in nanoseconds
 - [isSameHour](https://eng.gobrand.app/tiempo/docs/comparison/is-same-hour): Check if two datetimes are in the same hour
 - [isSameMinute](https://eng.gobrand.app/tiempo/docs/comparison/is-same-minute): Check if two datetimes are in the same minute
 - [isSameSecond](https://eng.gobrand.app/tiempo/docs/comparison/is-same-second): Check if two datetimes are in the same second
 - [isSameMillisecond](https://eng.gobrand.app/tiempo/docs/comparison/is-same-millisecond): Check if two datetimes are in the same millisecond
 - [isSameMicrosecond](https://eng.gobrand.app/tiempo/docs/comparison/is-same-microsecond): Check if two datetimes are in the same microsecond
 - [isSameNanosecond](https://eng.gobrand.app/tiempo/docs/comparison/is-same-nanosecond): Check if two datetimes are in the same nanosecond
-- [isPlainDateBefore](https://eng.gobrand.app/tiempo/docs/comparison/is-plain-date-before): Check if PlainDate is before another
-- [isPlainDateAfter](https://eng.gobrand.app/tiempo/docs/comparison/is-plain-date-after): Check if PlainDate is after another
+- [isPlainDateBefore](https://eng.gobrand.app/tiempo/docs/comparison/is-plain-date-before): Check if a PlainDate is before another PlainDate
+- [isPlainDateAfter](https://eng.gobrand.app/tiempo/docs/comparison/is-plain-date-after): Check if a PlainDate is after another PlainDate
 - [isPlainDateEqual](https://eng.gobrand.app/tiempo/docs/comparison/is-plain-date-equal): Check if two PlainDates are equal
-- [isPlainTimeBefore](https://eng.gobrand.app/tiempo/docs/comparison/is-plain-time-before): Check if PlainTime is before another
-- [isPlainTimeAfter](https://eng.gobrand.app/tiempo/docs/comparison/is-plain-time-after): Check if PlainTime is after another
+- [isPlainTimeBefore](https://eng.gobrand.app/tiempo/docs/comparison/is-plain-time-before): Check if a PlainTime is before another PlainTime
+- [isPlainTimeAfter](https://eng.gobrand.app/tiempo/docs/comparison/is-plain-time-after): Check if a PlainTime is after another PlainTime
 - [isPlainTimeEqual](https://eng.gobrand.app/tiempo/docs/comparison/is-plain-time-equal): Check if two PlainTimes are equal
+- [differenceInMilliseconds](https://eng.gobrand.app/tiempo/docs/difference/difference-in-milliseconds): Calculate the difference between two datetimes in milliseconds
+- [differenceInMicroseconds](https://eng.gobrand.app/tiempo/docs/difference/difference-in-microseconds): Calculate the difference between two datetimes in microseconds
+- [differenceInNanoseconds](https://eng.gobrand.app/tiempo/docs/difference/difference-in-nanoseconds): Calculate the difference between two datetimes in nanoseconds
