@@ -10,7 +10,18 @@
     "add-hours",
     "add-minutes",
     "add-seconds",
-    "add-sub-precision",
-    "subtract-functions"
+    "add-milliseconds",
+    "add-microseconds",
+    "add-nanoseconds",
+    "sub-years",
+    "sub-months",
+    "sub-weeks",
+    "sub-days",
+    "sub-hours",
+    "sub-minutes",
+    "sub-seconds",
+    "sub-milliseconds",
+    "sub-microseconds",
+    "sub-nanoseconds"
   ]
 }

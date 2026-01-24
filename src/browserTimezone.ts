@@ -1,3 +1,5 @@
+import type { IANATimezone } from './types/iana-timezones';
+
 /**
  * Get the browser/device timezone.
  *
@@ -18,6 +20,6 @@
  * const userTime = toZonedTime("2025-01-20T20:00:00Z", browserTimezone());
  * ```
  */
-export function browserTimezone(): string {
-  return Intl.DateTimeFormat().resolvedOptions().timeZone;
+export function browserTimezone(): IANATimezone {
+  return Intl.DateTimeFormat().resolvedOptions().timeZone as IANATimezone;
 }

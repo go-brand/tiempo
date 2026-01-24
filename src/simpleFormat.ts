@@ -1,4 +1,5 @@
 import { Temporal } from '@js-temporal/polyfill';
+import type { Timezone } from './types';
 
 // simpleFormat options - discriminated by input type
 interface PlainDateOptions {
@@ -9,14 +10,14 @@ interface PlainDateOptions {
 interface ZonedDateTimeOptions {
   locale?: string;
   time?: '12h' | '24h';
-  timeZone?: string;
+  timeZone?: Timezone;
   year?: 'auto' | 'always' | 'never';
 }
 
 interface InstantOptions {
   locale?: string;
   time?: '12h' | '24h';
-  timeZone: string; // required for Instant
+  timeZone: Timezone; // required for Instant
   year?: 'auto' | 'always' | 'never';
 }
 

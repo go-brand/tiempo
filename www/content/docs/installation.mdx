@@ -1,7 +1,6 @@
 ---
 title: Installation
 description: Get started with tiempo in your project
-icon: Download
 ---
 
 ## Install
@@ -21,18 +20,27 @@ tiempo includes the `@js-temporal/polyfill` package, which provides Temporal API
 
 ## Usage with ORMs
 
-tiempo works seamlessly with ORMs like Drizzle that use JavaScript `Date` objects:
+tiempo works seamlessly with ORMs like Drizzle. Drizzle timestamp columns can be configured with `mode: 'date'` (returns `Date` objects) or `mode: 'string'` (returns ISO strings)—tiempo's `toZonedTime()` accepts both:
 
 ```ts
-import { toZonedTime, toDate } from '@gobrand/tiempo';
+import { toZonedTime, toDate, toIso, addWeeks } from '@gobrand/tiempo';
 
-// Reading from database (Date → ZonedDateTime)
+// From Drizzle: could be Date (mode: 'date') or string (mode: 'string')
 const post = await db.query.posts.findFirst();
+
+// Convert to ZonedDateTime for timezone-aware operations
+// toZonedTime accepts both Date and string, so this works either way
 const publishedAt = toZonedTime(post.publishedAt, 'America/New_York');
 
-// Writing to database (ZonedDateTime → Date)
-const newDate = toDate(publishedAt);
-await db.update(posts).set({ publishedAt: newDate });
+// Perform datetime operations...
+const nextWeek = publishedAt.add({ weeks: 1 });  // native Temporal API
+// or: addWeeks(publishedAt, 1)                  // tiempo utility for familiar API
+
+// Convert back for database storage
+await db.update(posts).set({
+  publishedAt: toDate(nextWeek),  // for mode: 'date'
+  // or: toIso(nextWeek),         // for mode: 'string'
+});
 ```
 
 ## TypeScript Support

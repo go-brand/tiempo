@@ -1,6 +1,0 @@
-{
-  "title": "Relative Time",
-  "description": "Format distances between dates as human-readable strings",
-  "icon": "Timer",
-  "pages": ["intl-format-distance"]
-}

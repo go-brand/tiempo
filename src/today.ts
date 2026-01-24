@@ -1,26 +1,29 @@
 import { Temporal } from '@js-temporal/polyfill';
+import type { Timezone } from './types';
 
 /**
- * Get today's date in the system's local timezone or a specified timezone.
+ * Get today's date in the specified timezone.
  *
- * @param timezone - Optional IANA timezone identifier (e.g., "America/Asuncion", "Europe/Madrid") or "UTC"
+ * @param timezone - IANA timezone identifier (e.g., "America/New_York", "Europe/London") or "UTC"
  * @returns A Temporal.PlainDate representing today's date
  *
  * @example
  * ```typescript
- * // Get today in local timezone
- * const date = today();
+ * import { today, browserTimezone } from '@gobrand/tiempo';
  *
- * // Get today in Madrid
- * const todayInMadrid = today("Europe/Madrid");
- *
- * // Get today in UTC
+ * // Server-side: Get today in UTC
  * const todayUtc = today("UTC");
+ *
+ * // Server-side: Get today in user's timezone (from DB/preferences)
+ * const todayUser = today(user.timezone);
+ *
+ * // Client-side: Get today in browser's timezone
+ * const todayLocal = today(browserTimezone());
+ *
+ * // Get today in a specific timezone
+ * const todayInMadrid = today("Europe/Madrid");
  * ```
  */
-export function today(timezone?: "UTC" | string): Temporal.PlainDate {
-  if (timezone) {
-    return Temporal.Now.zonedDateTimeISO(timezone).toPlainDate();
-  }
-  return Temporal.Now.plainDateISO();
+export function today(timezone: Timezone): Temporal.PlainDate {
+  return Temporal.Now.zonedDateTimeISO(timezone).toPlainDate();
 }

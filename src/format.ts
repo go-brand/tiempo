@@ -1,9 +1,10 @@
 import { Temporal } from '@js-temporal/polyfill';
 import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
+import type { Timezone } from './types';
 
 export interface FormatOptions {
   locale?: string;
-  timeZone?: string;
+  timeZone?: Timezone;
 }
 
 /**

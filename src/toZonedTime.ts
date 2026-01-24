@@ -1,18 +1,5 @@
 import { Temporal } from '@js-temporal/polyfill';
-
-/**
- * IANA timezone identifier or "UTC".
- *
- * Common timezones:
- * - "UTC" - Coordinated Universal Time
- * - "America/New_York" - US Eastern
- * - "America/Los_Angeles" - US Pacific
- * - "Europe/London" - UK
- * - "Europe/Paris" - Central European
- * - "Asia/Tokyo" - Japan
- * - "Asia/Shanghai" - China
- */
-export type Timezone = 'UTC' | (string & {});
+import type { Timezone } from './types';
 
 /**
  * Convert a UTC ISO string, Date, Instant, or ZonedDateTime to a ZonedDateTime in the specified timezone.

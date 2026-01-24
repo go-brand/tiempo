@@ -3,6 +3,7 @@
     "index",
     "---Getting Started---",
     "installation",
+    "typescript",
     "---Conversion---",
     "...conversion",
     "---Formatting---",
@@ -17,8 +18,6 @@
     "...comparison",
     "---Difference---",
     "...difference",
-    "---Relative Time---",
-    "...relative-time",
     "---Utilities---",
     "...utilities"
   ]

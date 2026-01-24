@@ -2,5 +2,5 @@
   "title": "Formatting",
   "description": "Format dates with date-fns-like tokens and locale support",
   "icon": "Type",
-  "pages": ["format", "format-plain-date", "simple-format"]
+  "pages": ["format", "format-plain-date", "simple-format", "intl-format-distance"]
 }

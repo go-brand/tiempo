@@ -10,6 +10,8 @@
     "difference-in-hours",
     "difference-in-minutes",
     "difference-in-seconds",
-    "difference-in-precision"
+    "difference-in-milliseconds",
+    "difference-in-microseconds",
+    "difference-in-nanoseconds"
   ]
 }

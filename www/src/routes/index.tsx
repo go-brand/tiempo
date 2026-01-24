@@ -480,7 +480,7 @@ const sameDay = isSameDay(localDate, remoteDate);`;
                 </svg>
               }
               title="Type-Safe & Familiar"
-              description="Full TypeScript support catches errors at compile time. A date-fns-style API you already know, built on modern foundations that will outlast today's libraries."
+              description="Autocomplete for 400+ timezones, invalid configurations caught at compile time. A date-fns-style API you already know, built on modern foundations."
             />
           </div>
         </div>

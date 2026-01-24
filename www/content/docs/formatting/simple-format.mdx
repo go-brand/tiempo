@@ -22,7 +22,7 @@ function simpleFormat(input: Temporal.Instant, options: InstantOptions): string;
 | `locale` | `string` | Locale for formatting (default: "en-US") |
 | `year` | `'auto' \| 'always' \| 'never'` | When to show the year (default: "auto") |
 | `time` | `'12h' \| '24h'` | Include time (only for ZonedDateTime/Instant) |
-| `timeZone` | `string` | Timezone (required for Instant, optional for ZonedDateTime) |
+| `timeZone` | `Timezone` | Timezone (required for Instant, optional for ZonedDateTime) |
 
 ## Examples
 

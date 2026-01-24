@@ -4,7 +4,7 @@
 [![CI](https://github.com/go-brand/tiempo/actions/workflows/ci.yml/badge.svg)](https://github.com/go-brand/tiempo/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-![tiempo clock visualization](./clock-visualization.png)
+![tiempo banner](./tiempo_banner.png)
 
 **Timezone conversions that don't suck.** Built on the [Temporal API](https://tc39.es/proposal-temporal/docs/).
 

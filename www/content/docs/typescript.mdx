@@ -1,0 +1,145 @@
+---
+title: TypeScript
+description: Type-safe datetime handling with full IDE support
+---
+
+tiempo is built with TypeScript from the ground up. Beyond basic type definitions, it provides smart type inference that catches errors at compile time and enhances your IDE experience with autocomplete suggestions.
+
+## Timezone Types
+
+tiempo exports two timezone types:
+
+- **`Timezone`** - Accepts all 418 IANA timezones (with autocomplete), `UTC`, and any string for forward compatibility
+- **`IANATimezone`** - Strictly the 418 IANA timezone identifiers only
+
+```ts
+import { toZonedTime, type Timezone, type IANATimezone } from '@gobrand/tiempo';
+
+// Timezone: accepts IANA timezones with autocomplete
+const tz: Timezone = 'America/New_York';  // ✓ Autocomplete works!
+const utc: Timezone = 'UTC';              // ✓ UTC is accepted
+
+// Works directly in function calls
+const zoned = toZonedTime(new Date(), 'Europe/');  // IDE suggests: Europe/London, Europe/Paris, ...
+
+// IANATimezone: strictly IANA identifiers only
+const iana: IANATimezone = 'America/New_York';  // ✓ Valid
+// const invalid: IANATimezone = 'UTC';          // ✗ Type error - UTC is not an IANA timezone
+```
+
+Use `Timezone` for function parameters that accept any valid timezone. Use `IANATimezone` when you need to ensure only region-based IANA identifiers are used.
+
+## Smart Function Overloads
+
+Some functions use TypeScript overloads to provide context-aware options based on what you pass in. This prevents invalid configurations at compile time.
+
+### toIso Example
+
+When converting to ISO 8601 strings, the `mode` option only makes sense for `ZonedDateTime` (which has timezone information to preserve or convert). For `Instant`, there's no choice—it's always UTC:
+
+```ts
+import { Temporal } from '@js-temporal/polyfill';
+import { toIso } from '@gobrand/tiempo';
+
+const instant = Temporal.Instant.from('2025-01-20T20:00:00Z');
+const zoned = Temporal.ZonedDateTime.from('2025-01-20T15:00:00-05:00[America/New_York]');
+
+// Instant: no options needed (always UTC)
+toIso(instant);                      // "2025-01-20T20:00:00Z"
+
+// ZonedDateTime: mode option available
+toIso(zoned);                        // "2025-01-20T20:00:00Z" (UTC, default)
+toIso(zoned, { mode: 'utc' });       // "2025-01-20T20:00:00Z"
+toIso(zoned, { mode: 'offset' });    // "2025-01-20T15:00:00-05:00"
+```
+
+### toIso9075 Example
+
+The same pattern applies to SQL-formatted timestamps:
+
+```ts
+import { toIso9075 } from '@gobrand/tiempo';
+
+// Instant: only representation option (no mode)
+toIso9075(instant);                           // "2025-01-20 20:00:00"
+toIso9075(instant, { representation: 'date' }); // "2025-01-20"
+
+// ZonedDateTime: both mode and representation available
+toIso9075(zoned, { mode: 'local' });          // "2025-01-20 15:00:00"
+toIso9075(zoned, { mode: 'utc', representation: 'time' }); // "20:00:00"
+```
+
+TypeScript will show an error if you try to pass `mode` to an `Instant`—the option simply doesn't exist in that overload's type signature.
+
+## Exported Types
+
+tiempo exports all its types for use in your own code:
+
+```ts
+import type {
+  // Timezone
+  Timezone,
+  IANATimezone,
+
+  // ISO conversion
+  IsoMode,
+  ToIsoOptions,
+
+  // ISO 9075 (SQL) conversion
+  Iso9075Mode,
+  Iso9075Representation,
+  ToIso9075Options,
+
+  // Formatting
+  FormatOptions,
+  FormatPlainDateOptions,
+
+  // Relative time
+  IntlFormatDistanceOptions,
+} from '@gobrand/tiempo';
+```
+
+### Using Timezone in Your Code
+
+The `Timezone` type is useful for typing your own functions and data structures:
+
+```ts
+import type { Timezone } from '@gobrand/tiempo';
+
+interface UserPreferences {
+  timezone: Timezone;  // Autocomplete in your own interfaces!
+  locale: string;
+}
+
+function formatForUser(date: Date, prefs: UserPreferences): string {
+  const zoned = toZonedTime(date, prefs.timezone);
+  return format(zoned, 'PPpp');
+}
+```
+
+## Temporal Types
+
+tiempo uses the `@js-temporal/polyfill` package. You can import Temporal directly from the polyfill for type annotations:
+
+```ts
+import { Temporal } from '@js-temporal/polyfill';
+import { toZonedTime, toUtc } from '@gobrand/tiempo';
+
+// Explicit type annotations
+const zoned: Temporal.ZonedDateTime = toZonedTime(new Date(), 'America/New_York');
+const instant: Temporal.Instant = toUtc(zoned);
+const plainDate: Temporal.PlainDate = zoned.toPlainDate();
+
+// Types are also inferred automatically
+const zoned2 = toZonedTime(new Date(), 'UTC');  // Temporal.ZonedDateTime
+```
+
+### Common Temporal Types
+
+| Type | Description |
+|------|-------------|
+| `Temporal.Instant` | A fixed point in time (UTC timestamp) |
+| `Temporal.ZonedDateTime` | A datetime with timezone information |
+| `Temporal.PlainDate` | A calendar date without time or timezone |
+| `Temporal.PlainTime` | A wall-clock time without date or timezone |
+| `Temporal.Duration` | A length of time |

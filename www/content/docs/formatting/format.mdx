@@ -16,7 +16,7 @@ function format(
 
 interface FormatOptions {
   locale?: string;
-  timeZone?: string;
+  timeZone?: Timezone;
 }
 ```
 
@@ -27,7 +27,7 @@ interface FormatOptions {
 | `input` | `Temporal.Instant \| Temporal.ZonedDateTime` | The datetime to format |
 | `formatStr` | `string` | Format string using date-fns tokens |
 | `options.locale` | `string` | Locale for formatting (default: "en-US") |
-| `options.timeZone` | `string` | Override timezone for formatting |
+| `options.timeZone` | `Timezone` | Override timezone for formatting |
 
 ## Format Tokens
 
