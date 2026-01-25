@@ -47,6 +47,7 @@ export { startOfYear } from './startOfYear';
 export { endOfYear } from './endOfYear';
 export { isBefore } from './isBefore';
 export { isAfter } from './isAfter';
+export { isWithinInterval } from './isWithinInterval';
 export { isFuture } from './isFuture';
 export { isPast } from './isPast';
 export { isSameDay } from './isSameDay';

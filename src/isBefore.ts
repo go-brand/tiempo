@@ -1,5 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill';
 import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
+import { isBefore as isBeforeInternal } from './shared/isBefore';
 
 /**
  * Returns true if the first datetime is before the second datetime.
@@ -45,5 +46,5 @@ export function isBefore(
   const zoned1 = normalizeTemporalInput(date1);
   const zoned2 = normalizeTemporalInput(date2);
 
-  return Temporal.ZonedDateTime.compare(zoned1, zoned2) < 0;
+  return isBeforeInternal(zoned1, zoned2);
 }

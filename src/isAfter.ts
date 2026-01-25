@@ -1,5 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill';
 import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
+import { isAfter as isAfterInternal } from './shared/isAfter';
 
 /**
  * Returns true if the first datetime is after the second datetime.
@@ -45,5 +46,5 @@ export function isAfter(
   const zoned1 = normalizeTemporalInput(date1);
   const zoned2 = normalizeTemporalInput(date2);
 
-  return Temporal.ZonedDateTime.compare(zoned1, zoned2) > 0;
+  return isAfterInternal(zoned1, zoned2);
 }
