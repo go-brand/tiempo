@@ -91,6 +91,7 @@ npm install @gobrand/tiempo
 |----------|-------------|-----------|
 | `isBefore()` | Check if one datetime is before another | [details](references/comparison/is-before.md) |
 | `isAfter()` | Check if one datetime is after another | [details](references/comparison/is-after.md) |
+| `isWithinInterval()` | Check if a datetime falls within an interval | [details](references/comparison/is-within-interval.md) |
 | `isFuture()` | Check if a datetime is in the future | [details](references/comparison/is-future.md) |
 | `isPast()` | Check if a datetime is in the past | [details](references/comparison/is-past.md) |
 | `isSameDay()` | Check if two datetimes are on the same calendar day | [details](references/comparison/is-same-day.md) |

@@ -64,6 +64,7 @@ tiempo provides a familiar date-fns-style API while leveraging the modern Tempor
 
 - [isBefore](https://eng.gobrand.app/tiempo/docs/comparison/is-before): Check if one datetime is before another
 - [isAfter](https://eng.gobrand.app/tiempo/docs/comparison/is-after): Check if one datetime is after another
+- [isWithinInterval](https://eng.gobrand.app/tiempo/docs/comparison/is-within-interval): Check if a datetime falls within an interval
 - [isFuture](https://eng.gobrand.app/tiempo/docs/comparison/is-future): Check if a datetime is in the future
 - [isPast](https://eng.gobrand.app/tiempo/docs/comparison/is-past): Check if a datetime is in the past
 - [isSameDay](https://eng.gobrand.app/tiempo/docs/comparison/is-same-day): Check if two datetimes are on the same calendar day
