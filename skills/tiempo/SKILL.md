@@ -24,8 +24,8 @@ npm install @gobrand/tiempo
 | Function | Description | Reference |
 |----------|-------------|-----------|
 | `toZonedTime()` | Convert to a timezone-aware ZonedDateTime | [details](references/conversion/to-zoned-time.md) |
-| `toPlainTime()` | Extract wall-clock time from a ZonedDateTime or convert to a timezone and extract time | [details](references/conversion/to-plain-time.md) |
-| `toPlainDate()` | Extract calendar date from a ZonedDateTime or convert to a timezone and extract date | [details](references/conversion/to-plain-date.md) |
+| `toPlainTime()` | Parse a plain time or extract wall-clock time from a datetime | [details](references/conversion/to-plain-time.md) |
+| `toPlainDate()` | Parse a plain date or extract calendar date from a datetime | [details](references/conversion/to-plain-date.md) |
 | `toUtc()` | Convert to a UTC Instant | [details](references/conversion/to-utc.md) |
 | `toIso()` | Convert to an ISO 8601 string | [details](references/conversion/to-iso.md) |
 | `toIso9075()` | Convert to ISO 9075 (SQL) format string | [details](references/conversion/to-iso9075.md) |
@@ -130,6 +130,9 @@ npm install @gobrand/tiempo
 | Function | Description | Reference |
 |----------|-------------|-----------|
 | `browserTimezone()` | Get the browser/device timezone | [details](references/utilities/browser-timezone.md) |
+| `roundToNearestHour()` | Round a datetime to the nearest hour boundary | [details](references/utilities/round-to-nearest-hour.md) |
+| `roundToNearestMinute()` | Round a datetime to the nearest minute boundary | [details](references/utilities/round-to-nearest-minute.md) |
+| `roundToNearestSecond()` | Round a datetime to the nearest second boundary | [details](references/utilities/round-to-nearest-second.md) |
 
 ## Types
 

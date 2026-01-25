@@ -5,6 +5,104 @@ import { toZonedTime } from './toZonedTime';
 import { isPlainDateBefore, isPlainDateEqual } from './index';
 
 describe('toPlainDate', () => {
+  describe('from PlainDateLike object', () => {
+    it('creates date from year, month, day', () => {
+      const date = toPlainDate({ year: 2025, month: 1, day: 20 });
+
+      expect(date).toBeInstanceOf(Temporal.PlainDate);
+      expect(date.year).toBe(2025);
+      expect(date.month).toBe(1);
+      expect(date.day).toBe(20);
+    });
+
+    it('creates date from Temporal.PlainDate instance', () => {
+      const original = Temporal.PlainDate.from('2025-07-04');
+      const date = toPlainDate(original);
+
+      expect(date).toBeInstanceOf(Temporal.PlainDate);
+      expect(date.year).toBe(2025);
+      expect(date.month).toBe(7);
+      expect(date.day).toBe(4);
+    });
+
+    it('creates date from Temporal.PlainDateTime (extracts date)', () => {
+      const dateTime = Temporal.PlainDateTime.from('2025-01-20T14:30:45');
+      const date = toPlainDate(dateTime);
+
+      expect(date).toBeInstanceOf(Temporal.PlainDate);
+      expect(date.year).toBe(2025);
+      expect(date.month).toBe(1);
+      expect(date.day).toBe(20);
+    });
+
+    it('handles leap year date', () => {
+      const date = toPlainDate({ year: 2024, month: 2, day: 29 });
+
+      expect(date.year).toBe(2024);
+      expect(date.month).toBe(2);
+      expect(date.day).toBe(29);
+    });
+
+    it('constrains out-of-range values in PlainDateLike (Temporal default)', () => {
+      // Unlike strings, PlainDateLike uses overflow: 'constrain' by default
+      // This is Temporal API behavior, not tiempo-specific
+      const feb29 = toPlainDate({ year: 2025, month: 2, day: 29 }); // Not a leap year
+      expect(feb29.month).toBe(2);
+      expect(feb29.day).toBe(28); // Constrained to Feb 28
+
+      const month13 = toPlainDate({ year: 2025, month: 13, day: 1 });
+      expect(month13.month).toBe(12); // Constrained to December
+    });
+  });
+
+  describe('from plain date string', () => {
+    it('parses YYYY-MM-DD format', () => {
+      const date = toPlainDate('2025-01-20');
+
+      expect(date).toBeInstanceOf(Temporal.PlainDate);
+      expect(date.year).toBe(2025);
+      expect(date.month).toBe(1);
+      expect(date.day).toBe(20);
+    });
+
+    it('parses first day of year', () => {
+      const date = toPlainDate('2025-01-01');
+
+      expect(date.year).toBe(2025);
+      expect(date.month).toBe(1);
+      expect(date.day).toBe(1);
+    });
+
+    it('parses last day of year', () => {
+      const date = toPlainDate('2025-12-31');
+
+      expect(date.year).toBe(2025);
+      expect(date.month).toBe(12);
+      expect(date.day).toBe(31);
+    });
+
+    it('parses leap year date', () => {
+      const date = toPlainDate('2024-02-29');
+
+      expect(date.year).toBe(2024);
+      expect(date.month).toBe(2);
+      expect(date.day).toBe(29);
+    });
+
+    it('parses with leading zeros', () => {
+      const date = toPlainDate('2025-03-05');
+
+      expect(date.month).toBe(3);
+      expect(date.day).toBe(5);
+    });
+
+    it('throws for invalid date values', () => {
+      expect(() => toPlainDate('2025-13-01')).toThrow();
+      expect(() => toPlainDate('2025-01-32')).toThrow();
+      expect(() => toPlainDate('2025-02-29')).toThrow(); // 2025 is not a leap year
+    });
+  });
+
   describe('from ZonedDateTime (single arg)', () => {
     it('extracts date from ZonedDateTime', () => {
       const zdt = toZonedTime('2025-01-20T15:30:45.123Z', 'America/New_York');
@@ -105,21 +203,25 @@ describe('toPlainDate', () => {
   });
 
   describe('error handling', () => {
-    it('throws when timezone is missing for non-ZonedDateTime input', () => {
-      expect(() => {
-        // @ts-expect-error - testing runtime error for missing timezone
-        toPlainDate('2025-01-20T15:30:00Z');
-      }).toThrow('Timezone is required unless input is a ZonedDateTime');
+    it('throws when timezone is missing for ISO datetime string', () => {
+      // ISO datetime strings need timezone to convert
+      expect(() => toPlainDate('2025-01-20T15:30:00Z')).toThrow(
+        'Timezone is required unless input is a ZonedDateTime, PlainDateLike, or plain date string'
+      );
+    });
 
+    it('throws when timezone is missing for Date', () => {
       expect(() => {
         // @ts-expect-error - testing runtime error for missing timezone
         toPlainDate(new Date());
-      }).toThrow('Timezone is required unless input is a ZonedDateTime');
+      }).toThrow('Timezone is required unless input is a ZonedDateTime, PlainDateLike, or plain date string');
+    });
 
+    it('throws when timezone is missing for Instant', () => {
       expect(() => {
         // @ts-expect-error - testing runtime error for missing timezone
         toPlainDate(Temporal.Instant.from('2025-01-20T15:30:00Z'));
-      }).toThrow('Timezone is required unless input is a ZonedDateTime');
+      }).toThrow('Timezone is required unless input is a ZonedDateTime, PlainDateLike, or plain date string');
     });
   });
 

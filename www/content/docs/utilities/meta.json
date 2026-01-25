@@ -1,6 +1,11 @@
 {
   "title": "Utilities",
-  "description": "Helper functions for timezone detection and other utilities",
+  "description": "Helper functions for timezone detection, rounding, and other utilities",
   "icon": "Wrench",
-  "pages": ["browser-timezone"]
+  "pages": [
+    "browser-timezone",
+    "round-to-nearest-hour",
+    "round-to-nearest-minute",
+    "round-to-nearest-second"
+  ]
 }

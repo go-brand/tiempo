@@ -13,8 +13,8 @@ tiempo provides a familiar date-fns-style API while leveraging the modern Tempor
 ## Conversion
 
 - [toZonedTime](https://eng.gobrand.app/tiempo/docs/conversion/to-zoned-time): Convert to a timezone-aware ZonedDateTime
-- [toPlainTime](https://eng.gobrand.app/tiempo/docs/conversion/to-plain-time): Extract wall-clock time from a ZonedDateTime or convert to a timezone and extract time
-- [toPlainDate](https://eng.gobrand.app/tiempo/docs/conversion/to-plain-date): Extract calendar date from a ZonedDateTime or convert to a timezone and extract date
+- [toPlainTime](https://eng.gobrand.app/tiempo/docs/conversion/to-plain-time): Parse a plain time or extract wall-clock time from a datetime
+- [toPlainDate](https://eng.gobrand.app/tiempo/docs/conversion/to-plain-date): Parse a plain date or extract calendar date from a datetime
 - [toUtc](https://eng.gobrand.app/tiempo/docs/conversion/to-utc): Convert to a UTC Instant
 - [toIso](https://eng.gobrand.app/tiempo/docs/conversion/to-iso): Convert to an ISO 8601 string
 - [toIso9075](https://eng.gobrand.app/tiempo/docs/conversion/to-iso9075): Convert to ISO 9075 (SQL) format string
@@ -84,6 +84,9 @@ tiempo provides a familiar date-fns-style API while leveraging the modern Tempor
 ## Utilities
 
 - [browserTimezone](https://eng.gobrand.app/tiempo/docs/utilities/browser-timezone): Get the browser/device timezone
+- [roundToNearestHour](https://eng.gobrand.app/tiempo/docs/utilities/round-to-nearest-hour): Round a datetime to the nearest hour boundary
+- [roundToNearestMinute](https://eng.gobrand.app/tiempo/docs/utilities/round-to-nearest-minute): Round a datetime to the nearest minute boundary
+- [roundToNearestSecond](https://eng.gobrand.app/tiempo/docs/utilities/round-to-nearest-second): Round a datetime to the nearest second boundary
 
 ## Optional
 

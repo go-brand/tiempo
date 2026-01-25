@@ -70,6 +70,18 @@ export { differenceInWeeks } from './differenceInWeeks';
 export { differenceInMonths } from './differenceInMonths';
 export { differenceInYears } from './differenceInYears';
 export {
+  roundToNearestHour,
+  type RoundToNearestHourOptions,
+} from './roundToNearestHour';
+export {
+  roundToNearestMinute,
+  type RoundToNearestMinuteOptions,
+} from './roundToNearestMinute';
+export {
+  roundToNearestSecond,
+  type RoundToNearestSecondOptions,
+} from './roundToNearestSecond';
+export {
   intlFormatDistance,
   type IntlFormatDistanceOptions,
 } from './intlFormatDistance';

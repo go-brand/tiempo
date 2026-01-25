@@ -5,6 +5,131 @@ import { toZonedTime } from './toZonedTime';
 import { isPlainTimeBefore } from './isPlainTimeBefore';
 
 describe('toPlainTime', () => {
+  describe('from PlainTimeLike object', () => {
+    it('creates time from hour and minute', () => {
+      const time = toPlainTime({ hour: 14, minute: 30 });
+
+      expect(time).toBeInstanceOf(Temporal.PlainTime);
+      expect(time.hour).toBe(14);
+      expect(time.minute).toBe(30);
+      expect(time.second).toBe(0);
+    });
+
+    it('creates time with all components', () => {
+      const time = toPlainTime({
+        hour: 14,
+        minute: 30,
+        second: 45,
+        millisecond: 123,
+        microsecond: 456,
+        nanosecond: 789,
+      });
+
+      expect(time.hour).toBe(14);
+      expect(time.minute).toBe(30);
+      expect(time.second).toBe(45);
+      expect(time.millisecond).toBe(123);
+      expect(time.microsecond).toBe(456);
+      expect(time.nanosecond).toBe(789);
+    });
+
+    it('throws for empty object (no time properties)', () => {
+      // Temporal.PlainTime.from({}) throws "invalid time-like"
+      expect(() => toPlainTime({})).toThrow();
+    });
+
+    it('creates time from partial object (only hour)', () => {
+      const time = toPlainTime({ hour: 9 });
+
+      expect(time.hour).toBe(9);
+      expect(time.minute).toBe(0);
+    });
+
+    it('creates time from Temporal.PlainTime instance', () => {
+      const original = Temporal.PlainTime.from('14:30:45');
+      const time = toPlainTime(original);
+
+      expect(time).toBeInstanceOf(Temporal.PlainTime);
+      expect(time.hour).toBe(14);
+      expect(time.minute).toBe(30);
+      expect(time.second).toBe(45);
+    });
+
+    it('creates time from Temporal.PlainDateTime (extracts time)', () => {
+      const dateTime = Temporal.PlainDateTime.from('2025-01-20T14:30:45');
+      const time = toPlainTime(dateTime);
+
+      expect(time).toBeInstanceOf(Temporal.PlainTime);
+      expect(time.hour).toBe(14);
+      expect(time.minute).toBe(30);
+      expect(time.second).toBe(45);
+    });
+  });
+
+  describe('from plain time string', () => {
+    it('parses HH:MM format', () => {
+      const time = toPlainTime('14:30');
+
+      expect(time).toBeInstanceOf(Temporal.PlainTime);
+      expect(time.hour).toBe(14);
+      expect(time.minute).toBe(30);
+      expect(time.second).toBe(0);
+    });
+
+    it('parses HH:MM:SS format', () => {
+      const time = toPlainTime('14:30:45');
+
+      expect(time).toBeInstanceOf(Temporal.PlainTime);
+      expect(time.hour).toBe(14);
+      expect(time.minute).toBe(30);
+      expect(time.second).toBe(45);
+    });
+
+    it('parses HH:MM:SS.mmm format (subsecond precision)', () => {
+      const time = toPlainTime('14:30:45.123');
+
+      expect(time).toBeInstanceOf(Temporal.PlainTime);
+      expect(time.hour).toBe(14);
+      expect(time.minute).toBe(30);
+      expect(time.second).toBe(45);
+      expect(time.millisecond).toBe(123);
+    });
+
+    it('parses full nanosecond precision', () => {
+      const time = toPlainTime('14:30:45.123456789');
+
+      expect(time.millisecond).toBe(123);
+      expect(time.microsecond).toBe(456);
+      expect(time.nanosecond).toBe(789);
+    });
+
+    it('parses midnight', () => {
+      const time = toPlainTime('00:00');
+
+      expect(time.hour).toBe(0);
+      expect(time.minute).toBe(0);
+    });
+
+    it('parses end of day', () => {
+      const time = toPlainTime('23:59');
+
+      expect(time.hour).toBe(23);
+      expect(time.minute).toBe(59);
+    });
+
+    it('parses with leading zeros', () => {
+      const time = toPlainTime('09:05');
+
+      expect(time.hour).toBe(9);
+      expect(time.minute).toBe(5);
+    });
+
+    it('throws for invalid time values', () => {
+      expect(() => toPlainTime('25:00')).toThrow();
+      expect(() => toPlainTime('12:60')).toThrow();
+    });
+  });
+
   describe('from ZonedDateTime (single arg)', () => {
     it('extracts time from ZonedDateTime', () => {
       const zdt = toZonedTime('2025-01-20T15:30:45.123Z', 'America/New_York');
@@ -121,21 +246,25 @@ describe('toPlainTime', () => {
   });
 
   describe('error handling', () => {
-    it('throws when timezone is missing for non-ZonedDateTime input', () => {
-      expect(() => {
-        // @ts-expect-error - testing runtime error for missing timezone
-        toPlainTime('2025-01-20T15:30:00Z');
-      }).toThrow('Timezone is required unless input is a ZonedDateTime');
+    it('throws when timezone is missing for ISO datetime string', () => {
+      // ISO datetime strings need timezone to convert
+      expect(() => toPlainTime('2025-01-20T15:30:00Z')).toThrow(
+        'Timezone is required unless input is a ZonedDateTime, PlainTimeLike, or plain time string'
+      );
+    });
 
+    it('throws when timezone is missing for Date', () => {
       expect(() => {
         // @ts-expect-error - testing runtime error for missing timezone
         toPlainTime(new Date());
-      }).toThrow('Timezone is required unless input is a ZonedDateTime');
+      }).toThrow('Timezone is required unless input is a ZonedDateTime, PlainTimeLike, or plain time string');
+    });
 
+    it('throws when timezone is missing for Instant', () => {
       expect(() => {
         // @ts-expect-error - testing runtime error for missing timezone
         toPlainTime(Temporal.Instant.from('2025-01-20T15:30:00Z'));
-      }).toThrow('Timezone is required unless input is a ZonedDateTime');
+      }).toThrow('Timezone is required unless input is a ZonedDateTime, PlainTimeLike, or plain time string');
     });
   });
 

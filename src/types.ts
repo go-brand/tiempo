@@ -15,4 +15,4 @@ import type { IANATimezone } from './types/iana-timezones';
  */
 export type Timezone = 'UTC' | IANATimezone;
 
-export type { IANATimezone }
+export type { IANATimezone };
