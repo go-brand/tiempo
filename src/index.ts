@@ -1,5 +1,6 @@
 export { toZonedTime } from './toZonedTime';
 export { toPlainTime } from './toPlainTime';
+export { toPlainDate } from './toPlainDate';
 export type { Timezone, IANATimezone } from './types';
 export { browserTimezone } from './browserTimezone';
 export { toUtc } from './toUtc';

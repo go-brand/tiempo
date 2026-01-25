@@ -25,6 +25,7 @@ npm install @gobrand/tiempo
 |----------|-------------|-----------|
 | `toZonedTime()` | Convert to a timezone-aware ZonedDateTime | [details](references/conversion/to-zoned-time.md) |
 | `toPlainTime()` | Extract wall-clock time from a ZonedDateTime or convert to a timezone and extract time | [details](references/conversion/to-plain-time.md) |
+| `toPlainDate()` | Extract calendar date from a ZonedDateTime or convert to a timezone and extract date | [details](references/conversion/to-plain-date.md) |
 | `toUtc()` | Convert to a UTC Instant | [details](references/conversion/to-utc.md) |
 | `toIso()` | Convert to an ISO 8601 string | [details](references/conversion/to-iso.md) |
 | `toIso9075()` | Convert to ISO 9075 (SQL) format string | [details](references/conversion/to-iso9075.md) |
