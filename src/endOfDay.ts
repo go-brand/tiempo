@@ -1,6 +1,8 @@
 import { Temporal } from '@js-temporal/polyfill';
+import type { Timezone } from './types';
 import { getEndOfDay } from './shared/endOfDay';
 import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
+import { plainDateToZonedDateTime } from './shared/plainDateToZonedDateTime';
 
 /**
  * Returns a ZonedDateTime representing the last nanosecond of the day.
@@ -26,17 +28,27 @@ import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
  *
  * @example
  * ```ts
- * // Need a different timezone? Convert first
- * const instant = Temporal.Instant.from('2025-01-20T12:00:00Z');
- * const nyTime = instant.toZonedDateTimeISO('America/New_York');
- * const end = endOfDay(nyTime);
+ * // From PlainDate (requires timezone)
+ * const date = Temporal.PlainDate.from('2025-01-20');
+ * const end = endOfDay(date, 'America/New_York');
  * // 2025-01-20T23:59:59.999999999-05:00[America/New_York]
  * ```
  */
 export function endOfDay(
   input: Temporal.Instant | Temporal.ZonedDateTime
+): Temporal.ZonedDateTime;
+export function endOfDay(
+  input: Temporal.PlainDate,
+  timezone: Timezone
+): Temporal.ZonedDateTime;
+export function endOfDay(
+  input: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate,
+  timezone?: Timezone
 ): Temporal.ZonedDateTime {
-  const zonedDateTime = normalizeTemporalInput(input);
+  if (input instanceof Temporal.PlainDate) {
+    return getEndOfDay(plainDateToZonedDateTime(input, timezone!));
+  }
 
+  const zonedDateTime = normalizeTemporalInput(input);
   return getEndOfDay(zonedDateTime);
 }

@@ -219,6 +219,56 @@ describe('endOfMonth', () => {
     });
   });
 
+  describe('from Temporal.PlainDate', () => {
+    it('returns end of month in specified timezone', () => {
+      const date = Temporal.PlainDate.from('2025-01-15');
+      const end = endOfMonth(date, 'America/New_York');
+
+      expect(end).toBeInstanceOf(Temporal.ZonedDateTime);
+      expect(end.year).toBe(2025);
+      expect(end.month).toBe(1);
+      expect(end.day).toBe(31);
+      expect(end.hour).toBe(23);
+      expect(end.minute).toBe(59);
+      expect(end.second).toBe(59);
+      expect(end.millisecond).toBe(999);
+      expect(end.timeZoneId).toBe('America/New_York');
+    });
+
+    it('same PlainDate produces different instants for different timezones', () => {
+      const date = Temporal.PlainDate.from('2025-01-15');
+      const endTokyo = endOfMonth(date, 'Asia/Tokyo');
+      const endNY = endOfMonth(date, 'America/New_York');
+
+      // Same calendar date, both return Jan 31
+      expect(endTokyo.day).toBe(31);
+      expect(endNY.day).toBe(31);
+
+      // But different instants
+      expect(endTokyo.toInstant().toString()).not.toBe(
+        endNY.toInstant().toString()
+      );
+    });
+
+    it('handles leap year February', () => {
+      const date = Temporal.PlainDate.from('2024-02-15');
+      const end = endOfMonth(date, 'UTC');
+
+      expect(end.year).toBe(2024);
+      expect(end.month).toBe(2);
+      expect(end.day).toBe(29); // Leap year
+    });
+
+    it('handles non-leap year February', () => {
+      const date = Temporal.PlainDate.from('2025-02-15');
+      const end = endOfMonth(date, 'UTC');
+
+      expect(end.year).toBe(2025);
+      expect(end.month).toBe(2);
+      expect(end.day).toBe(28); // Not leap year
+    });
+  });
+
   describe('edge cases', () => {
     it('handles start of year (January)', () => {
       const instant = Temporal.Instant.from('2025-01-01T12:00:00Z');

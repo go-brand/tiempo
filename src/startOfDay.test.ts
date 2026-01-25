@@ -152,6 +152,63 @@ describe('startOfDay', () => {
     });
   });
 
+  describe('from Temporal.PlainDate', () => {
+    it('returns start of day in specified timezone', () => {
+      const date = Temporal.PlainDate.from('2025-01-20');
+      const start = startOfDay(date, 'America/New_York');
+
+      expect(start).toBeInstanceOf(Temporal.ZonedDateTime);
+      expect(start.year).toBe(2025);
+      expect(start.month).toBe(1);
+      expect(start.day).toBe(20);
+      expect(start.hour).toBe(0);
+      expect(start.minute).toBe(0);
+      expect(start.second).toBe(0);
+      expect(start.millisecond).toBe(0);
+      expect(start.microsecond).toBe(0);
+      expect(start.nanosecond).toBe(0);
+      expect(start.timeZoneId).toBe('America/New_York');
+    });
+
+    it('same PlainDate produces different instants for different timezones', () => {
+      const date = Temporal.PlainDate.from('2025-01-20');
+      const startTokyo = startOfDay(date, 'Asia/Tokyo');
+      const startNY = startOfDay(date, 'America/New_York');
+
+      // Same calendar date, but different instants
+      expect(startTokyo.day).toBe(20);
+      expect(startNY.day).toBe(20);
+      expect(startTokyo.toInstant().toString()).not.toBe(
+        startNY.toInstant().toString()
+      );
+
+      // Tokyo midnight happens before NY midnight
+      expect(
+        Temporal.Instant.compare(startTokyo.toInstant(), startNY.toInstant())
+      ).toBe(-1);
+    });
+
+    it('works with UTC timezone', () => {
+      const date = Temporal.PlainDate.from('2025-01-20');
+      const start = startOfDay(date, 'UTC');
+
+      expect(start.day).toBe(20);
+      expect(start.hour).toBe(0);
+      expect(start.timeZoneId).toBe('UTC');
+      expect(start.toInstant().toString()).toBe('2025-01-20T00:00:00Z');
+    });
+
+    it('handles leap year February 29', () => {
+      const date = Temporal.PlainDate.from('2024-02-29');
+      const start = startOfDay(date, 'America/New_York');
+
+      expect(start.year).toBe(2024);
+      expect(start.month).toBe(2);
+      expect(start.day).toBe(29);
+      expect(start.hour).toBe(0);
+    });
+  });
+
   describe('edge cases', () => {
     it('handles start of month', () => {
       const instant = Temporal.Instant.from('2025-01-01T12:00:00Z');

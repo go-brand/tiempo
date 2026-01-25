@@ -155,6 +155,75 @@ describe('endOfDay', () => {
     });
   });
 
+  describe('from Temporal.PlainDate', () => {
+    it('returns end of day in specified timezone', () => {
+      const date = Temporal.PlainDate.from('2025-01-20');
+      const end = endOfDay(date, 'America/New_York');
+
+      expect(end).toBeInstanceOf(Temporal.ZonedDateTime);
+      expect(end.year).toBe(2025);
+      expect(end.month).toBe(1);
+      expect(end.day).toBe(20);
+      expect(end.hour).toBe(23);
+      expect(end.minute).toBe(59);
+      expect(end.second).toBe(59);
+      expect(end.millisecond).toBe(999);
+      expect(end.microsecond).toBe(999);
+      expect(end.nanosecond).toBe(999);
+      expect(end.timeZoneId).toBe('America/New_York');
+    });
+
+    it('same PlainDate produces different instants for different timezones', () => {
+      const date = Temporal.PlainDate.from('2025-01-20');
+      const endTokyo = endOfDay(date, 'Asia/Tokyo');
+      const endNY = endOfDay(date, 'America/New_York');
+
+      // Same calendar date, but different instants
+      expect(endTokyo.day).toBe(20);
+      expect(endNY.day).toBe(20);
+      expect(endTokyo.toInstant().toString()).not.toBe(
+        endNY.toInstant().toString()
+      );
+
+      // Tokyo end of day happens before NY end of day
+      expect(
+        Temporal.Instant.compare(endTokyo.toInstant(), endNY.toInstant())
+      ).toBe(-1);
+    });
+
+    it('works with UTC timezone', () => {
+      const date = Temporal.PlainDate.from('2025-01-20');
+      const end = endOfDay(date, 'UTC');
+
+      expect(end.day).toBe(20);
+      expect(end.hour).toBe(23);
+      expect(end.minute).toBe(59);
+      expect(end.second).toBe(59);
+      expect(end.timeZoneId).toBe('UTC');
+    });
+
+    it('handles leap year February 29', () => {
+      const date = Temporal.PlainDate.from('2024-02-29');
+      const end = endOfDay(date, 'America/New_York');
+
+      expect(end.year).toBe(2024);
+      expect(end.month).toBe(2);
+      expect(end.day).toBe(29);
+      expect(end.hour).toBe(23);
+    });
+
+    it('adding one nanosecond rolls over to next day', () => {
+      const date = Temporal.PlainDate.from('2025-01-20');
+      const end = endOfDay(date, 'America/New_York');
+
+      const nextDay = end.add({ nanoseconds: 1 });
+      expect(nextDay.day).toBe(21);
+      expect(nextDay.hour).toBe(0);
+      expect(nextDay.minute).toBe(0);
+      expect(nextDay.second).toBe(0);
+    });
+  });
+
   describe('edge cases', () => {
     it('handles end of month', () => {
       const instant = Temporal.Instant.from('2025-01-31T12:00:00Z');

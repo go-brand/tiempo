@@ -12,12 +12,18 @@
 
 import * as fs from "node:fs";
 import * as path from "node:path";
+import * as os from "node:os";
 
 const DOCS_DIR = "www/content/docs";
 const SKILL_REFS_DIR = "skills/tiempo/references";
 const LLMS_TXT_PATH = "www/public/llms.txt";
 const SKILL_MD_PATH = "skills/tiempo/SKILL.md";
 const BASE_URL = "https://eng.gobrand.app/tiempo/docs";
+
+// Global skill directory (synced alongside repo skills)
+const GLOBAL_SKILL_DIR = path.join(os.homedir(), ".claude/skills/tiempo");
+const GLOBAL_SKILL_REFS_DIR = path.join(GLOBAL_SKILL_DIR, "references");
+const GLOBAL_SKILL_MD_PATH = path.join(GLOBAL_SKILL_DIR, "SKILL.md");
 
 // Categories to process (in order for llms.txt)
 const CATEGORIES = [
@@ -167,14 +173,23 @@ function generateSkillRefs(docs: DocFile[]): void {
   console.log("Generating skill reference files...");
 
   for (const doc of docs) {
+    const markdown = generateSkillMarkdown(doc);
+
+    // Write to repo
     const outDir = path.join(SKILL_REFS_DIR, doc.category);
     fs.mkdirSync(outDir, { recursive: true });
-
     const outPath = path.join(outDir, `${doc.slug}.md`);
-    const markdown = generateSkillMarkdown(doc);
     fs.writeFileSync(outPath, markdown);
     console.log(`  ✓ ${outPath}`);
+
+    // Write to global skill directory
+    const globalOutDir = path.join(GLOBAL_SKILL_REFS_DIR, doc.category);
+    fs.mkdirSync(globalOutDir, { recursive: true });
+    const globalOutPath = path.join(globalOutDir, `${doc.slug}.md`);
+    fs.writeFileSync(globalOutPath, markdown);
   }
+
+  console.log(`  ✓ Synced to ${GLOBAL_SKILL_REFS_DIR}`);
 }
 
 /**
@@ -320,8 +335,16 @@ function generateSkillMd(docs: DocFile[]): void {
   lines.push("```");
   lines.push("");
 
-  fs.writeFileSync(SKILL_MD_PATH, lines.join("\n"));
+  const content = lines.join("\n");
+
+  // Write to repo
+  fs.writeFileSync(SKILL_MD_PATH, content);
   console.log(`  ✓ ${SKILL_MD_PATH}`);
+
+  // Write to global skill directory
+  fs.mkdirSync(GLOBAL_SKILL_DIR, { recursive: true });
+  fs.writeFileSync(GLOBAL_SKILL_MD_PATH, content);
+  console.log(`  ✓ ${GLOBAL_SKILL_MD_PATH}`);
 }
 
 /**

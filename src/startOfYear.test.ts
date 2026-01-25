@@ -214,6 +214,48 @@ describe('startOfYear', () => {
     });
   });
 
+  describe('from Temporal.PlainDate', () => {
+    it('returns start of year in specified timezone', () => {
+      const date = Temporal.PlainDate.from('2025-06-15');
+      const start = startOfYear(date, 'America/New_York');
+
+      expect(start).toBeInstanceOf(Temporal.ZonedDateTime);
+      expect(start.year).toBe(2025);
+      expect(start.month).toBe(1);
+      expect(start.day).toBe(1);
+      expect(start.hour).toBe(0);
+      expect(start.minute).toBe(0);
+      expect(start.second).toBe(0);
+      expect(start.timeZoneId).toBe('America/New_York');
+    });
+
+    it('same PlainDate produces different instants for different timezones', () => {
+      const date = Temporal.PlainDate.from('2025-06-15');
+      const startTokyo = startOfYear(date, 'Asia/Tokyo');
+      const startNY = startOfYear(date, 'America/New_York');
+
+      // Same calendar date, both return Jan 1
+      expect(startTokyo.month).toBe(1);
+      expect(startTokyo.day).toBe(1);
+      expect(startNY.month).toBe(1);
+      expect(startNY.day).toBe(1);
+
+      // But different instants
+      expect(startTokyo.toInstant().toString()).not.toBe(
+        startNY.toInstant().toString()
+      );
+    });
+
+    it('handles leap year', () => {
+      const date = Temporal.PlainDate.from('2024-02-29');
+      const start = startOfYear(date, 'UTC');
+
+      expect(start.year).toBe(2024);
+      expect(start.month).toBe(1);
+      expect(start.day).toBe(1);
+    });
+  });
+
   describe('edge cases', () => {
     it('handles century year (not leap)', () => {
       // 2100 is not a leap year (divisible by 100 but not 400)

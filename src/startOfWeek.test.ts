@@ -225,6 +225,52 @@ describe('startOfWeek', () => {
     });
   });
 
+  describe('from Temporal.PlainDate', () => {
+    it('returns start of week in specified timezone', () => {
+      // Wednesday Jan 22, 2025
+      const date = Temporal.PlainDate.from('2025-01-22');
+      const start = startOfWeek(date, 'America/New_York');
+
+      expect(start).toBeInstanceOf(Temporal.ZonedDateTime);
+      expect(start.year).toBe(2025);
+      expect(start.month).toBe(1);
+      expect(start.day).toBe(20); // Monday
+      expect(start.hour).toBe(0);
+      expect(start.minute).toBe(0);
+      expect(start.second).toBe(0);
+      expect(start.timeZoneId).toBe('America/New_York');
+      expect(start.dayOfWeek).toBe(1);
+    });
+
+    it('same PlainDate produces different instants for different timezones', () => {
+      const date = Temporal.PlainDate.from('2025-01-22');
+      const startTokyo = startOfWeek(date, 'Asia/Tokyo');
+      const startNY = startOfWeek(date, 'America/New_York');
+
+      // Same calendar date, both return Monday Jan 20
+      expect(startTokyo.day).toBe(20);
+      expect(startNY.day).toBe(20);
+      expect(startTokyo.dayOfWeek).toBe(1);
+      expect(startNY.dayOfWeek).toBe(1);
+
+      // But different instants
+      expect(startTokyo.toInstant().toString()).not.toBe(
+        startNY.toInstant().toString()
+      );
+    });
+
+    it('handles week crossing month boundary', () => {
+      // Friday Jan 31, 2025
+      const date = Temporal.PlainDate.from('2025-01-31');
+      const start = startOfWeek(date, 'UTC');
+
+      // Should be Monday Jan 27
+      expect(start.day).toBe(27);
+      expect(start.month).toBe(1);
+      expect(start.dayOfWeek).toBe(1);
+    });
+  });
+
   describe('edge cases', () => {
     it('handles start of year on Monday', () => {
       // Monday January 1, 2024
