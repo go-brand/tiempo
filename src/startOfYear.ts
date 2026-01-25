@@ -1,7 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill';
 import type { Timezone } from './types';
-import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
-import { plainDateToZonedDateTime } from './shared/plainDateToZonedDateTime';
+import { normalizeWithPlainDate } from './shared/normalizeWithPlainDate';
 
 /**
  * Returns a ZonedDateTime representing the first moment of the year (January 1 at midnight).
@@ -44,13 +43,7 @@ export function startOfYear(
   input: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate,
   timezone?: Timezone
 ): Temporal.ZonedDateTime {
-  const zonedDateTime =
-    input instanceof Temporal.PlainDate
-      ? plainDateToZonedDateTime(input, timezone!)
-      : normalizeTemporalInput(input);
-
-  // Set to January 1st, then get start of that day
+  const zonedDateTime = normalizeWithPlainDate(input, timezone!);
   const firstDay = zonedDateTime.with({ month: 1, day: 1 });
-
   return firstDay.startOfDay();
 }

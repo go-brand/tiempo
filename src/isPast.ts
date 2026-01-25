@@ -1,5 +1,7 @@
-import { Temporal } from '@js-temporal/polyfill';
+import type { Temporal } from '@js-temporal/polyfill';
 import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
+import { isBefore } from './shared/isBefore';
+import { nowZoned } from './shared/nowZoned';
 
 /**
  * Returns true if the given datetime is in the past.
@@ -37,7 +39,6 @@ export function isPast(
   date: Temporal.Instant | Temporal.ZonedDateTime
 ): boolean {
   const zoned = normalizeTemporalInput(date);
-  const nowInstant = Temporal.Now.instant();
 
-  return Temporal.Instant.compare(zoned.toInstant(), nowInstant) < 0;
+  return isBefore(zoned, nowZoned());
 }

@@ -1,8 +1,7 @@
 import { Temporal } from '@js-temporal/polyfill';
 import type { Timezone } from './types';
 import { getEndOfDay } from './shared/endOfDay';
-import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
-import { plainDateToZonedDateTime } from './shared/plainDateToZonedDateTime';
+import { normalizeWithPlainDate } from './shared/normalizeWithPlainDate';
 
 /**
  * Returns a ZonedDateTime representing the last nanosecond of the day.
@@ -45,10 +44,6 @@ export function endOfDay(
   input: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate,
   timezone?: Timezone
 ): Temporal.ZonedDateTime {
-  if (input instanceof Temporal.PlainDate) {
-    return getEndOfDay(plainDateToZonedDateTime(input, timezone!));
-  }
-
-  const zonedDateTime = normalizeTemporalInput(input);
+  const zonedDateTime = normalizeWithPlainDate(input, timezone!);
   return getEndOfDay(zonedDateTime);
 }

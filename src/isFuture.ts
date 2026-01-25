@@ -1,5 +1,7 @@
-import { Temporal } from '@js-temporal/polyfill';
+import type { Temporal } from '@js-temporal/polyfill';
 import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
+import { isAfter } from './shared/isAfter';
+import { nowZoned } from './shared/nowZoned';
 
 /**
  * Returns true if the given datetime is in the future.
@@ -37,7 +39,6 @@ export function isFuture(
   date: Temporal.Instant | Temporal.ZonedDateTime
 ): boolean {
   const zoned = normalizeTemporalInput(date);
-  const nowInstant = Temporal.Now.instant();
 
-  return Temporal.Instant.compare(zoned.toInstant(), nowInstant) > 0;
+  return isAfter(zoned, nowZoned());
 }

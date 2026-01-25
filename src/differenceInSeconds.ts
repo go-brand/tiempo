@@ -1,5 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill';
 import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
+import { differenceInMilliseconds } from './shared/differenceInMilliseconds';
 
 /**
  * Returns the number of seconds between two datetimes.
@@ -42,5 +43,5 @@ export function differenceInSeconds(
   const zoned1 = normalizeTemporalInput(laterDate);
   const zoned2 = normalizeTemporalInput(earlierDate);
 
-  return Math.trunc((zoned1.epochMilliseconds - zoned2.epochMilliseconds) / 1000);
+  return Math.trunc(differenceInMilliseconds(zoned1, zoned2) / 1000);
 }

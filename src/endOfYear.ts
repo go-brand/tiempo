@@ -1,8 +1,7 @@
 import { Temporal } from '@js-temporal/polyfill';
 import type { Timezone } from './types';
 import { getEndOfDay } from './shared/endOfDay';
-import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
-import { plainDateToZonedDateTime } from './shared/plainDateToZonedDateTime';
+import { normalizeWithPlainDate } from './shared/normalizeWithPlainDate';
 
 /**
  * Returns a ZonedDateTime representing the last moment of the year (last day at 23:59:59.999999999).
@@ -45,17 +44,8 @@ export function endOfYear(
   input: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate,
   timezone?: Timezone
 ): Temporal.ZonedDateTime {
-  const zonedDateTime =
-    input instanceof Temporal.PlainDate
-      ? plainDateToZonedDateTime(input, timezone!)
-      : normalizeTemporalInput(input);
-
-  // Get the number of months in this year
-  const monthsInYear = zonedDateTime.monthsInYear;
-
-  // Set to last month, then get last day of that month
-  const lastMonth = zonedDateTime.with({ month: monthsInYear });
+  const zonedDateTime = normalizeWithPlainDate(input, timezone!);
+  const lastMonth = zonedDateTime.with({ month: zonedDateTime.monthsInYear });
   const lastDay = lastMonth.with({ day: lastMonth.daysInMonth });
-
   return getEndOfDay(lastDay);
 }

@@ -1,7 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill';
 import type { Timezone } from './types';
-import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
-import { plainDateToZonedDateTime } from './shared/plainDateToZonedDateTime';
+import { normalizeWithPlainDate } from './shared/normalizeWithPlainDate';
 
 /**
  * Returns a ZonedDateTime representing the first moment of the day (midnight).
@@ -44,10 +43,6 @@ export function startOfDay(
   input: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate,
   timezone?: Timezone
 ): Temporal.ZonedDateTime {
-  if (input instanceof Temporal.PlainDate) {
-    return plainDateToZonedDateTime(input, timezone!).startOfDay();
-  }
-
-  const zonedDateTime = normalizeTemporalInput(input);
+  const zonedDateTime = normalizeWithPlainDate(input, timezone!);
   return zonedDateTime.startOfDay();
 }
