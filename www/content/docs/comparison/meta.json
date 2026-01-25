@@ -5,6 +5,7 @@
   "pages": [
     "is-before",
     "is-after",
+    "is-within-interval",
     "is-future",
     "is-past",
     "is-same-day",
