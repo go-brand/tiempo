@@ -44,7 +44,7 @@ npm install @gobrand/tiempo
 |----------|-------------|-----------|
 | `format()` | Format a datetime using date-fns-like format tokens | [details](references/formatting/format.md) |
 | `formatPlainDate()` | Format a PlainDate using date-fns-like format tokens | [details](references/formatting/format-plain-date.md) |
-| `simpleFormat()` | Human-friendly date formatting like "Dec 23" or "Dec 23, 2020" | [details](references/formatting/simple-format.md) |
+| `simpleFormat()` | Human-friendly date/time formatting with explicit control over what to display | [details](references/formatting/simple-format.md) |
 | `intlFormatDistance()` | Format the distance between dates as human-readable, internationalized strings | [details](references/formatting/intl-format-distance.md) |
 
 ## Arithmetic

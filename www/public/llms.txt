@@ -29,7 +29,7 @@ tiempo provides a familiar date-fns-style API while leveraging the modern Tempor
 
 - [format](https://eng.gobrand.app/tiempo/docs/formatting/format): Format a datetime using date-fns-like format tokens
 - [formatPlainDate](https://eng.gobrand.app/tiempo/docs/formatting/format-plain-date): Format a PlainDate using date-fns-like format tokens
-- [simpleFormat](https://eng.gobrand.app/tiempo/docs/formatting/simple-format): Human-friendly date formatting like "Dec 23" or "Dec 23, 2020"
+- [simpleFormat](https://eng.gobrand.app/tiempo/docs/formatting/simple-format): Human-friendly date/time formatting with explicit control over what to display
 - [intlFormatDistance](https://eng.gobrand.app/tiempo/docs/formatting/intl-format-distance): Format the distance between dates as human-readable, internationalized strings
 
 ## Arithmetic
