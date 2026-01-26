@@ -14,7 +14,7 @@ export {
 export { toDate } from './toDate';
 export { format, type FormatOptions } from './format';
 export { formatPlainDate, type FormatPlainDateOptions } from './formatPlainDate';
-export { simpleFormat } from './simpleFormat';
+export { simpleFormat, type SimpleFormatOptions } from './simpleFormat';
 export { today } from './today';
 export { now } from './now';
 export { startOfDay } from './startOfDay';
