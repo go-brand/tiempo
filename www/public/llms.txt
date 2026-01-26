@@ -82,6 +82,15 @@ tiempo provides a familiar date-fns-style API while leveraging the modern Tempor
 - [differenceInMinutes](https://eng.gobrand.app/tiempo/docs/difference/difference-in-minutes): Calculate the difference between two dates in minutes
 - [differenceInSeconds](https://eng.gobrand.app/tiempo/docs/difference/difference-in-seconds): Calculate the difference between two dates in seconds
 
+## Intervals
+
+- [eachYearOfInterval](https://eng.gobrand.app/tiempo/docs/intervals/each-year-of-interval): Get all years in an interval as ZonedDateTime array
+- [eachMonthOfInterval](https://eng.gobrand.app/tiempo/docs/intervals/each-month-of-interval): Get all months in an interval as ZonedDateTime array
+- [eachWeekOfInterval](https://eng.gobrand.app/tiempo/docs/intervals/each-week-of-interval): Get all weeks (ISO Monday start) in an interval as ZonedDateTime array
+- [eachDayOfInterval](https://eng.gobrand.app/tiempo/docs/intervals/each-day-of-interval): Get all days in an interval as ZonedDateTime array
+- [eachHourOfInterval](https://eng.gobrand.app/tiempo/docs/intervals/each-hour-of-interval): Get all hours in an interval as ZonedDateTime array
+- [eachMinuteOfInterval](https://eng.gobrand.app/tiempo/docs/intervals/each-minute-of-interval): Get all minutes in an interval as ZonedDateTime array
+
 ## Utilities
 
 - [browserTimezone](https://eng.gobrand.app/tiempo/docs/utilities/browser-timezone): Get the browser/device timezone

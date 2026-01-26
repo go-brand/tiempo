@@ -126,6 +126,17 @@ npm install @gobrand/tiempo
 | `differenceInMicroseconds()` | Calculate the difference between two datetimes in microseconds | [details](references/difference/difference-in-microseconds.md) |
 | `differenceInNanoseconds()` | Calculate the difference between two datetimes in nanoseconds | [details](references/difference/difference-in-nanoseconds.md) |
 
+## Intervals
+
+| Function | Description | Reference |
+|----------|-------------|-----------|
+| `eachYearOfInterval()` | Get all years in an interval as ZonedDateTime array | [details](references/intervals/each-year-of-interval.md) |
+| `eachMonthOfInterval()` | Get all months in an interval as ZonedDateTime array | [details](references/intervals/each-month-of-interval.md) |
+| `eachWeekOfInterval()` | Get all weeks (ISO Monday start) in an interval as ZonedDateTime array | [details](references/intervals/each-week-of-interval.md) |
+| `eachDayOfInterval()` | Get all days in an interval as ZonedDateTime array | [details](references/intervals/each-day-of-interval.md) |
+| `eachHourOfInterval()` | Get all hours in an interval as ZonedDateTime array | [details](references/intervals/each-hour-of-interval.md) |
+| `eachMinuteOfInterval()` | Get all minutes in an interval as ZonedDateTime array | [details](references/intervals/each-minute-of-interval.md) |
+
 ## Utilities
 
 | Function | Description | Reference |

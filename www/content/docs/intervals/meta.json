@@ -1,0 +1,13 @@
+{
+  "title": "Intervals",
+  "description": "Iterate over intervals to get arrays of ZonedDateTime objects",
+  "icon": "CalendarRange",
+  "pages": [
+    "each-year-of-interval",
+    "each-month-of-interval",
+    "each-week-of-interval",
+    "each-day-of-interval",
+    "each-hour-of-interval",
+    "each-minute-of-interval"
+  ]
+}

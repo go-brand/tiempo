@@ -34,6 +34,7 @@ const CATEGORIES = [
   "boundaries",
   "comparison",
   "difference",
+  "intervals",
   "utilities",
 ] as const;
 
@@ -46,6 +47,7 @@ const CATEGORY_TITLES: Record<string, string> = {
   boundaries: "Boundaries",
   comparison: "Comparison",
   difference: "Difference",
+  intervals: "Intervals",
   utilities: "Utilities",
 };
 
