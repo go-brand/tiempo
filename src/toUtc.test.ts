@@ -48,6 +48,58 @@ describe('toUtc', () => {
     });
   });
 
+  describe('from Unix timestamp', () => {
+    it('converts Unix timestamp (milliseconds) to Temporal.Instant', () => {
+      const timestamp = 1737403200000; // 2025-01-20T20:00:00.000Z
+      const instant = toUtc(timestamp);
+
+      expect(instant).toBeInstanceOf(Temporal.Instant);
+      expect(instant.toString()).toBe('2025-01-20T20:00:00Z');
+      expect(instant.epochMilliseconds).toBe(timestamp);
+    });
+
+    it('handles Unix timestamp from database BIGINT', () => {
+      // Common pattern: PostgreSQL storing timestamps as BIGINT
+      const dbTimestamp = 1770417255786;
+      const instant = toUtc(dbTimestamp);
+
+      expect(instant).toBeInstanceOf(Temporal.Instant);
+      expect(instant.epochMilliseconds).toBe(dbTimestamp);
+    });
+
+    it('preserves millisecond precision from timestamp', () => {
+      const timestamp = 1737403200123; // .123 milliseconds
+      const instant = toUtc(timestamp);
+
+      expect(instant.epochMilliseconds).toBe(timestamp);
+      expect(instant.toString()).toBe('2025-01-20T20:00:00.123Z');
+    });
+
+    it('handles Unix timestamp round-trip conversion', () => {
+      const originalTimestamp = 1737403200999;
+
+      // timestamp → Instant → ZonedDateTime → Instant
+      const instant1 = toUtc(originalTimestamp);
+      const zoned = toZonedTime(instant1, 'America/New_York');
+      const instant2 = toUtc(zoned);
+
+      expect(instant1.epochMilliseconds).toBe(originalTimestamp);
+      expect(instant2.epochMilliseconds).toBe(originalTimestamp);
+      expect(instant1.toString()).toBe(instant2.toString());
+    });
+
+    it('ensures Unix timestamp and Date produce identical results', () => {
+      const timestamp = 1737403200000;
+      const date = new Date(timestamp);
+
+      const fromTimestamp = toUtc(timestamp);
+      const fromDate = toUtc(date);
+
+      expect(fromTimestamp.toString()).toBe(fromDate.toString());
+      expect(fromTimestamp.epochMilliseconds).toBe(fromDate.epochMilliseconds);
+    });
+  });
+
   describe('from Date', () => {
     it('converts Date object to Temporal.Instant', () => {
       const date = new Date('2025-01-20T20:00:00.000Z');

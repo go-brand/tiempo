@@ -1,12 +1,12 @@
 # toZonedTime
 
-Convert a UTC ISO string, Date, Instant, or ZonedDateTime to a `ZonedDateTime` in the specified timezone.
+Convert a UTC ISO string, Unix timestamp, Date, Instant, or ZonedDateTime to a `ZonedDateTime` in the specified timezone.
 
 ## Signature
 
 ```ts
 function toZonedTime(
-  input: string | Date | Temporal.Instant | Temporal.ZonedDateTime,
+  input: string | number | Date | Temporal.Instant | Temporal.ZonedDateTime,
   timezone: Timezone
 ): Temporal.ZonedDateTime
 
@@ -17,7 +17,7 @@ type Timezone = 'UTC' | string;
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `input` | `string \| Date \| Temporal.Instant \| Temporal.ZonedDateTime` | A UTC ISO 8601 string, Date object, Temporal.Instant, or Temporal.ZonedDateTime |
+| `input` | `string \| number \| Date \| Temporal.Instant \| Temporal.ZonedDateTime` | A UTC ISO 8601 string, Unix timestamp (milliseconds), Date object, Temporal.Instant, or Temporal.ZonedDateTime |
 | `timezone` | `Timezone` | IANA timezone identifier (e.g., "America/New_York", "Europe/London") or "UTC" |
 
 ## Returns
@@ -49,6 +49,14 @@ const userTime = toZonedTime("2025-01-20T20:00:00Z", user.timezone);
 import { toZonedTime, browserTimezone } from '@gobrand/tiempo';
 
 const localTime = toZonedTime("2025-01-20T20:00:00Z", browserTimezone());
+```
+
+### From Unix timestamp
+
+```ts
+// Common with database BIGINT timestamps or API responses
+const timestamp = 1737403200000;
+const zoned = toZonedTime(timestamp, "America/New_York");
 ```
 
 ### From Date (e.g., from Drizzle ORM)

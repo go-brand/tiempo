@@ -98,6 +98,66 @@ describe('toZonedTime', () => {
     });
   });
 
+  describe('from Unix timestamp', () => {
+    it('converts Unix timestamp (milliseconds) to ZonedDateTime in specified timezone', () => {
+      const timestamp = 1737403200000; // 2025-01-20T20:00:00.000Z
+      const zoned = toZonedTime(timestamp, 'America/New_York');
+
+      expect(zoned).toBeInstanceOf(Temporal.ZonedDateTime);
+      expect(zoned.hour).toBe(15); // 3 PM in New York (EST: UTC-5)
+      expect(zoned.day).toBe(20);
+      expect(zoned.month).toBe(1);
+      expect(zoned.year).toBe(2025);
+      expect(zoned.timeZoneId).toBe('America/New_York');
+      expect(zoned.epochMilliseconds).toBe(timestamp);
+    });
+
+    it('handles Unix timestamp from database BIGINT in different timezones', () => {
+      const dbTimestamp = 1770417255786;
+
+      const tokyo = toZonedTime(dbTimestamp, 'Asia/Tokyo');
+      expect(tokyo).toBeInstanceOf(Temporal.ZonedDateTime);
+      expect(tokyo.epochMilliseconds).toBe(dbTimestamp);
+
+      const newYork = toZonedTime(dbTimestamp, 'America/New_York');
+      expect(newYork.epochMilliseconds).toBe(dbTimestamp);
+
+      // Both should represent the same instant
+      expect(tokyo.toInstant().toString()).toBe(newYork.toInstant().toString());
+    });
+
+    it('preserves millisecond precision from Unix timestamp', () => {
+      const timestamp = 1737403200123; // .123 milliseconds
+      const zoned = toZonedTime(timestamp, 'America/New_York');
+
+      expect(zoned.epochMilliseconds).toBe(timestamp);
+      expect(zoned.millisecond).toBe(123);
+    });
+
+    it('handles Unix timestamp with daylight saving time', () => {
+      // Summer timestamp (EDT: UTC-4)
+      const summerTimestamp = 1753041600000; // 2025-07-20T20:00:00.000Z
+      const summer = toZonedTime(summerTimestamp, 'America/New_York');
+      expect(summer.hour).toBe(16); // 4 PM in EDT
+
+      // Winter timestamp (EST: UTC-5)
+      const winterTimestamp = 1737403200000; // 2025-01-20T20:00:00.000Z
+      const winter = toZonedTime(winterTimestamp, 'America/New_York');
+      expect(winter.hour).toBe(15); // 3 PM in EST
+    });
+
+    it('ensures Unix timestamp and Date produce identical ZonedDateTime', () => {
+      const timestamp = 1737403200000;
+      const date = new Date(timestamp);
+
+      const fromTimestamp = toZonedTime(timestamp, 'America/New_York');
+      const fromDate = toZonedTime(date, 'America/New_York');
+
+      expect(fromTimestamp.toString()).toBe(fromDate.toString());
+      expect(fromTimestamp.epochMilliseconds).toBe(fromDate.epochMilliseconds);
+    });
+  });
+
   describe('from Date', () => {
     it('converts Date object to ZonedDateTime in specified timezone', () => {
       const date = new Date('2025-01-20T20:00:00.000Z');

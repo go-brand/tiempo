@@ -59,9 +59,15 @@ const clientLoader = browserCollections.docs.createClientLoader({
 
 function Page() {
   const data = useFumadocsLoader(Route.useLoaderData());
+  const base = baseOptions();
 
   return (
-    <DocsLayout {...baseOptions()} tree={data.pageTree}>
+    <DocsLayout
+      {...base}
+      tree={data.pageTree}
+      // Override links to exclude navbar items from docs sidebar
+      links={[]}
+    >
       <Suspense>
         {clientLoader.useContent(data.path, {
           className: '',
