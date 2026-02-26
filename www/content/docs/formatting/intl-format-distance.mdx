@@ -50,6 +50,23 @@ When `unit` is not specified, the function automatically picks the most appropri
 | < 12 months | `'month'` |
 | >= 12 months | `'year'` |
 
+
+## Behavior
+
+### Rounding
+
+All time values are rounded to the nearest whole number before formatting. This ensures clean output without decimal points:
+
+```ts
+const earlier = Temporal.Instant.from('2024-01-01T00:00:00Z');
+const later = Temporal.Instant.from('2024-01-05T23:00:00Z'); // 4.96 days
+
+intlFormatDistance(later, earlier, { unit: 'day' });
+// => 'in 5 days' (not 'in 4.96 days')
+```
+
+This applies to all units: seconds, minutes, hours, days, weeks, months, quarters, and years.
+
 ## Examples
 
 ### Basic usage

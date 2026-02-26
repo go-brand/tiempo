@@ -130,32 +130,32 @@ export function intlFormatDistance(
   let value: number;
   switch (unit) {
     case 'second':
-      value = differenceInSeconds(zoned1, zoned2);
+      value = Math.round(differenceInSeconds(zoned1, zoned2));
       break;
     case 'minute':
-      value = differenceInMinutes(zoned1, zoned2);
+      value = Math.round(differenceInMinutes(zoned1, zoned2));
       break;
     case 'hour':
-      value = differenceInHours(zoned1, zoned2);
+      value = Math.round(differenceInHours(zoned1, zoned2));
       break;
     case 'day':
-      value = differenceInDays(zoned1, zoned2);
+      value = Math.round(differenceInDays(zoned1, zoned2));
       break;
     case 'week':
-      value = differenceInWeeks(zoned1, zoned2);
+      value = Math.round(differenceInWeeks(zoned1, zoned2));
       break;
     case 'month':
-      value = differenceInMonths(zoned1, zoned2);
+      value = Math.round(differenceInMonths(zoned1, zoned2));
       break;
     case 'quarter':
       value = Math.round(differenceInMonths(zoned1, zoned2) / 3);
       break;
     case 'year':
-      value = differenceInYears(zoned1, zoned2);
+      value = Math.round(differenceInYears(zoned1, zoned2));
       break;
     default:
       // For any other unit type, try to use it directly
-      value = differenceInSeconds(zoned1, zoned2);
+      value = Math.round(differenceInSeconds(zoned1, zoned2));
   }
 
   // Format using Intl.RelativeTimeFormat

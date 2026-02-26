@@ -313,4 +313,77 @@ describe('intlFormatDistance', () => {
       expect(result).toBe('in 1 hour');
     });
   });
+
+  describe('rounding behavior', () => {
+    it('rounds fractional days (4d 23h rounds to 5 days when forced)', () => {
+      const earlier = Temporal.Instant.from('2024-01-01T00:00:00Z');
+      // 4 days and 23 hours = 4.96 days
+      const later = Temporal.Instant.from('2024-01-05T23:00:00Z');
+
+      const result = intlFormatDistance(later, earlier, { unit: 'day' });
+      expect(result).toBe('in 5 days');
+      expect(result).not.toContain('.96');
+      expect(result).not.toContain('4.96');
+    });
+
+    it('rounds fractional weeks', () => {
+      const earlier = Temporal.Instant.from('2024-01-01T00:00:00Z');
+      // 2 weeks and 6 days = 2.86 weeks
+      const later = Temporal.Instant.from('2024-01-20T00:00:00Z');
+
+      const result = intlFormatDistance(later, earlier, { unit: 'week' });
+      expect(result).toBe('in 3 weeks');
+      expect(result).not.toContain('.86');
+      expect(result).not.toContain('2.86');
+    });
+
+    it('rounds fractional months', () => {
+      const earlier = Temporal.Instant.from('2024-01-01T00:00:00Z');
+      // Approximately 2.5 months
+      const later = Temporal.Instant.from('2024-03-15T00:00:00Z');
+
+      const result = intlFormatDistance(later, earlier, { unit: 'month' });
+      // Should round to either 2 or 3 months (not 2.5)
+      expect(result).toMatch(/^in [23] months$/);
+      expect(result).not.toContain('.5');
+      expect(result).not.toContain('2.5');
+    });
+
+    it('rounds fractional years', () => {
+      const earlier = Temporal.Instant.from('2024-01-01T00:00:00Z');
+      // Approximately 2.5 years
+      const later = Temporal.Instant.from('2026-07-01T00:00:00Z');
+
+      const result = intlFormatDistance(later, earlier, { unit: 'year', numeric: 'always' });
+      // Should round to either 2 or 3 years (not 2.5)
+      expect(result).toMatch(/^in [23] years$/);
+      expect(result).not.toContain('.5');
+      expect(result).not.toContain('2.5');
+    });
+
+    it('rounds negative fractional days (ago)', () => {
+      const earlier = Temporal.Instant.from('2024-01-01T00:00:00Z');
+      // 4 days and 23 hours ago = -4.96 days
+      const later = Temporal.Instant.from('2024-01-05T23:00:00Z');
+
+      const result = intlFormatDistance(earlier, later, { unit: 'day' });
+      expect(result).toBe('5 days ago');
+      expect(result).not.toContain('.96');
+      expect(result).not.toContain('4.96');
+    });
+
+    it('does not show decimals for any unit', () => {
+      const earlier = Temporal.Instant.from('2024-01-01T00:00:00Z');
+      const later = Temporal.Instant.from('2024-01-08T14:30:00Z');
+
+      // Test all units to ensure no decimals
+      const units: Intl.RelativeTimeFormatUnit[] = ['second', 'minute', 'hour', 'day', 'week', 'month', 'year'];
+      
+      units.forEach(unit => {
+        const result = intlFormatDistance(later, earlier, { unit, numeric: 'always' });
+        // Should not contain decimal point
+        expect(result).not.toMatch(/\d+\.\d+/);
+      });
+    });
+  });
 });
