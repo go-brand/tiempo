@@ -8,6 +8,7 @@
  * 3. SKILL.md index (skills/tiempo/SKILL.md)
  *
  * Usage: pnpm generate:docs
+ * Set SYNC_GLOBAL_SKILL=1 to also sync to ~/.claude/skills/tiempo
  */
 
 import * as fs from "node:fs";
@@ -24,6 +25,12 @@ const BASE_URL = "https://eng.gobrand.app/tiempo/docs";
 const GLOBAL_SKILL_DIR = path.join(os.homedir(), ".claude/skills/tiempo");
 const GLOBAL_SKILL_REFS_DIR = path.join(GLOBAL_SKILL_DIR, "references");
 const GLOBAL_SKILL_MD_PATH = path.join(GLOBAL_SKILL_DIR, "SKILL.md");
+
+// Writing into the user's home directory (~/.claude/skills/tiempo) only
+// happens when explicitly opted in, so `pnpm build` / CI never mutate global
+// state. Run `SYNC_GLOBAL_SKILL=1 pnpm generate:docs` to sync.
+const SYNC_GLOBAL_SKILL =
+  process.env.SYNC_GLOBAL_SKILL === "1" || process.env.SYNC_GLOBAL_SKILL === "true";
 
 // Categories to process (in order for llms.txt)
 const CATEGORIES = [
@@ -184,14 +191,18 @@ function generateSkillRefs(docs: DocFile[]): void {
     fs.writeFileSync(outPath, markdown);
     console.log(`  ✓ ${outPath}`);
 
-    // Write to global skill directory
-    const globalOutDir = path.join(GLOBAL_SKILL_REFS_DIR, doc.category);
-    fs.mkdirSync(globalOutDir, { recursive: true });
-    const globalOutPath = path.join(globalOutDir, `${doc.slug}.md`);
-    fs.writeFileSync(globalOutPath, markdown);
+    // Write to global skill directory (opt-in)
+    if (SYNC_GLOBAL_SKILL) {
+      const globalOutDir = path.join(GLOBAL_SKILL_REFS_DIR, doc.category);
+      fs.mkdirSync(globalOutDir, { recursive: true });
+      const globalOutPath = path.join(globalOutDir, `${doc.slug}.md`);
+      fs.writeFileSync(globalOutPath, markdown);
+    }
   }
 
-  console.log(`  ✓ Synced to ${GLOBAL_SKILL_REFS_DIR}`);
+  if (SYNC_GLOBAL_SKILL) {
+    console.log(`  ✓ Synced to ${GLOBAL_SKILL_REFS_DIR}`);
+  }
 }
 
 /**
@@ -313,9 +324,7 @@ function generateSkillMd(docs: DocFile[]): void {
 
     for (const doc of categoryDocs) {
       const refPath = `references/${category}/${doc.slug}.md`;
-      lines.push(
-        `| \`${doc.title}()\` | ${doc.description} | [details](${refPath}) |`
-      );
+      lines.push(`| \`${doc.title}()\` | ${doc.description} | [details](${refPath}) |`);
     }
 
     lines.push("");
@@ -327,10 +336,8 @@ function generateSkillMd(docs: DocFile[]): void {
   lines.push("```ts");
   lines.push("import type { Timezone, IANATimezone } from '@gobrand/tiempo';");
   lines.push("");
-  lines.push("// Timezone: accepts IANA timezones + \"UTC\"");
-  lines.push(
-    "const tz: Timezone = 'America/New_York';  // Autocomplete for 400+ timezones"
-  );
+  lines.push('// Timezone: accepts IANA timezones + "UTC"');
+  lines.push("const tz: Timezone = 'America/New_York';  // Autocomplete for 400+ timezones");
   lines.push("");
   lines.push('// IANATimezone: strictly IANA identifiers (excludes "UTC")');
   lines.push("const iana: IANATimezone = 'Europe/London';");
@@ -343,10 +350,12 @@ function generateSkillMd(docs: DocFile[]): void {
   fs.writeFileSync(SKILL_MD_PATH, content);
   console.log(`  ✓ ${SKILL_MD_PATH}`);
 
-  // Write to global skill directory
-  fs.mkdirSync(GLOBAL_SKILL_DIR, { recursive: true });
-  fs.writeFileSync(GLOBAL_SKILL_MD_PATH, content);
-  console.log(`  ✓ ${GLOBAL_SKILL_MD_PATH}`);
+  // Write to global skill directory (opt-in)
+  if (SYNC_GLOBAL_SKILL) {
+    fs.mkdirSync(GLOBAL_SKILL_DIR, { recursive: true });
+    fs.writeFileSync(GLOBAL_SKILL_MD_PATH, content);
+    console.log(`  ✓ ${GLOBAL_SKILL_MD_PATH}`);
+  }
 }
 
 /**
