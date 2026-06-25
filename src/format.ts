@@ -331,10 +331,10 @@ function formatToken(token: string, zonedDateTime: Temporal.ZonedDateTime, local
       return offset === '+0000' ? 'Z' : offset;
     }
     case 'X': {
-      const offset = getTimezoneOffset(zonedDateTime);
+      const offset = getTimezoneOffset(zonedDateTime); // "+05:30" / "+00:00"
       if (offset === '+00:00') return 'Z';
-      const [hours] = offset.split(':');
-      return hours || '+00';
+      const [hours, minutes] = offset.split(':');
+      return minutes === '00' ? hours! : `${hours}${minutes}`;
     }
     case 'xxxxx':
       return getTimezoneOffset(zonedDateTime);
@@ -345,9 +345,9 @@ function formatToken(token: string, zonedDateTime: Temporal.ZonedDateTime, local
     case 'xx':
       return getTimezoneOffset(zonedDateTime).replace(':', '');
     case 'x': {
-      const offset = getTimezoneOffset(zonedDateTime);
-      const [hours] = offset.split(':');
-      return hours || '+00';
+      const offset = getTimezoneOffset(zonedDateTime); // "+05:30" / "+00:00"
+      const [hours, minutes] = offset.split(':');
+      return minutes === '00' ? hours! : `${hours}${minutes}`;
     }
     case 'zzzz':
       return formatPart(zonedDateTime, 'timeZoneName', 'long', locale);

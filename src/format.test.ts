@@ -288,4 +288,25 @@ describe('format', () => {
       expect(format(testZoned, 'HH:mm')).toBe('15:30');
     });
   });
+
+  describe('x and X offset minutes', () => {
+    it('x includes offset minutes (India +05:30)', () => {
+      const zdt = Temporal.ZonedDateTime.from('2025-01-20T12:00:00+05:30[Asia/Kolkata]');
+      expect(format(zdt, 'x')).toBe('+0530');
+      expect(format(zdt, 'X')).toBe('+0530');
+    });
+    it('x for Nepal +05:45', () => {
+      const zdt = Temporal.ZonedDateTime.from('2025-01-20T12:00:00+05:45[Asia/Kathmandu]');
+      expect(format(zdt, 'x')).toBe('+0545');
+      expect(format(zdt, 'X')).toBe('+0545');
+    });
+    it('x/X for whole-hour and UTC offsets unchanged', () => {
+      const ny = Temporal.ZonedDateTime.from('2025-01-20T12:00:00-05:00[America/New_York]');
+      expect(format(ny, 'x')).toBe('-05');
+      expect(format(ny, 'X')).toBe('-05');
+      const utc = Temporal.ZonedDateTime.from('2025-01-20T12:00:00+00:00[UTC]');
+      expect(format(utc, 'x')).toBe('+00');
+      expect(format(utc, 'X')).toBe('Z');
+    });
+  });
 });
