@@ -260,20 +260,22 @@ function formatToken(token: string, zonedDateTime: Temporal.ZonedDateTime, local
     case 'E':
       return formatPart(zonedDateTime, 'weekday', 'short', locale);
 
-    // AM/PM
+    // AM/PM (locale-aware; English widths applied only for ASCII AM/PM)
     case 'aaaaa': {
-      const period = formatPart(zonedDateTime, 'dayPeriod', 'narrow', locale).toLowerCase();
-      return period.charAt(0);
+      const period = getDayPeriod(zonedDateTime, locale);
+      if (isAsciiAmPm(period)) return isAm(period) ? 'a' : 'p';
+      return period.charAt(0).toLowerCase();
     }
     case 'aaaa': {
-      const period = formatPart(zonedDateTime, 'dayPeriod', 'short', locale);
-      return period === 'AM' ? 'a.m.' : 'p.m.';
+      const period = getDayPeriod(zonedDateTime, locale);
+      if (isAsciiAmPm(period)) return isAm(period) ? 'a.m.' : 'p.m.';
+      return period;
     }
     case 'aaa':
-      return formatPart(zonedDateTime, 'dayPeriod', 'short', locale).toLowerCase();
+      return getDayPeriod(zonedDateTime, locale).toLowerCase();
     case 'aa':
     case 'a':
-      return formatPart(zonedDateTime, 'dayPeriod', 'short', locale);
+      return getDayPeriod(zonedDateTime, locale);
 
     // Hour [0-23]
     case 'HH':
@@ -369,29 +371,13 @@ function formatToken(token: string, zonedDateTime: Temporal.ZonedDateTime, local
 
 function formatPart(
   zonedDateTime: Temporal.ZonedDateTime,
-  part: 'era' | 'year' | 'month' | 'weekday' | 'day' | 'dayPeriod' | 'hour' | 'minute' | 'second' | 'timeZoneName',
+  part: 'era' | 'year' | 'month' | 'weekday' | 'day' | 'hour' | 'minute' | 'second' | 'timeZoneName',
   style: 'narrow' | 'short' | 'long' | 'numeric' | '2-digit',
   locale: string
 ): string {
   const options: Intl.DateTimeFormatOptions = {};
-
-  if (part === 'dayPeriod') {
-    // dayPeriod needs hour to be present
-    options.hour = 'numeric';
-    options.hour12 = true;
-  } else {
-    options[part] = style as any;
-  }
-
-  const formatted = zonedDateTime.toLocaleString(locale, options);
-
-  if (part === 'dayPeriod') {
-    // Extract just the AM/PM part
-    const match = formatted.match(/\b(AM|PM|am|pm|a\.m\.|p\.m\.)\b/);
-    return match ? match[0] : formatted.split(' ').pop() || '';
-  }
-
-  return formatted;
+  options[part] = style as any;
+  return zonedDateTime.toLocaleString(locale, options);
 }
 
 function getOrdinalSuffix(num: number): string {
@@ -411,4 +397,28 @@ function getTimezoneOffset(zonedDateTime: Temporal.ZonedDateTime): string {
   const hours = Math.floor(absMinutes / 60);
   const minutes = absMinutes % 60;
   return `${sign}${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+}
+
+/**
+ * Locale-correct day period (AM/PM equivalent) via Intl.formatToParts.
+ * Returns the locale's own value, e.g. "AM"/"PM" (en), "p. m." (es), "午後" (ja).
+ */
+function getDayPeriod(zonedDateTime: Temporal.ZonedDateTime, locale: string): string {
+  const parts = new Intl.DateTimeFormat(locale, {
+    hour: 'numeric',
+    hour12: true,
+    timeZone: zonedDateTime.timeZoneId,
+  }).formatToParts(new Date(zonedDateTime.epochMilliseconds));
+  return parts.find((p) => p.type === 'dayPeriod')?.value ?? '';
+}
+
+/** True when the day-period is recognizably ASCII AM/PM (so English widths apply). */
+function isAsciiAmPm(period: string): boolean {
+  const normalized = period.toUpperCase().replace(/[.\s]/g, '');
+  return normalized === 'AM' || normalized === 'PM';
+}
+
+/** True for the AM half (only meaningful when isAsciiAmPm is true). */
+function isAm(period: string): boolean {
+  return period.toUpperCase().replace(/[.\s]/g, '').startsWith('A');
 }

@@ -309,4 +309,30 @@ describe('format', () => {
       expect(format(utc, 'X')).toBe('Z');
     });
   });
+
+  describe('AM/PM tokens are locale-aware', () => {
+    const morning = Temporal.ZonedDateTime.from('2025-01-20T09:00:00-05:00[America/New_York]');
+    const evening = Temporal.ZonedDateTime.from('2025-01-20T21:00:00-05:00[America/New_York]');
+
+    it('English widths unchanged', () => {
+      expect(format(morning, 'a')).toBe('AM');
+      expect(format(evening, 'a')).toBe('PM');
+      expect(format(morning, 'aaa')).toBe('am');
+      expect(format(morning, 'aaaa')).toBe('a.m.');
+      expect(format(evening, 'aaaa')).toBe('p.m.');
+      expect(format(morning, 'aaaaa')).toBe('a');
+      expect(format(evening, 'aaaaa')).toBe('p');
+    });
+
+    it('non-English locale no longer always returns PM/p.m.', () => {
+      const amEs = format(morning, 'a', { locale: 'es-ES' });
+      const pmEs = format(evening, 'a', { locale: 'es-ES' });
+      expect(amEs).not.toBe(pmEs);
+      expect(amEs.toLowerCase()).toContain('a');
+      expect(pmEs.toLowerCase()).toContain('p');
+      expect(format(morning, 'aaaa', { locale: 'es-ES' })).not.toBe(
+        format(evening, 'aaaa', { locale: 'es-ES' })
+      );
+    });
+  });
 });
