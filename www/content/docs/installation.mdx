@@ -16,7 +16,7 @@ description: Get started with tiempo in your project
 
 ## Polyfill
 
-tiempo includes the `@js-temporal/polyfill` package, which provides Temporal API support until it becomes natively available in JavaScript runtimes. The polyfill is automatically loaded when you import from tiempo.
+tiempo uses the runtime's native `Temporal` when it is available (Node 26+, Chrome 144+, Firefox 139+, Edge, Deno) and only loads the `@js-temporal/polyfill` as a fallback on older runtimes (such as Safari and Node ≤ 25). Modern environments therefore run no polyfill at all — the polyfill is dynamically imported only when native `Temporal` is absent.
 
 ## Usage with ORMs
 

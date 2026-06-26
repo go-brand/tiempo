@@ -52,10 +52,14 @@ interface FormatOptions {
 | `mm` | 30 | Minutes (2-digit) |
 | `ss` | 45 | Seconds (2-digit) |
 | `SSS` | 123 | Milliseconds |
-| `a` | PM | AM/PM |
+| `a` | PM | AM/PM (locale-aware) |
 | `z` | EST | Timezone abbreviation |
 | `zzzz` | Eastern Standard Time | Full timezone name |
-| `XXX` | -05:00 | Timezone offset |
+| `XXX` | -05:00 | Timezone offset (Z for UTC) |
+| `X` | +0530 | Timezone offset (Z for UTC); includes minutes |
+| `x` | +0530 | Timezone offset; includes minutes |
+
+The offset tokens include the minutes of the offset for zones that need them — India (+05:30) renders as `+0530` and Nepal (+05:45) as `+0545`. The AM/PM tokens (`a`, `aa`, `aaa`, `aaaa`, `aaaaa`) respect the `locale` option, so non-English locales render their own day-period text.
 
 ## Examples
 

@@ -7,8 +7,13 @@ Returns the number of days between two datetimes. Uses calendar-aware calculatio
 ```ts
 function differenceInDays(
   laterDate: Temporal.Instant | Temporal.ZonedDateTime,
-  earlierDate: Temporal.Instant | Temporal.ZonedDateTime
+  earlierDate: Temporal.Instant | Temporal.ZonedDateTime,
+  options?: DifferenceOptions
 ): number
+
+interface DifferenceOptions {
+  fractional?: boolean; // default false — truncates toward zero
+}
 ```
 
 ## Parameters
@@ -17,10 +22,11 @@ function differenceInDays(
 |-----------|------|-------------|
 | `laterDate` | `Temporal.Instant \| Temporal.ZonedDateTime` | The later datetime |
 | `earlierDate` | `Temporal.Instant \| Temporal.ZonedDateTime` | The earlier datetime |
+| `options.fractional` | `boolean` | Return the precise fractional value instead of truncating toward zero (default: false) |
 
 ## Returns
 
-The number of days between the two datetimes.
+The number of days between the two datetimes, truncated toward zero by default. Pass `{ fractional: true }` to get the precise fractional value.
 
 ## Examples
 
@@ -49,6 +55,18 @@ differenceInDays(laterZoned, earlierZoned); // 5
 const afterDst = Temporal.ZonedDateTime.from('2025-03-10T12:00:00-04:00[America/New_York]');
 const beforeDst = Temporal.ZonedDateTime.from('2025-03-08T12:00:00-05:00[America/New_York]');
 differenceInDays(afterDst, beforeDst); // 2 (calendar days, not 48 hours)
+```
+
+### Fractional results
+
+By default the result is truncated toward zero. Pass `{ fractional: true }` for the precise value.
+
+```ts
+const later = Temporal.Instant.from('2025-01-21T12:00:00Z');
+const earlier = Temporal.Instant.from('2025-01-20T00:00:00Z');
+
+differenceInDays(later, earlier);                       // 1   (truncated)
+differenceInDays(later, earlier, { fractional: true }); // 1.5 (precise)
 ```
 
 ## Common Patterns

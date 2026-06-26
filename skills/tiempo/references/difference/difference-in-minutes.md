@@ -7,8 +7,13 @@ Returns the number of minutes between two datetimes.
 ```ts
 function differenceInMinutes(
   laterDate: Temporal.Instant | Temporal.ZonedDateTime,
-  earlierDate: Temporal.Instant | Temporal.ZonedDateTime
+  earlierDate: Temporal.Instant | Temporal.ZonedDateTime,
+  options?: DifferenceOptions
 ): number
+
+interface DifferenceOptions {
+  fractional?: boolean; // default false — truncates toward zero
+}
 ```
 
 ## Parameters
@@ -17,10 +22,11 @@ function differenceInMinutes(
 |-----------|------|-------------|
 | `laterDate` | `Temporal.Instant \| Temporal.ZonedDateTime` | The later datetime |
 | `earlierDate` | `Temporal.Instant \| Temporal.ZonedDateTime` | The earlier datetime |
+| `options.fractional` | `boolean` | Return the precise fractional value instead of truncating toward zero (default: false) |
 
 ## Returns
 
-The number of minutes between the two datetimes.
+The number of minutes between the two datetimes, truncated toward zero by default. Pass `{ fractional: true }` to get the precise fractional value.
 
 ## Examples
 
@@ -31,4 +37,16 @@ const later = Temporal.Instant.from('2025-01-20T10:45:00Z');
 const earlier = Temporal.Instant.from('2025-01-20T10:00:00Z');
 
 differenceInMinutes(later, earlier); // 45
+```
+
+### Fractional results
+
+By default the result is truncated toward zero. Pass `{ fractional: true }` for the precise value.
+
+```ts
+const later = Temporal.Instant.from('2025-01-20T10:01:30Z');
+const earlier = Temporal.Instant.from('2025-01-20T10:00:00Z');
+
+differenceInMinutes(later, earlier);                       // 1   (truncated)
+differenceInMinutes(later, earlier, { fractional: true }); // 1.5 (precise)
 ```

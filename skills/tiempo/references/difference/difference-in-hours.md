@@ -7,8 +7,13 @@ Returns the number of hours between two datetimes.
 ```ts
 function differenceInHours(
   laterDate: Temporal.Instant | Temporal.ZonedDateTime,
-  earlierDate: Temporal.Instant | Temporal.ZonedDateTime
+  earlierDate: Temporal.Instant | Temporal.ZonedDateTime,
+  options?: DifferenceOptions
 ): number
+
+interface DifferenceOptions {
+  fractional?: boolean; // default false — truncates toward zero
+}
 ```
 
 ## Parameters
@@ -17,10 +22,11 @@ function differenceInHours(
 |-----------|------|-------------|
 | `laterDate` | `Temporal.Instant \| Temporal.ZonedDateTime` | The later datetime |
 | `earlierDate` | `Temporal.Instant \| Temporal.ZonedDateTime` | The earlier datetime |
+| `options.fractional` | `boolean` | Return the precise fractional value instead of truncating toward zero (default: false) |
 
 ## Returns
 
-The number of hours between the two datetimes.
+The number of hours between the two datetimes, truncated toward zero by default. Pass `{ fractional: true }` to get the precise fractional value.
 
 ## Examples
 
@@ -31,4 +37,16 @@ const later = Temporal.Instant.from('2025-01-20T15:00:00Z');
 const earlier = Temporal.Instant.from('2025-01-20T10:00:00Z');
 
 differenceInHours(later, earlier); // 5
+```
+
+### Fractional results
+
+By default the result is truncated toward zero. Pass `{ fractional: true }` for the precise value.
+
+```ts
+const later = Temporal.Instant.from('2025-01-20T11:30:00Z');
+const earlier = Temporal.Instant.from('2025-01-20T10:00:00Z');
+
+differenceInHours(later, earlier);                       // 1   (truncated)
+differenceInHours(later, earlier, { fractional: true }); // 1.5 (precise)
 ```
