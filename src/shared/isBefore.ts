@@ -1,4 +1,4 @@
-import { Temporal } from '@js-temporal/polyfill';
+import { Temporal } from './temporal';
 
 export function isBefore(
   date1: Temporal.ZonedDateTime,

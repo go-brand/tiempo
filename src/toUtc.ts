@@ -1,4 +1,4 @@
-import { Temporal } from '@js-temporal/polyfill';
+import { Temporal } from './shared/temporal';
 
 /**
  * Convert a UTC ISO string, Unix timestamp, Date, or ZonedDateTime to a Temporal.Instant (UTC).

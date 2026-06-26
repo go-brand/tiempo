@@ -1,4 +1,4 @@
-import { Temporal } from '@js-temporal/polyfill';
+import { Temporal } from './shared/temporal';
 
 /**
  * Returns true if the two plain dates are equal.

@@ -1,4 +1,5 @@
-import { Temporal } from '@js-temporal/polyfill';
+import { isPlainDate } from './temporal';
+import type { Temporal } from '@js-temporal/polyfill';
 import type { Timezone } from '../types';
 import { normalizeTemporalInput } from './normalizeTemporalInput';
 import { plainDateToZonedDateTime } from './plainDateToZonedDateTime';
@@ -27,7 +28,7 @@ export function normalizeWithPlainDate(
   input: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate,
   timezone?: Timezone
 ): Temporal.ZonedDateTime {
-  return input instanceof Temporal.PlainDate
+  return isPlainDate(input)
     ? plainDateToZonedDateTime(input, timezone!)
     : normalizeTemporalInput(input);
 }

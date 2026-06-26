@@ -1,4 +1,4 @@
-import { Temporal } from '@js-temporal/polyfill';
+import { Temporal, isInstant, isZonedDateTime } from './shared/temporal';
 import type { Timezone } from './types';
 
 interface BaseOptions {
@@ -79,10 +79,10 @@ export function simpleFormat(
   // Convert input to ZonedDateTime for consistent handling
   let zdt: Temporal.ZonedDateTime;
 
-  if (input instanceof Temporal.Instant) {
+  if (isInstant(input)) {
     const tz = timeZone ?? 'UTC';
     zdt = input.toZonedDateTimeISO(tz);
-  } else if (input instanceof Temporal.ZonedDateTime) {
+  } else if (isZonedDateTime(input)) {
     if (timeZone) {
       zdt = input.toInstant().toZonedDateTimeISO(timeZone);
     } else {

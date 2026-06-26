@@ -1,4 +1,4 @@
-import { Temporal } from '@js-temporal/polyfill';
+import { Temporal } from './shared/temporal';
 import type { Timezone } from './types';
 import { getEndOfDay } from './shared/endOfDay';
 import { normalizeWithPlainDate } from './shared/normalizeWithPlainDate';

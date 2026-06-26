@@ -1,4 +1,5 @@
-import { Temporal } from '@js-temporal/polyfill';
+import { isInstant } from './shared/temporal';
+import type { Temporal } from '@js-temporal/polyfill';
 
 /**
  * Convert a Temporal.Instant or ZonedDateTime to a Date object.
@@ -27,7 +28,7 @@ import { Temporal } from '@js-temporal/polyfill';
 export function toDate(
   input: Temporal.Instant | Temporal.ZonedDateTime
 ): Date {
-  if (input instanceof Temporal.Instant) {
+  if (isInstant(input)) {
     return new Date(input.toString());
   }
 

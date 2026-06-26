@@ -1,4 +1,5 @@
-import { Temporal } from '@js-temporal/polyfill';
+import { isInstant } from './shared/temporal';
+import type { Temporal } from '@js-temporal/polyfill';
 import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
 import type { Timezone } from './types';
 
@@ -40,7 +41,7 @@ export function format(
   let zonedDateTime: Temporal.ZonedDateTime;
   if (timeZone) {
     // If custom timezone specified, convert via Instant
-    const instant = input instanceof Temporal.Instant ? input : input.toInstant();
+    const instant = isInstant(input) ? input : input.toInstant();
     zonedDateTime = instant.toZonedDateTimeISO(timeZone);
   } else {
     // No custom timezone: normalize to ZonedDateTime (Instant -> UTC, ZonedDateTime -> keep as-is)

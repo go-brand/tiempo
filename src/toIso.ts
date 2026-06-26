@@ -1,4 +1,5 @@
-import { Temporal } from '@js-temporal/polyfill';
+import { isInstant } from './shared/temporal';
+import type { Temporal } from '@js-temporal/polyfill';
 
 export type IsoMode = 'utc' | 'offset';
 
@@ -42,7 +43,7 @@ export function toIso(
 ): string {
   const { mode = 'utc' } = options;
 
-  if (input instanceof Temporal.Instant) {
+  if (isInstant(input)) {
     return input.toString();
   }
 

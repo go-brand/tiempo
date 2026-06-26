@@ -1,4 +1,4 @@
-import { Temporal } from '@js-temporal/polyfill';
+import { Temporal } from './temporal';
 import { normalizeTemporalInput } from './normalizeTemporalInput';
 
 export function nowZoned(): Temporal.ZonedDateTime {

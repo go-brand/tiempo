@@ -1,4 +1,4 @@
-import { Temporal } from '@js-temporal/polyfill';
+import { Temporal, isInstant } from './shared/temporal';
 import type { Timezone } from './types';
 
 /**
@@ -54,7 +54,7 @@ export function toZonedTime(
     return Temporal.Instant.from(input.toISOString()).toZonedDateTimeISO(timezone);
   }
 
-  if (input instanceof Temporal.Instant) {
+  if (isInstant(input)) {
     return input.toZonedDateTimeISO(timezone);
   }
 

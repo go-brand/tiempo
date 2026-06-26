@@ -1,4 +1,4 @@
-import { Temporal } from '@js-temporal/polyfill';
+import { Temporal } from './shared/temporal';
 
 export interface FormatPlainDateOptions {
   locale?: string;

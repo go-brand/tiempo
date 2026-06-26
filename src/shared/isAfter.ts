@@ -1,4 +1,4 @@
-import { Temporal } from '@js-temporal/polyfill';
+import { Temporal } from './temporal';
 
 export function isAfter(
   date1: Temporal.ZonedDateTime,

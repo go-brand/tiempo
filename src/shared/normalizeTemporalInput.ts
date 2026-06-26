@@ -1,4 +1,5 @@
-import { Temporal } from '@js-temporal/polyfill';
+import { isInstant } from './temporal';
+import type { Temporal } from '@js-temporal/polyfill';
 
 /**
  * @internal
@@ -8,7 +9,7 @@ import { Temporal } from '@js-temporal/polyfill';
 export function normalizeTemporalInput(
   input: Temporal.Instant | Temporal.ZonedDateTime
 ): Temporal.ZonedDateTime {
-  return input instanceof Temporal.Instant
+  return isInstant(input)
     ? input.toZonedDateTimeISO('UTC')
     : input;
 }

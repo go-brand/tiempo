@@ -1,4 +1,4 @@
-import { Temporal } from '@js-temporal/polyfill';
+import { Temporal, isInstant, isZonedDateTime } from './shared/temporal';
 import type { Timezone } from './types';
 
 // Pattern to detect plain time strings: HH:MM, HH:MM:SS, or HH:MM:SS.fractional
@@ -49,7 +49,7 @@ export function toPlainTime(
   timezone?: Timezone
 ): Temporal.PlainTime {
   // ZonedDateTime without timezone override
-  if (input instanceof Temporal.ZonedDateTime && timezone === undefined) {
+  if (isZonedDateTime(input) && timezone === undefined) {
     return input.toPlainTime();
   }
 
@@ -62,7 +62,7 @@ export function toPlainTime(
   }
 
   // Instant requires timezone
-  if (input instanceof Temporal.Instant) {
+  if (isInstant(input)) {
     if (timezone === undefined) {
       throw new Error('Timezone is required unless input is a ZonedDateTime, PlainTimeLike, or plain time string');
     }
@@ -70,7 +70,7 @@ export function toPlainTime(
   }
 
   // ZonedDateTime with timezone override
-  if (input instanceof Temporal.ZonedDateTime) {
+  if (isZonedDateTime(input)) {
     if (timezone === undefined) {
       throw new Error('Timezone is required unless input is a ZonedDateTime, PlainTimeLike, or plain time string');
     }

@@ -1,4 +1,4 @@
-import { Temporal } from '@js-temporal/polyfill';
+import { Temporal } from './shared/temporal';
 
 /**
  * Returns true if the first plain time is after the second plain time.

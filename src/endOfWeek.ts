@@ -1,4 +1,5 @@
-import { Temporal } from '@js-temporal/polyfill';
+import { isPlainDate } from './shared/temporal';
+import type { Temporal } from '@js-temporal/polyfill';
 import type { Timezone } from './types';
 import { getEndOfDay } from './shared/endOfDay';
 import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
@@ -47,7 +48,7 @@ export function endOfWeek(
   timezone?: Timezone
 ): Temporal.ZonedDateTime {
   const zonedDateTime =
-    input instanceof Temporal.PlainDate
+    isPlainDate(input)
       ? plainDateToZonedDateTime(input, timezone!)
       : normalizeTemporalInput(input);
 

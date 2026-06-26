@@ -1,4 +1,5 @@
-import { Temporal } from '@js-temporal/polyfill';
+import { isInstant } from './shared/temporal';
+import type { Temporal } from '@js-temporal/polyfill';
 
 export type Iso9075Mode = 'utc' | 'local';
 export type Iso9075Representation = 'complete' | 'date' | 'time';
@@ -57,7 +58,7 @@ export function toIso9075(
 
   let zdt: Temporal.ZonedDateTime;
 
-  if (input instanceof Temporal.Instant) {
+  if (isInstant(input)) {
     zdt = input.toZonedDateTimeISO('UTC');
   } else {
     // ZonedDateTime: apply mode
