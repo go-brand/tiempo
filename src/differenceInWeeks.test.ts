@@ -38,7 +38,10 @@ describe('differenceInWeeks', () => {
       const earlier = Temporal.Instant.from('2025-01-20T12:00:00Z');
 
       // 10 days = 1.428... weeks
-      expect(differenceInWeeks(later, earlier)).toBeCloseTo(1.428, 2);
+      expect(differenceInWeeks(later, earlier, { fractional: true })).toBeCloseTo(
+        1.428,
+        2
+      );
     });
   });
 
@@ -113,7 +116,9 @@ describe('differenceInWeeks', () => {
       );
 
       // 2-week sprint
-      expect(differenceInWeeks(sprintEnd, sprintStart)).toBeCloseTo(2, 1);
+      expect(
+        differenceInWeeks(sprintEnd, sprintStart, { fractional: true })
+      ).toBeCloseTo(2, 1);
     });
 
     it('calculates pregnancy weeks', () => {
@@ -125,7 +130,7 @@ describe('differenceInWeeks', () => {
       );
 
       // Approximately 23-24 weeks
-      const weeks = differenceInWeeks(now, conception);
+      const weeks = differenceInWeeks(now, conception, { fractional: true });
       expect(weeks).toBeGreaterThan(23);
       expect(weeks).toBeLessThan(25);
     });
@@ -146,6 +151,19 @@ describe('differenceInWeeks', () => {
 
       // Less than a day
       expect(differenceInWeeks(later, earlier)).toBeLessThan(0.1);
+    });
+  });
+
+  describe('truncation', () => {
+    it('truncates toward zero by default', () => {
+      const later = Temporal.Instant.from('2025-01-30T12:00:00Z');
+      const earlier = Temporal.Instant.from('2025-01-20T12:00:00Z'); // ~1.43 weeks
+      expect(differenceInWeeks(later, earlier)).toBe(1);
+      expect(differenceInWeeks(later, earlier, { fractional: true })).toBeCloseTo(
+        1.428,
+        2
+      );
+      expect(differenceInWeeks(earlier, later)).toBe(-1);
     });
   });
 });

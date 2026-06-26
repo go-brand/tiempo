@@ -1,5 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill';
 import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
+import type { DifferenceOptions } from './shared/differenceOptions';
 
 /**
  * Returns the number of weeks between two datetimes.
@@ -13,7 +14,8 @@ import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
  *
  * @param laterDate - The later datetime (Instant or ZonedDateTime)
  * @param earlierDate - The earlier datetime (Instant or ZonedDateTime)
- * @returns The number of weeks between the dates
+ * @param options - Optional { fractional } to return the precise value
+ * @returns The number of weeks between the dates, truncated toward zero (pass { fractional: true } for the precise value)
  *
  * @example
  * ```ts
@@ -34,7 +36,7 @@ import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
  *
  * @example
  * ```ts
- * // Returns fractional weeks for partial week differences
+ * // Pass { fractional: true } for partial-unit precision
  * const later = Temporal.Instant.from('2025-01-27T12:00:00Z');
  * const earlier = Temporal.Instant.from('2025-01-20T12:00:00Z');
  *
@@ -43,11 +45,13 @@ import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
  */
 export function differenceInWeeks(
   laterDate: Temporal.Instant | Temporal.ZonedDateTime,
-  earlierDate: Temporal.Instant | Temporal.ZonedDateTime
+  earlierDate: Temporal.Instant | Temporal.ZonedDateTime,
+  options?: DifferenceOptions
 ): number {
   const zoned1 = normalizeTemporalInput(laterDate);
   const zoned2 = normalizeTemporalInput(earlierDate);
 
   const duration = zoned2.until(zoned1, { largestUnit: 'hours' });
-  return duration.total({ unit: 'weeks', relativeTo: zoned2 });
+  const precise = duration.total({ unit: 'weeks', relativeTo: zoned2 });
+  return options?.fractional ? precise : Math.trunc(precise);
 }

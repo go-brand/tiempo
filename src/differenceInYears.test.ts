@@ -29,7 +29,7 @@ describe('differenceInYears', () => {
       const earlier = Temporal.Instant.from('2025-01-20T12:00:00Z');
 
       // About half a year (6 months)
-      const result = differenceInYears(later, earlier);
+      const result = differenceInYears(later, earlier, { fractional: true });
       expect(result).toBeGreaterThan(0.45);
       expect(result).toBeLessThan(0.55);
     });
@@ -39,7 +39,9 @@ describe('differenceInYears', () => {
       const endOf2024 = Temporal.Instant.from('2024-12-31T23:59:59Z');
       const startOf2024 = Temporal.Instant.from('2024-01-01T00:00:00Z');
 
-      const result = differenceInYears(endOf2024, startOf2024);
+      const result = differenceInYears(endOf2024, startOf2024, {
+        fractional: true,
+      });
       // Almost 1 year (366 days in leap year)
       expect(result).toBeGreaterThan(0.99);
       expect(result).toBeLessThan(1);
@@ -101,7 +103,10 @@ describe('differenceInYears', () => {
       );
 
       // NY 10:00 is 14:00 UTC in June (DST) - approximately 5 years
-      expect(differenceInYears(instant, zoned)).toBeCloseTo(5, 1);
+      expect(differenceInYears(instant, zoned, { fractional: true })).toBeCloseTo(
+        5,
+        1
+      );
     });
   });
 
@@ -139,7 +144,7 @@ describe('differenceInYears', () => {
       );
 
       // About 20-21 years
-      const result = differenceInYears(retirement, now);
+      const result = differenceInYears(retirement, now, { fractional: true });
       expect(result).toBeGreaterThan(20);
       expect(result).toBeLessThan(21);
     });
@@ -167,7 +172,7 @@ describe('differenceInYears', () => {
         '1990-01-20T12:00:00Z[UTC]'
       );
 
-      const result = differenceInYears(today, birthdate);
+      const result = differenceInYears(today, birthdate, { fractional: true });
       // Should be 34.x (not yet 35)
       expect(result).toBeGreaterThan(34.9);
       expect(result).toBeLessThan(35);
@@ -182,7 +187,7 @@ describe('differenceInYears', () => {
         '1990-01-20T12:00:00Z[UTC]'
       );
 
-      const result = differenceInYears(today, birthdate);
+      const result = differenceInYears(today, birthdate, { fractional: true });
       // Should be 35.x (just turned 35)
       expect(result).toBeGreaterThan(35);
       expect(result).toBeLessThan(35.01);
@@ -197,7 +202,7 @@ describe('differenceInYears', () => {
         '2000-02-29T12:00:00Z[UTC]'
       );
 
-      const result = differenceInYears(today, birthdate);
+      const result = differenceInYears(today, birthdate, { fractional: true });
       // Should be 25.x years
       expect(result).toBeGreaterThan(25);
       expect(result).toBeLessThan(25.01);
@@ -217,6 +222,18 @@ describe('differenceInYears', () => {
 
       // 100 years
       expect(differenceInYears(later, earlier)).toBe(100);
+    });
+  });
+
+  describe('truncation', () => {
+    it('truncates toward zero by default', () => {
+      const later = Temporal.Instant.from('2025-07-20T12:00:00Z');
+      const earlier = Temporal.Instant.from('2025-01-20T12:00:00Z'); // ~0.5 years
+      expect(differenceInYears(later, earlier)).toBe(0);
+      expect(
+        differenceInYears(later, earlier, { fractional: true })
+      ).toBeGreaterThan(0.45);
+      expect(differenceInYears(earlier, later)).toBeCloseTo(0);
     });
   });
 });

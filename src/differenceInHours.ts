@@ -1,6 +1,7 @@
 import { Temporal } from '@js-temporal/polyfill';
 import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
 import { differenceInMilliseconds } from './shared/differenceInMilliseconds';
+import type { DifferenceOptions } from './shared/differenceOptions';
 
 /**
  * Returns the number of hours between two datetimes.
@@ -8,7 +9,8 @@ import { differenceInMilliseconds } from './shared/differenceInMilliseconds';
  *
  * @param laterDate - The later datetime (Instant or ZonedDateTime)
  * @param earlierDate - The earlier datetime (Instant or ZonedDateTime)
- * @returns The number of hours between the dates
+ * @param options - Optional { fractional } to return the precise value
+ * @returns The number of hours between the dates, truncated toward zero (pass { fractional: true } for the precise value)
  *
  * @example
  * ```ts
@@ -38,10 +40,12 @@ import { differenceInMilliseconds } from './shared/differenceInMilliseconds';
  */
 export function differenceInHours(
   laterDate: Temporal.Instant | Temporal.ZonedDateTime,
-  earlierDate: Temporal.Instant | Temporal.ZonedDateTime
+  earlierDate: Temporal.Instant | Temporal.ZonedDateTime,
+  options?: DifferenceOptions
 ): number {
   const zoned1 = normalizeTemporalInput(laterDate);
   const zoned2 = normalizeTemporalInput(earlierDate);
 
-  return Math.trunc(differenceInMilliseconds(zoned1, zoned2) / 3600000);
+  const precise = differenceInMilliseconds(zoned1, zoned2) / 3600000;
+  return options?.fractional ? precise : Math.trunc(precise);
 }

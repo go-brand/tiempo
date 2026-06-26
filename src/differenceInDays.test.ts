@@ -29,7 +29,8 @@ describe('differenceInDays', () => {
       const earlier = Temporal.Instant.from('2025-01-20T00:00:00Z');
 
       // 1.5 days
-      expect(differenceInDays(later, earlier)).toBe(1.5);
+      expect(differenceInDays(later, earlier, { fractional: true })).toBe(1.5);
+      expect(differenceInDays(later, earlier)).toBe(1);
     });
 
     it('truncates to whole days when difference is less than 24 hours', () => {
@@ -133,7 +134,10 @@ describe('differenceInDays', () => {
         '2025-01-20T15:00:00-05:00[America/New_York]'
       );
 
-      expect(differenceInDays(event, now)).toBeCloseTo(25.166, 1);
+      expect(differenceInDays(event, now, { fractional: true })).toBeCloseTo(
+        25.166,
+        1
+      );
     });
 
     it('calculates age in days', () => {
@@ -157,7 +161,9 @@ describe('differenceInDays', () => {
       );
 
       // Q1 2025: approximately 89-90 days
-      expect(differenceInDays(projectEnd, projectStart)).toBeCloseTo(89.3, 0);
+      expect(
+        differenceInDays(projectEnd, projectStart, { fractional: true })
+      ).toBeCloseTo(89.3, 0);
     });
   });
 
@@ -183,6 +189,17 @@ describe('differenceInDays', () => {
 
       // Feb 29, 2025 doesn't exist
       expect(differenceInDays(afterFeb, beforeFeb)).toBe(1);
+    });
+  });
+
+  describe('truncation', () => {
+    it('truncates toward zero by default', () => {
+      const later = Temporal.Instant.from('2025-01-22T12:00:00Z');
+      const earlier = Temporal.Instant.from('2025-01-21T00:00:00Z'); // 1.5 days
+      expect(differenceInDays(later, earlier)).toBe(1);
+      expect(differenceInDays(later, earlier, { fractional: true })).toBe(1.5);
+      expect(differenceInDays(earlier, later)).toBe(-1);
+      expect(differenceInDays(earlier, later, { fractional: true })).toBe(-1.5);
     });
   });
 });

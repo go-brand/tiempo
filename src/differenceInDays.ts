@@ -1,5 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill';
 import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
+import type { DifferenceOptions } from './shared/differenceOptions';
 
 /**
  * Returns the number of days between two datetimes.
@@ -13,7 +14,8 @@ import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
  *
  * @param laterDate - The later datetime (Instant or ZonedDateTime)
  * @param earlierDate - The earlier datetime (Instant or ZonedDateTime)
- * @returns The number of days between the dates
+ * @param options - Optional { fractional } to return the precise value
+ * @returns The number of days between the dates, truncated toward zero (pass { fractional: true } for the precise value)
  *
  * @example
  * ```ts
@@ -43,11 +45,13 @@ import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
  */
 export function differenceInDays(
   laterDate: Temporal.Instant | Temporal.ZonedDateTime,
-  earlierDate: Temporal.Instant | Temporal.ZonedDateTime
+  earlierDate: Temporal.Instant | Temporal.ZonedDateTime,
+  options?: DifferenceOptions
 ): number {
   const zoned1 = normalizeTemporalInput(laterDate);
   const zoned2 = normalizeTemporalInput(earlierDate);
 
   const duration = zoned2.until(zoned1, { largestUnit: 'hours' });
-  return duration.total({ unit: 'days', relativeTo: zoned2 });
+  const precise = duration.total({ unit: 'days', relativeTo: zoned2 });
+  return options?.fractional ? precise : Math.trunc(precise);
 }

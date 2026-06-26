@@ -29,7 +29,7 @@ describe('differenceInMonths', () => {
       const earlier = Temporal.Instant.from('2025-01-20T12:00:00Z');
 
       // About half a month
-      const result = differenceInMonths(later, earlier);
+      const result = differenceInMonths(later, earlier, { fractional: true });
       expect(result).toBeGreaterThan(0.4);
       expect(result).toBeLessThan(0.6);
     });
@@ -111,7 +111,10 @@ describe('differenceInMonths', () => {
       );
 
       // NY 10:00 is 15:00 UTC - approximately 5 months
-      expect(differenceInMonths(instant, zoned)).toBeCloseTo(5, 1);
+      expect(differenceInMonths(instant, zoned, { fractional: true })).toBeCloseTo(
+        5,
+        1
+      );
     });
   });
 
@@ -149,7 +152,7 @@ describe('differenceInMonths', () => {
       );
 
       // About 1.5 months
-      const result = differenceInMonths(trialEnd, now);
+      const result = differenceInMonths(trialEnd, now, { fractional: true });
       expect(result).toBeGreaterThan(1);
       expect(result).toBeLessThan(2);
     });
@@ -173,7 +176,7 @@ describe('differenceInMonths', () => {
         '2025-01-31T12:00:00Z[UTC]'
       );
 
-      const result = differenceInMonths(feb28, jan31);
+      const result = differenceInMonths(feb28, jan31, { fractional: true });
       // About 1 month (28 days in Feb from Jan 31)
       expect(result).toBeGreaterThan(0.9);
     });
@@ -184,6 +187,18 @@ describe('differenceInMonths', () => {
 
       // Less than a day
       expect(differenceInMonths(later, earlier)).toBeLessThan(0.02);
+    });
+  });
+
+  describe('truncation', () => {
+    it('truncates toward zero by default', () => {
+      const later = Temporal.Instant.from('2025-02-05T12:00:00Z');
+      const earlier = Temporal.Instant.from('2025-01-20T12:00:00Z'); // ~0.5 months
+      expect(differenceInMonths(later, earlier)).toBe(0);
+      expect(
+        differenceInMonths(later, earlier, { fractional: true })
+      ).toBeGreaterThan(0.4);
+      expect(differenceInMonths(earlier, later)).toBeCloseTo(0);
     });
   });
 });

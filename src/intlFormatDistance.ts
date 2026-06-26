@@ -105,9 +105,10 @@ export function intlFormatDistance(
     const absSeconds = Math.abs(differenceInSeconds(zoned1, zoned2));
     const absMinutes = Math.abs(differenceInMinutes(zoned1, zoned2));
     const absHours = Math.abs(differenceInHours(zoned1, zoned2));
-    const absDays = Math.abs(differenceInDays(zoned1, zoned2));
-    const absWeeks = Math.abs(differenceInWeeks(zoned1, zoned2));
-    const absMonths = Math.abs(differenceInMonths(zoned1, zoned2));
+    // calendar units were fractional pre-2.x; sub-day units stay truncated so Math.round below is a no-op
+    const absDays = Math.abs(differenceInDays(zoned1, zoned2, { fractional: true }));
+    const absWeeks = Math.abs(differenceInWeeks(zoned1, zoned2, { fractional: true }));
+    const absMonths = Math.abs(differenceInMonths(zoned1, zoned2, { fractional: true }));
 
     if (absSeconds < 60) {
       unit = 'second';
@@ -138,20 +139,21 @@ export function intlFormatDistance(
     case 'hour':
       value = Math.round(differenceInHours(zoned1, zoned2));
       break;
+    // calendar units were fractional pre-2.x; sub-day units stay truncated so Math.round is a no-op
     case 'day':
-      value = Math.round(differenceInDays(zoned1, zoned2));
+      value = Math.round(differenceInDays(zoned1, zoned2, { fractional: true }));
       break;
     case 'week':
-      value = Math.round(differenceInWeeks(zoned1, zoned2));
+      value = Math.round(differenceInWeeks(zoned1, zoned2, { fractional: true }));
       break;
     case 'month':
-      value = Math.round(differenceInMonths(zoned1, zoned2));
+      value = Math.round(differenceInMonths(zoned1, zoned2, { fractional: true }));
       break;
     case 'quarter':
-      value = Math.round(differenceInMonths(zoned1, zoned2) / 3);
+      value = Math.round(differenceInMonths(zoned1, zoned2, { fractional: true }) / 3);
       break;
     case 'year':
-      value = Math.round(differenceInYears(zoned1, zoned2));
+      value = Math.round(differenceInYears(zoned1, zoned2, { fractional: true }));
       break;
     default:
       // For any other unit type, try to use it directly

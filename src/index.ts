@@ -76,6 +76,7 @@ export { differenceInDays } from './differenceInDays';
 export { differenceInWeeks } from './differenceInWeeks';
 export { differenceInMonths } from './differenceInMonths';
 export { differenceInYears } from './differenceInYears';
+export type { DifferenceOptions } from './shared/differenceOptions';
 export {
   roundToNearestHour,
   type RoundToNearestHourOptions,
