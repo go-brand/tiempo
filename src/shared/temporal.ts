@@ -1,48 +1,27 @@
-import type { Temporal as TemporalNamespace } from '@js-temporal/polyfill';
+import { Temporal } from '@js-temporal/polyfill';
 
 /**
  * @internal
  * Single source of the Temporal implementation.
  *
- * Prefers the runtime's native `globalThis.Temporal` (Node 26+, Chrome 144+,
- * Firefox 139+, Edge, Deno) and dynamically loads `@js-temporal/polyfill` only
- * when native Temporal is absent (Safari, Node <= 25). On native runtimes the
- * polyfill is never imported or executed.
+ * Currently always uses `@js-temporal/polyfill`. A previous attempt to prefer
+ * the runtime's native `globalThis.Temporal` was reverted: tiempo passes
+ * caller-provided Temporal objects into static methods
+ * (`Temporal.ZonedDateTime.compare`, etc.), and a native static method throws
+ * ("Must specify time zone.") when handed an object created by a different
+ * implementation than the one tiempo resolved. Native-first can return once
+ * inputs are normalized into the resolved implementation at the boundary, with
+ * a native-Temporal CI runner guarding it.
  *
- * Do not import the polyfill directly anywhere else in src/ — import `Temporal`
- * from this module so the runtime choice stays in one place.
+ * Import `Temporal` from here so the implementation choice stays in one place.
  */
-export const Temporal: typeof TemporalNamespace =
-  (globalThis as { Temporal?: typeof TemporalNamespace }).Temporal ??
-  (await import('@js-temporal/polyfill')).Temporal;
+export { Temporal };
 
 /**
  * @internal
- * Merge the resolved value with the polyfill's `Temporal` type namespace so a
- * single `import { Temporal }` serves both runtime construction
- * (`Temporal.Instant.from(...)`) and type annotations (`Temporal.Instant`),
- * exactly like importing `Temporal` directly from the polyfill used to.
- */
-export namespace Temporal {
-  export type Instant = TemporalNamespace.Instant;
-  export type ZonedDateTime = TemporalNamespace.ZonedDateTime;
-  export type PlainDate = TemporalNamespace.PlainDate;
-  export type PlainTime = TemporalNamespace.PlainTime;
-  export type PlainDateTime = TemporalNamespace.PlainDateTime;
-  export type PlainYearMonth = TemporalNamespace.PlainYearMonth;
-  export type PlainMonthDay = TemporalNamespace.PlainMonthDay;
-  export type Duration = TemporalNamespace.Duration;
-  export type PlainTimeLike = TemporalNamespace.PlainTimeLike;
-  export type PlainDateLike = TemporalNamespace.PlainDateLike;
-}
-
-/**
- * @internal
- * Implementation-agnostic type guards.
- *
- * `instanceof` is identity-based and fails across implementations. The Temporal
- * spec requires every implementation to set `Symbol.toStringTag`, so brand
- * checks work regardless of which implementation produced the object.
+ * Implementation-agnostic type guards. The Temporal spec requires every
+ * implementation to set `Symbol.toStringTag`, so these work regardless of which
+ * implementation produced the object.
  */
 function brand(value: unknown): string | undefined {
   return typeof value === 'object' && value !== null
@@ -50,18 +29,16 @@ function brand(value: unknown): string | undefined {
     : undefined;
 }
 
-export function isInstant(value: unknown): value is TemporalNamespace.Instant {
+export function isInstant(value: unknown): value is Temporal.Instant {
   return brand(value) === 'Temporal.Instant';
 }
 
 export function isZonedDateTime(
   value: unknown
-): value is TemporalNamespace.ZonedDateTime {
+): value is Temporal.ZonedDateTime {
   return brand(value) === 'Temporal.ZonedDateTime';
 }
 
-export function isPlainDate(
-  value: unknown
-): value is TemporalNamespace.PlainDate {
+export function isPlainDate(value: unknown): value is Temporal.PlainDate {
   return brand(value) === 'Temporal.PlainDate';
 }

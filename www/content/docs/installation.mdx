@@ -16,7 +16,7 @@ description: Get started with tiempo in your project
 
 ## Polyfill
 
-tiempo uses the runtime's native `Temporal` when it is available (Node 26+, Chrome 144+, Firefox 139+, Edge, Deno) and only loads the `@js-temporal/polyfill` as a fallback on older runtimes (such as Safari and Node ≤ 25). Modern environments therefore run no polyfill at all — the polyfill is dynamically imported only when native `Temporal` is absent.
+tiempo uses the [`@js-temporal/polyfill`](https://github.com/js-temporal/temporal-polyfill) so the Temporal API behaves identically across every runtime today, including those without native `Temporal` (Safari, older Node). Preferring the runtime's native `Temporal` when present (Node 26+, Chrome 144+, Firefox 139+, Edge, Deno) to skip the polyfill is planned for a future release.
 
 ## Usage with ORMs
 
