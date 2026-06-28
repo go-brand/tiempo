@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { Temporal } from '@js-temporal/polyfill';
+import { Temporal } from './shared/temporal';
 import { roundToNearestSecond } from './roundToNearestSecond';
 
 describe('roundToNearestSecond', () => {

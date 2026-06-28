@@ -1,4 +1,4 @@
-import { Temporal } from '@js-temporal/polyfill';
+import { Temporal } from './shared/temporal';
 import { describe, expect, it } from 'vitest';
 import { now } from './now';
 import { browserTimezone } from './browserTimezone';
