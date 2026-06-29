@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { Temporal } from '@js-temporal/polyfill';
+import { Temporal } from './shared/temporal';
 import { toIso9075 } from './toIso9075';
 import { toZonedTime } from './toZonedTime';
 

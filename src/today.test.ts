@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { Temporal } from '@js-temporal/polyfill';
+import { Temporal } from './shared/temporal';
 import { today } from './today';
 
 describe('today', () => {

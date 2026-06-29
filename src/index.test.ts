@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { toZonedTime, toUtc, toIso } from './index';
-import { Temporal } from '@js-temporal/polyfill';
+import { Temporal } from './shared/temporal';
 
 describe('tiempo integration', () => {
   describe('round-trip conversions', () => {
