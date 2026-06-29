@@ -1,20 +1,22 @@
-import { createFileRoute, Link } from '@tanstack/react-router';
-import { HomeLayout } from 'fumadocs-ui/layouts/home';
-import { baseOptions } from '@/lib/layout.shared';
-import { useEffect, useState } from 'react';
-import { motion } from 'motion/react';
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { HomeLayout } from "fumadocs-ui/layouts/home";
+import { baseOptions } from "@/lib/layout.shared";
+import { useEffect, useState } from "react";
+import { motion } from "motion/react";
 
-export const Route = createFileRoute('/')({
+export const Route = createFileRoute("/")({
   component: Home,
 });
 
 // Static arrays for clock markers
 const HOUR_MARKERS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] as const;
-const MINUTE_MARKERS = [1, 2, 3, 4, 6, 7, 8, 9, 11, 12, 13, 14, 16, 17, 18, 19, 21, 22, 23, 24, 26, 27, 28, 29, 31, 32, 33, 34, 36, 37, 38, 39, 41, 42, 43, 44, 46, 47, 48, 49, 51, 52, 53, 54, 56, 57, 58, 59] as const;
-
+const MINUTE_MARKERS = [
+  1, 2, 3, 4, 6, 7, 8, 9, 11, 12, 13, 14, 16, 17, 18, 19, 21, 22, 23, 24, 26, 27, 28, 29, 31, 32,
+  33, 34, 36, 37, 38, 39, 41, 42, 43, 44, 46, 47, 48, 49, 51, 52, 53, 54, 56, 57, 58, 59,
+] as const;
 
 // Animated clock hands visualization
-function ClockVisualization({ variant = 'dark' }: { variant?: 'dark' | 'light' }) {
+function ClockVisualization({ variant = "dark" }: { variant?: "dark" | "light" }) {
   const [time, setTime] = useState(new Date());
 
   useEffect(() => {
@@ -30,41 +32,41 @@ function ClockVisualization({ variant = 'dark' }: { variant?: 'dark' | 'light' }
   const minuteDeg = minutes * 6 + seconds * 0.1;
   const hourDeg = hours * 30 + minutes * 0.5;
 
-  const isLight = variant === 'light';
+  const isLight = variant === "light";
 
   return (
     <div className="relative w-[380px] h-[380px] md:w-[500px] md:h-[500px]">
       {/* Aura rings - soft glowing shadows with wavy ripple effect */}
       <motion.div
-        className={`absolute inset-[-30px] md:inset-[-50px] rounded-full ${isLight ? 'shadow-[0_0_40px_8px_rgba(255,255,255,0.15)]' : 'shadow-[0_0_40px_8px_rgba(251,191,36,0.15)]'}`}
-        initial={{ opacity: 0, scale: 0.7, filter: 'blur(12px)' }}
-        animate={{ opacity: 1, scale: [0.7, 1.08, 0.96, 1.02, 1], filter: 'blur(0px)' }}
+        className={`absolute inset-[-30px] md:inset-[-50px] rounded-full ${isLight ? "shadow-[0_0_40px_8px_rgba(255,255,255,0.15)]" : "shadow-[0_0_40px_8px_rgba(251,191,36,0.15)]"}`}
+        initial={{ opacity: 0, scale: 0.7, filter: "blur(12px)" }}
+        animate={{ opacity: 1, scale: [0.7, 1.08, 0.96, 1.02, 1], filter: "blur(0px)" }}
         transition={{
           duration: 1.2,
           ease: [0.22, 1, 0.36, 1],
-          scale: { duration: 1.4, times: [0, 0.4, 0.6, 0.8, 1], ease: 'easeOut' }
+          scale: { duration: 1.4, times: [0, 0.4, 0.6, 0.8, 1], ease: "easeOut" },
         }}
       />
       <motion.div
-        className={`absolute inset-[-70px] md:inset-[-110px] rounded-full ${isLight ? 'shadow-[0_0_60px_12px_rgba(255,255,255,0.08)]' : 'shadow-[0_0_60px_12px_rgba(251,191,36,0.08)]'}`}
-        initial={{ opacity: 0, scale: 0.7, filter: 'blur(16px)' }}
-        animate={{ opacity: 1, scale: [0.7, 1.06, 0.97, 1.01, 1], filter: 'blur(0px)' }}
+        className={`absolute inset-[-70px] md:inset-[-110px] rounded-full ${isLight ? "shadow-[0_0_60px_12px_rgba(255,255,255,0.08)]" : "shadow-[0_0_60px_12px_rgba(251,191,36,0.08)]"}`}
+        initial={{ opacity: 0, scale: 0.7, filter: "blur(16px)" }}
+        animate={{ opacity: 1, scale: [0.7, 1.06, 0.97, 1.01, 1], filter: "blur(0px)" }}
         transition={{
           duration: 1.2,
           ease: [0.22, 1, 0.36, 1],
           delay: 0.12,
-          scale: { duration: 1.4, times: [0, 0.4, 0.6, 0.8, 1], ease: 'easeOut', delay: 0.12 }
+          scale: { duration: 1.4, times: [0, 0.4, 0.6, 0.8, 1], ease: "easeOut", delay: 0.12 },
         }}
       />
       <motion.div
-        className={`absolute inset-[-120px] md:inset-[-180px] rounded-full ${isLight ? 'shadow-[0_0_80px_16px_rgba(255,255,255,0.04)]' : 'shadow-[0_0_80px_16px_rgba(251,191,36,0.04)]'}`}
-        initial={{ opacity: 0, scale: 0.7, filter: 'blur(20px)' }}
-        animate={{ opacity: 1, scale: [0.7, 1.04, 0.98, 1], filter: 'blur(0px)' }}
+        className={`absolute inset-[-120px] md:inset-[-180px] rounded-full ${isLight ? "shadow-[0_0_80px_16px_rgba(255,255,255,0.04)]" : "shadow-[0_0_80px_16px_rgba(251,191,36,0.04)]"}`}
+        initial={{ opacity: 0, scale: 0.7, filter: "blur(20px)" }}
+        animate={{ opacity: 1, scale: [0.7, 1.04, 0.98, 1], filter: "blur(0px)" }}
         transition={{
           duration: 1.2,
           ease: [0.22, 1, 0.36, 1],
           delay: 0.24,
-          scale: { duration: 1.4, times: [0, 0.45, 0.7, 1], ease: 'easeOut', delay: 0.24 }
+          scale: { duration: 1.4, times: [0, 0.45, 0.7, 1], ease: "easeOut", delay: 0.24 },
         }}
       />
 
@@ -80,14 +82,14 @@ function ClockVisualization({ variant = 'dark' }: { variant?: 'dark' | 'light' }
 
       {/* Clock face - border only first, then background fades in */}
       <motion.div
-        className={`absolute inset-4 rounded-full border ${isLight ? 'border-white/40' : 'border-amber-500/20'} overflow-hidden`}
-        initial={{ opacity: 0, scale: 0.9, filter: 'blur(6px)' }}
-        animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+        className={`absolute inset-4 rounded-full border ${isLight ? "border-white/40" : "border-amber-500/20"} overflow-hidden`}
+        initial={{ opacity: 0, scale: 0.9, filter: "blur(6px)" }}
+        animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
         transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 1.0 }}
       >
         {/* Background layer - fades in after border */}
         <motion.div
-          className={`absolute inset-0 ${isLight ? 'bg-white/15' : 'bg-gradient-to-br from-neutral-900/80 to-neutral-950/90 backdrop-blur-sm'}`}
+          className={`absolute inset-0 ${isLight ? "bg-white/15" : "bg-gradient-to-br from-neutral-900/80 to-neutral-950/90 backdrop-blur-sm"}`}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 1.3 }}
@@ -97,10 +99,10 @@ function ClockVisualization({ variant = 'dark' }: { variant?: 'dark' | 'light' }
         {HOUR_MARKERS.map((hour) => (
           <motion.div
             key={`hour-${hour}`}
-            className={`absolute inset-0 flex justify-center ${isLight ? 'text-white/60' : 'text-amber-500/40'}`}
+            className={`absolute inset-0 flex justify-center ${isLight ? "text-white/60" : "text-amber-500/40"}`}
             style={{ transform: `rotate(${hour * 30}deg)` }}
-            initial={{ opacity: 0, filter: 'blur(4px)' }}
-            animate={{ opacity: 1, filter: 'blur(0px)' }}
+            initial={{ opacity: 0, filter: "blur(4px)" }}
+            animate={{ opacity: 1, filter: "blur(0px)" }}
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: 1.5 }}
           >
             <div className="w-0.5 h-4 mt-2 bg-current" />
@@ -111,10 +113,10 @@ function ClockVisualization({ variant = 'dark' }: { variant?: 'dark' | 'light' }
         {MINUTE_MARKERS.map((minute) => (
           <motion.div
             key={`minute-${minute}`}
-            className={`absolute inset-0 flex justify-center ${isLight ? 'text-white/30' : 'text-amber-500/20'}`}
+            className={`absolute inset-0 flex justify-center ${isLight ? "text-white/30" : "text-amber-500/20"}`}
             style={{ transform: `rotate(${minute * 6}deg)` }}
-            initial={{ opacity: 0, filter: 'blur(3px)' }}
-            animate={{ opacity: 1, filter: 'blur(0px)' }}
+            initial={{ opacity: 0, filter: "blur(3px)" }}
+            animate={{ opacity: 1, filter: "blur(0px)" }}
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: 1.7 }}
           >
             <div className="w-px h-2 mt-3 bg-current" />
@@ -123,52 +125,52 @@ function ClockVisualization({ variant = 'dark' }: { variant?: 'dark' | 'light' }
 
         {/* Center dot */}
         <motion.div
-          className={`absolute left-1/2 top-1/2 w-3 h-3 rounded-full ${isLight ? 'bg-white' : 'bg-amber-500 shadow-lg shadow-amber-500/50'}`}
-          style={{ x: '-50%', y: '-50%' }}
-          initial={{ opacity: 0, scale: 0, filter: 'blur(4px)' }}
-          animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+          className={`absolute left-1/2 top-1/2 w-3 h-3 rounded-full ${isLight ? "bg-white" : "bg-amber-500 shadow-lg shadow-amber-500/50"}`}
+          style={{ x: "-50%", y: "-50%" }}
+          initial={{ opacity: 0, scale: 0, filter: "blur(4px)" }}
+          animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
           transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1], delay: 1.9 }}
         />
 
         {/* Hour hand - rotates from center, extends upward */}
         <motion.div
-          className={`absolute left-1/2 top-1/2 w-1.5 h-20 md:h-24 rounded-full ${isLight ? 'bg-white' : 'bg-gradient-to-b from-amber-400 to-amber-600 shadow-lg shadow-amber-500/30'}`}
+          className={`absolute left-1/2 top-1/2 w-1.5 h-20 md:h-24 rounded-full ${isLight ? "bg-white" : "bg-gradient-to-b from-amber-400 to-amber-600 shadow-lg shadow-amber-500/30"}`}
           style={{
-            x: '-50%',
-            y: '-100%',
+            x: "-50%",
+            y: "-100%",
             rotate: hourDeg,
-            transformOrigin: 'center bottom',
+            transformOrigin: "center bottom",
           }}
-          initial={{ opacity: 0, scaleY: 0, filter: 'blur(3px)' }}
-          animate={{ opacity: 1, scaleY: 1, filter: 'blur(0px)' }}
+          initial={{ opacity: 0, scaleY: 0, filter: "blur(3px)" }}
+          animate={{ opacity: 1, scaleY: 1, filter: "blur(0px)" }}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: 2.0 }}
         />
 
         {/* Minute hand - rotates from center, extends upward */}
         <motion.div
-          className={`absolute left-1/2 top-1/2 w-1 md:w-0.5 h-24 md:h-28 rounded-full ${isLight ? 'bg-white/90' : 'bg-gradient-to-b from-amber-300 to-amber-500 shadow-lg shadow-amber-500/20'}`}
+          className={`absolute left-1/2 top-1/2 w-1 md:w-0.5 h-24 md:h-28 rounded-full ${isLight ? "bg-white/90" : "bg-gradient-to-b from-amber-300 to-amber-500 shadow-lg shadow-amber-500/20"}`}
           style={{
-            x: '-50%',
-            y: '-100%',
+            x: "-50%",
+            y: "-100%",
             rotate: minuteDeg,
-            transformOrigin: 'center bottom',
+            transformOrigin: "center bottom",
           }}
-          initial={{ opacity: 0, scaleY: 0, filter: 'blur(3px)' }}
-          animate={{ opacity: 1, scaleY: 1, filter: 'blur(0px)' }}
+          initial={{ opacity: 0, scaleY: 0, filter: "blur(3px)" }}
+          animate={{ opacity: 1, scaleY: 1, filter: "blur(0px)" }}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: 2.05 }}
         />
 
         {/* Second hand - rotates from center, extends upward */}
         <motion.div
-          className={`absolute left-1/2 top-1/2 w-px h-28 md:h-32 ${isLight ? 'bg-white/70' : 'bg-gradient-to-b from-orange-400 to-orange-600'}`}
+          className={`absolute left-1/2 top-1/2 w-px h-28 md:h-32 ${isLight ? "bg-white/70" : "bg-gradient-to-b from-orange-400 to-orange-600"}`}
           style={{
-            x: '-50%',
-            y: '-100%',
+            x: "-50%",
+            y: "-100%",
             rotate: secondDeg,
-            transformOrigin: 'center bottom',
+            transformOrigin: "center bottom",
           }}
-          initial={{ opacity: 0, scaleY: 0, filter: 'blur(2px)' }}
-          animate={{ opacity: 1, scaleY: 1, filter: 'blur(0px)' }}
+          initial={{ opacity: 0, scaleY: 0, filter: "blur(2px)" }}
+          animate={{ opacity: 1, scaleY: 1, filter: "blur(0px)" }}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: 2.1 }}
         />
       </motion.div>
@@ -176,22 +178,26 @@ function ClockVisualization({ variant = 'dark' }: { variant?: 'dark' | 'light' }
       {/* Orbiting timezone indicators - coordinated orbits at harmonic ratios */}
       <motion.div
         className="absolute inset-0 animate-[spin_120s_linear_infinite]"
-        initial={{ opacity: 0, filter: 'blur(4px)' }}
-        animate={{ opacity: 1, filter: 'blur(0px)' }}
+        initial={{ opacity: 0, filter: "blur(4px)" }}
+        animate={{ opacity: 1, filter: "blur(0px)" }}
         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 2.3 }}
       >
-        <div className={`absolute top-0 left-1/2 -translate-x-1/2 -translate-y-2 px-2 py-0.5 rounded-full text-[10px] font-mono ${isLight ? 'bg-white/20 border border-white/30 text-white/80' : 'bg-amber-500/10 border border-amber-500/20 text-amber-400/70'}`}>
+        <div
+          className={`absolute top-0 left-1/2 -translate-x-1/2 -translate-y-2 px-2 py-0.5 rounded-full text-[10px] font-mono ${isLight ? "bg-white/20 border border-white/30 text-white/80" : "bg-amber-500/10 border border-amber-500/20 text-amber-400/70"}`}
+        >
           UTC
         </div>
       </motion.div>
       <motion.div
         className="absolute inset-0 animate-[spin_120s_linear_infinite]"
-        style={{ animationDelay: '-60s' }}
-        initial={{ opacity: 0, filter: 'blur(4px)' }}
-        animate={{ opacity: 1, filter: 'blur(0px)' }}
+        style={{ animationDelay: "-60s" }}
+        initial={{ opacity: 0, filter: "blur(4px)" }}
+        animate={{ opacity: 1, filter: "blur(0px)" }}
         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 2.4 }}
       >
-        <div className={`absolute top-0 left-1/2 -translate-x-1/2 -translate-y-2 px-2 py-0.5 rounded-full text-[10px] font-mono ${isLight ? 'bg-white/20 border border-white/30 text-white/80' : 'bg-orange-500/10 border border-orange-500/20 text-orange-400/70'}`}>
+        <div
+          className={`absolute top-0 left-1/2 -translate-x-1/2 -translate-y-2 px-2 py-0.5 rounded-full text-[10px] font-mono ${isLight ? "bg-white/20 border border-white/30 text-white/80" : "bg-orange-500/10 border border-orange-500/20 text-orange-400/70"}`}
+        >
           PST
         </div>
       </motion.div>
@@ -201,17 +207,27 @@ function ClockVisualization({ variant = 'dark' }: { variant?: 'dark' | 'light' }
 
 // Syntax highlighting for code examples
 function highlightCode(code: string): React.ReactNode[] {
-  const keywords = ['import', 'from', 'const', 'let', 'var', 'function', 'return', 'async', 'await'];
-  const keywordPattern = new RegExp(`\\b(${keywords.join('|')})\\b`, 'g');
+  const keywords = [
+    "import",
+    "from",
+    "const",
+    "let",
+    "var",
+    "function",
+    "return",
+    "async",
+    "await",
+  ];
+  const keywordPattern = new RegExp(`\\b(${keywords.join("|")})\\b`, "g");
 
-  return code.split('\n').map((line, lineIndex) => {
+  return code.split("\n").map((line, lineIndex) => {
     const parts: React.ReactNode[] = [];
     let partKey = 0;
 
     // Handle comments first
-    const commentIndex = line.indexOf('//');
+    const commentIndex = line.indexOf("//");
     const mainPart = commentIndex >= 0 ? line.slice(0, commentIndex) : line;
-    const commentPart = commentIndex >= 0 ? line.slice(commentIndex) : '';
+    const commentPart = commentIndex >= 0 ? line.slice(commentIndex) : "";
 
     // Find all strings in the main part
     const stringPattern = /('[^']*'|"[^"]*")/g;
@@ -236,14 +252,22 @@ function highlightCode(code: string): React.ReactNode[] {
         const keywordParts = beforeText.split(keywordPattern);
         keywordParts.forEach((part) => {
           if (keywords.includes(part)) {
-            parts.push(<span key={partKey++} className="text-amber-400">{part}</span>);
+            parts.push(
+              <span key={partKey++} className="text-amber-400">
+                {part}
+              </span>,
+            );
           } else {
             parts.push(<span key={partKey++}>{part}</span>);
           }
         });
       }
       // The string itself
-      parts.push(<span key={partKey++} className="text-orange-300">{strMatch.text}</span>);
+      parts.push(
+        <span key={partKey++} className="text-orange-300">
+          {strMatch.text}
+        </span>,
+      );
       currentPos = strMatch.end;
     }
 
@@ -253,7 +277,11 @@ function highlightCode(code: string): React.ReactNode[] {
       const keywordParts = remainingText.split(keywordPattern);
       keywordParts.forEach((part) => {
         if (keywords.includes(part)) {
-          parts.push(<span key={partKey++} className="text-amber-400">{part}</span>);
+          parts.push(
+            <span key={partKey++} className="text-amber-400">
+              {part}
+            </span>,
+          );
         } else {
           parts.push(<span key={partKey++}>{part}</span>);
         }
@@ -262,13 +290,17 @@ function highlightCode(code: string): React.ReactNode[] {
 
     // Add comment if present
     if (commentPart) {
-      parts.push(<span key={partKey++} className="text-neutral-500">{commentPart}</span>);
+      parts.push(
+        <span key={partKey++} className="text-neutral-500">
+          {commentPart}
+        </span>,
+      );
     }
 
-    const lineKey = `${line.slice(0, 20).replace(/\s/g, '_')}-${lineIndex}`;
+    const lineKey = `${line.slice(0, 20).replace(/\s/g, "_")}-${lineIndex}`;
     return (
       <div key={lineKey} className="leading-relaxed">
-        {parts.length > 0 ? parts : '\u00A0'}
+        {parts.length > 0 ? parts : "\u00A0"}
       </div>
     );
   });
@@ -316,18 +348,12 @@ const TESTIMONIALS = [
 ] as const;
 
 // Testimonial card
-function TestimonialCard({
-  quote,
-  name,
-  image,
-}: {
-  quote: string;
-  name: string;
-  image: string;
-}) {
+function TestimonialCard({ quote, name, image }: { quote: string; name: string; image: string }) {
   return (
     <div className="relative p-8 rounded-2xl bg-gradient-to-br from-neutral-900/50 to-neutral-950/50 border border-neutral-800/50">
-      <div className="absolute top-6 left-6 text-amber-500/20 text-6xl font-serif leading-none">"</div>
+      <div className="absolute top-6 left-6 text-amber-500/20 text-6xl font-serif leading-none">
+        "
+      </div>
       <blockquote className="relative z-10 text-xl md:text-2xl font-medium text-neutral-100 mb-6 pt-4">
         {quote}
       </blockquote>
@@ -356,15 +382,20 @@ const formatted = format(nyTime, 'EEEE, MMMM d, yyyy h:mm a');
 // Today's date in any timezone
 const tokyoToday = today('Asia/Tokyo');`;
 
-  const temporalCode = `import { addDays, differenceInHours, isSameDay } from '@gobrand/tiempo';
+  const temporalCode = `import { now, addDays, differenceInHours, isSameDay } from '@gobrand/tiempo';
+
+const current = now('America/New_York');
 
 // Add time with precision
-const nextWeek = addDays(now, 7);
+const nextWeek = addDays(current, 7);
 
 // Calculate differences
-const hoursDiff = differenceInHours(meeting, now);
+const meeting = addDays(current, 3);
+const hoursDiff = differenceInHours(meeting, current);
 
 // Compare dates across timezones
+const localDate = now('America/New_York');
+const remoteDate = now('Europe/Madrid');
 const sameDay = isSameDay(localDate, remoteDate);`;
 
   return (
@@ -378,7 +409,8 @@ const sameDay = isSameDay(localDate, remoteDate);`;
           </h1>
 
           <p className="text-lg md:text-xl text-neutral-400 max-w-2xl font-light leading-relaxed mb-8">
-            tiempo is a lightweight library for timezone conversions, formatting, and date math—built on the modern Temporal API for precision you can trust.
+            tiempo is a lightweight library for timezone conversions, formatting, and date
+            math—built on the modern Temporal API for precision you can trust.
           </p>
 
           {/* Install command and CTA */}
@@ -388,17 +420,28 @@ const sameDay = isSameDay(localDate, remoteDate);`;
               <button
                 type="button"
                 className="p-1 hover:bg-neutral-700/50 rounded transition-colors"
-                onClick={() => navigator.clipboard.writeText('pnpm add @gobrand/tiempo')}
+                onClick={() => navigator.clipboard.writeText("pnpm add @gobrand/tiempo")}
                 aria-label="Copy to clipboard"
               >
-                <svg className="w-4 h-4 text-neutral-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                <svg
+                  className="w-4 h-4 text-neutral-500"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                  />
                 </svg>
               </button>
             </code>
             <Link
               to="/docs/$"
-              params={{ _splat: '' }}
+              params={{ _splat: "" }}
               className="text-amber-400 hover:text-amber-300 font-medium text-sm transition-colors"
             >
               Read the docs
@@ -430,14 +473,22 @@ const sameDay = isSameDay(localDate, remoteDate);`;
             className="absolute inset-0 opacity-[0.15]"
             style={{
               backgroundImage: `radial-gradient(circle, rgba(0,0,0,0.3) 1px, transparent 1px)`,
-              backgroundSize: '8px 8px',
+              backgroundSize: "8px 8px",
             }}
           />
           {/* Noise/grain texture overlay */}
-          <svg className="absolute inset-0 w-full h-full opacity-[0.3] mix-blend-multiply pointer-events-none" aria-hidden="true">
+          <svg
+            className="absolute inset-0 w-full h-full opacity-[0.3] mix-blend-multiply pointer-events-none"
+            aria-hidden="true"
+          >
             <title>Background texture</title>
             <filter id="heroNoise">
-              <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch" />
+              <feTurbulence
+                type="fractalNoise"
+                baseFrequency="0.8"
+                numOctaves="4"
+                stitchTiles="stitch"
+              />
               <feColorMatrix type="saturate" values="0" />
             </filter>
             <rect width="100%" height="100%" filter="url(#heroNoise)" />
@@ -450,25 +501,35 @@ const sameDay = isSameDay(localDate, remoteDate);`;
         </div>
       </section>
 
-
       {/* Features section */}
       <section className="relative py-24 px-4">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-amber-950/5 to-transparent" />
         <div className="relative max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-neutral-100 mb-4">
-              Why tiempo?
-            </h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-neutral-100 mb-4">Why tiempo?</h2>
             <p className="text-lg text-neutral-400 max-w-2xl mx-auto">
-              JavaScript's <code className="text-amber-400/80">Date</code> was modeled after a Java class deprecated 25+ years ago. The Temporal API is its modern replacement—tiempo makes it accessible.
+              JavaScript's <code className="text-amber-400/80">Date</code> was modeled after a Java
+              class deprecated 25+ years ago. The Temporal API is its modern replacement—tiempo
+              makes it accessible.
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 rounded-xl border overflow-clip">
             <FeatureCard
               icon={
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"
+                  />
                 </svg>
               }
               title="Any Timezone, Anywhere"
@@ -476,8 +537,19 @@ const sameDay = isSameDay(localDate, remoteDate);`;
             />
             <FeatureCard
               icon={
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M13 10V3L4 14h7v7l9-11h-7z"
+                  />
                 </svg>
               }
               title="Nanosecond Precision"
@@ -485,8 +557,19 @@ const sameDay = isSameDay(localDate, remoteDate);`;
             />
             <FeatureCard
               icon={
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  />
                 </svg>
               }
               title="DST-Safe Arithmetic"
@@ -494,8 +577,19 @@ const sameDay = isSameDay(localDate, remoteDate);`;
             />
             <FeatureCard
               icon={
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                  />
                 </svg>
               }
               title="Immutable by Design"
@@ -503,8 +597,19 @@ const sameDay = isSameDay(localDate, remoteDate);`;
             />
             <FeatureCard
               icon={
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"
+                  />
                 </svg>
               }
               title="Distinct Types"
@@ -512,8 +617,19 @@ const sameDay = isSameDay(localDate, remoteDate);`;
             />
             <FeatureCard
               icon={
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
                 </svg>
               }
               title="Type-Safe & Familiar"
@@ -541,7 +657,8 @@ const sameDay = isSameDay(localDate, remoteDate);`;
               <div className="lg:col-span-2 flex flex-col justify-center lg:py-4">
                 <h3 className="text-xl font-semibold text-neutral-100 mb-2">Timezone Conversion</h3>
                 <p className="text-neutral-400 leading-relaxed">
-                  Convert times between any timezone with precision. Get the current time in New York, format it beautifully, or find today's date in Tokyo.
+                  Convert times between any timezone with precision. Get the current time in New
+                  York, format it beautifully, or find today's date in Tokyo.
                 </p>
               </div>
               <div className="lg:col-span-3 min-w-0">
@@ -554,7 +671,8 @@ const sameDay = isSameDay(localDate, remoteDate);`;
               <div className="lg:col-span-2 flex flex-col justify-center lg:py-4">
                 <h3 className="text-xl font-semibold text-neutral-100 mb-2">Date Arithmetic</h3>
                 <p className="text-neutral-400 leading-relaxed">
-                  Add, subtract, and compare dates naturally. Calculate differences, check if dates fall on the same day—all with DST-safe precision.
+                  Add, subtract, and compare dates naturally. Calculate differences, check if dates
+                  fall on the same day—all with DST-safe precision.
                 </p>
               </div>
               <div className="lg:col-span-3 min-w-0">
@@ -573,9 +691,7 @@ const sameDay = isSameDay(localDate, remoteDate);`;
               <h2 className="text-3xl md:text-4xl font-bold text-neutral-100 mb-3">
                 What developers say
               </h2>
-              <p className="text-lg text-neutral-400">
-                Join the growing community using tiempo.
-              </p>
+              <p className="text-lg text-neutral-400">Join the growing community using tiempo.</p>
             </div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -604,17 +720,20 @@ const sameDay = isSameDay(localDate, remoteDate);`;
                 Ready to handle time?
               </h2>
               <p className="text-lg text-neutral-400 mb-8 max-w-xl mx-auto">
-                Start building with tiempo today. It's open source, lightweight, and built for the future of JavaScript.
+                Start building with tiempo today. It's open source, lightweight, and built for the
+                future of JavaScript.
               </p>
 
               <div className="flex flex-wrap gap-4 justify-center">
                 <Link
                   to="/docs/$"
-                  params={{ _splat: '' }}
+                  params={{ _splat: "" }}
                   className="group relative px-6 py-2.5 rounded-lg border border-amber-500/50 text-amber-400 hover:text-amber-300 hover:border-amber-400/60 font-medium transition-all duration-300"
                 >
                   Documentation
-                  <span className="ml-2 inline-block transition-transform group-hover:translate-x-0.5">→</span>
+                  <span className="ml-2 inline-block transition-transform group-hover:translate-x-0.5">
+                    →
+                  </span>
                 </Link>
               </div>
             </div>
