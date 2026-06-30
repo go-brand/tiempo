@@ -4,6 +4,7 @@
   "icon": "CalendarRange",
   "pages": [
     "each-year-of-interval",
+    "each-quarter-of-interval",
     "each-month-of-interval",
     "each-week-of-interval",
     "each-day-of-interval",

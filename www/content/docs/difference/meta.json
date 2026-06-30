@@ -4,6 +4,7 @@
   "icon": "Minus",
   "pages": [
     "difference-in-years",
+    "difference-in-quarters",
     "difference-in-months",
     "difference-in-weeks",
     "difference-in-days",

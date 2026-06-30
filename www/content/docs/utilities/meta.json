@@ -3,6 +3,7 @@
   "description": "Helper functions for timezone detection, rounding, and other utilities",
   "icon": "Wrench",
   "pages": [
+    "get-quarter",
     "browser-timezone",
     "round-to-nearest-hour",
     "round-to-nearest-minute",

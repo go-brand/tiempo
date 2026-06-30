@@ -35,6 +35,7 @@ tiempo provides a familiar date-fns-style API while leveraging the modern Tempor
 ## Arithmetic
 
 - [addYears](https://eng.gobrand.app/tiempo/docs/arithmetic/add-years): Add years to a datetime
+- [addQuarters](https://eng.gobrand.app/tiempo/docs/arithmetic/add-quarters): Add quarters to a datetime
 - [addMonths](https://eng.gobrand.app/tiempo/docs/arithmetic/add-months): Add months to a datetime
 - [addWeeks](https://eng.gobrand.app/tiempo/docs/arithmetic/add-weeks): Add weeks to a datetime
 - [addDays](https://eng.gobrand.app/tiempo/docs/arithmetic/add-days): Add days to a datetime (DST-safe)
@@ -42,6 +43,7 @@ tiempo provides a familiar date-fns-style API while leveraging the modern Tempor
 - [addMinutes](https://eng.gobrand.app/tiempo/docs/arithmetic/add-minutes): Add minutes to a datetime
 - [addSeconds](https://eng.gobrand.app/tiempo/docs/arithmetic/add-seconds): Add seconds to a datetime
 - [subYears](https://eng.gobrand.app/tiempo/docs/arithmetic/sub-years): Subtract years from a datetime
+- [subQuarters](https://eng.gobrand.app/tiempo/docs/arithmetic/sub-quarters): Subtract quarters from a datetime
 - [subMonths](https://eng.gobrand.app/tiempo/docs/arithmetic/sub-months): Subtract months from a datetime
 - [subWeeks](https://eng.gobrand.app/tiempo/docs/arithmetic/sub-weeks): Subtract weeks from a datetime
 - [subDays](https://eng.gobrand.app/tiempo/docs/arithmetic/sub-days): Subtract days from a datetime
@@ -57,6 +59,8 @@ tiempo provides a familiar date-fns-style API while leveraging the modern Tempor
 - [endOfWeek](https://eng.gobrand.app/tiempo/docs/boundaries/end-of-week): Get the last moment of the week (Sunday)
 - [startOfMonth](https://eng.gobrand.app/tiempo/docs/boundaries/start-of-month): Get the first moment of the month
 - [endOfMonth](https://eng.gobrand.app/tiempo/docs/boundaries/end-of-month): Get the last moment of the month
+- [startOfQuarter](https://eng.gobrand.app/tiempo/docs/boundaries/start-of-quarter): Get the first moment of the quarter
+- [endOfQuarter](https://eng.gobrand.app/tiempo/docs/boundaries/end-of-quarter): Get the last moment of the quarter
 - [startOfYear](https://eng.gobrand.app/tiempo/docs/boundaries/start-of-year): Get the first moment of the year
 - [endOfYear](https://eng.gobrand.app/tiempo/docs/boundaries/end-of-year): Get the last moment of the year
 
@@ -70,11 +74,13 @@ tiempo provides a familiar date-fns-style API while leveraging the modern Tempor
 - [isSameDay](https://eng.gobrand.app/tiempo/docs/comparison/is-same-day): Check if two datetimes are on the same calendar day
 - [isSameWeek](https://eng.gobrand.app/tiempo/docs/comparison/is-same-week): Check if two datetimes are in the same ISO week
 - [isSameMonth](https://eng.gobrand.app/tiempo/docs/comparison/is-same-month): Check if two datetimes are in the same calendar month
+- [isSameQuarter](https://eng.gobrand.app/tiempo/docs/comparison/is-same-quarter): Check if two datetimes are in the same calendar quarter
 - [isSameYear](https://eng.gobrand.app/tiempo/docs/comparison/is-same-year): Check if two datetimes are in the same calendar year
 
 ## Difference
 
 - [differenceInYears](https://eng.gobrand.app/tiempo/docs/difference/difference-in-years): Calculate the difference between two dates in years
+- [differenceInQuarters](https://eng.gobrand.app/tiempo/docs/difference/difference-in-quarters): Calculate the difference between two dates in quarters
 - [differenceInMonths](https://eng.gobrand.app/tiempo/docs/difference/difference-in-months): Calculate the difference between two dates in months
 - [differenceInWeeks](https://eng.gobrand.app/tiempo/docs/difference/difference-in-weeks): Calculate the difference between two dates in weeks
 - [differenceInDays](https://eng.gobrand.app/tiempo/docs/difference/difference-in-days): Calculate the difference between two dates in days
@@ -85,6 +91,7 @@ tiempo provides a familiar date-fns-style API while leveraging the modern Tempor
 ## Intervals
 
 - [eachYearOfInterval](https://eng.gobrand.app/tiempo/docs/intervals/each-year-of-interval): Get all years in an interval as ZonedDateTime array
+- [eachQuarterOfInterval](https://eng.gobrand.app/tiempo/docs/intervals/each-quarter-of-interval): Get all quarters in an interval as ZonedDateTime array
 - [eachMonthOfInterval](https://eng.gobrand.app/tiempo/docs/intervals/each-month-of-interval): Get all months in an interval as ZonedDateTime array
 - [eachWeekOfInterval](https://eng.gobrand.app/tiempo/docs/intervals/each-week-of-interval): Get all weeks (ISO Monday start) in an interval as ZonedDateTime array
 - [eachDayOfInterval](https://eng.gobrand.app/tiempo/docs/intervals/each-day-of-interval): Get all days in an interval as ZonedDateTime array
@@ -93,6 +100,7 @@ tiempo provides a familiar date-fns-style API while leveraging the modern Tempor
 
 ## Utilities
 
+- [getQuarter](https://eng.gobrand.app/tiempo/docs/utilities/get-quarter): Get the quarter (1-4) that a datetime falls in
 - [browserTimezone](https://eng.gobrand.app/tiempo/docs/utilities/browser-timezone): Get the browser/device timezone
 - [roundToNearestHour](https://eng.gobrand.app/tiempo/docs/utilities/round-to-nearest-hour): Round a datetime to the nearest hour boundary
 - [roundToNearestMinute](https://eng.gobrand.app/tiempo/docs/utilities/round-to-nearest-minute): Round a datetime to the nearest minute boundary

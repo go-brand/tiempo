@@ -4,6 +4,7 @@
   "icon": "Calculator",
   "pages": [
     "add-years",
+    "add-quarters",
     "add-months",
     "add-weeks",
     "add-days",
@@ -14,6 +15,7 @@
     "add-microseconds",
     "add-nanoseconds",
     "sub-years",
+    "sub-quarters",
     "sub-months",
     "sub-weeks",
     "sub-days",

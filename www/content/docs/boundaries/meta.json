@@ -9,6 +9,8 @@
     "end-of-week",
     "start-of-month",
     "end-of-month",
+    "start-of-quarter",
+    "end-of-quarter",
     "start-of-year",
     "end-of-year"
   ]

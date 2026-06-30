@@ -11,6 +11,7 @@
     "is-same-day",
     "is-same-week",
     "is-same-month",
+    "is-same-quarter",
     "is-same-year",
     "is-same-hour",
     "is-same-minute",

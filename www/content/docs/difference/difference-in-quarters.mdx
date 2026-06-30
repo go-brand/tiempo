@@ -1,0 +1,56 @@
+---
+title: differenceInQuarters
+description: Calculate the difference between two dates in quarters
+---
+
+Returns the number of quarters (3-month blocks) between two datetimes.
+
+## Signature
+
+```ts
+function differenceInQuarters(
+  laterDate: Temporal.Instant | Temporal.ZonedDateTime,
+  earlierDate: Temporal.Instant | Temporal.ZonedDateTime,
+  options?: DifferenceOptions
+): number
+
+interface DifferenceOptions {
+  fractional?: boolean; // default false — truncates toward zero
+}
+```
+
+## Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `laterDate` | `Temporal.Instant \| Temporal.ZonedDateTime` | The later datetime |
+| `earlierDate` | `Temporal.Instant \| Temporal.ZonedDateTime` | The earlier datetime |
+| `options.fractional` | `boolean` | Return the precise fractional value instead of truncating toward zero (default: false) |
+
+## Returns
+
+The number of quarters between the two datetimes, truncated toward zero by default. Pass `{ fractional: true }` to get the precise fractional value. Positive if `laterDate` is after `earlierDate`, negative if before.
+
+## Examples
+
+```ts
+import { differenceInQuarters } from '@gobrand/tiempo';
+
+const q1 = Temporal.Instant.from('2025-01-15T12:00:00Z');
+const q3 = Temporal.Instant.from('2025-07-15T12:00:00Z');
+
+differenceInQuarters(q3, q1); // 2
+differenceInQuarters(q1, q3); // -2
+```
+
+### Fractional results
+
+By default the result is truncated toward zero. Pass `{ fractional: true }` for the precise value.
+
+```ts
+const later = Temporal.Instant.from('2025-03-15T00:00:00Z');
+const earlier = Temporal.Instant.from('2025-01-15T00:00:00Z');
+
+differenceInQuarters(later, earlier);                       // 0     (truncated)
+differenceInQuarters(later, earlier, { fractional: true }); // ~0.67 (precise)
+```

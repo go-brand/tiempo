@@ -52,6 +52,7 @@ npm install @gobrand/tiempo
 | Function | Description | Reference |
 |----------|-------------|-----------|
 | `addYears()` | Add years to a datetime | [details](references/arithmetic/add-years.md) |
+| `addQuarters()` | Add quarters to a datetime | [details](references/arithmetic/add-quarters.md) |
 | `addMonths()` | Add months to a datetime | [details](references/arithmetic/add-months.md) |
 | `addWeeks()` | Add weeks to a datetime | [details](references/arithmetic/add-weeks.md) |
 | `addDays()` | Add days to a datetime (DST-safe) | [details](references/arithmetic/add-days.md) |
@@ -62,6 +63,7 @@ npm install @gobrand/tiempo
 | `addMicroseconds()` | Add microseconds to a datetime | [details](references/arithmetic/add-microseconds.md) |
 | `addNanoseconds()` | Add nanoseconds to a datetime | [details](references/arithmetic/add-nanoseconds.md) |
 | `subYears()` | Subtract years from a datetime | [details](references/arithmetic/sub-years.md) |
+| `subQuarters()` | Subtract quarters from a datetime | [details](references/arithmetic/sub-quarters.md) |
 | `subMonths()` | Subtract months from a datetime | [details](references/arithmetic/sub-months.md) |
 | `subWeeks()` | Subtract weeks from a datetime | [details](references/arithmetic/sub-weeks.md) |
 | `subDays()` | Subtract days from a datetime | [details](references/arithmetic/sub-days.md) |
@@ -82,6 +84,8 @@ npm install @gobrand/tiempo
 | `endOfWeek()` | Get the last moment of the week (Sunday) | [details](references/boundaries/end-of-week.md) |
 | `startOfMonth()` | Get the first moment of the month | [details](references/boundaries/start-of-month.md) |
 | `endOfMonth()` | Get the last moment of the month | [details](references/boundaries/end-of-month.md) |
+| `startOfQuarter()` | Get the first moment of the quarter | [details](references/boundaries/start-of-quarter.md) |
+| `endOfQuarter()` | Get the last moment of the quarter | [details](references/boundaries/end-of-quarter.md) |
 | `startOfYear()` | Get the first moment of the year | [details](references/boundaries/start-of-year.md) |
 | `endOfYear()` | Get the last moment of the year | [details](references/boundaries/end-of-year.md) |
 
@@ -97,6 +101,7 @@ npm install @gobrand/tiempo
 | `isSameDay()` | Check if two datetimes are on the same calendar day | [details](references/comparison/is-same-day.md) |
 | `isSameWeek()` | Check if two datetimes are in the same ISO week | [details](references/comparison/is-same-week.md) |
 | `isSameMonth()` | Check if two datetimes are in the same calendar month | [details](references/comparison/is-same-month.md) |
+| `isSameQuarter()` | Check if two datetimes are in the same calendar quarter | [details](references/comparison/is-same-quarter.md) |
 | `isSameYear()` | Check if two datetimes are in the same calendar year | [details](references/comparison/is-same-year.md) |
 | `isSameHour()` | Check if two datetimes are in the same hour | [details](references/comparison/is-same-hour.md) |
 | `isSameMinute()` | Check if two datetimes are in the same minute | [details](references/comparison/is-same-minute.md) |
@@ -116,6 +121,7 @@ npm install @gobrand/tiempo
 | Function | Description | Reference |
 |----------|-------------|-----------|
 | `differenceInYears()` | Calculate the difference between two dates in years | [details](references/difference/difference-in-years.md) |
+| `differenceInQuarters()` | Calculate the difference between two dates in quarters | [details](references/difference/difference-in-quarters.md) |
 | `differenceInMonths()` | Calculate the difference between two dates in months | [details](references/difference/difference-in-months.md) |
 | `differenceInWeeks()` | Calculate the difference between two dates in weeks | [details](references/difference/difference-in-weeks.md) |
 | `differenceInDays()` | Calculate the difference between two dates in days | [details](references/difference/difference-in-days.md) |
@@ -131,6 +137,7 @@ npm install @gobrand/tiempo
 | Function | Description | Reference |
 |----------|-------------|-----------|
 | `eachYearOfInterval()` | Get all years in an interval as ZonedDateTime array | [details](references/intervals/each-year-of-interval.md) |
+| `eachQuarterOfInterval()` | Get all quarters in an interval as ZonedDateTime array | [details](references/intervals/each-quarter-of-interval.md) |
 | `eachMonthOfInterval()` | Get all months in an interval as ZonedDateTime array | [details](references/intervals/each-month-of-interval.md) |
 | `eachWeekOfInterval()` | Get all weeks (ISO Monday start) in an interval as ZonedDateTime array | [details](references/intervals/each-week-of-interval.md) |
 | `eachDayOfInterval()` | Get all days in an interval as ZonedDateTime array | [details](references/intervals/each-day-of-interval.md) |
@@ -141,6 +148,7 @@ npm install @gobrand/tiempo
 
 | Function | Description | Reference |
 |----------|-------------|-----------|
+| `getQuarter()` | Get the quarter (1-4) that a datetime falls in | [details](references/utilities/get-quarter.md) |
 | `browserTimezone()` | Get the browser/device timezone | [details](references/utilities/browser-timezone.md) |
 | `roundToNearestHour()` | Round a datetime to the nearest hour boundary | [details](references/utilities/round-to-nearest-hour.md) |
 | `roundToNearestMinute()` | Round a datetime to the nearest minute boundary | [details](references/utilities/round-to-nearest-minute.md) |
