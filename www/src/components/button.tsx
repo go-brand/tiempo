@@ -1,11 +1,12 @@
 import { Link, type LinkProps } from '@tanstack/react-router';
 import { buttonVariants, type ButtonProps } from 'fumadocs-ui/components/ui/button';
-import { cn } from 'fumadocs-ui/lib/cn';
+import { twMerge } from 'tailwind-merge';
 
-type ButtonLinkProps = LinkProps & ButtonProps & {
-  className?: string;
-  children: React.ReactNode;
-};
+type ButtonLinkProps = Omit<LinkProps, 'className' | 'children'> &
+  Pick<ButtonProps, 'variant' | 'size'> & {
+    className?: string;
+    children: React.ReactNode;
+  };
 
 export function Button({
   variant = 'primary',
@@ -16,7 +17,7 @@ export function Button({
 }: ButtonLinkProps) {
   return (
     <Link
-      className={cn(buttonVariants({ variant, size }), className)}
+      className={twMerge(buttonVariants({ variant, size }), className)}
       {...linkProps}
     >
       {children}
