@@ -2,13 +2,13 @@
 
 Returns the quarter (1, 2, 3, or 4) that a datetime falls in. Quarters: Q1 = Jan–Mar, Q2 = Apr–Jun, Q3 = Jul–Sep, Q4 = Oct–Dec.
 
-`Temporal` has no native quarter field, so this fills the gap. `Instant` inputs are interpreted in UTC; `ZonedDateTime` inputs use their own timezone.
+`Temporal` has no native quarter field, so this fills the gap. A quarter is intrinsic to the calendar date, so **no timezone is ever needed**: `Instant` inputs are interpreted in UTC, `ZonedDateTime` inputs use their own timezone, and `PlainDate` inputs use their calendar month directly.
 
 ## Signature
 
 ```ts
 function getQuarter(
-  input: Temporal.Instant | Temporal.ZonedDateTime
+  input: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate
 ): 1 | 2 | 3 | 4
 ```
 
@@ -16,7 +16,7 @@ function getQuarter(
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `input` | `Temporal.Instant \| Temporal.ZonedDateTime` | The datetime to get the quarter for |
+| `input` | `Temporal.Instant \| Temporal.ZonedDateTime \| Temporal.PlainDate` | The datetime or date to get the quarter for |
 
 ## Returns
 
@@ -41,4 +41,11 @@ const zoned = Temporal.ZonedDateTime.from('2025-03-31T23:00:00-04:00[America/New
 
 getQuarter(zoned);                      // 1 (March in New York)
 getQuarter(zoned.withTimeZone('UTC'));  // 2 (April in UTC)
+```
+
+### From a PlainDate (no timezone)
+
+```ts
+getQuarter(Temporal.PlainDate.from('2025-02-15')); // 1
+getQuarter(Temporal.PlainDate.from('2025-11-15')); // 4
 ```

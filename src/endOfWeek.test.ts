@@ -245,6 +245,13 @@ describe('endOfWeek', () => {
   });
 
   describe('from Temporal.PlainDate', () => {
+    it('returns Sunday as a PlainDate when no timezone is provided', () => {
+      const end = endOfWeek(Temporal.PlainDate.from('2025-01-27'));
+
+      expect(end).toBeInstanceOf(Temporal.PlainDate);
+      expect(end.toString()).toBe('2025-02-02');
+    });
+
     it('returns end of week in specified timezone', () => {
       // Wednesday Jan 22, 2025
       const date = Temporal.PlainDate.from('2025-01-22');

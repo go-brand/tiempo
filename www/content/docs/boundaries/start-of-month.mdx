@@ -1,9 +1,9 @@
 ---
 title: startOfMonth
-description: Get the first moment of the month
+description: Get the first boundary of the month
 ---
 
-Returns a `ZonedDateTime` at the first moment of the month (1st day at midnight).
+Returns the first boundary of the month. `PlainDate` inputs stay in calendar space and return the first date of the month; providing a timezone returns a `ZonedDateTime` at the start of that date.
 
 ## Signature
 
@@ -11,17 +11,25 @@ Returns a `ZonedDateTime` at the first moment of the month (1st day at midnight)
 function startOfMonth(
   input: Temporal.Instant | Temporal.ZonedDateTime
 ): Temporal.ZonedDateTime
+
+function startOfMonth(input: Temporal.PlainDate): Temporal.PlainDate
+
+function startOfMonth(
+  input: Temporal.PlainDate,
+  timezone: Timezone
+): Temporal.ZonedDateTime
 ```
 
 ## Parameters
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `input` | `Temporal.Instant \| Temporal.ZonedDateTime` | The datetime to get the start of month for |
+| `input` | `Temporal.Instant \| Temporal.ZonedDateTime \| Temporal.PlainDate` | The date or datetime to get the start of month for |
+| `timezone` | `Timezone` | Required only when converting a `PlainDate` boundary to a `ZonedDateTime` |
 
 ## Returns
 
-A `Temporal.ZonedDateTime` at midnight on the 1st day of the month.
+A `Temporal.PlainDate` for calendar-only input, or a `Temporal.ZonedDateTime` at the start of the first day for datetime input or an explicit timezone.
 
 ## Examples
 
@@ -34,6 +42,13 @@ startOfMonth(instant);
 
 const zoned = Temporal.ZonedDateTime.from('2025-01-15T15:30:00-05:00[America/New_York]');
 startOfMonth(zoned);
+// 2025-01-01T00:00:00-05:00[America/New_York]
+
+const date = Temporal.PlainDate.from('2025-01-15');
+startOfMonth(date);
+// 2025-01-01
+
+startOfMonth(date, 'America/New_York');
 // 2025-01-01T00:00:00-05:00[America/New_York]
 ```
 

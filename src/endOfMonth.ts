@@ -1,10 +1,11 @@
-import { Temporal } from './shared/temporal';
+import { isPlainDate, Temporal } from './shared/temporal';
 import type { Timezone } from './types';
 import { getEndOfDay } from './shared/endOfDay';
 import { normalizeWithPlainDate } from './shared/normalizeWithPlainDate';
 
 /**
- * Returns a ZonedDateTime representing the last moment of the month (last day at 23:59:59.999999999).
+ * Returns the last boundary of the month.
+ * PlainDate inputs stay in calendar space unless a timezone is provided.
  *
  * @param input - A Temporal.Instant (UTC) or Temporal.ZonedDateTime
  * @returns ZonedDateTime at the last day of the month at 23:59:59.999999999
@@ -27,7 +28,15 @@ import { normalizeWithPlainDate } from './shared/normalizeWithPlainDate';
  *
  * @example
  * ```ts
- * // From PlainDate (requires timezone)
+ * // From PlainDate (stays a date)
+ * const date = Temporal.PlainDate.from('2025-02-15');
+ * const end = endOfMonth(date);
+ * // 2025-02-28
+ * ```
+ *
+ * @example
+ * ```ts
+ * // From PlainDate with a timezone (returns a ZonedDateTime)
  * const date = Temporal.PlainDate.from('2025-02-15');
  * const end = endOfMonth(date, 'America/New_York');
  * // 2025-02-28T23:59:59.999999999-05:00[America/New_York]
@@ -36,6 +45,7 @@ import { normalizeWithPlainDate } from './shared/normalizeWithPlainDate';
 export function endOfMonth(
   input: Temporal.Instant | Temporal.ZonedDateTime
 ): Temporal.ZonedDateTime;
+export function endOfMonth(input: Temporal.PlainDate): Temporal.PlainDate;
 export function endOfMonth(
   input: Temporal.PlainDate,
   timezone: Timezone
@@ -43,7 +53,11 @@ export function endOfMonth(
 export function endOfMonth(
   input: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate,
   timezone?: Timezone
-): Temporal.ZonedDateTime {
+): Temporal.ZonedDateTime | Temporal.PlainDate {
+  if (isPlainDate(input) && timezone === undefined) {
+    return input.with({ day: input.daysInMonth });
+  }
+
   const zonedDateTime = normalizeWithPlainDate(input, timezone!);
   const lastDay = zonedDateTime.with({ day: zonedDateTime.daysInMonth });
   return getEndOfDay(lastDay);

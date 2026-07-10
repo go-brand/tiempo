@@ -66,4 +66,30 @@ describe("differenceInQuarters", () => {
 
     expect(differenceInQuarters(later, earlier)).toBe(2);
   });
+
+  describe("from Temporal.PlainDate (no timezone)", () => {
+    const pd = (s: string) => Temporal.PlainDate.from(s);
+
+    it("returns whole quarters between two dates", () => {
+      expect(differenceInQuarters(pd("2025-07-20"), pd("2025-01-20"))).toBe(2);
+    });
+
+    it("is negative when laterDate is before earlierDate", () => {
+      expect(differenceInQuarters(pd("2025-01-20"), pd("2025-07-20"))).toBe(-2);
+    });
+
+    it("truncates a negative partial quarter toward zero", () => {
+      // ~-0.67 quarters must truncate toward zero, not floor to -1
+      expect(differenceInQuarters(pd("2025-01-20"), pd("2025-03-20"))).toBeCloseTo(0);
+      expect(
+        differenceInQuarters(pd("2025-03-20"), pd("2025-01-20"), {
+          fractional: true,
+        }),
+      ).toBeCloseTo(2 / 3, 5);
+    });
+
+    it("counts across year boundaries", () => {
+      expect(differenceInQuarters(pd("2026-01-20"), pd("2025-01-20"))).toBe(4);
+    });
+  });
 });

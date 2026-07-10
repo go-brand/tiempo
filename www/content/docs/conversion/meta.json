@@ -1,6 +1,6 @@
 {
   "title": "Conversion",
-  "description": "Convert between UTC, timezones, Date objects, and Temporal types",
+  "description": "Convert between timeline, timezone, calendar, and interop representations",
   "icon": "ArrowLeftRight",
-  "pages": ["to-zoned-time", "to-plain-time", "to-plain-date", "to-utc", "to-iso", "to-iso9075", "to-date"]
+  "pages": ["to-instant", "to-zoned-time", "to-plain-date", "to-plain-time", "to-iso", "to-iso9075", "to-date"]
 }

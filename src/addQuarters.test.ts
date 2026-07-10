@@ -88,4 +88,31 @@ describe("addQuarters", () => {
     expect(result.month).toBe(2);
     expect(result.day).toBe(29);
   });
+
+  describe("from Temporal.PlainDate (returns PlainDate, no timezone)", () => {
+    it("adds quarters and stays a PlainDate", () => {
+      const result = addQuarters(Temporal.PlainDate.from("2025-01-20"), 2);
+
+      expect(result).toBeInstanceOf(Temporal.PlainDate);
+      expect(result.year).toBe(2025);
+      expect(result.month).toBe(7);
+      expect(result.day).toBe(20);
+    });
+
+    it("handles month-end constrain (Jan 31 + 1Q -> Apr 30)", () => {
+      const result = addQuarters(Temporal.PlainDate.from("2025-01-31"), 1);
+
+      expect(result).toBeInstanceOf(Temporal.PlainDate);
+      expect(result.month).toBe(4);
+      expect(result.day).toBe(30);
+    });
+
+    it("subtracts with a negative count across a year boundary", () => {
+      const result = addQuarters(Temporal.PlainDate.from("2025-02-20"), -1);
+
+      expect(result.year).toBe(2024);
+      expect(result.month).toBe(11);
+      expect(result.day).toBe(20);
+    });
+  });
 });

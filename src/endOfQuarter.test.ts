@@ -55,4 +55,36 @@ describe("endOfQuarter", () => {
       expect(result.timeZoneId).toBe("America/New_York");
     });
   });
+
+  describe("from Temporal.PlainDate (returns PlainDate, no timezone)", () => {
+    it("returns the last day of the quarter as a PlainDate", () => {
+      const result = endOfQuarter(Temporal.PlainDate.from("2025-05-15"));
+
+      expect(result).toBeInstanceOf(Temporal.PlainDate);
+      expect(result.year).toBe(2025);
+      expect(result.month).toBe(6);
+      expect(result.day).toBe(30);
+    });
+
+    it.each([
+      ["2025-01-15", 3, 31],
+      ["2025-05-15", 6, 30],
+      ["2025-08-15", 9, 30],
+      ["2025-11-15", 12, 31],
+    ])("maps %s to %i/%i", (iso, month, day) => {
+      const result = endOfQuarter(Temporal.PlainDate.from(iso));
+      expect(result.month).toBe(month);
+      expect(result.day).toBe(day);
+    });
+
+    it("still returns a ZonedDateTime when a timezone is given (bridge)", () => {
+      const result = endOfQuarter(Temporal.PlainDate.from("2025-11-15"), "America/New_York");
+
+      expect(result).toBeInstanceOf(Temporal.ZonedDateTime);
+      expect(result.month).toBe(12);
+      expect(result.day).toBe(31);
+      expect(result.hour).toBe(23);
+      expect(result.timeZoneId).toBe("America/New_York");
+    });
+  });
 });

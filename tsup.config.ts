@@ -5,6 +5,7 @@ export default defineConfig({
   format: ['esm'],
   target: 'es2022',
   sourcemap: true,
+  clean: true,
 
   /**
    * Do not use tsdown for generating d.ts files because it can not generate type

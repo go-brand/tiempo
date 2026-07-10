@@ -1,9 +1,10 @@
-import { Temporal } from './shared/temporal';
+import { isPlainDate, Temporal } from './shared/temporal';
 import type { Timezone } from './types';
 import { normalizeWithPlainDate } from './shared/normalizeWithPlainDate';
 
 /**
- * Returns a ZonedDateTime representing the first moment of the month (day 1 at midnight).
+ * Returns the first boundary of the month.
+ * PlainDate inputs stay in calendar space unless a timezone is provided.
  *
  * @param input - A Temporal.Instant (UTC) or Temporal.ZonedDateTime
  * @returns ZonedDateTime at the 1st day of the month at 00:00:00.000000000
@@ -26,7 +27,15 @@ import { normalizeWithPlainDate } from './shared/normalizeWithPlainDate';
  *
  * @example
  * ```ts
- * // From PlainDate (requires timezone)
+ * // From PlainDate (stays a date)
+ * const date = Temporal.PlainDate.from('2025-01-15');
+ * const start = startOfMonth(date);
+ * // 2025-01-01
+ * ```
+ *
+ * @example
+ * ```ts
+ * // From PlainDate with a timezone (returns a ZonedDateTime)
  * const date = Temporal.PlainDate.from('2025-01-15');
  * const start = startOfMonth(date, 'America/New_York');
  * // 2025-01-01T00:00:00-05:00[America/New_York]
@@ -35,6 +44,7 @@ import { normalizeWithPlainDate } from './shared/normalizeWithPlainDate';
 export function startOfMonth(
   input: Temporal.Instant | Temporal.ZonedDateTime
 ): Temporal.ZonedDateTime;
+export function startOfMonth(input: Temporal.PlainDate): Temporal.PlainDate;
 export function startOfMonth(
   input: Temporal.PlainDate,
   timezone: Timezone
@@ -42,7 +52,11 @@ export function startOfMonth(
 export function startOfMonth(
   input: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate,
   timezone?: Timezone
-): Temporal.ZonedDateTime {
+): Temporal.ZonedDateTime | Temporal.PlainDate {
+  if (isPlainDate(input) && timezone === undefined) {
+    return input.with({ day: 1 });
+  }
+
   const zonedDateTime = normalizeWithPlainDate(input, timezone!);
   const firstDay = zonedDateTime.with({ day: 1 });
   return firstDay.startOfDay();

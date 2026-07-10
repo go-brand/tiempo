@@ -6,8 +6,9 @@ import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
 import { plainDateToZonedDateTime } from './shared/plainDateToZonedDateTime';
 
 /**
- * Returns a ZonedDateTime representing the last moment of the week (Sunday at 23:59:59.999999999).
+ * Returns the last boundary of the week (Sunday).
  * Uses ISO 8601 week definition: weeks end on Sunday.
+ * PlainDate inputs stay in calendar space unless a timezone is provided.
  *
  * @param input - A Temporal.Instant (UTC) or Temporal.ZonedDateTime
  * @returns ZonedDateTime at Sunday 23:59:59.999999999
@@ -30,7 +31,15 @@ import { plainDateToZonedDateTime } from './shared/plainDateToZonedDateTime';
  *
  * @example
  * ```ts
- * // From PlainDate (requires timezone)
+ * // From PlainDate (stays a date)
+ * const date = Temporal.PlainDate.from('2025-01-22'); // Wednesday
+ * const end = endOfWeek(date);
+ * // 2025-01-26 (next Sunday)
+ * ```
+ *
+ * @example
+ * ```ts
+ * // From PlainDate with a timezone (returns a ZonedDateTime)
  * const date = Temporal.PlainDate.from('2025-01-22'); // Wednesday
  * const end = endOfWeek(date, 'America/New_York');
  * // 2025-01-26T23:59:59.999999999-05:00[America/New_York] (next Sunday)
@@ -39,6 +48,7 @@ import { plainDateToZonedDateTime } from './shared/plainDateToZonedDateTime';
 export function endOfWeek(
   input: Temporal.Instant | Temporal.ZonedDateTime
 ): Temporal.ZonedDateTime;
+export function endOfWeek(input: Temporal.PlainDate): Temporal.PlainDate;
 export function endOfWeek(
   input: Temporal.PlainDate,
   timezone: Timezone
@@ -46,7 +56,11 @@ export function endOfWeek(
 export function endOfWeek(
   input: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate,
   timezone?: Timezone
-): Temporal.ZonedDateTime {
+): Temporal.ZonedDateTime | Temporal.PlainDate {
+  if (isPlainDate(input) && timezone === undefined) {
+    return input.add({ days: 7 - input.dayOfWeek });
+  }
+
   const zonedDateTime =
     isPlainDate(input)
       ? plainDateToZonedDateTime(input, timezone!)

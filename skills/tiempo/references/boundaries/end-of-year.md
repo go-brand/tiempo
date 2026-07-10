@@ -1,6 +1,6 @@
 # endOfYear
 
-Returns a `ZonedDateTime` at the last moment of the year (December 31 at 23:59:59.999999999).
+Returns the last boundary of the year. `PlainDate` inputs stay in calendar space and return the last date of the year; providing a timezone returns a `ZonedDateTime` at the last moment of that date.
 
 ## Signature
 
@@ -8,17 +8,25 @@ Returns a `ZonedDateTime` at the last moment of the year (December 31 at 23:59:5
 function endOfYear(
   input: Temporal.Instant | Temporal.ZonedDateTime
 ): Temporal.ZonedDateTime
+
+function endOfYear(input: Temporal.PlainDate): Temporal.PlainDate
+
+function endOfYear(
+  input: Temporal.PlainDate,
+  timezone: Timezone
+): Temporal.ZonedDateTime
 ```
 
 ## Parameters
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `input` | `Temporal.Instant \| Temporal.ZonedDateTime` | The datetime to get the end of year for |
+| `input` | `Temporal.Instant \| Temporal.ZonedDateTime \| Temporal.PlainDate` | The date or datetime to get the end of year for |
+| `timezone` | `Timezone` | Required only when converting a `PlainDate` boundary to a `ZonedDateTime` |
 
 ## Returns
 
-A `Temporal.ZonedDateTime` at December 31, 23:59:59.999999999.
+A `Temporal.PlainDate` for calendar-only input, or a `Temporal.ZonedDateTime` at the last moment of the final day for datetime input or an explicit timezone.
 
 ## Examples
 
@@ -32,4 +40,11 @@ endOfYear(instant);
 const zoned = Temporal.ZonedDateTime.from('2025-06-15T15:30:00-05:00[America/New_York]');
 endOfYear(zoned);
 // 2025-12-31T23:59:59.999999999-05:00[America/New_York]
+
+const date = Temporal.PlainDate.from('2025-06-15');
+endOfYear(date);
+// 2025-12-31
+
+endOfYear(date, 'UTC');
+// 2025-12-31T23:59:59.999999999Z[UTC]
 ```

@@ -23,10 +23,10 @@ npm install @gobrand/tiempo
 
 | Function | Description | Reference |
 |----------|-------------|-----------|
+| `toInstant()` | Convert a timeline representation to a Temporal Instant | [details](references/conversion/to-instant.md) |
 | `toZonedTime()` | Convert to a timezone-aware ZonedDateTime | [details](references/conversion/to-zoned-time.md) |
-| `toPlainTime()` | Parse a plain time or extract wall-clock time from a datetime | [details](references/conversion/to-plain-time.md) |
 | `toPlainDate()` | Parse a plain date or extract calendar date from a datetime | [details](references/conversion/to-plain-date.md) |
-| `toUtc()` | Convert to a UTC Instant | [details](references/conversion/to-utc.md) |
+| `toPlainTime()` | Parse a plain time or extract wall-clock time from a datetime | [details](references/conversion/to-plain-time.md) |
 | `toIso()` | Convert to an ISO 8601 string | [details](references/conversion/to-iso.md) |
 | `toIso9075()` | Convert to ISO 9075 (SQL) format string | [details](references/conversion/to-iso9075.md) |
 | `toDate()` | Convert to a JavaScript Date object | [details](references/conversion/to-date.md) |
@@ -80,14 +80,14 @@ npm install @gobrand/tiempo
 |----------|-------------|-----------|
 | `startOfDay()` | Get the first moment of the day | [details](references/boundaries/start-of-day.md) |
 | `endOfDay()` | Get the last moment of the day | [details](references/boundaries/end-of-day.md) |
-| `startOfWeek()` | Get the first moment of the week (Monday) | [details](references/boundaries/start-of-week.md) |
-| `endOfWeek()` | Get the last moment of the week (Sunday) | [details](references/boundaries/end-of-week.md) |
-| `startOfMonth()` | Get the first moment of the month | [details](references/boundaries/start-of-month.md) |
-| `endOfMonth()` | Get the last moment of the month | [details](references/boundaries/end-of-month.md) |
+| `startOfWeek()` | Get the first boundary of the week (Monday) | [details](references/boundaries/start-of-week.md) |
+| `endOfWeek()` | Get the last boundary of the week (Sunday) | [details](references/boundaries/end-of-week.md) |
+| `startOfMonth()` | Get the first boundary of the month | [details](references/boundaries/start-of-month.md) |
+| `endOfMonth()` | Get the last boundary of the month | [details](references/boundaries/end-of-month.md) |
 | `startOfQuarter()` | Get the first moment of the quarter | [details](references/boundaries/start-of-quarter.md) |
 | `endOfQuarter()` | Get the last moment of the quarter | [details](references/boundaries/end-of-quarter.md) |
-| `startOfYear()` | Get the first moment of the year | [details](references/boundaries/start-of-year.md) |
-| `endOfYear()` | Get the last moment of the year | [details](references/boundaries/end-of-year.md) |
+| `startOfYear()` | Get the first boundary of the year | [details](references/boundaries/start-of-year.md) |
+| `endOfYear()` | Get the last boundary of the year | [details](references/boundaries/end-of-year.md) |
 
 ## Comparison
 

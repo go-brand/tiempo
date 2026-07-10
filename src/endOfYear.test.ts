@@ -219,6 +219,13 @@ describe('endOfYear', () => {
   });
 
   describe('from Temporal.PlainDate', () => {
+    it('returns December 31 as a PlainDate when no timezone is provided', () => {
+      const end = endOfYear(Temporal.PlainDate.from('2025-06-15'));
+
+      expect(end).toBeInstanceOf(Temporal.PlainDate);
+      expect(end.toString()).toBe('2025-12-31');
+    });
+
     it('returns end of year in specified timezone', () => {
       const date = Temporal.PlainDate.from('2025-06-15');
       const end = endOfYear(date, 'America/New_York');

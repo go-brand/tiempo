@@ -12,7 +12,13 @@ function addQuarters(
   input: Temporal.Instant | Temporal.ZonedDateTime,
   quarters: number
 ): Temporal.ZonedDateTime
+function addQuarters(
+  input: Temporal.PlainDate,
+  quarters: number
+): Temporal.PlainDate
 ```
+
+Input type determines output type: a `PlainDate` stays in calendar space and returns a `PlainDate` (no timezone needed).
 
 ## Parameters
 
@@ -43,4 +49,11 @@ addQuarters(instant, 2);
 const endOfJan = Temporal.Instant.from('2025-01-31T12:00:00Z');
 addQuarters(endOfJan, 1);
 // 2025-04-30T12:00:00Z[UTC] (Jan 31 → Apr 30)
+```
+
+### From a PlainDate (returns a PlainDate)
+
+```ts
+addQuarters(Temporal.PlainDate.from('2025-01-31'), 1);
+// 2025-04-30 (Jan 31 → Apr 30, still a PlainDate)
 ```

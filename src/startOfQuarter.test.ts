@@ -69,4 +69,34 @@ describe("startOfQuarter", () => {
 
     expect(again.equals(start)).toBe(true);
   });
+
+  describe("from Temporal.PlainDate (returns PlainDate, no timezone)", () => {
+    it("returns the first day of the quarter as a PlainDate", () => {
+      const result = startOfQuarter(Temporal.PlainDate.from("2025-05-15"));
+
+      expect(result).toBeInstanceOf(Temporal.PlainDate);
+      expect(result.year).toBe(2025);
+      expect(result.month).toBe(4);
+      expect(result.day).toBe(1);
+    });
+
+    it.each([
+      ["2025-02-28", 1],
+      ["2025-06-30", 4],
+      ["2025-09-01", 7],
+      ["2025-12-31", 10],
+    ])("maps %s to quarter-start month %i", (iso, month) => {
+      expect(startOfQuarter(Temporal.PlainDate.from(iso)).month).toBe(month);
+    });
+
+    it("still returns a ZonedDateTime when a timezone is given (bridge)", () => {
+      const result = startOfQuarter(Temporal.PlainDate.from("2025-11-15"), "America/New_York");
+
+      expect(result).toBeInstanceOf(Temporal.ZonedDateTime);
+      expect(result.month).toBe(10);
+      expect(result.day).toBe(1);
+      expect(result.hour).toBe(0);
+      expect(result.timeZoneId).toBe("America/New_York");
+    });
+  });
 });

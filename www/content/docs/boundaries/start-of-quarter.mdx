@@ -11,7 +11,14 @@ Returns a `ZonedDateTime` at the first moment of the quarter (1st day of the qua
 function startOfQuarter(
   input: Temporal.Instant | Temporal.ZonedDateTime
 ): Temporal.ZonedDateTime
+function startOfQuarter(input: Temporal.PlainDate): Temporal.PlainDate
+function startOfQuarter(
+  input: Temporal.PlainDate,
+  timezone: Timezone
+): Temporal.ZonedDateTime
 ```
+
+A `PlainDate` with no timezone stays in calendar space and returns a `PlainDate`. Pass a timezone to bridge a `PlainDate` into a zoned `ZonedDateTime`.
 
 ## Parameters
 
@@ -35,6 +42,10 @@ startOfQuarter(instant);
 const zoned = Temporal.ZonedDateTime.from('2025-08-15T15:30:00-04:00[America/New_York]');
 startOfQuarter(zoned);
 // 2025-07-01T00:00:00-04:00[America/New_York]
+
+// PlainDate in → PlainDate out (no timezone)
+startOfQuarter(Temporal.PlainDate.from('2025-05-15'));
+// 2025-04-01
 ```
 
 ## Common Patterns

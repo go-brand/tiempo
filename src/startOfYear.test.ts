@@ -215,6 +215,13 @@ describe('startOfYear', () => {
   });
 
   describe('from Temporal.PlainDate', () => {
+    it('returns January 1 as a PlainDate when no timezone is provided', () => {
+      const start = startOfYear(Temporal.PlainDate.from('2025-06-15'));
+
+      expect(start).toBeInstanceOf(Temporal.PlainDate);
+      expect(start.toString()).toBe('2025-01-01');
+    });
+
     it('returns start of year in specified timezone', () => {
       const date = Temporal.PlainDate.from('2025-06-15');
       const start = startOfYear(date, 'America/New_York');

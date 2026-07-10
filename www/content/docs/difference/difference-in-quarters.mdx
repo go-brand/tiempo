@@ -13,6 +13,11 @@ function differenceInQuarters(
   earlierDate: Temporal.Instant | Temporal.ZonedDateTime,
   options?: DifferenceOptions
 ): number
+function differenceInQuarters(
+  laterDate: Temporal.PlainDate,
+  earlierDate: Temporal.PlainDate,
+  options?: DifferenceOptions
+): number
 
 interface DifferenceOptions {
   fractional?: boolean; // default false — truncates toward zero
@@ -53,4 +58,13 @@ const earlier = Temporal.Instant.from('2025-01-15T00:00:00Z');
 
 differenceInQuarters(later, earlier);                       // 0     (truncated)
 differenceInQuarters(later, earlier, { fractional: true }); // ~0.67 (precise)
+```
+
+### From PlainDate (no timezone)
+
+```ts
+const later = Temporal.PlainDate.from('2025-07-20');
+const earlier = Temporal.PlainDate.from('2025-01-20');
+
+differenceInQuarters(later, earlier); // 2
 ```

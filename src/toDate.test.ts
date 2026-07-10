@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { Temporal } from './shared/temporal';
 import { toDate } from './toDate';
-import { toUtc } from './toUtc';
+import { toInstant } from './toInstant';
 import { toZonedTime } from './toZonedTime';
 
 describe('toDate', () => {
@@ -66,7 +66,7 @@ describe('toDate', () => {
   describe('round-trip conversions', () => {
     it('Date → Instant → Date preserves value', () => {
       const original = new Date('2025-01-20T20:00:00.123Z');
-      const instant = toUtc(original);
+      const instant = toInstant(original);
       const roundTrip = toDate(instant);
 
       expect(roundTrip.toISOString()).toBe(original.toISOString());
@@ -86,10 +86,10 @@ describe('toDate', () => {
       const original = new Date('2025-06-15T14:30:45.789Z');
 
       // Complex round trip through multiple conversions
-      const instant = toUtc(original);
+      const instant = toInstant(original);
       const tokyo = toZonedTime(instant, 'Asia/Tokyo');
       const newYork = toZonedTime(tokyo, 'America/New_York');
-      const backToInstant = toUtc(newYork);
+      const backToInstant = toInstant(newYork);
       const roundTrip = toDate(backToInstant);
 
       expect(roundTrip.toISOString()).toBe(original.toISOString());
@@ -103,7 +103,7 @@ describe('toDate', () => {
       const drizzleDate = new Date('2025-01-20T20:00:00.000Z');
 
       // Convert to Temporal for business logic
-      const instant = toUtc(drizzleDate);
+      const instant = toInstant(drizzleDate);
       const userTimezone = toZonedTime(instant, 'America/New_York');
 
       expect(userTimezone.hour).toBe(15); // 3 PM in New York
@@ -138,8 +138,8 @@ describe('toDate', () => {
       expect(backToDb.toISOString()).toBe('2025-01-20T22:00:00.000Z');
 
       // 5. Verify round-trip preserves the instant
-      const instant1 = toUtc(fromDb);
-      const instant2 = toUtc(rescheduled);
+      const instant1 = toInstant(fromDb);
+      const instant2 = toInstant(rescheduled);
       expect(instant2.epochMilliseconds - instant1.epochMilliseconds).toBe(
         2 * 60 * 60 * 1000
       ); // 2 hours difference

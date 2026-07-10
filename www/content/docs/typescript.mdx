@@ -124,11 +124,11 @@ tiempo uses the `@js-temporal/polyfill` package. You can import Temporal directl
 
 ```ts
 import { Temporal } from '@js-temporal/polyfill';
-import { toZonedTime, toUtc } from '@gobrand/tiempo';
+import { toInstant, toZonedTime } from '@gobrand/tiempo';
 
 // Explicit type annotations
 const zoned: Temporal.ZonedDateTime = toZonedTime(new Date(), 'America/New_York');
-const instant: Temporal.Instant = toUtc(zoned);
+const instant: Temporal.Instant = toInstant(zoned);
 const plainDate: Temporal.PlainDate = zoned.toPlainDate();
 
 // Types are also inferred automatically

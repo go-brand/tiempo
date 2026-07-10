@@ -226,6 +226,13 @@ describe('startOfWeek', () => {
   });
 
   describe('from Temporal.PlainDate', () => {
+    it('returns Monday as a PlainDate when no timezone is provided', () => {
+      const start = startOfWeek(Temporal.PlainDate.from('2025-01-22'));
+
+      expect(start).toBeInstanceOf(Temporal.PlainDate);
+      expect(start.toString()).toBe('2025-01-20');
+    });
+
     it('returns start of week in specified timezone', () => {
       // Wednesday Jan 22, 2025
       const date = Temporal.PlainDate.from('2025-01-22');

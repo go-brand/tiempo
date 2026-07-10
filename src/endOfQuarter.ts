@@ -1,4 +1,5 @@
-import { Temporal } from "./shared/temporal";
+import { isPlainDate } from "./shared/temporal";
+import type { Temporal } from "@js-temporal/polyfill";
 import type { Timezone } from "./types";
 import { getEndOfDay } from "./shared/endOfDay";
 import { normalizeWithPlainDate } from "./shared/normalizeWithPlainDate";
@@ -40,11 +41,20 @@ import { quarterStartMonth } from "./shared/quarter";
 export function endOfQuarter(
   input: Temporal.Instant | Temporal.ZonedDateTime,
 ): Temporal.ZonedDateTime;
+export function endOfQuarter(input: Temporal.PlainDate): Temporal.PlainDate;
 export function endOfQuarter(input: Temporal.PlainDate, timezone: Timezone): Temporal.ZonedDateTime;
 export function endOfQuarter(
   input: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate,
   timezone?: Timezone,
-): Temporal.ZonedDateTime {
+): Temporal.ZonedDateTime | Temporal.PlainDate {
+  // PlainDate with no timezone stays in calendar space → last day of quarter.
+  if (isPlainDate(input) && timezone === undefined) {
+    const endMonth = input.with({
+      month: quarterStartMonth(input.month) + 2,
+      day: 1,
+    });
+    return endMonth.with({ day: endMonth.daysInMonth });
+  }
   const zonedDateTime = normalizeWithPlainDate(input, timezone!);
   const endMonth = zonedDateTime.with({
     month: quarterStartMonth(zonedDateTime.month) + 2,

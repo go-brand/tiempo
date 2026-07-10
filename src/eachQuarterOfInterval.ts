@@ -1,83 +1,96 @@
 import { Temporal } from "./shared/temporal";
+import { isPlainDate } from "./shared/temporal";
 import { normalizeTemporalInput } from "./shared/normalizeTemporalInput";
 import { quarterStartMonth } from "./shared/quarter";
 
 /**
- * Returns an array of ZonedDateTime objects for each quarter within the interval.
- * Each element represents the first moment of the quarter (day 1 of the quarter's
- * starting month at midnight). The interval is inclusive of both start and end quarters.
+ * Returns an array with the start of each quarter within the interval, inclusive
+ * of both the start and end quarters.
  *
- * Quarters: Q1 = Jan–Mar, Q2 = Apr–Jun, Q3 = Jul–Sep, Q4 = Oct–Dec.
+ * Quarters: Q1 = Jan–Mar, Q2 = Apr–Jun, Q3 = Jul–Sep, Q4 = Oct–Dec. Each element
+ * is the first moment of the quarter (1st day of the quarter's starting month at
+ * midnight) for Instant/ZonedDateTime inputs, or the first day as a PlainDate for
+ * PlainDate inputs.
  *
- * For Instant inputs, UTC is used as the timezone.
- * For ZonedDateTime inputs, the timezone of the start date is preserved.
+ * For Instant inputs, UTC is used. For ZonedDateTime inputs, the timezone of the
+ * start date is preserved. PlainDate inputs need no timezone and return PlainDate[].
  *
- * @param interval - The interval with start and end datetimes
- * @returns Array of ZonedDateTime at start of each quarter in the interval
+ * @param interval - The interval with start and end
+ * @returns Array of ZonedDateTime (or PlainDate) at the start of each quarter
  *
  * @example
  * ```ts
  * const start = Temporal.ZonedDateTime.from('2025-02-15T10:00:00Z[UTC]');
  * const end = Temporal.ZonedDateTime.from('2025-11-20T14:00:00Z[UTC]');
- *
- * const quarters = eachQuarterOfInterval({ start, end });
- * // [
- * //   2025-01-01T00:00:00Z[UTC], // Q1
- * //   2025-04-01T00:00:00Z[UTC], // Q2
- * //   2025-07-01T00:00:00Z[UTC], // Q3
- * //   2025-10-01T00:00:00Z[UTC]  // Q4
- * // ]
+ * eachQuarterOfInterval({ start, end });
+ * // [2025-01-01…, 2025-04-01…, 2025-07-01…, 2025-10-01…]
  * ```
  *
  * @example
  * ```ts
- * // Cross-year boundary
- * const start = Temporal.ZonedDateTime.from('2024-11-15T00:00:00Z[UTC]');
- * const end = Temporal.ZonedDateTime.from('2025-05-15T00:00:00Z[UTC]');
- *
- * const quarters = eachQuarterOfInterval({ start, end });
- * // [
- * //   2024-10-01T00:00:00Z[UTC], // Q4 2024
- * //   2025-01-01T00:00:00Z[UTC], // Q1 2025
- * //   2025-04-01T00:00:00Z[UTC]  // Q2 2025
- * // ]
+ * // PlainDate interval returns PlainDate quarter starts (no timezone)
+ * eachQuarterOfInterval({
+ *   start: Temporal.PlainDate.from('2025-02-15'),
+ *   end: Temporal.PlainDate.from('2025-08-20'),
+ * });
+ * // [2025-01-01, 2025-04-01, 2025-07-01]
  * ```
  */
 export function eachQuarterOfInterval(interval: {
   start: Temporal.Instant | Temporal.ZonedDateTime;
   end: Temporal.Instant | Temporal.ZonedDateTime;
-}): Temporal.ZonedDateTime[] {
-  const startZoned = normalizeTemporalInput(interval.start);
-  const endZoned = normalizeTemporalInput(interval.end);
-
-  const timezone = startZoned.timeZoneId;
-
-  // Start of the starting quarter
-  const startYearMonth = Temporal.PlainYearMonth.from({
-    year: startZoned.year,
-    month: quarterStartMonth(startZoned.month),
-  });
-
-  // Start of the ending quarter in the same timezone
-  const endInTimezone = endZoned.withTimeZone(timezone);
-  const endYearMonth = Temporal.PlainYearMonth.from({
-    year: endInTimezone.year,
-    month: quarterStartMonth(endInTimezone.month),
-  });
-
-  const quarters: Temporal.ZonedDateTime[] = [];
-  let current = startYearMonth;
-
-  while (Temporal.PlainYearMonth.compare(current, endYearMonth) <= 0) {
-    const firstOfQuarter = current.toPlainDate({ day: 1 });
-    quarters.push(
-      firstOfQuarter.toZonedDateTime({
-        timeZone: timezone,
-        plainTime: new Temporal.PlainTime(),
-      }),
-    );
-    current = current.add({ months: 3 });
+}): Temporal.ZonedDateTime[];
+export function eachQuarterOfInterval(interval: {
+  start: Temporal.PlainDate;
+  end: Temporal.PlainDate;
+}): Temporal.PlainDate[];
+export function eachQuarterOfInterval(interval: {
+  start: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate;
+  end: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate;
+}): Temporal.ZonedDateTime[] | Temporal.PlainDate[] {
+  if (isPlainDate(interval.start) && isPlainDate(interval.end)) {
+    return eachQuarterStart(interval.start, interval.end, (ym) => ym.toPlainDate({ day: 1 }));
   }
 
-  return quarters;
+  const startZoned = normalizeTemporalInput(
+    interval.start as Temporal.Instant | Temporal.ZonedDateTime,
+  );
+  const endZoned = normalizeTemporalInput(
+    interval.end as Temporal.Instant | Temporal.ZonedDateTime,
+  );
+  const timezone = startZoned.timeZoneId;
+
+  return eachQuarterStart(startZoned, endZoned.withTimeZone(timezone), (ym) =>
+    ym.toPlainDate({ day: 1 }).toZonedDateTime({
+      timeZone: timezone,
+      plainTime: new Temporal.PlainTime(),
+    }),
+  );
+}
+
+/**
+ * Walks quarter-aligned year-months from start to end (inclusive) and maps each
+ * to a result. Both bounds are snapped to their quarter's starting month.
+ */
+function eachQuarterStart<T>(
+  start: { year: number; month: number },
+  end: { year: number; month: number },
+  make: (ym: Temporal.PlainYearMonth) => T,
+): T[] {
+  const startYearMonth = Temporal.PlainYearMonth.from({
+    year: start.year,
+    month: quarterStartMonth(start.month),
+  });
+  const endYearMonth = Temporal.PlainYearMonth.from({
+    year: end.year,
+    month: quarterStartMonth(end.month),
+  });
+
+  const out: T[] = [];
+  let current = startYearMonth;
+  while (Temporal.PlainYearMonth.compare(current, endYearMonth) <= 0) {
+    out.push(make(current));
+    current = current.add({ months: 3 });
+  }
+  return out;
 }

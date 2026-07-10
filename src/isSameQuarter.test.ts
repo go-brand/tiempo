@@ -38,4 +38,20 @@ describe("isSameQuarter", () => {
 
     expect(isSameQuarter(ny, tokyo)).toBe(false);
   });
+
+  describe("from Temporal.PlainDate (no timezone)", () => {
+    const pd = (s: string) => Temporal.PlainDate.from(s);
+
+    it("returns true for dates in the same quarter and year", () => {
+      expect(isSameQuarter(pd("2025-04-05"), pd("2025-06-28"))).toBe(true);
+    });
+
+    it("returns false across a quarter boundary", () => {
+      expect(isSameQuarter(pd("2025-03-31"), pd("2025-04-01"))).toBe(false);
+    });
+
+    it("returns false for the same quarter number in different years", () => {
+      expect(isSameQuarter(pd("2024-02-15"), pd("2025-02-15"))).toBe(false);
+    });
+  });
 });

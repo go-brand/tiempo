@@ -12,10 +12,10 @@ tiempo provides a familiar date-fns-style API while leveraging the modern Tempor
 
 ## Conversion
 
+- [toInstant](https://eng.gobrand.app/tiempo/docs/conversion/to-instant): Convert a timeline representation to a Temporal Instant
 - [toZonedTime](https://eng.gobrand.app/tiempo/docs/conversion/to-zoned-time): Convert to a timezone-aware ZonedDateTime
-- [toPlainTime](https://eng.gobrand.app/tiempo/docs/conversion/to-plain-time): Parse a plain time or extract wall-clock time from a datetime
 - [toPlainDate](https://eng.gobrand.app/tiempo/docs/conversion/to-plain-date): Parse a plain date or extract calendar date from a datetime
-- [toUtc](https://eng.gobrand.app/tiempo/docs/conversion/to-utc): Convert to a UTC Instant
+- [toPlainTime](https://eng.gobrand.app/tiempo/docs/conversion/to-plain-time): Parse a plain time or extract wall-clock time from a datetime
 - [toIso](https://eng.gobrand.app/tiempo/docs/conversion/to-iso): Convert to an ISO 8601 string
 - [toIso9075](https://eng.gobrand.app/tiempo/docs/conversion/to-iso9075): Convert to ISO 9075 (SQL) format string
 - [toDate](https://eng.gobrand.app/tiempo/docs/conversion/to-date): Convert to a JavaScript Date object
@@ -55,14 +55,14 @@ tiempo provides a familiar date-fns-style API while leveraging the modern Tempor
 
 - [startOfDay](https://eng.gobrand.app/tiempo/docs/boundaries/start-of-day): Get the first moment of the day
 - [endOfDay](https://eng.gobrand.app/tiempo/docs/boundaries/end-of-day): Get the last moment of the day
-- [startOfWeek](https://eng.gobrand.app/tiempo/docs/boundaries/start-of-week): Get the first moment of the week (Monday)
-- [endOfWeek](https://eng.gobrand.app/tiempo/docs/boundaries/end-of-week): Get the last moment of the week (Sunday)
-- [startOfMonth](https://eng.gobrand.app/tiempo/docs/boundaries/start-of-month): Get the first moment of the month
-- [endOfMonth](https://eng.gobrand.app/tiempo/docs/boundaries/end-of-month): Get the last moment of the month
+- [startOfWeek](https://eng.gobrand.app/tiempo/docs/boundaries/start-of-week): Get the first boundary of the week (Monday)
+- [endOfWeek](https://eng.gobrand.app/tiempo/docs/boundaries/end-of-week): Get the last boundary of the week (Sunday)
+- [startOfMonth](https://eng.gobrand.app/tiempo/docs/boundaries/start-of-month): Get the first boundary of the month
+- [endOfMonth](https://eng.gobrand.app/tiempo/docs/boundaries/end-of-month): Get the last boundary of the month
 - [startOfQuarter](https://eng.gobrand.app/tiempo/docs/boundaries/start-of-quarter): Get the first moment of the quarter
 - [endOfQuarter](https://eng.gobrand.app/tiempo/docs/boundaries/end-of-quarter): Get the last moment of the quarter
-- [startOfYear](https://eng.gobrand.app/tiempo/docs/boundaries/start-of-year): Get the first moment of the year
-- [endOfYear](https://eng.gobrand.app/tiempo/docs/boundaries/end-of-year): Get the last moment of the year
+- [startOfYear](https://eng.gobrand.app/tiempo/docs/boundaries/start-of-year): Get the first boundary of the year
+- [endOfYear](https://eng.gobrand.app/tiempo/docs/boundaries/end-of-year): Get the last boundary of the year
 
 ## Comparison
 

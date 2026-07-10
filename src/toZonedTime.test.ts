@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { Temporal } from './shared/temporal';
 import { toZonedTime } from './toZonedTime';
-import { toUtc } from './toUtc';
+import { toInstant } from './toInstant';
 
 describe('toZonedTime', () => {
   describe('from ISO string', () => {
@@ -198,13 +198,13 @@ describe('toZonedTime', () => {
     });
   });
 
-  describe('timezone conversion with toUtc', () => {
+  describe('timezone conversion with toInstant', () => {
     it('converts ZonedDateTime to different timezone while preserving instant', () => {
       const ny = Temporal.ZonedDateTime.from('2025-01-20T15:00:00-05:00[America/New_York]');
       const tokyo = toZonedTime(ny, 'Asia/Tokyo');
 
       // Both should convert back to the same UTC instant
-      expect(toUtc(ny).toString()).toBe(toUtc(tokyo).toString());
+      expect(toInstant(ny).toString()).toBe(toInstant(tokyo).toString());
     });
 
     it('preserves original timezone when no conversion', () => {
@@ -215,9 +215,9 @@ describe('toZonedTime', () => {
       const london = toZonedTime(original, 'Europe/London');
 
       // All should convert back to the same UTC instant
-      expect(toUtc(ny).toString()).toBe(original);
-      expect(toUtc(tokyo).toString()).toBe(original);
-      expect(toUtc(london).toString()).toBe(original);
+      expect(toInstant(ny).toString()).toBe(original);
+      expect(toInstant(tokyo).toString()).toBe(original);
+      expect(toInstant(london).toString()).toBe(original);
     });
   });
 });

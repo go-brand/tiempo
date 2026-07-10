@@ -12,6 +12,10 @@ function isSameQuarter(
   date1: Temporal.Instant | Temporal.ZonedDateTime,
   date2: Temporal.Instant | Temporal.ZonedDateTime
 ): boolean
+function isSameQuarter(
+  date1: Temporal.PlainDate,
+  date2: Temporal.PlainDate
+): boolean
 ```
 
 ## Parameters
@@ -36,4 +40,15 @@ const apr = Temporal.ZonedDateTime.from('2025-04-01T00:00:00Z[UTC]');
 
 isSameQuarter(jan, mar); // true  (both Q1)
 isSameQuarter(mar, apr); // false (Q1 vs Q2)
+```
+
+### From PlainDate (no timezone)
+
+A quarter is intrinsic to the calendar date, so `PlainDate` comparison needs no timezone.
+
+```ts
+const a = Temporal.PlainDate.from('2025-04-05');
+const b = Temporal.PlainDate.from('2025-06-28');
+
+isSameQuarter(a, b); // true (both Q2)
 ```

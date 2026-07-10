@@ -8,7 +8,14 @@ Returns a `ZonedDateTime` at the last moment of the quarter (last day of the qua
 function endOfQuarter(
   input: Temporal.Instant | Temporal.ZonedDateTime
 ): Temporal.ZonedDateTime
+function endOfQuarter(input: Temporal.PlainDate): Temporal.PlainDate
+function endOfQuarter(
+  input: Temporal.PlainDate,
+  timezone: Timezone
+): Temporal.ZonedDateTime
 ```
+
+A `PlainDate` with no timezone stays in calendar space and returns the quarter's last day as a `PlainDate`. Pass a timezone to bridge into a zoned `ZonedDateTime` at the last nanosecond.
 
 ## Parameters
 
@@ -32,4 +39,8 @@ endOfQuarter(instant);
 const zoned = Temporal.ZonedDateTime.from('2025-02-15T15:30:00-05:00[America/New_York]');
 endOfQuarter(zoned);
 // 2025-03-31T23:59:59.999999999-04:00[America/New_York]
+
+// PlainDate in → PlainDate out (no timezone)
+endOfQuarter(Temporal.PlainDate.from('2025-05-15'));
+// 2025-06-30
 ```

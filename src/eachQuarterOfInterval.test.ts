@@ -104,4 +104,45 @@ describe("eachQuarterOfInterval", () => {
 
     expect(result.map((d) => d.month)).toEqual([1, 4, 7]);
   });
+
+  describe("from Temporal.PlainDate (returns PlainDate[], no timezone)", () => {
+    const pd = (s: string) => Temporal.PlainDate.from(s);
+
+    it("returns the first day of each quarter as PlainDate", () => {
+      const result = eachQuarterOfInterval({
+        start: pd("2025-02-15"),
+        end: pd("2025-11-20"),
+      });
+
+      expect(result.every((d) => d instanceof Temporal.PlainDate)).toBe(true);
+      expect(result.map((d) => d.toString())).toEqual([
+        "2025-01-01",
+        "2025-04-01",
+        "2025-07-01",
+        "2025-10-01",
+      ]);
+    });
+
+    it("is inclusive and single-entry within one quarter", () => {
+      const result = eachQuarterOfInterval({
+        start: pd("2025-04-05"),
+        end: pd("2025-06-28"),
+      });
+
+      expect(result.map((d) => d.toString())).toEqual(["2025-04-01"]);
+    });
+
+    it("returns an empty array when end is before start", () => {
+      expect(eachQuarterOfInterval({ start: pd("2025-07-15"), end: pd("2025-02-15") })).toEqual([]);
+    });
+
+    it("crosses year boundaries", () => {
+      const result = eachQuarterOfInterval({
+        start: pd("2024-11-15"),
+        end: pd("2025-05-15"),
+      });
+
+      expect(result.map((d) => d.toString())).toEqual(["2024-10-01", "2025-01-01", "2025-04-01"]);
+    });
+  });
 });

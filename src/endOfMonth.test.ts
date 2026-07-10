@@ -220,6 +220,13 @@ describe('endOfMonth', () => {
   });
 
   describe('from Temporal.PlainDate', () => {
+    it('returns the last day as a PlainDate when no timezone is provided', () => {
+      const end = endOfMonth(Temporal.PlainDate.from('2024-02-15'));
+
+      expect(end).toBeInstanceOf(Temporal.PlainDate);
+      expect(end.toString()).toBe('2024-02-29');
+    });
+
     it('returns end of month in specified timezone', () => {
       const date = Temporal.PlainDate.from('2025-01-15');
       const end = endOfMonth(date, 'America/New_York');

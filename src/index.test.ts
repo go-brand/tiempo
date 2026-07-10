@@ -1,8 +1,20 @@
 import { describe, expect, it } from 'vitest';
-import { toZonedTime, toUtc, toIso } from './index';
+import * as tiempo from './index';
+import { toInstant, toZonedTime, toIso } from './index';
 import { Temporal } from './shared/temporal';
 
 describe('tiempo integration', () => {
+  it('does not expose the removed toUtc compatibility name', () => {
+    expect('toUtc' in tiempo).toBe(false);
+  });
+
+  it('exports toInstant as the canonical Instant conversion', () => {
+    const instant = toInstant('2025-01-20T20:00:00Z');
+
+    expect(instant).toBeInstanceOf(Temporal.Instant);
+    expect(toInstant(instant)).toBe(instant);
+  });
+
   describe('round-trip conversions', () => {
     it('maintains data integrity: ISO -> ZonedTime -> ISO', () => {
       const original = '2025-03-15T09:45:30.5Z';
@@ -18,9 +30,9 @@ describe('tiempo integration', () => {
     it('maintains data integrity: ISO -> Instant -> ZonedTime -> Instant -> ISO', () => {
       const original = '2025-03-15T09:45:30.5Z';
 
-      const instant1 = toUtc(original);
+      const instant1 = toInstant(original);
       const zoned = toZonedTime(instant1, 'America/New_York');
-      const instant2 = toUtc(zoned);
+      const instant2 = toInstant(zoned);
       const final = toIso(instant2);
 
       expect(final).toBe(original);
@@ -33,7 +45,7 @@ describe('tiempo integration', () => {
       const fromString = toZonedTime(originalIso, 'Asia/Tokyo');
 
       // Convert to instant and back to zoned
-      const instant = toUtc(fromString);
+      const instant = toInstant(fromString);
       const fromInstant = toZonedTime(instant, 'Europe/London');
 
       // Convert between zoned times
@@ -63,7 +75,7 @@ describe('tiempo integration', () => {
       const instant = Temporal.Instant.from(original);
       const zoned1 = toZonedTime(instant, 'America/New_York');
       const zoned2 = toZonedTime(zoned1, 'Asia/Tokyo');
-      const backToInstant = toUtc(zoned2);
+      const backToInstant = toInstant(zoned2);
 
       // Temporal.Instant preserves nanosecond precision
       expect(backToInstant.epochNanoseconds).toBe(instant.epochNanoseconds);
@@ -71,15 +83,15 @@ describe('tiempo integration', () => {
   });
 
   describe('cross-function consistency', () => {
-    it('ensures toUtc and toIso produce consistent results', () => {
+    it('ensures toInstant and toIso produce consistent results', () => {
       const zoned = Temporal.ZonedDateTime.from(
         '2025-01-20T15:00:00-05:00[America/New_York]'
       );
 
-      const viaToUtc = toUtc(zoned).toString();
-      const viaToUtcString = toIso(zoned);
+      const viaToInstant = toInstant(zoned).toString();
+      const viaToIso = toIso(zoned);
 
-      expect(viaToUtc).toBe(viaToUtcString);
+      expect(viaToInstant).toBe(viaToIso);
     });
 
     it('ensures all functions handle the same instant consistently', () => {
@@ -90,8 +102,8 @@ describe('tiempo integration', () => {
       // All functions should produce identical UTC strings
       expect(toIso(instant)).toBe(isoString);
       expect(toIso(zoned)).toBe(isoString);
-      expect(toUtc(isoString).toString()).toBe(isoString);
-      expect(toUtc(zoned).toString()).toBe(isoString);
+      expect(toInstant(isoString).toString()).toBe(isoString);
+      expect(toInstant(zoned).toString()).toBe(isoString);
     });
 
     it('ensures toZonedTime produces identical instants from all input types', () => {

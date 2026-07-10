@@ -1,7 +1,7 @@
 {
   "name": "@gobrand/tiempo",
   "version": "2.10.0",
-  "description": "Lightweight utility functions for converting between UTC and timezone-aware datetimes using the Temporal API",
+  "description": "Lightweight timezone-safe date and time utilities built on the Temporal API",
   "private": false,
   "publishConfig": {
     "access": "public"
@@ -31,9 +31,11 @@
   "homepage": "https://eng.gobrand.app/tiempo",
   "scripts": {
     "generate:timezones": "tsx scripts/generate-timezone-types.ts",
+    "generate:matrix": "tsx scripts/generate-capability-matrix.ts",
     "generate:docs": "tsx scripts/generate-docs.ts",
-    "build": "pnpm generate:timezones && pnpm generate:docs && tsup && tsc --emitDeclarationOnly",
+    "build": "pnpm generate:timezones && pnpm generate:matrix && pnpm generate:docs && tsup && tsc -p tsconfig.build.json --emitDeclarationOnly && tsx scripts/fix-declaration-imports.ts && pnpm smoke:package",
     "clean": "git clean -xdf .cache .turbo dist node_modules tsconfig.tsbuildinfo",
+    "smoke:package": "tsc -p smoke/tsconfig.json && tsx smoke/consumer.ts",
     "test": "vitest",
     "typecheck": "tsc --noEmit",
     "release": "bash scripts/release.sh"

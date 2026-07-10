@@ -3,7 +3,7 @@ export { toPlainTime } from "./toPlainTime";
 export { toPlainDate } from "./toPlainDate";
 export type { Timezone, IANATimezone } from "./types";
 export { browserTimezone } from "./browserTimezone";
-export { toUtc } from "./toUtc";
+export { toInstant } from "./toInstant";
 export { toIso, type IsoMode, type ToIsoOptions } from "./toIso";
 export {
   toIso9075,

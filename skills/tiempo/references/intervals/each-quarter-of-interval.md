@@ -9,7 +9,13 @@ function eachQuarterOfInterval(interval: {
   start: Temporal.Instant | Temporal.ZonedDateTime;
   end: Temporal.Instant | Temporal.ZonedDateTime;
 }): Temporal.ZonedDateTime[]
+function eachQuarterOfInterval(interval: {
+  start: Temporal.PlainDate;
+  end: Temporal.PlainDate;
+}): Temporal.PlainDate[]
 ```
+
+Input type determines output type: a `PlainDate` interval needs no timezone and returns `PlainDate[]` (the first day of each quarter).
 
 ## Parameters
 
@@ -54,6 +60,16 @@ const quarters = eachQuarterOfInterval({ start, end });
 //   2025-01-01T00:00:00Z[UTC], // Q1 2025
 //   2025-04-01T00:00:00Z[UTC]  // Q2 2025
 // ]
+```
+
+### From PlainDate (no timezone)
+
+```ts
+const quarters = eachQuarterOfInterval({
+  start: Temporal.PlainDate.from('2025-02-15'),
+  end: Temporal.PlainDate.from('2025-08-20'),
+});
+// [2025-01-01, 2025-04-01, 2025-07-01]  (PlainDate[])
 ```
 
 ## Common Patterns

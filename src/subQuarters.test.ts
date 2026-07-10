@@ -34,4 +34,23 @@ describe("subQuarters", () => {
     expect(result.day).toBe(20);
     expect(result.timeZoneId).toBe("America/New_York");
   });
+
+  describe("from Temporal.PlainDate (returns PlainDate, no timezone)", () => {
+    it("subtracts quarters and stays a PlainDate", () => {
+      const result = subQuarters(Temporal.PlainDate.from("2025-07-20"), 2);
+
+      expect(result).toBeInstanceOf(Temporal.PlainDate);
+      expect(result.year).toBe(2025);
+      expect(result.month).toBe(1);
+      expect(result.day).toBe(20);
+    });
+
+    it("crosses a year boundary backward", () => {
+      const result = subQuarters(Temporal.PlainDate.from("2025-02-20"), 1);
+
+      expect(result.year).toBe(2024);
+      expect(result.month).toBe(11);
+      expect(result.day).toBe(20);
+    });
+  });
 });

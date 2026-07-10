@@ -216,6 +216,13 @@ describe('startOfMonth', () => {
   });
 
   describe('from Temporal.PlainDate', () => {
+    it('returns the first day as a PlainDate when no timezone is provided', () => {
+      const start = startOfMonth(Temporal.PlainDate.from('2025-02-15'));
+
+      expect(start).toBeInstanceOf(Temporal.PlainDate);
+      expect(start.toString()).toBe('2025-02-01');
+    });
+
     it('returns start of month in specified timezone', () => {
       const date = Temporal.PlainDate.from('2025-01-15');
       const start = startOfMonth(date, 'America/New_York');

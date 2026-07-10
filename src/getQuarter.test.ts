@@ -33,9 +33,16 @@ describe("getQuarter", () => {
   });
 
   describe("from Temporal.PlainDate", () => {
-    it("requires a timezone and returns the quarter", () => {
-      const date = Temporal.PlainDate.from("2025-02-15");
-      expect(getQuarter(date, "America/New_York")).toBe(1);
+    it("returns the quarter with no timezone needed", () => {
+      expect(getQuarter(Temporal.PlainDate.from("2025-02-15"))).toBe(1);
+      expect(getQuarter(Temporal.PlainDate.from("2025-05-15"))).toBe(2);
+      expect(getQuarter(Temporal.PlainDate.from("2025-08-15"))).toBe(3);
+      expect(getQuarter(Temporal.PlainDate.from("2025-11-15"))).toBe(4);
+    });
+
+    it("maps quarter boundary days correctly", () => {
+      expect(getQuarter(Temporal.PlainDate.from("2025-03-31"))).toBe(1);
+      expect(getQuarter(Temporal.PlainDate.from("2025-04-01"))).toBe(2);
     });
   });
 });
