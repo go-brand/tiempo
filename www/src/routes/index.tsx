@@ -17,10 +17,12 @@ const MINUTE_MARKERS = [
 
 // Animated clock hands visualization
 function ClockVisualization({ variant = "dark" }: { variant?: "dark" | "light" }) {
-  const [time, setTime] = useState(new Date());
+  const [time, setTime] = useState(() => new Date(0));
 
   useEffect(() => {
-    const interval = setInterval(() => setTime(new Date()), 1000);
+    const updateTime = () => setTime(new Date());
+    updateTime();
+    const interval = setInterval(updateTime, 1000);
     return () => clearInterval(interval);
   }, []);
 
@@ -338,82 +340,38 @@ function FeatureCard({
   );
 }
 
-// Testimonial data
-const TESTIMONIALS = [
-  {
-    quote: "Tiempo = game changer",
-    name: "Manav Gandhi",
-    image: "/tiempo/testimonials/gandhi.jpeg",
-  },
-] as const;
-
-// Testimonial card
-function TestimonialCard({ quote, name, image }: { quote: string; name: string; image: string }) {
-  return (
-    <div className="relative p-8 rounded-2xl bg-gradient-to-br from-neutral-900/50 to-neutral-950/50 border border-neutral-800/50">
-      <div className="absolute top-6 left-6 text-amber-500/20 text-6xl font-serif leading-none">
-        "
-      </div>
-      <blockquote className="relative z-10 text-xl md:text-2xl font-medium text-neutral-100 mb-6 pt-4">
-        {quote}
-      </blockquote>
-      <div className="flex items-center gap-4">
-        <img
-          src={image}
-          alt={name}
-          className="w-12 h-12 rounded-full object-cover border-2 border-amber-500/20"
-        />
-        <span className="text-neutral-300 font-medium">{name}</span>
-      </div>
-    </div>
-  );
-}
-
 function Home() {
-  const usageCode = `import { toZonedTime, format, today } from '@gobrand/tiempo';
+  const usageCode = `import { addDays, endOfDay, format, toIso, toZonedTime } from '@gobrand/tiempo';
 
-// Get current time in a timezone
-const nyTime = toZonedTime(new Date(), 'America/New_York');
+const teamTimezone = 'America/New_York';
 
-// Format with full control
-const formatted = format(nyTime, 'EEEE, MMMM d, yyyy h:mm a');
-// → "Thursday, January 23, 2026 2:30 PM"
+// ISO from your backend → the team's calendar
+// task.dueAt = "2026-03-07T15:00:00Z"
+const dueAt = toZonedTime(task.dueAt, teamTimezone);
 
-// Today's date in any timezone
-const tokyoToday = today('Asia/Tokyo');`;
+// "Tomorrow, end of day" stays correct through DST
+const rescheduled = endOfDay(addDays(dueAt, 1));
 
-  const temporalCode = `import { now, addDays, differenceInHours, isSameDay } from '@gobrand/tiempo';
+format(rescheduled, "MMM d, h:mm a");
+// → "Mar 8, 11:59 PM"
 
-const current = now('America/New_York');
-
-// Add time with precision
-const nextWeek = addDays(current, 7);
-
-// Calculate differences
-const meeting = addDays(current, 3);
-const hoursDiff = differenceInHours(meeting, current);
-
-// Compare dates across timezones
-const localDate = now('America/New_York');
-const remoteDate = now('Europe/Madrid');
-const sameDay = isSameDay(localDate, remoteDate);`;
+// Zoned value → exact UTC ISO back to the API
+await api.tasks.update({ dueAt: toIso(rescheduled) });`;
 
   return (
     <HomeLayout {...baseOptions()}>
-      {/* Hero Section - Text at top */}
-      <section className="relative pt-16 pb-8 px-4">
+      {/* Hero Section */}
+      <section className="relative px-4 pb-8 pt-16 md:pt-24">
         <div className="max-w-4xl mx-auto">
-          {/* Main heading */}
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.15] text-neutral-100 mb-6">
-            Datetime utilities for Temporal.
+          <h1 className="mb-6 text-4xl font-bold leading-[1.15] tracking-tight text-neutral-100 md:text-5xl lg:text-6xl">
+            Date and time code you can trust.
           </h1>
 
-          <p className="text-lg md:text-xl text-neutral-400 max-w-2xl font-light leading-relaxed mb-8">
-            tiempo is a lightweight library for timezone conversions, formatting, and date
-            math—built on the modern Temporal API for precision you can trust.
+          <p className="mb-8 max-w-2xl text-lg font-light leading-relaxed text-neutral-400 md:text-xl">
+            Join thousands of developers who stopped struggling with timezones. Tiempo makes
+            Temporal conversions, formatting, and date math feel simple.
           </p>
 
-          {/* Install command and CTA */}
           <div className="flex flex-wrap items-center gap-4">
             <code className="px-4 py-2.5 rounded-lg bg-neutral-900/80 border border-neutral-800 text-neutral-300 font-mono text-sm flex items-center gap-3">
               <span className="text-neutral-500">$</span> pnpm add @gobrand/tiempo
@@ -442,7 +400,7 @@ const sameDay = isSameDay(localDate, remoteDate);`;
             <Link
               to="/docs/$"
               params={{ _splat: "" }}
-              className="text-amber-400 hover:text-amber-300 font-medium text-sm transition-colors"
+              className="text-sm font-medium text-amber-400 transition-colors hover:text-amber-300"
             >
               Read the docs
             </Link>
@@ -495,9 +453,26 @@ const sameDay = isSameDay(localDate, remoteDate);`;
           </svg>
         </div>
 
-        {/* Clock content - centered */}
         <div className="relative z-10 flex justify-center pt-8">
           <ClockVisualization variant="light" />
+        </div>
+      </section>
+
+      <section className="px-4 pb-6 pt-2">
+        <div className="mx-auto grid max-w-6xl grid-cols-2 md:grid-cols-4">
+          {[
+            ["90", "typed utilities"],
+            ["418", "timezone identifiers"],
+            ["1 ns", "Temporal precision"],
+            ["MIT", "open source"],
+          ].map(([value, label]) => (
+            <div key={label} className="px-4 py-6 md:px-6">
+              <div className="font-mono text-xl font-semibold text-neutral-100">{value}</div>
+              <div className="mt-1 text-xs uppercase tracking-[0.14em] text-neutral-500">
+                {label}
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 
@@ -506,11 +481,12 @@ const sameDay = isSameDay(localDate, remoteDate);`;
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-amber-950/5 to-transparent" />
         <div className="relative max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-neutral-100 mb-4">Why tiempo?</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-neutral-100 mb-4">
+              The hard parts of time should feel simple.
+            </h2>
             <p className="text-lg text-neutral-400 max-w-2xl mx-auto">
-              JavaScript's <code className="text-amber-400/80">Date</code> was modeled after a Java
-              class deprecated 25+ years ago. The Temporal API is its modern replacement—tiempo
-              makes it accessible.
+              Work in the timezone the business uses, move calendar days safely through DST, and
+              return exact ISO back to your API.
             </p>
           </div>
 
@@ -532,8 +508,8 @@ const sameDay = isSameDay(localDate, remoteDate);`;
                   />
                 </svg>
               }
-              title="Any Timezone, Anywhere"
-              description="Date only works in UTC or device-local time. Temporal supports 400+ IANA timezones natively. Convert between America/New_York and Asia/Tokyo with confidence."
+              title="Your team's timezone, anywhere"
+              description="Convert an ISO timestamp into America/New_York, Asia/Tokyo, or UTC—regardless of where your code runs."
             />
             <FeatureCard
               icon={
@@ -552,8 +528,8 @@ const sameDay = isSameDay(localDate, remoteDate);`;
                   />
                 </svg>
               }
-              title="Nanosecond Precision"
-              description="Beyond milliseconds. Temporal provides nanosecond accuracy for scientific computing, financial systems, and high-frequency operations where every tick matters."
+              title="DST-safe calendar math"
+              description="Adding a day means the next calendar day, not 24 hours. Your 9 AM schedule stays at 9 AM when clocks change."
             />
             <FeatureCard
               icon={
@@ -572,8 +548,8 @@ const sameDay = isSameDay(localDate, remoteDate);`;
                   />
                 </svg>
               }
-              title="DST-Safe Arithmetic"
-              description="Adding days means calendar days, not 24-hour periods. Temporal handles Daylight Saving Time transitions correctly—no more off-by-one-hour bugs."
+              title="A date is not a timestamp"
+              description="Billing dates, birthdays, and holidays stay PlainDate values until you decide they represent a real moment."
             />
             <FeatureCard
               icon={
@@ -592,8 +568,8 @@ const sameDay = isSameDay(localDate, remoteDate);`;
                   />
                 </svg>
               }
-              title="Immutable by Design"
-              description="Date's mutating setters cause countless bugs. Temporal operations always return new values—no side effects, no surprises, no debugging mysteries."
+              title="Timezone mistakes get caught early"
+              description="Autocomplete valid timezone names, including UTC, and keep invalid identifiers out of production."
             />
             <FeatureCard
               icon={
@@ -612,8 +588,8 @@ const sameDay = isSameDay(localDate, remoteDate);`;
                   />
                 </svg>
               }
-              title="Distinct Types"
-              description="Date conflates timestamps with calendar dates. Temporal separates Instant (timestamp), ZonedDateTime (timezone-aware), and PlainDate (calendar date) to prevent misuse."
+              title="Nanosecond precision"
+              description="Keep exact API and database timestamps without routing them through Date's millisecond limit."
             />
             <FeatureCard
               icon={
@@ -632,8 +608,8 @@ const sameDay = isSameDay(localDate, remoteDate);`;
                   />
                 </svg>
               }
-              title="Type-Safe & Familiar"
-              description="Autocomplete for 400+ timezones, invalid configurations caught at compile time. A date-fns-style API you already know, built on modern foundations."
+              title="No hidden date mutations"
+              description="Every operation returns a new value, so updating one schedule cannot quietly change another part of your app."
             />
           </div>
         </div>
@@ -644,69 +620,33 @@ const sameDay = isSameDay(localDate, remoteDate);`;
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-neutral-100 mb-3">
-              Simple, expressive API
+              The usual time problems, solved.
             </h2>
             <p className="text-lg text-neutral-400 max-w-2xl mx-auto">
-              Intuitive functions that do exactly what you expect. No magic, no surprises.
+              Receive an ISO timestamp, work in the team's timezone, then send an exact ISO
+              string back to your API.
             </p>
           </div>
 
           <div className="space-y-8 overflow-hidden">
-            {/* Timezone Conversion */}
+            {/* End-to-end timezone workflow */}
             <div className="grid lg:grid-cols-5 gap-6 lg:gap-16 items-start">
               <div className="lg:col-span-2 flex flex-col justify-center lg:py-4">
-                <h3 className="text-xl font-semibold text-neutral-100 mb-2">Timezone Conversion</h3>
+                <h3 className="text-xl font-semibold text-neutral-100 mb-2">
+                  Reschedule a team task without losing its timezone
+                </h3>
                 <p className="text-neutral-400 leading-relaxed">
-                  Convert times between any timezone with precision. Get the current time in New
-                  York, format it beautifully, or find today's date in Tokyo.
+                  The backend deals in ISO. The team deals in local calendar days. Tiempo makes
+                  that boundary explicit, safe through DST, and easy to send back.
                 </p>
               </div>
               <div className="lg:col-span-3 min-w-0">
                 <CodeExample code={usageCode} />
               </div>
             </div>
-
-            {/* Date Arithmetic */}
-            <div className="grid lg:grid-cols-5 gap-6 lg:gap-16 items-start">
-              <div className="lg:col-span-2 flex flex-col justify-center lg:py-4">
-                <h3 className="text-xl font-semibold text-neutral-100 mb-2">Date Arithmetic</h3>
-                <p className="text-neutral-400 leading-relaxed">
-                  Add, subtract, and compare dates naturally. Calculate differences, check if dates
-                  fall on the same day—all with DST-safe precision.
-                </p>
-              </div>
-              <div className="lg:col-span-3 min-w-0">
-                <CodeExample code={temporalCode} />
-              </div>
-            </div>
           </div>
         </div>
       </section>
-
-      {/* Testimonials section - development only */}
-      {import.meta.env.DEV && (
-        <section className="relative py-24 px-4">
-          <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold text-neutral-100 mb-3">
-                What developers say
-              </h2>
-              <p className="text-lg text-neutral-400">Join the growing community using tiempo.</p>
-            </div>
-
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {TESTIMONIALS.map((testimonial) => (
-                <TestimonialCard
-                  key={testimonial.name}
-                  quote={testimonial.quote}
-                  name={testimonial.name}
-                  image={testimonial.image}
-                />
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* CTA section */}
       <section className="relative py-24 px-4">
@@ -717,11 +657,11 @@ const sameDay = isSameDay(localDate, remoteDate);`;
 
             <div className="relative">
               <h2 className="text-3xl md:text-4xl font-bold text-neutral-100 mb-4">
-                Ready to handle time?
+                Make time code obvious.
               </h2>
               <p className="text-lg text-neutral-400 mb-8 max-w-xl mx-auto">
-                Start building with tiempo today. It's open source, lightweight, and built for the
-                future of JavaScript.
+                Use Temporal without making every call site solve Temporal from scratch. Install
+                Tiempo and let the types carry the meaning.
               </p>
 
               <div className="flex flex-wrap gap-4 justify-center">
@@ -730,7 +670,7 @@ const sameDay = isSameDay(localDate, remoteDate);`;
                   params={{ _splat: "" }}
                   className="group relative px-6 py-2.5 rounded-lg border border-amber-500/50 text-amber-400 hover:text-amber-300 hover:border-amber-400/60 font-medium transition-all duration-300"
                 >
-                  Documentation
+                  Start with the docs
                   <span className="ml-2 inline-block transition-transform group-hover:translate-x-0.5">
                     →
                   </span>
