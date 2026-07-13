@@ -1,6 +1,7 @@
 {
   "name": "@gobrand/tiempo",
   "version": "3.0.1",
+  "packageManager": "pnpm@11.12.0",
   "description": "Lightweight timezone-safe date and time utilities built on the Temporal API",
   "private": false,
   "publishConfig": {
