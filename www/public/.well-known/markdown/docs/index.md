@@ -37,6 +37,16 @@ const nextWeek = addDays(nyTime, 7);
 const isUpcoming = isBefore(nyTime, nextWeek); // true
 ```
 
+## Using tiempo with an AI coding agent
+
+Give your agent the current API from [llms.txt](https://tiempo.gobrand.app/llms.txt). If it supports Agent Skills, install Tiempo's skill:
+
+```bash
+npx skills add go-brand/tiempo
+```
+
+The skill is also available through [Tiempo's Agent Skill discovery URL](https://tiempo.gobrand.app/.well-known/agent-skills/tiempo/SKILL.md). Install the package with `pnpm add @gobrand/tiempo`, then use the [documentation](https://tiempo.gobrand.app/docs) for human-readable examples.
+
 ## Documentation
 
 - [Installation](https://tiempo.gobrand.app/docs/installation): Get started with tiempo in your project

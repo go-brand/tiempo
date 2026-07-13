@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { describe, expect, test } from "vitest";
 import {
   buildAgentSkillsIndex,
@@ -91,5 +92,22 @@ describe("agent site generation", () => {
         ].join("\n"),
       }),
     ).toContain("import { toInstant } from '@gobrand/tiempo';");
+  });
+
+  test("publishes agent onboarding on the negotiated homepage", () => {
+    const source = readFileSync("www/content/docs/index.mdx", "utf8");
+    const homepage = readFileSync(
+      "www/public/.well-known/markdown/index.md",
+      "utf8",
+    );
+
+    for (const content of [source, homepage]) {
+      expect(content).toContain("https://tiempo.gobrand.app/llms.txt");
+      expect(content).toContain("npx skills add go-brand/tiempo");
+      expect(content).toContain(
+        "https://tiempo.gobrand.app/.well-known/agent-skills/tiempo/SKILL.md",
+      );
+      expect(content).toContain("pnpm add @gobrand/tiempo");
+    }
   });
 });
