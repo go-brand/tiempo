@@ -391,7 +391,7 @@ export default createServerEntry({
 });
 ```
 
-Keep Wrangler `main` as `@tanstack/react-start/server-entry`; TanStack Start automatically uses `www/src/server.ts` as the custom application server entry. Keep `run_worker_first` limited to `/`, `/docs`, and `/docs/*`.
+Set Wrangler `main` to `src/server.ts`; the Cloudflare Vite plugin otherwise bundles the package default entry before TanStack Start can substitute the custom application server. Keep `run_worker_first` limited to `/`, `/docs`, and `/docs/*`.
 
 Add `"cf-typegen": "wrangler types"` to `www/package.json`, run `pnpm --dir www cf-typegen`, and keep the generated `www/worker-configuration.d.ts` so `cloudflare:workers` and `env.ASSETS` are typed from `www/wrangler.jsonc`.
 
