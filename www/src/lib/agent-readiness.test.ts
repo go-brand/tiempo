@@ -104,4 +104,21 @@ describe("agent readiness HTTP behavior", () => {
     expect(response.headers.get("content-type")).toBe("text/html");
     expect(await response.text()).toBe("<html>not found</html>");
   });
+
+  test("serves well-known resources without invoking the HTML renderer", async () => {
+    let renderedHtml = false;
+    const response = await handleAgentRequest(
+      new Request("https://tiempo.gobrand.app/.well-known/api-catalog", {
+        headers: { accept: "application/linkset+json" },
+      }),
+      async () => {
+        renderedHtml = true;
+        return new Response("server error", { status: 500 });
+      },
+      async () => new Response("not found", { status: 404 }),
+    );
+
+    expect(response.status).toBe(404);
+    expect(renderedHtml).toBe(false);
+  });
 });

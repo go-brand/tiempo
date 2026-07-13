@@ -97,9 +97,16 @@ export async function handleAgentRequest(
   fetchHtml: ResponseFetcher,
   fetchAsset: ResponseFetcher,
 ): Promise<Response> {
-  const assetPath = markdownAssetPath(new URL(request.url).pathname);
+  const pathname = new URL(request.url).pathname;
+  const canFetchAsset = request.method === "GET" || request.method === "HEAD";
+
+  if (canFetchAsset && pathname.startsWith("/.well-known/")) {
+    return addAgentHeaders(await fetchAsset(request));
+  }
+
+  const assetPath = markdownAssetPath(pathname);
   const canServeMarkdown =
-    (request.method === "GET" || request.method === "HEAD") &&
+    canFetchAsset &&
     assetPath !== null &&
     prefersMarkdown(request.headers.get("accept"));
 
