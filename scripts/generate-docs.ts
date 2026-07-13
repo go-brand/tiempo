@@ -14,12 +14,22 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import * as os from "node:os";
+import { createHash } from "node:crypto";
+import { pathToFileURL } from "node:url";
 
 const DOCS_DIR = "www/content/docs";
 const SKILL_REFS_DIR = "skills/tiempo/references";
 const LLMS_TXT_PATH = "www/public/llms.txt";
 const SKILL_MD_PATH = "skills/tiempo/SKILL.md";
-const BASE_URL = "https://eng.gobrand.app/tiempo/docs";
+const PUBLIC_DIR = "www/public";
+const PUBLIC_AGENT_SKILLS_DIR = path.join(
+  PUBLIC_DIR,
+  ".well-known/agent-skills",
+);
+const PUBLIC_MARKDOWN_DIR = path.join(PUBLIC_DIR, ".well-known/markdown");
+
+export const SITE_URL = "https://tiempo.gobrand.app";
+export const DOCS_URL = `${SITE_URL}/docs`;
 
 // Global skill directory (synced alongside repo skills)
 const GLOBAL_SKILL_DIR = path.join(os.homedir(), ".claude/skills/tiempo");
@@ -90,6 +100,7 @@ interface DocFile {
   description: string;
   body: string;
   filePath: string;
+  pathname: string;
 }
 
 interface MetaJson {
@@ -158,6 +169,7 @@ function loadDocFiles(): DocFile[] {
         description: frontmatter.description || "",
         body,
         filePath,
+        pathname: `/docs/${category}/${slug}`,
       });
     }
   }
@@ -165,14 +177,125 @@ function loadDocFiles(): DocFile[] {
   return docs;
 }
 
+function loadTopLevelDocFiles(): DocFile[] {
+  const metaPath = path.join(DOCS_DIR, "meta.json");
+  const meta: MetaJson = JSON.parse(fs.readFileSync(metaPath, "utf-8"));
+  const docs: DocFile[] = [];
+
+  for (const slug of meta.pages) {
+    const filePath = path.join(DOCS_DIR, `${slug}.mdx`);
+    if (!fs.existsSync(filePath)) continue;
+
+    const content = fs.readFileSync(filePath, "utf-8");
+    const { frontmatter, body } = parseMdx(content);
+    docs.push({
+      slug,
+      category: "",
+      title: frontmatter.title || slug,
+      description: frontmatter.description || "",
+      body,
+      filePath,
+      pathname: slug === "index" ? "/docs" : `/docs/${slug}`,
+    });
+  }
+
+  return docs;
+}
+
+export function buildRobotsTxt(): string {
+  return [
+    "User-agent: *",
+    "Allow: /",
+    "Content-Signal: ai-train=no, search=yes, ai-input=yes",
+    "",
+    `Sitemap: ${SITE_URL}/sitemap.xml`,
+    "",
+  ].join("\n");
+}
+
+export function buildSitemapXml(pathnames: string[]): string {
+  const urls = pathnames
+    .map((pathname) => `  <url><loc>${SITE_URL}${pathname}</loc></url>`)
+    .join("\n");
+
+  return [
+    '<?xml version="1.0" encoding="UTF-8"?>',
+    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+    urls,
+    "</urlset>",
+    "",
+  ].join("\n");
+}
+
+export function markdownAssetPath(pathname: string): string {
+  const docsPath = pathname === "/docs" ? "/docs/index" : pathname;
+  return `/.well-known/markdown${docsPath}.md`;
+}
+
+export function buildAgentSkillsIndex(skillDigest: string) {
+  return {
+    $schema: "https://schemas.agentskills.io/discovery/0.2.0/schema.json" as const,
+    skills: [
+      {
+        name: "tiempo" as const,
+        type: "skill-md" as const,
+        description:
+          "Use tiempo for timezone-safe date and time handling with the Temporal API in TypeScript and JavaScript.",
+        url: "/.well-known/agent-skills/tiempo/SKILL.md" as const,
+        digest: `sha256:${skillDigest}`,
+      },
+    ],
+  };
+}
+
+export function buildMarkdownDocument({
+  title,
+  body,
+}: Pick<DocFile, "title" | "body">): string {
+  let insideCodeFence = false;
+  const lines: string[] = [];
+
+  for (const line of body.split("\n")) {
+    if (line.trimStart().startsWith("```")) {
+      insideCodeFence = !insideCodeFence;
+      lines.push(line);
+      continue;
+    }
+
+    if (!insideCodeFence && line.startsWith("import ")) continue;
+    if (!insideCodeFence && ["<Cards>", "</Cards>"].includes(line.trim())) {
+      continue;
+    }
+
+    if (!insideCodeFence) {
+      const card = line.match(
+        /^\s*<Card title="([^"]+)" href="([^"]+)" description="([^"]+)" \/>\s*$/,
+      );
+      if (card) {
+        const href = card[2].startsWith("/")
+          ? `${SITE_URL}${card[2]}`
+          : card[2];
+        lines.push(`- [${card[1]}](${href}): ${card[3]}`);
+        continue;
+      }
+    }
+
+    lines.push(line);
+  }
+
+  const markdown = lines
+    .join("\n")
+    .trim()
+    .replace(/\]\((\/[^)]+)\)/g, `](${SITE_URL}$1)`);
+
+  return `# ${title}\n\n${markdown}\n`;
+}
+
 /**
  * Generate skill reference markdown from MDX
  */
 function generateSkillMarkdown(doc: DocFile): string {
-  // Convert MDX to plain markdown:
-  // 1. Add # title header
-  // 2. Keep the body as-is (most MDX content is valid markdown)
-  return `# ${doc.title}\n${doc.body}`;
+  return buildMarkdownDocument(doc);
 }
 
 /**
@@ -180,6 +303,13 @@ function generateSkillMarkdown(doc: DocFile): string {
  */
 function generateSkillRefs(docs: DocFile[]): void {
   console.log("Generating skill reference files...");
+
+  for (const category of CATEGORIES) {
+    fs.rmSync(path.join(SKILL_REFS_DIR, category), {
+      recursive: true,
+      force: true,
+    });
+  }
 
   for (const doc of docs) {
     const markdown = generateSkillMarkdown(doc);
@@ -220,9 +350,12 @@ function generateLlmsTxt(docs: DocFile[]): void {
     "",
     "## Docs",
     "",
-    "- [Introduction](https://eng.gobrand.app/tiempo/docs): Overview of tiempo and key features",
-    "- [Installation](https://eng.gobrand.app/tiempo/docs/installation): Getting started with tiempo in your project",
-    "- [TypeScript](https://eng.gobrand.app/tiempo/docs/typescript): Type-safe datetime handling with timezone autocomplete",
+    `- [Introduction](${DOCS_URL}): Overview of tiempo and key features`,
+    `- [Installation](${DOCS_URL}/installation): Getting started with tiempo in your project`,
+    `- [TypeScript](${DOCS_URL}/typescript): Type-safe datetime handling with timezone autocomplete`,
+    `- [Type Matrix](${DOCS_URL}/type-matrix): Input, timezone, and return mappings for every public function`,
+    `- [Recipes](${DOCS_URL}/recipes): Common timezone-safe datetime workflows`,
+    `- [AI Resources](${DOCS_URL}/ai-resources): Machine-readable documentation and Agent Skill discovery`,
     "",
   ];
 
@@ -249,7 +382,7 @@ function generateLlmsTxt(docs: DocFile[]): void {
     lines.push("");
 
     for (const doc of categoryDocs) {
-      const url = `${BASE_URL}/${doc.category}/${doc.slug}`;
+      const url = `${DOCS_URL}/${doc.category}/${doc.slug}`;
       lines.push(`- [${doc.title}](${url}): ${doc.description}`);
     }
 
@@ -262,7 +395,7 @@ function generateLlmsTxt(docs: DocFile[]): void {
     lines.push("");
 
     for (const doc of optionalDocs) {
-      const url = `${BASE_URL}/${doc.category}/${doc.slug}`;
+      const url = `${DOCS_URL}/${doc.category}/${doc.slug}`;
       lines.push(`- [${doc.title}](${url}): ${doc.description}`);
     }
 
@@ -358,6 +491,59 @@ function generateSkillMd(docs: DocFile[]): void {
   }
 }
 
+function generateMarkdownAssets(docs: DocFile[]): void {
+  console.log("Generating negotiated Markdown assets...");
+  fs.rmSync(PUBLIC_MARKDOWN_DIR, { recursive: true, force: true });
+
+  for (const doc of docs) {
+    const outputPath = path.join(PUBLIC_DIR, markdownAssetPath(doc.pathname));
+    fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+    fs.writeFileSync(outputPath, buildMarkdownDocument(doc));
+  }
+
+  console.log(`  ✓ ${PUBLIC_MARKDOWN_DIR}`);
+}
+
+function generateAgentSkillAssets(): void {
+  console.log("Generating Agent Skill discovery...");
+  const publicSkillDir = path.join(PUBLIC_AGENT_SKILLS_DIR, "tiempo");
+  fs.rmSync(PUBLIC_AGENT_SKILLS_DIR, { recursive: true, force: true });
+  fs.mkdirSync(publicSkillDir, { recursive: true });
+
+  const publicSkillPath = path.join(publicSkillDir, "SKILL.md");
+  fs.copyFileSync(SKILL_MD_PATH, publicSkillPath);
+  fs.cpSync(SKILL_REFS_DIR, path.join(publicSkillDir, "references"), {
+    recursive: true,
+  });
+
+  const digest = createHash("sha256")
+    .update(fs.readFileSync(publicSkillPath))
+    .digest("hex");
+  fs.writeFileSync(
+    path.join(PUBLIC_AGENT_SKILLS_DIR, "index.json"),
+    `${JSON.stringify(buildAgentSkillsIndex(digest), null, 2)}\n`,
+  );
+  console.log(`  ✓ ${PUBLIC_AGENT_SKILLS_DIR}`);
+}
+
+function generateDiscoveryFiles(docs: DocFile[]): void {
+  console.log("Generating crawler discovery files...");
+  const sitemapPaths = [
+    "/",
+    ...docs.map((doc) => doc.pathname),
+    "/llms.txt",
+    "/.well-known/agent-skills/index.json",
+  ];
+
+  fs.writeFileSync(path.join(PUBLIC_DIR, "robots.txt"), buildRobotsTxt());
+  fs.writeFileSync(
+    path.join(PUBLIC_DIR, "sitemap.xml"),
+    buildSitemapXml(sitemapPaths),
+  );
+  console.log(`  ✓ ${path.join(PUBLIC_DIR, "robots.txt")}`);
+  console.log(`  ✓ ${path.join(PUBLIC_DIR, "sitemap.xml")}`);
+}
+
 /**
  * Main
  */
@@ -367,7 +553,8 @@ function main(): void {
   console.log("─".repeat(50));
 
   const docs = loadDocFiles();
-  console.log(`\nFound ${docs.length} doc files\n`);
+  const allDocs = [...loadTopLevelDocFiles(), ...docs];
+  console.log(`\nFound ${allDocs.length} doc files\n`);
 
   generateSkillRefs(docs);
   console.log("");
@@ -378,8 +565,23 @@ function main(): void {
   generateSkillMd(docs);
   console.log("");
 
+  generateMarkdownAssets(allDocs);
+  console.log("");
+
+  generateAgentSkillAssets();
+  console.log("");
+
+  generateDiscoveryFiles(allDocs);
+  console.log("");
+
   console.log("─".repeat(50));
   console.log("✅ Done!");
 }
 
-main();
+const entryPath = process.argv[1]
+  ? pathToFileURL(path.resolve(process.argv[1])).href
+  : "";
+
+if (import.meta.url === entryPath) {
+  main();
+}

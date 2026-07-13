@@ -1,0 +1,56 @@
+# addQuarters
+
+Add quarters (3-month blocks) to a datetime. Handles month-end dates correctly.
+
+## Signature
+
+```ts
+function addQuarters(
+  input: Temporal.Instant | Temporal.ZonedDateTime,
+  quarters: number
+): Temporal.ZonedDateTime
+function addQuarters(
+  input: Temporal.PlainDate,
+  quarters: number
+): Temporal.PlainDate
+```
+
+Input type determines output type: a `PlainDate` stays in calendar space and returns a `PlainDate` (no timezone needed).
+
+## Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `input` | `Temporal.Instant \| Temporal.ZonedDateTime` | The datetime to add quarters to |
+| `quarters` | `number` | Number of quarters to add (can be negative) |
+
+## Returns
+
+A `Temporal.ZonedDateTime` with the quarters added (each quarter is 3 months).
+
+## Examples
+
+### Basic usage
+
+```ts
+import { addQuarters } from '@gobrand/tiempo';
+
+const instant = Temporal.Instant.from('2025-01-20T12:00:00Z');
+addQuarters(instant, 2);
+// 2025-07-20T12:00:00Z[UTC] (6 months later)
+```
+
+### Month-end handling
+
+```ts
+const endOfJan = Temporal.Instant.from('2025-01-31T12:00:00Z');
+addQuarters(endOfJan, 1);
+// 2025-04-30T12:00:00Z[UTC] (Jan 31 → Apr 30)
+```
+
+### From a PlainDate (returns a PlainDate)
+
+```ts
+addQuarters(Temporal.PlainDate.from('2025-01-31'), 1);
+// 2025-04-30 (Jan 31 → Apr 30, still a PlainDate)
+```

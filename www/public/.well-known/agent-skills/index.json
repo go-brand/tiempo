@@ -1,0 +1,12 @@
+{
+  "$schema": "https://schemas.agentskills.io/discovery/0.2.0/schema.json",
+  "skills": [
+    {
+      "name": "tiempo",
+      "type": "skill-md",
+      "description": "Use tiempo for timezone-safe date and time handling with the Temporal API in TypeScript and JavaScript.",
+      "url": "/.well-known/agent-skills/tiempo/SKILL.md",
+      "digest": "sha256:0d99b09c1d8a183a316ca0dae6b9639566c24281180488d1d1cea518b1c5f7fa"
+    }
+  ]
+}

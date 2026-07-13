@@ -1,0 +1,21 @@
+# AI Resources
+
+Resources for AI coding assistants and agents to understand and use tiempo.
+
+## llms.txt
+
+This project provides an [llms.txt](https://tiempo.gobrand.app/llms.txt) file following the [llms.txt standard](https://llmstxt.org/).
+
+The llms.txt file is a markdown-formatted index of tiempo's API, optimized for LLMs to understand the library without parsing HTML.
+
+**Access:** [tiempo.gobrand.app/llms.txt](https://tiempo.gobrand.app/llms.txt)
+
+## Agent Skill
+
+Install tiempo as an agent skill for Claude Code, Cursor, Copilot, and other AI agents:
+
+```bash
+npx skills add go-brand/tiempo
+```
+
+This adds tiempo best practices and API knowledge directly to your AI assistant. Learn more at [skills.sh](https://skills.sh/).

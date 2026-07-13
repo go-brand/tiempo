@@ -1,0 +1,62 @@
+# toInstant
+
+Converts an `Instant`, `ZonedDateTime`, UTC ISO string, Unix timestamp, or JavaScript `Date` to a `Temporal.Instant`. The function is idempotent: an `Instant` input is returned unchanged.
+
+## Signature
+
+```ts
+function toInstant(
+  input:
+    | string
+    | number
+    | Date
+    | Temporal.Instant
+    | Temporal.ZonedDateTime
+): Temporal.Instant
+```
+
+## Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `input` | `string \| number \| Date \| Temporal.Instant \| Temporal.ZonedDateTime` | A representation of an exact moment |
+
+## Returns
+
+A timezone-independent `Temporal.Instant` representing the same exact moment.
+
+## Examples
+
+### From an ISO string
+
+```ts
+import { toInstant } from '@gobrand/tiempo';
+
+const instant = toInstant('2025-01-20T20:00:00Z');
+// 2025-01-20T20:00:00Z
+```
+
+### From a ZonedDateTime
+
+```ts
+const zoned = Temporal.ZonedDateTime.from(
+  '2025-01-20T15:00:00-05:00[America/New_York]'
+);
+
+const instant = toInstant(zoned);
+// 2025-01-20T20:00:00Z
+```
+
+### From an Instant
+
+```ts
+const original = Temporal.Instant.from('2025-01-20T20:00:00Z');
+const normalized = toInstant(original);
+
+normalized === original;
+// true
+```
+
+## Why Instant, not UTC?
+
+An `Instant` has no timezone. It is an exact point on the timeline. Use `toZonedTime(instant, 'UTC')` when you specifically need a `ZonedDateTime` carrying UTC calendar and clock context.

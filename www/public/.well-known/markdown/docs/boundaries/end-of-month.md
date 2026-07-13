@@ -1,0 +1,51 @@
+# endOfMonth
+
+Returns the last boundary of the month. `PlainDate` inputs stay in calendar space and return the last date of the month; providing a timezone returns a `ZonedDateTime` at the last moment of that date.
+
+## Signature
+
+```ts
+function endOfMonth(
+  input: Temporal.Instant | Temporal.ZonedDateTime
+): Temporal.ZonedDateTime
+
+function endOfMonth(input: Temporal.PlainDate): Temporal.PlainDate
+
+function endOfMonth(
+  input: Temporal.PlainDate,
+  timezone: Timezone
+): Temporal.ZonedDateTime
+```
+
+## Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `input` | `Temporal.Instant \| Temporal.ZonedDateTime \| Temporal.PlainDate` | The date or datetime to get the end of month for |
+| `timezone` | `Timezone` | Required only when converting a `PlainDate` boundary to a `ZonedDateTime` |
+
+## Returns
+
+A `Temporal.PlainDate` for calendar-only input, or a `Temporal.ZonedDateTime` at the last moment of the last day for datetime input or an explicit timezone.
+
+## Examples
+
+```ts
+import { endOfMonth } from '@gobrand/tiempo';
+
+const instant = Temporal.Instant.from('2025-01-15T12:00:00Z');
+endOfMonth(instant);
+// 2025-01-31T23:59:59.999999999Z[UTC]
+
+// February in a non-leap year
+const feb = Temporal.ZonedDateTime.from('2025-02-15T15:30:00-05:00[America/New_York]');
+endOfMonth(feb);
+// 2025-02-28T23:59:59.999999999-05:00[America/New_York]
+
+const date = Temporal.PlainDate.from('2024-02-15');
+endOfMonth(date);
+// 2024-02-29
+
+endOfMonth(date, 'UTC');
+// 2024-02-29T23:59:59.999999999Z[UTC]
+```

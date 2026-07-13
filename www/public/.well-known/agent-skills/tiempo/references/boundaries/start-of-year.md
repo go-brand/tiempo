@@ -1,0 +1,63 @@
+# startOfYear
+
+Returns the first boundary of the year. `PlainDate` inputs stay in calendar space and return the first date of the year; providing a timezone returns a `ZonedDateTime` at the start of that date.
+
+## Signature
+
+```ts
+function startOfYear(
+  input: Temporal.Instant | Temporal.ZonedDateTime
+): Temporal.ZonedDateTime
+
+function startOfYear(input: Temporal.PlainDate): Temporal.PlainDate
+
+function startOfYear(
+  input: Temporal.PlainDate,
+  timezone: Timezone
+): Temporal.ZonedDateTime
+```
+
+## Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `input` | `Temporal.Instant \| Temporal.ZonedDateTime \| Temporal.PlainDate` | The date or datetime to get the start of year for |
+| `timezone` | `Timezone` | Required only when converting a `PlainDate` boundary to a `ZonedDateTime` |
+
+## Returns
+
+A `Temporal.PlainDate` for calendar-only input, or a `Temporal.ZonedDateTime` at the start of the first day for datetime input or an explicit timezone.
+
+## Examples
+
+```ts
+import { startOfYear } from '@gobrand/tiempo';
+
+const instant = Temporal.Instant.from('2025-06-15T12:00:00Z');
+startOfYear(instant);
+// 2025-01-01T00:00:00Z[UTC]
+
+const zoned = Temporal.ZonedDateTime.from('2025-06-15T15:30:00-05:00[America/New_York]');
+startOfYear(zoned);
+// 2025-01-01T00:00:00-05:00[America/New_York]
+
+const date = Temporal.PlainDate.from('2025-06-15');
+startOfYear(date);
+// 2025-01-01
+
+startOfYear(date, 'UTC');
+// 2025-01-01T00:00:00Z[UTC]
+```
+
+## Common Patterns
+
+### Year-to-date
+
+```ts
+import { startOfYear, now } from '@gobrand/tiempo';
+
+const current = now('America/New_York');
+const yearStart = startOfYear(current);
+
+// Year-to-date range: [yearStart, current]
+```

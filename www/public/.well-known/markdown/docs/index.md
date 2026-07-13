@@ -1,0 +1,45 @@
+# Introduction
+
+## What is tiempo?
+
+**tiempo** is a lightweight utility library for timezone conversions, formatting, and date math—built on the modern [Temporal API](https://tc39.es/proposal-temporal/docs/) for precision you can trust.
+
+JavaScript's `Date` was modeled after a Java class deprecated 25+ years ago. The Temporal API is its modern replacement—tiempo makes it accessible with a familiar, date-fns-style API.
+
+## Key Features
+
+- **Any Timezone, Anywhere** - Date only works in UTC or device-local time. Temporal supports 400+ IANA timezones natively
+- **Nanosecond Precision** - Beyond milliseconds, for scientific computing, financial systems, and high-frequency operations
+- **DST-Safe Arithmetic** - Adding days means calendar days, not 24-hour periods. No more off-by-one-hour bugs
+- **Immutable by Design** - No side effects, no surprises, no debugging mysteries
+- **Distinct Types** - Separates `Instant` (timestamp), `ZonedDateTime` (timezone-aware), and `PlainDate` (calendar date)
+- **Type-Safe** - Autocomplete for 400+ timezones, invalid configurations caught at compile time
+
+## Quick Example
+
+```ts
+import { toZonedTime, format, today, addDays, isBefore } from '@gobrand/tiempo';
+
+// Convert UTC to a timezone
+const nyTime = toZonedTime(new Date(), 'America/New_York');
+
+// Format with full control
+const formatted = format(nyTime, 'EEEE, MMMM d, yyyy h:mm a');
+// → "Thursday, January 23, 2026 2:30 PM"
+
+// Today's date in any timezone
+const tokyoToday = today('Asia/Tokyo');
+
+// Date arithmetic
+const nextWeek = addDays(nyTime, 7);
+
+// Comparisons
+const isUpcoming = isBefore(nyTime, nextWeek); // true
+```
+
+## Documentation
+
+- [Installation](https://tiempo.gobrand.app/docs/installation): Get started with tiempo in your project
+- [Conversion](https://tiempo.gobrand.app/docs/conversion/to-zoned-time): Convert between UTC, timezones, and Date objects
+- [Formatting](https://tiempo.gobrand.app/docs/formatting/format): Format dates with date-fns-like tokens
+- [Arithmetic](https://tiempo.gobrand.app/docs/arithmetic/add-years): Add and subtract time units

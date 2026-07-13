@@ -1,0 +1,54 @@
+# Installation
+
+## Install
+
+```package-install
+@gobrand/tiempo
+```
+
+## Requirements
+
+- Node.js 18+ or modern browser
+- TypeScript 5.0+ (recommended)
+
+## Polyfill
+
+tiempo uses the [`@js-temporal/polyfill`](https://github.com/js-temporal/temporal-polyfill) so the Temporal API behaves identically across every runtime today, including those without native `Temporal` (Safari, older Node). Preferring the runtime's native `Temporal` when present (Node 26+, Chrome 144+, Firefox 139+, Edge, Deno) to skip the polyfill is planned for a future release.
+
+## Usage with ORMs
+
+tiempo works seamlessly with ORMs like Drizzle. Drizzle timestamp columns can be configured with `mode: 'date'` (returns `Date` objects) or `mode: 'string'` (returns ISO strings)—tiempo's `toZonedTime()` accepts both:
+
+```ts
+import { toZonedTime, toDate, toIso, addWeeks } from '@gobrand/tiempo';
+
+// From Drizzle: could be Date (mode: 'date') or string (mode: 'string')
+const post = await db.query.posts.findFirst();
+
+// Convert to ZonedDateTime for timezone-aware operations
+// toZonedTime accepts both Date and string, so this works either way
+const publishedAt = toZonedTime(post.publishedAt, 'America/New_York');
+
+// Perform datetime operations...
+const nextWeek = publishedAt.add({ weeks: 1 });  // native Temporal API
+// or: addWeeks(publishedAt, 1)                  // tiempo utility for familiar API
+
+// Convert back for database storage
+await db.update(posts).set({
+  publishedAt: toDate(nextWeek),  // for mode: 'date'
+  // or: toIso(nextWeek),         // for mode: 'string'
+});
+```
+
+## TypeScript Support
+
+tiempo is written in TypeScript and includes full type definitions. All functions are fully typed with proper Temporal types from the polyfill.
+
+```ts
+import { Temporal } from '@js-temporal/polyfill';
+import { toZonedTime, format } from '@gobrand/tiempo';
+
+// Types are inferred correctly
+const zoned: Temporal.ZonedDateTime = toZonedTime(new Date(), 'UTC');
+const formatted: string = format(zoned, 'yyyy-MM-dd');
+```
