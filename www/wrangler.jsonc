@@ -2,12 +2,12 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "tiempo-docs",
   "main": "@tanstack/react-start/server-entry",
-  "compatibility_date": "2025-01-23",
+  "compatibility_date": "2026-07-12",
   "compatibility_flags": ["nodejs_compat"],
   "assets": {
     "directory": "dist/client",
     "binding": "ASSETS",
-    "serve_directly": true
+    "run_worker_first": ["/", "/docs", "/docs/*"]
   },
   "observability": {
     "enabled": true
@@ -15,12 +15,8 @@
   "workers_dev": false,
   "routes": [
     {
-      "pattern": "eng.gobrand.app/tiempo",
-      "zone_name": "gobrand.app"
-    },
-    {
-      "pattern": "eng.gobrand.app/tiempo/*",
-      "zone_name": "gobrand.app"
+      "pattern": "tiempo.gobrand.app",
+      "custom_domain": true
     }
   ]
 }

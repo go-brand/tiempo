@@ -11,7 +11,7 @@ Tiempo will support content discovery, machine-readable documentation, Markdown 
 Included:
 
 - A Cloudflare Worker custom domain at `tiempo.gobrand.app`.
-- Removal of the legacy `eng.gobrand.app/tiempo` Worker routes.
+- Removal of the legacy engineering-host Worker routes.
 - Replacement of every legacy Tiempo website URL in repository metadata, source documentation, generated documentation, examples, and public resources.
 - Root-level `robots.txt`, `sitemap.xml`, and `llms.txt` resources.
 - HTTP `Link` discovery headers for the sitemap, `llms.txt`, and Agent Skills index.
@@ -30,7 +30,7 @@ Excluded:
 
 ## Architecture
 
-The existing `tiempo-docs` Worker becomes the origin for the `tiempo.gobrand.app` custom domain. The application base path changes from `/tiempo/` to `/`, and generated documentation URLs use the new canonical origin. This is a clean cutover: the legacy hostname and path are not preserved as a mirror or redirect.
+The existing `tiempo-docs` Worker becomes the origin for the `tiempo.gobrand.app` custom domain. The application base path changes to `/`, and generated documentation URLs use the new canonical origin. This is a clean cutover: the legacy hostname and path are not preserved as a mirror or redirect.
 
 A small Worker entry point handles representation-level concerns before delegating ordinary HTML requests to TanStack Start:
 
@@ -39,7 +39,7 @@ A small Worker entry point handles representation-level concerns before delegati
 3. Ordinary requests continue through the existing TanStack Start server entry.
 4. Successful public responses include discovery `Link` headers without replacing existing headers.
 
-The Wrangler configuration remains the routing source of truth. It declares only `tiempo.gobrand.app` as a Custom Domain and removes the two existing `eng.gobrand.app/tiempo` route patterns.
+The Wrangler configuration remains the routing source of truth. It declares only `tiempo.gobrand.app` as a Custom Domain and removes the two legacy route patterns.
 
 ## Generated Content
 
@@ -57,7 +57,7 @@ Markdown negotiation must serve content derived from the MDX documentation sourc
 
 Automated tests will cover:
 
-- Absence of legacy hostname and `/tiempo/` references in maintained source and generated output.
+- Absence of legacy website references in maintained source and generated output.
 - Discovery endpoint status, content type, and canonical URLs.
 - Agent Skills index validity and referenced-resource availability.
 - `Accept` negotiation, quality values, fallback behavior, and `Vary: Accept`.
@@ -69,7 +69,7 @@ Before deployment, the library tests, website typecheck, website build, and Wran
 ## Success Criteria
 
 - `https://tiempo.gobrand.app/` is the canonical, reachable documentation site.
-- The deployed Worker no longer owns the old `eng.gobrand.app/tiempo` routes.
+- The deployed Worker no longer owns the legacy routes.
 - Maintained source, generated output, package metadata, and public documentation contain no legacy Tiempo website URLs.
 - All included discovery and Markdown behaviors work on the live hostname.
 - Cloudflare's Content Site scan passes every applicable check except DNS-AID if the scanner treats that non-applicable protocol as a failure.

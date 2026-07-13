@@ -17,4 +17,4 @@
 
 ## LLM Documentation
 
-For comprehensive API documentation in LLM-friendly format, see: https://eng.gobrand.app/tiempo/llms.txt
+For comprehensive API documentation in LLM-friendly format, see: https://tiempo.gobrand.app/llms.txt

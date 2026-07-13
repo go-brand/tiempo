@@ -28,7 +28,7 @@
   "bugs": {
     "url": "https://github.com/go-brand/tiempo/issues"
   },
-  "homepage": "https://eng.gobrand.app/tiempo",
+  "homepage": "https://tiempo.gobrand.app",
   "scripts": {
     "generate:timezones": "tsx scripts/generate-timezone-types.ts",
     "generate:matrix": "tsx scripts/generate-capability-matrix.ts",

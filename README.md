@@ -6,7 +6,7 @@
 
 **Timezone conversions that don't suck.** Built on the [Temporal API](https://tc39.es/proposal-temporal/docs/).
 
-👉 **[Documentation](https://eng.gobrand.app/tiempo)**
+👉 **[Documentation](https://tiempo.gobrand.app)**
 
 ![tiempo banner](./tiempo_banner.png)
 
@@ -40,7 +40,7 @@ npm install @gobrand/tiempo
 
 ## Docs
 
-**[eng.gobrand.app/tiempo](https://eng.gobrand.app/tiempo)** — Full API reference, examples, and guides.
+**[tiempo.gobrand.app](https://tiempo.gobrand.app)** — Full API reference, examples, and guides.
 
 ## License
 
