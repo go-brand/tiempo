@@ -499,14 +499,14 @@ await api.tasks.update({ dueAt: toIso(rescheduled) });`;
             The prompt points your coding agent to Tiempo&apos;s{" "}
             <a
               className="text-neutral-300 underline decoration-neutral-700 underline-offset-4 transition-colors hover:text-amber-300"
-              href="/llms.txt"
+              href="https://tiempo.gobrand.app/llms.txt"
             >
               llms.txt
             </a>{" "}
             and installable{" "}
             <a
               className="text-neutral-300 underline decoration-neutral-700 underline-offset-4 transition-colors hover:text-amber-300"
-              href="/.well-known/agent-skills/tiempo/SKILL.md"
+              href="https://tiempo.gobrand.app/.well-known/agent-skills/tiempo/SKILL.md"
             >
               Agent Skill
             </a>

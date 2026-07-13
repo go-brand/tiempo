@@ -68,5 +68,11 @@ describe("homepage contract", () => {
     expect(route).toContain(
       "/.well-known/agent-skills/tiempo/SKILL.md",
     );
+    expect(route).toContain(
+      'href="https://tiempo.gobrand.app/llms.txt"',
+    );
+    expect(route).toContain(
+      'href="https://tiempo.gobrand.app/.well-known/agent-skills/tiempo/SKILL.md"',
+    );
   });
 });
