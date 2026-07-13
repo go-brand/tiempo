@@ -1,10 +1,26 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { HomeLayout } from "fumadocs-ui/layouts/home";
 import { baseOptions } from "@/lib/layout.shared";
+import {
+  HOME_PAGE_META,
+  HOME_PAGE_STRUCTURED_DATA,
+  HOME_PAGE_URL,
+  TIEMPO_AGENT_PROMPT,
+} from "@/lib/homepage";
 import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [...HOME_PAGE_META],
+    links: [{ rel: "canonical", href: HOME_PAGE_URL }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify(HOME_PAGE_STRUCTURED_DATA),
+      },
+    ],
+  }),
   component: Home,
 });
 
@@ -341,6 +357,23 @@ function FeatureCard({
 }
 
 function Home() {
+  const [copied, setCopied] = useState<"agent" | "install" | null>(null);
+
+  async function copyToClipboard(
+    value: string,
+    target: "agent" | "install",
+  ) {
+    try {
+      await navigator.clipboard.writeText(value);
+      setCopied(target);
+      window.setTimeout(() => {
+        setCopied((current) => (current === target ? null : current));
+      }, 2000);
+    } catch {
+      setCopied(null);
+    }
+  }
+
   const usageCode = `import { addDays, endOfDay, format, toIso, toZonedTime } from '@gobrand/tiempo';
 
 const teamTimezone = 'America/New_York';
@@ -372,17 +405,30 @@ await api.tasks.update({ dueAt: toIso(rescheduled) });`;
             Temporal conversions, formatting, and date math feel simple.
           </p>
 
-          <div className="flex flex-wrap items-center gap-4">
-            <code className="px-4 py-2.5 rounded-lg bg-neutral-900/80 border border-neutral-800 text-neutral-300 font-mono text-sm flex items-center gap-3">
-              <span className="text-neutral-500">$</span> pnpm add @gobrand/tiempo
-              <button
-                type="button"
-                className="p-1 hover:bg-neutral-700/50 rounded transition-colors"
-                onClick={() => navigator.clipboard.writeText("pnpm add @gobrand/tiempo")}
-                aria-label="Copy to clipboard"
-              >
+          <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+            <button
+              type="button"
+              className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-lg bg-amber-400 px-4 py-2.5 text-sm font-semibold text-neutral-950 transition-colors hover:bg-amber-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950 sm:w-auto"
+              onClick={() => copyToClipboard(TIEMPO_AGENT_PROMPT, "agent")}
+            >
+              {copied === "agent" ? (
                 <svg
-                  className="w-4 h-4 text-neutral-500"
+                  className="h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="m5 12 4 4L19 6"
+                  />
+                </svg>
+              ) : (
+                <svg
+                  className="h-4 w-4"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -395,16 +441,77 @@ await api.tasks.update({ dueAt: toIso(rescheduled) });`;
                     d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
                   />
                 </svg>
+              )}
+              <span aria-live="polite">
+                {copied === "agent"
+                  ? "Prompt copied"
+                  : "Copy prompt for your agent"}
+              </span>
+            </button>
+
+            <code className="flex min-h-11 w-full items-center justify-between gap-3 rounded-lg border border-neutral-800 bg-neutral-900/80 px-4 py-2.5 font-mono text-sm text-neutral-300 sm:w-auto">
+              <span>
+                <span className="text-neutral-500">$</span>{" "}
+                pnpm add @gobrand/tiempo
+              </span>
+              <button
+                type="button"
+                className="rounded p-1 transition-colors hover:bg-neutral-700/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300"
+                onClick={() =>
+                  copyToClipboard("pnpm add @gobrand/tiempo", "install")
+                }
+                aria-label={
+                  copied === "install"
+                    ? "Package command copied"
+                    : "Copy package command"
+                }
+              >
+                <svg
+                  className="h-4 w-4 text-neutral-500"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d={
+                      copied === "install"
+                        ? "m5 12 4 4L19 6"
+                        : "M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                    }
+                  />
+                </svg>
               </button>
             </code>
             <Link
               to="/docs/$"
               params={{ _splat: "" }}
-              className="text-sm font-medium text-amber-400 transition-colors hover:text-amber-300"
+              className="inline-flex min-h-11 items-center justify-center px-2 text-sm font-medium text-amber-400 transition-colors hover:text-amber-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300"
             >
               Read the docs
             </Link>
           </div>
+
+          <p className="mt-4 max-w-2xl text-sm leading-relaxed text-neutral-500">
+            The prompt points your coding agent to Tiempo&apos;s{" "}
+            <a
+              className="text-neutral-300 underline decoration-neutral-700 underline-offset-4 transition-colors hover:text-amber-300"
+              href="/llms.txt"
+            >
+              llms.txt
+            </a>{" "}
+            and installable{" "}
+            <a
+              className="text-neutral-300 underline decoration-neutral-700 underline-offset-4 transition-colors hover:text-amber-300"
+              href="/.well-known/agent-skills/tiempo/SKILL.md"
+            >
+              Agent Skill
+            </a>
+            .
+          </p>
         </div>
       </section>
 

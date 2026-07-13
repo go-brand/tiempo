@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { describe, expect, test } from "vitest";
 import {
   HOME_PAGE_DESCRIPTION,
@@ -52,5 +53,20 @@ describe("homepage contract", () => {
         },
       ],
     });
+  });
+
+  test("renders agent, package, and docs actions in that order", () => {
+    const route = readFileSync("www/src/routes/index.tsx", "utf8");
+    const agent = route.indexOf("Copy prompt for your agent");
+    const install = route.indexOf("pnpm add @gobrand/tiempo");
+    const docs = route.indexOf("Read the docs");
+
+    expect(agent).toBeGreaterThan(-1);
+    expect(agent).toBeLessThan(install);
+    expect(install).toBeLessThan(docs);
+    expect(route).toContain("/llms.txt");
+    expect(route).toContain(
+      "/.well-known/agent-skills/tiempo/SKILL.md",
+    );
   });
 });
