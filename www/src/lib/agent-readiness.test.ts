@@ -18,7 +18,8 @@ describe("agent readiness HTTP behavior", () => {
     expect(prefersMarkdown(accept)).toBe(expected);
   });
 
-  test("maps only documentation pages", () => {
+  test("maps the homepage and documentation pages", () => {
+    expect(markdownAssetPath("/")).toBe("/.well-known/markdown/index.md");
     expect(markdownAssetPath("/docs")).toBe(
       "/.well-known/markdown/docs/index.md",
     );
@@ -28,7 +29,7 @@ describe("agent readiness HTTP behavior", () => {
     expect(markdownAssetPath("/docs/conversion/to-instant/")).toBe(
       "/.well-known/markdown/docs/conversion/to-instant.md",
     );
-    expect(markdownAssetPath("/")).toBeNull();
+    expect(markdownAssetPath("/installation")).toBeNull();
   });
 
   test("adds discovery links without removing existing headers", () => {
@@ -63,6 +64,27 @@ describe("agent readiness HTTP behavior", () => {
     );
     expect(response.headers.get("vary")).toContain("Accept");
     expect(response.headers.get("link")).toContain("</llms.txt>");
+  });
+
+  test("serves the homepage Markdown representation", async () => {
+    const response = await handleAgentRequest(
+      new Request("https://tiempo.gobrand.app/", {
+        headers: { accept: "text/markdown" },
+      }),
+      async () => new Response("<html>fallback</html>"),
+      async (request) => {
+        const exists =
+          new URL(request.url).pathname === "/.well-known/markdown/index.md";
+        return new Response(exists ? "# Tiempo" : "missing", {
+          status: exists ? 200 : 404,
+        });
+      },
+    );
+
+    expect(await response.text()).toBe("# Tiempo");
+    expect(response.headers.get("content-type")).toBe(
+      "text/markdown; charset=utf-8",
+    );
   });
 
   test("falls back to HTML when a Markdown asset is unavailable", async () => {

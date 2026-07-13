@@ -68,6 +68,9 @@ export function prefersMarkdown(accept: string | null): boolean {
 
 export function markdownAssetPath(pathname: string): string | null {
   const normalizedPath = pathname.length > 1 ? pathname.replace(/\/$/, "") : pathname;
+  if (normalizedPath === "/") {
+    return "/.well-known/markdown/index.md";
+  }
   if (normalizedPath !== "/docs" && !normalizedPath.startsWith("/docs/")) {
     return null;
   }

@@ -228,7 +228,12 @@ export function buildSitemapXml(pathnames: string[]): string {
 }
 
 export function markdownAssetPath(pathname: string): string {
-  const docsPath = pathname === "/docs" ? "/docs/index" : pathname;
+  const docsPath =
+    pathname === "/"
+      ? "/index"
+      : pathname === "/docs"
+        ? "/docs/index"
+        : pathname;
   return `/.well-known/markdown${docsPath}.md`;
 }
 
@@ -496,9 +501,15 @@ function generateMarkdownAssets(docs: DocFile[]): void {
   fs.rmSync(PUBLIC_MARKDOWN_DIR, { recursive: true, force: true });
 
   for (const doc of docs) {
-    const outputPath = path.join(PUBLIC_DIR, markdownAssetPath(doc.pathname));
-    fs.mkdirSync(path.dirname(outputPath), { recursive: true });
-    fs.writeFileSync(outputPath, buildMarkdownDocument(doc));
+    const markdown = buildMarkdownDocument(doc);
+    const pathnames =
+      doc.pathname === "/docs" ? [doc.pathname, "/"] : [doc.pathname];
+
+    for (const pathname of pathnames) {
+      const outputPath = path.join(PUBLIC_DIR, markdownAssetPath(pathname));
+      fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+      fs.writeFileSync(outputPath, markdown);
+    }
   }
 
   console.log(`  ✓ ${PUBLIC_MARKDOWN_DIR}`);

@@ -35,7 +35,8 @@ describe("agent site generation", () => {
     );
   });
 
-  test("maps docs URLs to hidden markdown assets", () => {
+  test("maps the homepage and docs URLs to hidden markdown assets", () => {
+    expect(markdownAssetPath("/")).toBe("/.well-known/markdown/index.md");
     expect(markdownAssetPath("/docs")).toBe(
       "/.well-known/markdown/docs/index.md",
     );
