@@ -276,7 +276,8 @@ await api.tasks.update({ dueAt: toIso(rescheduled) });`;
             >
               date-fns
             </Link>{" "}
-            functions you know, built on Temporal. Timezones and daylight saving, handled.
+            functions you and your agent already know, built on Temporal. Timezones and daylight
+            saving, handled.
           </p>
 
           <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:flex-wrap sm:items-center">
