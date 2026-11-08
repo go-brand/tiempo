@@ -71,6 +71,9 @@ export function markdownAssetPath(pathname: string): string | null {
   if (normalizedPath === "/") {
     return "/.well-known/markdown/index.md";
   }
+  if (normalizedPath === "/date-fns") {
+    return "/.well-known/markdown/docs/date-fns.md";
+  }
   if (normalizedPath !== "/docs" && !normalizedPath.startsWith("/docs/")) {
     return null;
   }

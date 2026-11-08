@@ -580,6 +580,7 @@ function generateDiscoveryFiles(docs: DocFile[]): void {
   console.log("Generating crawler discovery files...");
   const sitemapPaths = [
     "/",
+    "/date-fns",
     ...docs.map((doc) => doc.pathname),
     "/llms.txt",
     "/.well-known/agent-skills/index.json",
