@@ -1,15 +1,9 @@
 ---
 title: eachYearOfInterval
-description: Get all years in an interval as PlainDate or ZonedDateTime values
+description: List 1 January of each year a range touches
 ---
 
-Returns the start of every year touched by the interval. PlainDate endpoints return `PlainDate[]`; Instant/ZonedDateTime endpoints return `ZonedDateTime[]` in the start timezone. Both endpoint periods are included.
-
-## Temporal compatibility and calendars
-
-Accepts native Temporal and polyfill endpoints, including mixed pairs. Results use the start endpoint’s timezone and calendar; the end is interpreted in that same context. Non-ISO calendar years and months are preserved rather than reinterpreted as ISO fields.
-
-Two PlainDate endpoints return `PlainDate[]`: the start of every year touched by the interval, in the start calendar. The first result may precede the input start date. Equal endpoints produce one period start; reversed original endpoints produce `[]`. PlainDate/timeline mixing is rejected. Native and polyfill endpoints may be mixed within a supported domain.
+Returns 1 January of every year from the year containing `start` to the year containing `end`.
 
 ## Signature
 
@@ -29,85 +23,41 @@ function eachYearOfInterval(interval: {
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `interval` | `{ start, end }` | Two PlainDate endpoints, or two Instant/ZonedDateTime endpoints |
+| `interval.start` | `PlainDate` or `Instant \| ZonedDateTime` | Start of the range |
+| `interval.end` | Same kind as `start` | End of the range, included |
 
 ## Returns
 
-PlainDate endpoints return date-only period starts in the start calendar. Other supported inputs keep the timeline behavior below.
-
-Array of `Temporal.ZonedDateTime` at the start of each year in the interval.
-
-For `Instant` inputs, UTC is used as the timezone. For `ZonedDateTime` inputs, the timezone of the start date is preserved.
+PlainDate endpoints give a `PlainDate[]`. Instant or ZonedDateTime endpoints give a `ZonedDateTime[]` at the start of each 1 January, in the timezone of `start` (UTC for an Instant). A reversed range gives `[]`.
 
 ## Examples
 
-### Date-only period starts
-
-```ts
-import { toPlainDate, eachYearOfInterval } from '@gobrand/tiempo';
-
-const starts = eachYearOfInterval({
-  start: toPlainDate('2024-06-15'),
-  end: toPlainDate('2026-02-01'),
-});
-starts.map(date => date.toString()); // ['2024-01-01', '2025-01-01', '2026-01-01']
-```
-
-### Basic usage
+### Year columns for a revenue chart
 
 ```ts
 import { eachYearOfInterval } from '@gobrand/tiempo';
 
-const start = Temporal.ZonedDateTime.from('2022-06-15T10:00:00Z[UTC]');
-const end = Temporal.ZonedDateTime.from('2025-03-20T14:00:00Z[UTC]');
+const years = eachYearOfInterval({
+  start: Temporal.PlainDate.from('2024-06-01'),
+  end: Temporal.PlainDate.from('2026-03-01'),
+});
 
-const years = eachYearOfInterval({ start, end });
-// [
-//   2022-01-01T00:00:00Z[UTC],
-//   2023-01-01T00:00:00Z[UTC],
-//   2024-01-01T00:00:00Z[UTC],
-//   2025-01-01T00:00:00Z[UTC]
-// ]
+years.map((year) => year.year); // [2024, 2025, 2026]
 ```
 
-### Single year
+### A two-hour range can span two years
 
 ```ts
-const start = Temporal.ZonedDateTime.from('2025-01-15T00:00:00Z[UTC]');
-const end = Temporal.ZonedDateTime.from('2025-12-31T23:59:59Z[UTC]');
+import { eachYearOfInterval } from '@gobrand/tiempo';
 
-eachYearOfInterval({ start, end });
-// [2025-01-01T00:00:00Z[UTC]]
+const years = eachYearOfInterval({
+  start: Temporal.Instant.from('2025-12-31T23:00:00Z'),
+  end: Temporal.Instant.from('2026-01-01T01:00:00Z'),
+});
+
+years.map(String); // ['2025-01-01T00:00:00+00:00[UTC]', '2026-01-01T00:00:00+00:00[UTC]']
 ```
 
-### With timezone
+## Good to know
 
-```ts
-const start = Temporal.ZonedDateTime.from('2024-01-01T00:00:00-05:00[America/New_York]');
-const end = Temporal.ZonedDateTime.from('2026-06-15T00:00:00-04:00[America/New_York]');
-
-const years = eachYearOfInterval({ start, end });
-// [
-//   2024-01-01T00:00:00-05:00[America/New_York],
-//   2025-01-01T00:00:00-05:00[America/New_York],
-//   2026-01-01T00:00:00-05:00[America/New_York]
-// ]
-```
-
-## Common Patterns
-
-### Generate yearly report periods
-
-```ts
-import { eachYearOfInterval, addYears } from '@gobrand/tiempo';
-
-function getYearlyReportPeriods(
-  startYear: Temporal.ZonedDateTime,
-  endYear: Temporal.ZonedDateTime
-) {
-  return eachYearOfInterval({ start: startYear, end: endYear }).map(yearStart => ({
-    start: yearStart,
-    end: addYears(yearStart, 1).subtract({ nanoseconds: 1 })
-  }));
-}
-```
+- Mixing a PlainDate with an Instant or ZonedDateTime is a TypeScript error and throws a `TypeError`.

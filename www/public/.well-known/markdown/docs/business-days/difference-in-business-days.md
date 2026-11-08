@@ -1,10 +1,6 @@
 # differenceInBusinessDays
 
-Returns the number of business days (Monday–Friday) from `earlierDate` up to `laterDate`. The earlier date counts; the later date does not. Holidays are not considered.
-
-Swapping the arguments negates the result. From a weekday, it undoes `addBusinessDays`: `differenceInBusinessDays(addBusinessDays(date, n), date) === n`.
-
-Only calendar dates matter; times of day are ignored. Instant inputs use their UTC date and ZonedDateTime inputs use their own timezone's date. Convert both to one timezone first to count from a single perspective. PlainDate inputs must be paired with PlainDate inputs.
+Counts business days (Monday–Friday) from `earlierDate` up to `laterDate`. The earlier date counts; the later date does not. Holidays are not considered.
 
 ## Signature
 
@@ -24,37 +20,41 @@ function differenceInBusinessDays(
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `laterDate` | `PlainDate` or `Instant \| ZonedDateTime` | The later date |
-| `earlierDate` | Same domain as `laterDate` | The earlier date |
+| `earlierDate` | Same kind as `laterDate` | The earlier date |
 
 ## Returns
 
-Business days between the dates; negative if `laterDate` is before `earlierDate`.
+A signed number of business days; negative if `laterDate` is before `earlierDate`.
 
 ## Examples
+
+### Count working days between two Fridays
 
 ```ts
 import { differenceInBusinessDays } from '@gobrand/tiempo';
 
-const friday = Temporal.PlainDate.from('2025-01-24');
-const nextFriday = Temporal.PlainDate.from('2025-01-31');
+const friday = Temporal.PlainDate.from('2026-01-23');
+const nextFriday = Temporal.PlainDate.from('2026-01-30');
 
 differenceInBusinessDays(nextFriday, friday); // 5
 differenceInBusinessDays(friday, nextFriday); // -5
-differenceInBusinessDays(Temporal.PlainDate.from('2025-01-27'), friday); // 1
+differenceInBusinessDays(Temporal.PlainDate.from('2026-01-26'), friday); // 1
 ```
 
-### Business days left in a ticket SLA
+### Business days left in a support SLA
 
 ```ts
 import { differenceInBusinessDays, toZonedTime } from '@gobrand/tiempo';
 
 const timezone = 'Europe/Berlin';
-const opened = toZonedTime('2025-01-20T08:00:00Z', timezone);
-const due = toZonedTime('2025-01-29T16:00:00Z', timezone);
+const opened = toZonedTime('2026-01-19T08:00:00Z', timezone);
+const due = toZonedTime('2026-01-28T16:00:00Z', timezone);
 
 differenceInBusinessDays(due, opened); // 7
 ```
 
-## Compared with date-fns
+## Good to know
 
-date-fns counts backwards differently, so swapping its arguments does not always negate the result. tiempo always counts the half-open range from the earlier to the later date.
+- Swapping the arguments always negates the result (unlike date-fns). From a weekday it undoes `addBusinessDays`: `differenceInBusinessDays(addBusinessDays(date, n), date) === n`.
+- Only dates matter; times of day are ignored. Instant inputs use their UTC date and ZonedDateTime inputs use the date in their own timezone. Convert both to one timezone first to count from a single point of view.
+- Mixing a PlainDate with an Instant or ZonedDateTime is a TypeScript error and throws a `TypeError`.

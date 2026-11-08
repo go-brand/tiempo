@@ -1,11 +1,9 @@
 ---
 title: differenceInSeconds
-description: Calculate the difference between two dates in seconds
+description: Count the seconds elapsed between two datetimes
 ---
 
-Returns the number of seconds between two datetimes.
-
-Whole units are truncated toward zero after subtracting epoch nanoseconds. Numeric results use JavaScript `number` precision; use `differenceInNanoseconds` for an exact `bigint` elapsed difference.
+Returns the seconds elapsed from `earlierDate` to `laterDate`.
 
 ## Signature
 
@@ -17,7 +15,7 @@ function differenceInSeconds(
 ): number
 
 interface DifferenceOptions {
-  fractional?: boolean; // default false — truncates toward zero
+  fractional?: boolean;
 }
 ```
 
@@ -25,57 +23,35 @@ interface DifferenceOptions {
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `laterDate` | `Temporal.Instant \| Temporal.ZonedDateTime` | The later datetime |
-| `earlierDate` | `Temporal.Instant \| Temporal.ZonedDateTime` | The earlier datetime |
-| `options.fractional` | `boolean` | Return the precise fractional value instead of truncating toward zero (default: false) |
+| `laterDate` | `Instant \| ZonedDateTime` | The value to subtract from |
+| `earlierDate` | `Instant \| ZonedDateTime` | The value to subtract |
+| `options.fractional` | `boolean` | Return the exact value instead of truncating toward zero (default `false`) |
 
 ## Returns
 
-The number of seconds between the two datetimes, truncated toward zero by default. Pass `{ fractional: true }` to get the precise fractional value.
+A signed number of seconds, truncated toward zero unless `fractional` is set.
 
 ## Examples
+
+### Seconds left before a sign-in code expires
 
 ```ts
 import { differenceInSeconds } from '@gobrand/tiempo';
 
-const later = Temporal.Instant.from('2025-01-20T10:01:30Z');
-const earlier = Temporal.Instant.from('2025-01-20T10:00:00Z');
+const expiresAt = Temporal.Instant.from('2026-05-04T09:35:00Z');
+const checkedAt = Temporal.Instant.from('2026-05-04T09:33:20Z');
 
-differenceInSeconds(later, earlier); // 90
+differenceInSeconds(expiresAt, checkedAt); // 100
 ```
 
-### Fractional results
-
-By default the result is truncated toward zero. Pass `{ fractional: true }` for the precise value.
+### Watch time of a video
 
 ```ts
-const later = Temporal.Instant.from('2025-01-20T10:00:01.500Z');
-const earlier = Temporal.Instant.from('2025-01-20T10:00:00Z');
+import { differenceInSeconds } from '@gobrand/tiempo';
 
-differenceInSeconds(later, earlier);                       // 1   (truncated)
-differenceInSeconds(later, earlier, { fractional: true }); // 1.5 (precise)
-```
+const play = Temporal.Instant.from('2026-05-04T09:30:00Z');
+const pause = Temporal.Instant.from('2026-05-04T09:31:12.750Z');
 
-## Common Patterns
-
-### Format duration
-
-```ts
-import {
-  differenceInHours,
-  differenceInMinutes,
-  differenceInSeconds,
-} from '@gobrand/tiempo';
-
-function formatDuration(
-  start: Temporal.ZonedDateTime,
-  end: Temporal.ZonedDateTime
-): string {
-  const totalSeconds = differenceInSeconds(end, start);
-  const hours = Math.floor(totalSeconds / 3600);
-  const minutes = Math.floor((totalSeconds % 3600) / 60);
-  const seconds = totalSeconds % 60;
-
-  return `${hours}h ${minutes}m ${seconds}s`;
-}
+differenceInSeconds(pause, play); // 72
+differenceInSeconds(pause, play, { fractional: true }); // 72.75
 ```

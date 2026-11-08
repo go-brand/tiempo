@@ -1,10 +1,6 @@
 # isAfter
 
-Returns true if the first value is after the second value.
-
-Compare two PlainDates, two PlainTimes, or any Instant/ZonedDateTime pair. Dates use Temporal's date ordering, including values expressed in different calendars. Times use wall-clock ordering with nanosecond precision; midnight does not wrap into the next day. Timeline values compare by their exact instant.
-
-Mixed domains (for example, PlainDate and Instant) are rejected by TypeScript and throw a TypeError at runtime. Resolve calendar or clock values to a timeline explicitly when that is the intended comparison.
+Returns `true` when the first value comes strictly after the second. Timestamps compare by exact instant, so the timezone a value is written in does not change the answer.
 
 ## Signature
 
@@ -14,56 +10,53 @@ function isAfter(date1: Temporal.PlainTime, date2: Temporal.PlainTime): boolean;
 function isAfter(
   date1: Temporal.Instant | Temporal.ZonedDateTime,
   date2: Temporal.Instant | Temporal.ZonedDateTime
-): boolean
+): boolean;
 ```
 
 ## Parameters
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `date1` | `PlainDate`, `PlainTime`, or `Instant \| ZonedDateTime` | The first datetime |
-| `date2` | `PlainDate`, `PlainTime`, or `Instant \| ZonedDateTime` | The second datetime |
+| `date1` | `PlainDate`, `PlainTime`, `Instant`, or `ZonedDateTime` | The value being checked |
+| `date2` | Same kind as `date1`; `Instant` and `ZonedDateTime` can be mixed | The value to compare against |
 
 ## Returns
 
-`true` if `date1` is after `date2`, `false` otherwise.
+`true` if `date1` is after `date2`, otherwise `false`. Equal values return `false`.
 
 ## Examples
+
+### Detect a missed support SLA
+
+```ts
+import { addHours, isAfter } from '@gobrand/tiempo';
+
+const openedAt = Temporal.Instant.from('2026-02-03T09:12:00Z');
+const firstReplyAt = Temporal.Instant.from('2026-02-03T13:40:00Z');
+
+isAfter(firstReplyAt, addHours(openedAt, 4)); // true (the 4-hour SLA was missed by 28 minutes)
+```
+
+### Check whether a subscription renewal date has passed
 
 ```ts
 import { isAfter } from '@gobrand/tiempo';
 
-const earlier = Temporal.ZonedDateTime.from('2025-01-20T10:00:00-05:00[America/New_York]');
-const later = Temporal.ZonedDateTime.from('2025-01-20T16:00:00-05:00[America/New_York]');
+const renewsOn = Temporal.PlainDate.from('2026-07-01');
 
-isAfter(later, earlier);  // true
-isAfter(earlier, later);  // false
-isAfter(earlier, earlier); // false
+isAfter(Temporal.PlainDate.from('2026-07-02'), renewsOn); // true
+isAfter(Temporal.PlainDate.from('2026-07-01'), renewsOn); // false (same day is not after)
 ```
 
-## Common Patterns
-
-### Check date ranges
+### Ship orders placed after the 14:00 cutoff the next day
 
 ```ts
-import { isBefore, isAfter } from '@gobrand/tiempo';
+import { isAfter } from '@gobrand/tiempo';
 
-function isWithinRange(
-  date: Temporal.ZonedDateTime,
-  start: Temporal.ZonedDateTime,
-  end: Temporal.ZonedDateTime
-): boolean {
-  return !isBefore(date, start) && !isAfter(date, end);
-}
+isAfter(Temporal.PlainTime.from('14:05'), Temporal.PlainTime.from('14:00')); // true
 ```
 
-## Dates and clock times
+## Good to know
 
-```ts
-import { isAfter, toPlainDate, toPlainTime } from '@gobrand/tiempo';
-
-isAfter(toPlainDate('2025-01-21'), toPlainDate('2025-01-20')); // true
-isAfter(toPlainTime('17:00'), toPlainTime('09:00')); // true
-```
-
-The specialized `isPlainDateBefore`/`isPlainDateAfter` and `isPlainTimeBefore`/`isPlainTimeAfter` helpers remain available with the same ordering rules. Equal values return false.
+- Comparing a PlainDate, a PlainTime, and a timestamp with each other is a TypeScript error and throws a `TypeError`. Convert first with [toPlainDate](https://tiempo.gobrand.app/docs/conversion/to-plain-date) or [toZonedTime](https://tiempo.gobrand.app/docs/conversion/to-zoned-time).
+- PlainTimes do not wrap at midnight: `00:15` is not after `23:30`.

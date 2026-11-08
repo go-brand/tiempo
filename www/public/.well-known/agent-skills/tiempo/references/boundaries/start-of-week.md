@@ -1,6 +1,6 @@
 # startOfWeek
 
-Returns the first boundary of the ISO week (Monday). `PlainDate` inputs stay in calendar space and return a `PlainDate`; providing a timezone returns a `ZonedDateTime` at the start of Monday.
+Returns the Monday that starts the week (ISO weeks run Monday to Sunday). A `PlainDate` returns a `PlainDate`; pass a timezone to get the moment Monday begins.
 
 ## Signature
 
@@ -21,52 +21,38 @@ function startOfWeek(
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `input` | `Temporal.Instant \| Temporal.ZonedDateTime \| Temporal.PlainDate` | The date or datetime to get the start of week for |
-| `timezone` | `Timezone` | Required only when converting a `PlainDate` boundary to a `ZonedDateTime` |
+| `input` | `Temporal.Instant \| Temporal.ZonedDateTime \| Temporal.PlainDate` | Any date or moment in the week |
+| `timezone` | `Timezone` | Optional, `PlainDate` only: return Monday 00:00 in this timezone instead of a date |
 
 ## Returns
 
-A `Temporal.PlainDate` for calendar-only input, or a `Temporal.ZonedDateTime` at the start of Monday for datetime input or an explicit timezone.
+- `PlainDate` input: the Monday as a `Temporal.PlainDate`.
+- Otherwise: a `Temporal.ZonedDateTime` at the start of Monday. `Instant` inputs are read in UTC.
 
 ## Examples
 
-### From Instant (Monday)
+### Group a timesheet entry under its week
 
 ```ts
 import { startOfWeek } from '@gobrand/tiempo';
 
-const instant = Temporal.Instant.from('2025-01-20T12:00:00Z'); // Monday
-startOfWeek(instant);
-// 2025-01-20T00:00:00Z[UTC] (same day, already Monday)
+const workedOn = Temporal.PlainDate.from('2026-11-11'); // Wednesday
+
+startOfWeek(workedOn); // 2026-11-09
 ```
 
-### From ZonedDateTime (Wednesday)
-
-```ts
-const zoned = Temporal.ZonedDateTime.from('2025-01-22T15:30:00-05:00[America/New_York]');
-startOfWeek(zoned);
-// 2025-01-20T00:00:00-05:00[America/New_York] (previous Monday)
-```
-
-### From PlainDate
-
-```ts
-const date = Temporal.PlainDate.from('2025-01-22');
-startOfWeek(date);
-// 2025-01-20
-
-startOfWeek(date, 'America/New_York');
-// 2025-01-20T00:00:00-05:00[America/New_York]
-```
-
-## Common Patterns
-
-### This week's range
+### Query this week's shifts in America/Los_Angeles
 
 ```ts
 import { startOfWeek, endOfWeek } from '@gobrand/tiempo';
 
-const now = Temporal.Now.zonedDateTimeISO('America/New_York');
-const weekStart = startOfWeek(now);
-const weekEnd = endOfWeek(now);
+const shift = Temporal.ZonedDateTime.from('2026-11-13T18:00:00[America/Los_Angeles]'); // Friday
+
+startOfWeek(shift); // 2026-11-09T00:00:00-08:00[America/Los_Angeles]
+endOfWeek(shift); // 2026-11-15T23:59:59.999999999-08:00[America/Los_Angeles]
 ```
+
+## Good to know
+
+- The week always starts on Monday; there is no option for a Sunday start.
+- An `Instant` uses the UTC week. Convert with [toZonedTime](https://tiempo.gobrand.app/docs/conversion/to-zoned-time) to use a user's week.

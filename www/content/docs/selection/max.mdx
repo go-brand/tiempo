@@ -3,9 +3,7 @@ title: max
 description: Get the latest date, time, or datetime in an array
 ---
 
-Returns the latest value in a non-empty array.
-
-The value is returned as given, keeping its type, timezone, and calendar. Ties return the first. Timeline values compare by exact instant, PlainDates by date, and PlainTimes by wall-clock time. Mixed domains throw a TypeError.
+Returns the latest value in a non-empty array, exactly as it was given: same type, timezone, and calendar.
 
 ## Signature
 
@@ -19,7 +17,7 @@ function max(values: readonly Temporal.PlainTime[]): Temporal.PlainTime
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `values` | Array of one domain | At least one value |
+| `values` | Array of one kind | At least one value |
 
 ## Returns
 
@@ -27,17 +25,21 @@ The latest value. Throws a `RangeError` for an empty array; check `values.length
 
 ## Examples
 
+### Find a user's most recent login
+
 ```ts
 import { max } from '@gobrand/tiempo';
 
 const logins = [
-  Temporal.Instant.from('2025-01-20T15:00:00Z'),
-  Temporal.Instant.from('2025-01-22T08:30:00Z'),
-  Temporal.Instant.from('2025-01-21T12:00:00Z'),
+  Temporal.Instant.from('2026-01-20T15:00:00Z'),
+  Temporal.Instant.from('2026-01-22T08:30:00Z'),
+  Temporal.Instant.from('2026-01-21T12:00:00Z'),
 ];
 
-max(logins); // 2025-01-22T08:30:00Z
+max(logins); // 2026-01-22T08:30:00Z
 ```
+
+### Find the latest closing time
 
 ```ts
 import { max } from '@gobrand/tiempo';
@@ -46,3 +48,8 @@ const closings = ['17:00', '21:30', '18:00'].map((t) => Temporal.PlainTime.from(
 
 max(closings); // 21:30:00
 ```
+
+## Good to know
+
+- Ties return the first of the tied values.
+- Mixing a PlainDate or PlainTime with another kind throws a `TypeError`.

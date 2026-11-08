@@ -1,15 +1,9 @@
 ---
 title: differenceInYears
-description: Calculate the difference between two dates in years
+description: Count the full years between two dates or datetimes
 ---
 
-Returns the number of years between two dates or datetimes.
-
-## Temporal compatibility
-
-Accepts native Temporal and `@js-temporal/polyfill` values, including mixed pairs. Instant inputs use UTC. For ZonedDateTime inputs, calendar totals use the timezone and calendar of `earlierDate`; the inputs must have matching calendar identifiers. Nanosecond precision is preserved when passing values between implementations; the returned JavaScript number still has floating-point precision limits.
-
-Two PlainDates are also accepted. They use calendar arithmetic without a timezone and must have matching calendar identifiers. Results are truncated toward zero unless `{ fractional: true }` is supplied. PlainDate/timeline pairs are rejected; explicitly convert a timestamp to a date when that matches your task.
+Returns the full calendar years from `earlierDate` to `laterDate`. For someone's current age, pass [today](/docs/current-time/today): `differenceInYears(today('Europe/Madrid'), birthday)`.
 
 ## Signature
 
@@ -27,7 +21,7 @@ function differenceInYears(
 ): number
 
 interface DifferenceOptions {
-  fractional?: boolean; // default false — truncates toward zero
+  fractional?: boolean;
 }
 ```
 
@@ -35,63 +29,37 @@ interface DifferenceOptions {
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `laterDate` | `Temporal.PlainDate \| Temporal.Instant \| Temporal.ZonedDateTime` | The later value; pair PlainDate only with PlainDate |
-| `earlierDate` | `Temporal.PlainDate \| Temporal.Instant \| Temporal.ZonedDateTime` | The earlier value in the same domain |
-| `options.fractional` | `boolean` | Return the precise fractional value instead of truncating toward zero (default: false) |
+| `laterDate` | `PlainDate` or `Instant \| ZonedDateTime` | The value to subtract from |
+| `earlierDate` | Same kind as `laterDate` | The value to subtract |
+| `options.fractional` | `boolean` | Return the exact value instead of truncating toward zero (default `false`) |
 
 ## Returns
 
-The number of years between the two datetimes, truncated toward zero by default. Pass `{ fractional: true }` to get the precise fractional value. Positive if `laterDate` is after `earlierDate`, negative if before.
+A signed number of years, truncated toward zero unless `fractional` is set.
 
 ## Examples
 
-### Date-only years
-
-```ts
-import { toPlainDate, differenceInYears } from '@gobrand/tiempo';
-
-const earlier = toPlainDate('2024-02-29');
-const later = toPlainDate('2025-02-28');
-
-differenceInYears(later, earlier); // 1
-```
-
-The argument order is the first value minus the second. Fractional calendar totals are relative to the second argument. Months and years vary in length, so reversing arbitrary inputs need not produce exactly opposite fractional results.
+### Calculate someone's age
 
 ```ts
 import { differenceInYears } from '@gobrand/tiempo';
 
-const date2020 = Temporal.Instant.from('2020-06-15T12:00:00Z');
-const date2025 = Temporal.Instant.from('2025-06-15T12:00:00Z');
+const birthday = Temporal.PlainDate.from('1990-11-09');
 
-differenceInYears(date2025, date2020); // 5
+differenceInYears(Temporal.PlainDate.from('2026-11-08'), birthday); // 35
+differenceInYears(Temporal.PlainDate.from('2026-11-09'), birthday); // 36
 ```
 
-### Fractional results
-
-By default the result is truncated toward zero. Pass `{ fractional: true }` for the precise value.
-
-```ts
-const later = Temporal.Instant.from('2026-07-01T00:00:00Z');
-const earlier = Temporal.Instant.from('2025-01-01T00:00:00Z');
-
-differenceInYears(later, earlier);                       // 1    (truncated)
-differenceInYears(later, earlier, { fractional: true }); // ~1.5 (precise)
-```
-
-## Common Patterns
-
-### Calculate age
+### Someone born on 29 February
 
 ```ts
 import { differenceInYears } from '@gobrand/tiempo';
 
-function calculateAge(birthDate: Temporal.PlainDate): number {
-  const now = Temporal.Now.zonedDateTimeISO();
-  const birth = birthDate.toZonedDateTime({
-    timeZone: now.timeZoneId,
-    plainTime: Temporal.PlainTime.from('00:00:00'),
-  });
-  return differenceInYears(now, birth);
-}
+const birthday = Temporal.PlainDate.from('2008-02-29');
+
+differenceInYears(Temporal.PlainDate.from('2026-02-28'), birthday); // 18 (28 February completes the year)
 ```
+
+## Good to know
+
+- Mixing a PlainDate with an Instant or ZonedDateTime is a TypeScript error and throws a `TypeError`.

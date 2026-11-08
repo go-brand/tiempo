@@ -1,8 +1,6 @@
 # isWeekend
 
-Returns true if the value falls on a Saturday or Sunday.
-
-Instant inputs are read in UTC. ZonedDateTime inputs use their own timezone. PlainDate inputs use their date directly. To check a moment for a specific user, convert it to their timezone first.
+Returns `true` if the value falls on a Saturday or Sunday. For a moment in time, the timezone decides which day it is.
 
 ## Signature
 
@@ -14,7 +12,7 @@ function isWeekend(input: Temporal.Instant | Temporal.ZonedDateTime | Temporal.P
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `input` | `Instant \| ZonedDateTime \| PlainDate` | The value to check |
+| `input` | `PlainDate`, `Instant`, or `ZonedDateTime` | The value to check |
 
 ## Returns
 
@@ -22,20 +20,22 @@ function isWeekend(input: Temporal.Instant | Temporal.ZonedDateTime | Temporal.P
 
 ## Examples
 
+### Grey out weekend dates in a date picker
+
 ```ts
 import { isWeekend } from '@gobrand/tiempo';
 
-isWeekend(Temporal.PlainDate.from('2025-01-25')); // true
-isWeekend(Temporal.PlainDate.from('2025-01-27')); // false
+isWeekend(Temporal.PlainDate.from('2026-01-24')); // true (Saturday)
+isWeekend(Temporal.PlainDate.from('2026-01-26')); // false (Monday)
 ```
 
-### The timezone decides the day
+### Check the day in the user's timezone
 
 ```ts
 import { isWeekend, toZonedTime } from '@gobrand/tiempo';
 
-const instant = Temporal.Instant.from('2025-01-25T02:00:00Z'); // Saturday in UTC
+const orderPlaced = Temporal.Instant.from('2026-01-24T02:00:00Z'); // Saturday in UTC
 
-isWeekend(instant); // true
-isWeekend(toZonedTime(instant, 'America/New_York')); // false
+isWeekend(orderPlaced); // true (an Instant is read in UTC)
+isWeekend(toZonedTime(orderPlaced, 'America/New_York')); // false (still Friday evening)
 ```

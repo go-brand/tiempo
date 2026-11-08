@@ -1,9 +1,9 @@
 ---
 title: subMinutes
-description: Subtract minutes from a datetime
+description: Subtract a number of minutes from a datetime.
 ---
 
-Subtracts the specified number of minutes from a datetime.
+The reverse of [addMinutes](/docs/arithmetic/add-minutes): goes back exact minutes of elapsed time.
 
 ## Signature
 
@@ -11,19 +11,28 @@ Subtracts the specified number of minutes from a datetime.
 function subMinutes(
   input: Temporal.Instant | Temporal.ZonedDateTime,
   minutes: number
-): Temporal.ZonedDateTime
+): Temporal.ZonedDateTime;
 ```
 
-## Example
+## Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `input` | `Temporal.Instant \| Temporal.ZonedDateTime` | The starting datetime |
+| `minutes` | `number` | Whole number of minutes to subtract; negative goes forward. Fractions throw a `RangeError`. |
+
+## Returns
+
+A `ZonedDateTime` in the input's timezone, or in UTC for an `Instant`.
+
+## Examples
+
+### Send a reminder 15 minutes before a booking
 
 ```ts
 import { subMinutes } from '@gobrand/tiempo';
 
-const now = Temporal.Now.zonedDateTimeISO();
+const appointment = Temporal.ZonedDateTime.from('2026-05-12T09:30:00+01:00[Europe/London]');
 
-// Get 30 minutes ago
-const thirtyMinutesAgo = subMinutes(now, 30);
-
-// Get 1 hour ago
-const hourAgo = subMinutes(now, 60);
+subMinutes(appointment, 15); // 2026-05-12T09:15:00+01:00[Europe/London]
 ```

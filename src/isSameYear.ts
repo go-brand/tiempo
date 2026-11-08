@@ -16,8 +16,8 @@ import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
  * @example
  * ```ts
  * // Same timezone, same year
- * const jan = Temporal.ZonedDateTime.from('2025-01-20T08:00:00Z[UTC]');
- * const dec = Temporal.ZonedDateTime.from('2025-12-31T23:59:59Z[UTC]');
+ * const jan = Temporal.ZonedDateTime.from('2025-01-20T08:00:00+00:00[UTC]');
+ * const dec = Temporal.ZonedDateTime.from('2025-12-31T23:59:59+00:00[UTC]');
  *
  * isSameYear(jan, dec); // true
  * ```
@@ -25,8 +25,8 @@ import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
  * @example
  * ```ts
  * // Same timezone, different years
- * const endOf2024 = Temporal.ZonedDateTime.from('2024-12-31T23:59:59Z[UTC]');
- * const startOf2025 = Temporal.ZonedDateTime.from('2025-01-01T00:00:00Z[UTC]');
+ * const endOf2024 = Temporal.ZonedDateTime.from('2024-12-31T23:59:59+00:00[UTC]');
+ * const startOf2025 = Temporal.ZonedDateTime.from('2025-01-01T00:00:00+00:00[UTC]');
  *
  * isSameYear(endOf2024, startOf2025); // false
  * ```

@@ -18,7 +18,7 @@ import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
  * // From Instant (always UTC)
  * const instant = Temporal.Instant.from('2025-01-20T12:00:00Z');
  * const result = addYears(instant, 2);
- * // 2027-01-20T12:00:00Z[UTC] (2 years later)
+ * // 2027-01-20T12:00:00+00:00[UTC] (2 years later)
  * ```
  *
  * @example
@@ -34,7 +34,7 @@ import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
  * // Leap year handling
  * const instant = Temporal.Instant.from('2024-02-29T12:00:00Z');
  * const result = addYears(instant, 1);
- * // 2025-02-28T12:00:00Z[UTC] (Feb 29 → Feb 28)
+ * // 2025-02-28T12:00:00+00:00[UTC] (Feb 29 → Feb 28)
  * ```
  */
 export function addYears(input: Temporal.PlainDate, years: number): Temporal.PlainDate;

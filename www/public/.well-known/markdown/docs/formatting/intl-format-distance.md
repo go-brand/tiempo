@@ -1,8 +1,6 @@
 # intlFormatDistance
 
-Formats the distance between two dates as a human-readable, internationalized string like "in 3 hours" or "2 days ago".
-
-This function uses the browser's `Intl.RelativeTimeFormat` API under the hood, providing proper internationalization support for 100+ locales.
+Describes `laterDate` relative to `earlierDate`, such as `in 3 weeks` or `2 hours ago`, in any locale. The unit is picked for you.
 
 ## Signature
 
@@ -10,212 +8,71 @@ This function uses the browser's `Intl.RelativeTimeFormat` API under the hood, p
 function intlFormatDistance(
   laterDate: Temporal.Instant | Temporal.ZonedDateTime,
   earlierDate: Temporal.Instant | Temporal.ZonedDateTime,
-  options?: IntlFormatDistanceOptions
+  options?: {
+    unit?: Intl.RelativeTimeFormatUnit;
+    locale?: string | string[];
+    localeMatcher?: 'best fit' | 'lookup';
+    numeric?: 'always' | 'auto';
+    style?: 'long' | 'short' | 'narrow';
+  }
 ): string
-
-interface IntlFormatDistanceOptions {
-  unit?: Intl.RelativeTimeFormatUnit;
-  locale?: string | string[];
-  localeMatcher?: 'best fit' | 'lookup';
-  numeric?: 'always' | 'auto';
-  style?: 'long' | 'short' | 'narrow';
-}
 ```
 
 ## Parameters
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `laterDate` | `Temporal.Instant \| Temporal.ZonedDateTime` | The later date to compare |
-| `earlierDate` | `Temporal.Instant \| Temporal.ZonedDateTime` | The earlier date to compare with |
-| `options.unit` | `Intl.RelativeTimeFormatUnit` | Force a specific unit (auto-selected if not specified) |
-| `options.locale` | `string \| string[]` | Locale(s) for formatting (default: system locale) |
-| `options.numeric` | `'always' \| 'auto'` | Use numeric or special strings like "yesterday" (default: 'auto') |
-| `options.style` | `'long' \| 'short' \| 'narrow'` | Formatting style |
+| `laterDate` | `Temporal.Instant \| Temporal.ZonedDateTime` | The moment to describe. If it is before `earlierDate`, the text is in the past. |
+| `earlierDate` | `Temporal.Instant \| Temporal.ZonedDateTime` | The moment to describe it from, usually now. |
+| `options.unit` | `Intl.RelativeTimeFormatUnit` | Force a unit, such as `'day'`. |
+| `options.locale` | `string \| string[]` | Default: the runtime's locale. |
+| `options.localeMatcher` | `'best fit' \| 'lookup'` | Passed to `Intl.RelativeTimeFormat`. |
+| `options.numeric` | `'always' \| 'auto'` | `'auto'` (default) allows `tomorrow` and `yesterday`; `'always'` gives `in 1 day`. |
+| `options.style` | `'long' \| 'short' \| 'narrow'` | `in 3 months` (default) or shorter forms such as `in 3 mo.`. |
 
-## Auto Unit Selection
+## Returns
 
-When `unit` is not specified, the function automatically picks the most appropriate unit:
-
-| Distance | Selected Unit |
-|----------|---------------|
-| < 60 seconds | `'second'` |
-| < 60 minutes | `'minute'` |
-| < 24 hours | `'hour'` |
-| < 7 days | `'day'` |
-| < 4 weeks | `'week'` |
-| < 12 months | `'month'` |
-| >= 12 months | `'year'` |
-
-
-## Behavior
-
-### Rounding
-
-All time values are rounded to the nearest whole number before formatting. This ensures clean output without decimal points:
-
-```ts
-const earlier = Temporal.Instant.from('2024-01-01T00:00:00Z');
-const later = Temporal.Instant.from('2024-01-05T23:00:00Z'); // 4.96 days
-
-intlFormatDistance(later, earlier, { unit: 'day' });
-// => 'in 5 days' (not 'in 4.96 days')
-```
-
-This applies to all units: seconds, minutes, hours, days, weeks, months, quarters, and years.
+The localized text.
 
 ## Examples
 
-### Basic usage
+### Show when a comment was posted
 
 ```ts
 import { intlFormatDistance } from '@gobrand/tiempo';
 
-const later = Temporal.Instant.from('2024-01-01T12:00:00Z');
-const earlier = Temporal.Instant.from('2024-01-01T11:00:00Z');
+const postedAt = Temporal.Instant.from('2026-03-10T09:15:00Z');
+const current = Temporal.Instant.from('2026-03-10T11:40:00Z'); // now('UTC') in an app
 
-intlFormatDistance(later, earlier);
-// => 'in 1 hour'
-
-intlFormatDistance(earlier, later);
-// => '1 hour ago'
+intlFormatDistance(postedAt, current, { locale: 'en' }); // "2 hours ago"
+intlFormatDistance(postedAt, current, { locale: 'es' }); // "hace 2 horas"
 ```
 
-### Force a specific unit
-
-```ts
-const later = Temporal.Instant.from('2025-01-01T00:00:00Z');
-const earlier = Temporal.Instant.from('2024-01-01T00:00:00Z');
-
-// Auto-selected unit
-intlFormatDistance(later, earlier);
-// => 'in 1 year'
-
-// Force quarters
-intlFormatDistance(later, earlier, { unit: 'quarter' });
-// => 'in 4 quarters'
-
-// Force months
-intlFormatDistance(later, earlier, { unit: 'month' });
-// => 'in 12 months'
-```
-
-### Localization
-
-```ts
-const later = Temporal.Instant.from('2024-01-01T12:00:00Z');
-const earlier = Temporal.Instant.from('2024-01-01T11:00:00Z');
-
-// Spanish
-intlFormatDistance(later, earlier, { locale: 'es' });
-// => 'dentro de 1 hora'
-
-// French
-intlFormatDistance(later, earlier, { locale: 'fr' });
-// => 'dans 1 heure'
-
-// German
-intlFormatDistance(later, earlier, { locale: 'de' });
-// => 'in 1 Stunde'
-
-// Japanese
-intlFormatDistance(later, earlier, { locale: 'ja' });
-// => '1 時間後'
-```
-
-### Numeric vs Auto
-
-The `numeric` option controls whether to use special strings like "yesterday", "tomorrow", "last week", etc.
-
-```ts
-const later = Temporal.Instant.from('2024-01-02T00:00:00Z');
-const earlier = Temporal.Instant.from('2024-01-01T00:00:00Z');
-
-// With numeric: 'auto' (default) - uses special strings when possible
-intlFormatDistance(later, earlier, { numeric: 'auto' });
-// => 'tomorrow'
-
-// With numeric: 'always' - always uses numbers
-intlFormatDistance(later, earlier, { numeric: 'always' });
-// => 'in 1 day'
-```
-
-### Formatting styles
-
-```ts
-const later = Temporal.Instant.from('2024-01-05T00:00:00Z');
-const earlier = Temporal.Instant.from('2024-01-01T00:00:00Z');
-
-// Long style (default)
-intlFormatDistance(later, earlier, { style: 'long' });
-// => 'in 4 days'
-
-// Narrow style
-intlFormatDistance(later, earlier, { style: 'narrow' });
-// => 'in 4d'
-```
-
-## Common Patterns
-
-### Relative timestamps in UI
+### Count down to a subscription renewal
 
 ```ts
 import { intlFormatDistance } from '@gobrand/tiempo';
 
-function RelativeTime({ date }: { date: Temporal.ZonedDateTime }) {
-  const now = Temporal.Now.zonedDateTimeISO();
-  const relative = intlFormatDistance(date, now);
+const renewsAt = Temporal.Instant.from('2026-04-01T00:00:00Z');
+const current = Temporal.Instant.from('2026-03-10T00:00:00Z');
 
-  return <time dateTime={date.toString()}>{relative}</time>;
-}
-
-// Usage
-<RelativeTime date={post.createdAt} />
-// => "2 hours ago"
+intlFormatDistance(renewsAt, current, { locale: 'en' }); // "in 3 weeks"
+intlFormatDistance(renewsAt, current, { locale: 'en', unit: 'day' }); // "in 22 days"
 ```
 
-### Due date indicator
-
-```ts
-import { intlFormatDistance, isBefore, now } from '@gobrand/tiempo';
-
-function formatDueDate(dueDate: Temporal.ZonedDateTime): {
-  text: string;
-  isOverdue: boolean;
-} {
-  const current = now();
-
-  return {
-    text: intlFormatDistance(dueDate, current, { numeric: 'always' }),
-    isOverdue: isBefore(dueDate, current),
-  };
-}
-
-// Usage
-const due = formatDueDate(task.dueDate);
-// { text: "in 3 days", isOverdue: false }
-// or
-// { text: "2 days ago", isOverdue: true }
-```
-
-### Internationalized timestamps
+### Say "tomorrow" or "in 1 day"
 
 ```ts
 import { intlFormatDistance } from '@gobrand/tiempo';
 
-function getLocalizedRelativeTime(
-  date: Temporal.ZonedDateTime,
-  userLocale: string
-): string {
-  const now = Temporal.Now.zonedDateTimeISO();
-  return intlFormatDistance(date, now, { locale: userLocale });
-}
+const delivery = Temporal.Instant.from('2026-03-11T10:00:00Z');
+const current = Temporal.Instant.from('2026-03-10T10:00:00Z');
 
-// For a Spanish-speaking user
-getLocalizedRelativeTime(post.createdAt, 'es');
-// => "hace 2 horas"
-
-// For a Japanese-speaking user
-getLocalizedRelativeTime(post.createdAt, 'ja');
-// => "2 時間前"
+intlFormatDistance(delivery, current, { locale: 'en' }); // tomorrow
+intlFormatDistance(delivery, current, { locale: 'en', numeric: 'always' }); // "in 1 day"
 ```
+
+## Good to know
+
+- Without `unit`, it uses seconds under 1 minute, minutes under 1 hour, hours under 1 day, days under 7 days, weeks under 4 weeks, months under 12 months, and years after that.
+- Hours, minutes, and seconds count whole units (1 h 59 min is `in 1 hour`). Larger units are rounded, after the unit is picked, so 6.9 days is `in 7 days`, not `in 1 week`.

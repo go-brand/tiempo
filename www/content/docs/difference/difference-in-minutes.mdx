@@ -1,11 +1,9 @@
 ---
 title: differenceInMinutes
-description: Calculate the difference between two dates in minutes
+description: Count the minutes elapsed between two datetimes
 ---
 
-Returns the number of minutes between two datetimes.
-
-Whole units are truncated toward zero after subtracting epoch nanoseconds. Numeric results use JavaScript `number` precision; use `differenceInNanoseconds` for an exact `bigint` elapsed difference.
+Returns the minutes elapsed from `earlierDate` to `laterDate`. The two values can be in different timezones.
 
 ## Signature
 
@@ -17,7 +15,7 @@ function differenceInMinutes(
 ): number
 
 interface DifferenceOptions {
-  fractional?: boolean; // default false — truncates toward zero
+  fractional?: boolean;
 }
 ```
 
@@ -25,33 +23,35 @@ interface DifferenceOptions {
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `laterDate` | `Temporal.Instant \| Temporal.ZonedDateTime` | The later datetime |
-| `earlierDate` | `Temporal.Instant \| Temporal.ZonedDateTime` | The earlier datetime |
-| `options.fractional` | `boolean` | Return the precise fractional value instead of truncating toward zero (default: false) |
+| `laterDate` | `Instant \| ZonedDateTime` | The value to subtract from |
+| `earlierDate` | `Instant \| ZonedDateTime` | The value to subtract |
+| `options.fractional` | `boolean` | Return the exact value instead of truncating toward zero (default `false`) |
 
 ## Returns
 
-The number of minutes between the two datetimes, truncated toward zero by default. Pass `{ fractional: true }` to get the precise fractional value.
+A signed number of minutes, truncated toward zero unless `fractional` is set.
 
 ## Examples
+
+### Flight time from Madrid to New York
 
 ```ts
 import { differenceInMinutes } from '@gobrand/tiempo';
 
-const later = Temporal.Instant.from('2025-01-20T10:45:00Z');
-const earlier = Temporal.Instant.from('2025-01-20T10:00:00Z');
+const departure = Temporal.ZonedDateTime.from('2026-06-12T11:45:00+02:00[Europe/Madrid]');
+const arrival = Temporal.ZonedDateTime.from('2026-06-12T14:20:00-04:00[America/New_York]');
 
-differenceInMinutes(later, earlier); // 45
+differenceInMinutes(arrival, departure); // 515 (8 h 35 min)
 ```
 
-### Fractional results
-
-By default the result is truncated toward zero. Pass `{ fractional: true }` for the precise value.
+### Length of a support call
 
 ```ts
-const later = Temporal.Instant.from('2025-01-20T10:01:30Z');
-const earlier = Temporal.Instant.from('2025-01-20T10:00:00Z');
+import { differenceInMinutes } from '@gobrand/tiempo';
 
-differenceInMinutes(later, earlier);                       // 1   (truncated)
-differenceInMinutes(later, earlier, { fractional: true }); // 1.5 (precise)
+const answered = Temporal.Instant.from('2026-05-04T09:30:00Z');
+const ended = Temporal.Instant.from('2026-05-04T09:42:30Z');
+
+differenceInMinutes(ended, answered); // 12
+differenceInMinutes(ended, answered, { fractional: true }); // 12.5
 ```

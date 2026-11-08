@@ -1,42 +1,38 @@
 ---
 title: subMonths
-description: Subtract months from a datetime or calendar date
+description: Subtract a number of months from a date or datetime.
 ---
 
-Subtracts the specified number of months from a datetime or calendar date.
-
-PlainDate inputs return a PlainDate and preserve its calendar, without choosing a timezone. Instant inputs continue to return a ZonedDateTime in UTC; ZonedDateTime inputs preserve their timezone. Counts may be negative; fractional calendar counts are rejected by Temporal. Month/year arithmetic uses Temporal’s default month-end constraining.
+The reverse of [addMonths](/docs/arithmetic/add-months): goes back calendar months, keeping the day of the month and the wall-clock time. A day missing from the target month moves back to its last day: March 31 minus one month is February 28.
 
 ## Signature
 
 ```ts
+function subMonths(input: Temporal.PlainDate, months: number): Temporal.PlainDate;
 function subMonths(
   input: Temporal.Instant | Temporal.ZonedDateTime,
   months: number
 ): Temporal.ZonedDateTime;
-function subMonths(input: Temporal.PlainDate, months: number): Temporal.PlainDate;
 ```
 
-## Example
+## Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `input` | `Temporal.PlainDate \| Temporal.Instant \| Temporal.ZonedDateTime` | The starting date or datetime |
+| `months` | `number` | Whole number of months to subtract; negative goes forward. Fractions throw a `RangeError`. |
+
+## Returns
+
+A `PlainDate` for a `PlainDate` input. Otherwise a `ZonedDateTime` in the input's timezone, or in UTC for an `Instant`.
+
+## Examples
+
+### Find the start of the previous billing period
 
 ```ts
 import { subMonths } from '@gobrand/tiempo';
 
-const now = Temporal.Now.zonedDateTimeISO();
-
-// Get last month
-const lastMonth = subMonths(now, 1);
-
-// Get 6 months ago
-const sixMonthsAgo = subMonths(now, 6);
-```
-
-## Date-only arithmetic
-
-```ts
-import { subMonths, toPlainDate } from '@gobrand/tiempo';
-
-const date = toPlainDate('2024-01-31');
-const result = subMonths(date, 1); // Temporal.PlainDate
-result.toString(); // "2023-12-31"
+subMonths(Temporal.PlainDate.from('2026-04-15'), 1); // 2026-03-15
+subMonths(Temporal.PlainDate.from('2026-03-31'), 1); // 2026-02-28
 ```

@@ -1,15 +1,9 @@
 ---
 title: differenceInMonths
-description: Calculate the difference between two dates in months
+description: Count the calendar months between two dates or datetimes
 ---
 
-Returns the number of months between two dates or datetimes.
-
-## Temporal compatibility
-
-Accepts native Temporal and `@js-temporal/polyfill` values, including mixed pairs. Instant inputs use UTC. For ZonedDateTime inputs, calendar totals use the timezone and calendar of `earlierDate`; the inputs must have matching calendar identifiers. Nanosecond precision is preserved when passing values between implementations; the returned JavaScript number still has floating-point precision limits.
-
-Two PlainDates are also accepted. They use calendar arithmetic without a timezone and must have matching calendar identifiers. Results are truncated toward zero unless `{ fractional: true }` is supplied. PlainDate/timeline pairs are rejected; explicitly convert a timestamp to a date when that matches your task.
+Returns the calendar months from `earlierDate` to `laterDate`. A month is complete when the same day of the month comes round again.
 
 ## Signature
 
@@ -27,7 +21,7 @@ function differenceInMonths(
 ): number
 
 interface DifferenceOptions {
-  fractional?: boolean; // default false — truncates toward zero
+  fractional?: boolean;
 }
 ```
 
@@ -35,47 +29,50 @@ interface DifferenceOptions {
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `laterDate` | `Temporal.PlainDate \| Temporal.Instant \| Temporal.ZonedDateTime` | The later value; pair PlainDate only with PlainDate |
-| `earlierDate` | `Temporal.PlainDate \| Temporal.Instant \| Temporal.ZonedDateTime` | The earlier value in the same domain |
-| `options.fractional` | `boolean` | Return the precise fractional value instead of truncating toward zero (default: false) |
+| `laterDate` | `PlainDate` or `Instant \| ZonedDateTime` | The value to subtract from |
+| `earlierDate` | Same kind as `laterDate` | The value to subtract |
+| `options.fractional` | `boolean` | Return the exact value instead of truncating toward zero (default `false`) |
 
 ## Returns
 
-The number of months between the two datetimes, truncated toward zero by default. Pass `{ fractional: true }` to get the precise fractional value. Positive if `laterDate` is after `earlierDate`, negative if before.
+A signed number of months, truncated toward zero unless `fractional` is set.
 
 ## Examples
 
-### Date-only months
-
-```ts
-import { toPlainDate, differenceInMonths } from '@gobrand/tiempo';
-
-const earlier = toPlainDate('2026-01-15');
-const later = toPlainDate('2026-03-15');
-
-differenceInMonths(later, earlier); // 2
-```
-
-The argument order is the first value minus the second. Fractional calendar totals are relative to the second argument. Months and years vary in length, so reversing arbitrary inputs need not produce exactly opposite fractional results.
+### Count the billed months of a subscription
 
 ```ts
 import { differenceInMonths } from '@gobrand/tiempo';
 
-const jan = Temporal.Instant.from('2025-01-15T12:00:00Z');
-const jun = Temporal.Instant.from('2025-06-15T12:00:00Z');
+const subscribed = Temporal.PlainDate.from('2026-01-15');
+const cancelled = Temporal.PlainDate.from('2026-11-08');
 
-differenceInMonths(jun, jan); // 5
-differenceInMonths(jan, jun); // -5
+differenceInMonths(cancelled, subscribed); // 9
 ```
 
-### Fractional results
-
-By default the result is truncated toward zero. Pass `{ fractional: true }` for the precise value.
+### A subscription that starts at month end
 
 ```ts
-const later = Temporal.Instant.from('2025-02-15T00:00:00Z');
-const earlier = Temporal.Instant.from('2025-01-01T00:00:00Z');
+import { differenceInMonths } from '@gobrand/tiempo';
 
-differenceInMonths(later, earlier);                       // 1   (truncated)
-differenceInMonths(later, earlier, { fractional: true }); // 1.5 (precise)
+const subscribed = Temporal.PlainDate.from('2026-01-31');
+
+differenceInMonths(Temporal.PlainDate.from('2026-02-27'), subscribed); // 0
+differenceInMonths(Temporal.PlainDate.from('2026-02-28'), subscribed); // 1 (February has no 31st)
 ```
+
+### Get partial months
+
+```ts
+import { differenceInMonths } from '@gobrand/tiempo';
+
+const start = Temporal.Instant.from('2026-01-01T00:00:00Z');
+const end = Temporal.Instant.from('2026-02-15T00:00:00Z');
+
+differenceInMonths(end, start, { fractional: true }); // 1.5 (14 of February's 28 days)
+```
+
+## Good to know
+
+- Fractions are measured from `earlierDate`, so swapping the arguments need not give exactly the opposite fraction.
+- Mixing a PlainDate with an Instant or ZonedDateTime is a TypeScript error and throws a `TypeError`.

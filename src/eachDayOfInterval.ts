@@ -18,16 +18,16 @@ import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
  *
  * @example
  * ```ts
- * const start = Temporal.ZonedDateTime.from('2025-01-06T10:00:00Z[UTC]');
- * const end = Temporal.ZonedDateTime.from('2025-01-10T14:00:00Z[UTC]');
+ * const start = Temporal.ZonedDateTime.from('2025-01-06T10:00:00+00:00[UTC]');
+ * const end = Temporal.ZonedDateTime.from('2025-01-10T14:00:00+00:00[UTC]');
  *
  * const days = eachDayOfInterval({ start, end });
  * // [
- * //   2025-01-06T00:00:00Z[UTC],
- * //   2025-01-07T00:00:00Z[UTC],
- * //   2025-01-08T00:00:00Z[UTC],
- * //   2025-01-09T00:00:00Z[UTC],
- * //   2025-01-10T00:00:00Z[UTC]
+ * //   2025-01-06T00:00:00+00:00[UTC],
+ * //   2025-01-07T00:00:00+00:00[UTC],
+ * //   2025-01-08T00:00:00+00:00[UTC],
+ * //   2025-01-09T00:00:00+00:00[UTC],
+ * //   2025-01-10T00:00:00+00:00[UTC]
  * // ]
  * ```
  *
@@ -53,19 +53,19 @@ import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
  *
  * const days = eachDayOfInterval({ start, end });
  * // [
- * //   2025-01-06T00:00:00Z[UTC],
- * //   2025-01-07T00:00:00Z[UTC],
- * //   2025-01-08T00:00:00Z[UTC]
+ * //   2025-01-06T00:00:00+00:00[UTC],
+ * //   2025-01-07T00:00:00+00:00[UTC],
+ * //   2025-01-08T00:00:00+00:00[UTC]
  * // ]
  * ```
  *
  * @example
  * ```ts
  * // Single day interval
- * const date = Temporal.ZonedDateTime.from('2025-01-15T12:00:00Z[UTC]');
+ * const date = Temporal.ZonedDateTime.from('2025-01-15T12:00:00+00:00[UTC]');
  *
  * eachDayOfInterval({ start: date, end: date });
- * // [2025-01-15T00:00:00Z[UTC]]
+ * // [2025-01-15T00:00:00+00:00[UTC]]
  * ```
  */
 export function eachDayOfInterval(interval: {

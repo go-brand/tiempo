@@ -1,6 +1,6 @@
 # differenceInMicroseconds
 
-Returns the number of microseconds between two datetimes. Useful for high-precision timing operations.
+Returns the whole microseconds elapsed from `earlierDate` to `laterDate`, truncated toward zero.
 
 ## Signature
 
@@ -11,13 +11,15 @@ function differenceInMicroseconds(
 ): number
 ```
 
-## Example
+## Examples
+
+### Time a database query
 
 ```ts
 import { differenceInMicroseconds } from '@gobrand/tiempo';
 
-const later = Temporal.Instant.from('2025-01-20T10:00:00.001500Z');
-const earlier = Temporal.Instant.from('2025-01-20T10:00:00Z');
+const queryStart = Temporal.Instant.from('2026-05-04T09:30:00.000125Z');
+const queryEnd = Temporal.Instant.from('2026-05-04T09:30:00.000750Z');
 
-differenceInMicroseconds(later, earlier); // 1500
+differenceInMicroseconds(queryEnd, queryStart); // 625
 ```

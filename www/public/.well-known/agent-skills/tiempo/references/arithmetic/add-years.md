@@ -1,63 +1,51 @@
 # addYears
 
-Add years to a datetime or calendar date. Handles leap years correctly.
-
-PlainDate inputs return a PlainDate and preserve its calendar, without choosing a timezone. Instant inputs continue to return a ZonedDateTime in UTC; ZonedDateTime inputs preserve their timezone. Counts may be negative; fractional calendar counts are rejected by Temporal. Month/year arithmetic uses Temporal’s default month-end constraining.
+Adds calendar years and keeps the month, day, and wall-clock time. February 29 moves back to February 28 in a year without one.
 
 ## Signature
 
 ```ts
+function addYears(input: Temporal.PlainDate, years: number): Temporal.PlainDate;
 function addYears(
   input: Temporal.Instant | Temporal.ZonedDateTime,
   years: number
 ): Temporal.ZonedDateTime;
-function addYears(input: Temporal.PlainDate, years: number): Temporal.PlainDate;
 ```
 
 ## Parameters
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `input` | `Temporal.Instant \| Temporal.ZonedDateTime \| Temporal.PlainDate` | The datetime to add years to |
-| `years` | `number` | Number of years to add (can be negative) |
+| `input` | `Temporal.PlainDate \| Temporal.Instant \| Temporal.ZonedDateTime` | The starting date or datetime |
+| `years` | `number` | Whole number of years to add; negative goes back. Fractions throw a `RangeError`. |
 
 ## Returns
 
-A `Temporal.PlainDate` for a date-only input, or a `Temporal.ZonedDateTime` for an Instant/ZonedDateTime input, with the years added.
+A `PlainDate` for a `PlainDate` input. Otherwise a `ZonedDateTime` in the input's timezone, or in UTC for an `Instant`.
 
 ## Examples
 
-### Basic usage
+### Find membership anniversaries for a February 29 sign-up
 
 ```ts
 import { addYears } from '@gobrand/tiempo';
 
-const instant = Temporal.Instant.from('2025-01-20T12:00:00Z');
-addYears(instant, 2);
-// 2027-01-20T12:00:00Z[UTC]
+const joined = Temporal.PlainDate.from('2024-02-29');
+
+addYears(joined, 2); // 2026-02-28
+addYears(joined, 4); // 2028-02-29
 ```
 
-### Leap year handling
+### Renew a contract at the same local time next year
 
 ```ts
-const leapDay = Temporal.Instant.from('2024-02-29T12:00:00Z');
-addYears(leapDay, 1);
-// 2025-02-28T12:00:00Z[UTC] (Feb 29 → Feb 28)
+import { addYears } from '@gobrand/tiempo';
+
+const signed = Temporal.ZonedDateTime.from('2026-04-01T09:00:00+02:00[Europe/Madrid]');
+
+addYears(signed, 1); // 2027-04-01T09:00:00+02:00[Europe/Madrid]
 ```
 
-### Negative values subtract
+## Good to know
 
-```ts
-addYears(instant, -5);
-// 2020-01-20T12:00:00Z[UTC]
-```
-
-## Date-only arithmetic
-
-```ts
-import { addYears, toPlainDate } from '@gobrand/tiempo';
-
-const date = toPlainDate('2024-01-31');
-const result = addYears(date, 1); // Temporal.PlainDate
-result.toString(); // "2025-01-31"
-```
+- Count each anniversary from the original date. Chaining `addYears(addYears(joined, 2), 2)` gives `2028-02-28`.

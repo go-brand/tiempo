@@ -1,9 +1,9 @@
 ---
 title: addMilliseconds
-description: Add milliseconds to a datetime
+description: Add a number of milliseconds to a datetime.
 ---
 
-Adds the specified number of milliseconds to a datetime.
+Adds exact milliseconds of elapsed time, for request timeouts and other durations measured in milliseconds.
 
 ## Signature
 
@@ -11,19 +11,28 @@ Adds the specified number of milliseconds to a datetime.
 function addMilliseconds(
   input: Temporal.Instant | Temporal.ZonedDateTime,
   milliseconds: number
-): Temporal.ZonedDateTime
+): Temporal.ZonedDateTime;
 ```
 
-## Example
+## Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `input` | `Temporal.Instant \| Temporal.ZonedDateTime` | The starting datetime |
+| `milliseconds` | `number` | Whole number of milliseconds to add; negative goes back. Fractions throw a `RangeError`. |
+
+## Returns
+
+A `ZonedDateTime` in the input's timezone, or in UTC for an `Instant`.
+
+## Examples
+
+### Compute a request timeout deadline
 
 ```ts
 import { addMilliseconds } from '@gobrand/tiempo';
 
-const instant = Temporal.Instant.from('2025-01-20T12:00:00Z');
+const sentAt = Temporal.Instant.from('2026-04-01T10:00:00.250Z');
 
-addMilliseconds(instant, 500);
-// 2025-01-20T12:00:00.500Z[UTC]
-
-addMilliseconds(instant, 1500);
-// 2025-01-20T12:00:01.500Z[UTC]
+addMilliseconds(sentAt, 1500); // 2026-04-01T10:00:01.75+00:00[UTC]
 ```

@@ -13,9 +13,9 @@ import { isAfter } from './shared/isAfter';
  *
  * @example
  * ```ts
- * const start = Temporal.ZonedDateTime.from('2025-01-01T00:00:00Z[UTC]');
- * const end = Temporal.ZonedDateTime.from('2025-01-07T00:00:00Z[UTC]');
- * const date = Temporal.ZonedDateTime.from('2025-01-03T00:00:00Z[UTC]');
+ * const start = Temporal.ZonedDateTime.from('2025-01-01T00:00:00+00:00[UTC]');
+ * const end = Temporal.ZonedDateTime.from('2025-01-07T00:00:00+00:00[UTC]');
+ * const date = Temporal.ZonedDateTime.from('2025-01-03T00:00:00+00:00[UTC]');
  *
  * isWithinInterval(date, { start, end }); // true
  * ```
@@ -23,9 +23,9 @@ import { isAfter } from './shared/isAfter';
  * @example
  * ```ts
  * // Date outside the interval
- * const start = Temporal.ZonedDateTime.from('2025-01-01T00:00:00Z[UTC]');
- * const end = Temporal.ZonedDateTime.from('2025-01-07T00:00:00Z[UTC]');
- * const date = Temporal.ZonedDateTime.from('2025-01-10T00:00:00Z[UTC]');
+ * const start = Temporal.ZonedDateTime.from('2025-01-01T00:00:00+00:00[UTC]');
+ * const end = Temporal.ZonedDateTime.from('2025-01-07T00:00:00+00:00[UTC]');
+ * const date = Temporal.ZonedDateTime.from('2025-01-10T00:00:00+00:00[UTC]');
  *
  * isWithinInterval(date, { start, end }); // false
  * ```
@@ -33,8 +33,8 @@ import { isAfter } from './shared/isAfter';
  * @example
  * ```ts
  * // Date equal to interval start (inclusive)
- * const start = Temporal.ZonedDateTime.from('2025-01-01T00:00:00Z[UTC]');
- * const end = Temporal.ZonedDateTime.from('2025-01-07T00:00:00Z[UTC]');
+ * const start = Temporal.ZonedDateTime.from('2025-01-01T00:00:00+00:00[UTC]');
+ * const end = Temporal.ZonedDateTime.from('2025-01-07T00:00:00+00:00[UTC]');
  *
  * isWithinInterval(start, { start, end }); // true
  * ```
@@ -42,8 +42,8 @@ import { isAfter } from './shared/isAfter';
  * @example
  * ```ts
  * // Date equal to interval end (inclusive)
- * const start = Temporal.ZonedDateTime.from('2025-01-01T00:00:00Z[UTC]');
- * const end = Temporal.ZonedDateTime.from('2025-01-07T00:00:00Z[UTC]');
+ * const start = Temporal.ZonedDateTime.from('2025-01-01T00:00:00+00:00[UTC]');
+ * const end = Temporal.ZonedDateTime.from('2025-01-07T00:00:00+00:00[UTC]');
  *
  * isWithinInterval(end, { start, end }); // true
  * ```
@@ -63,7 +63,7 @@ import { isAfter } from './shared/isAfter';
  * // Different timezones - compares by instant
  * const start = Temporal.ZonedDateTime.from('2025-01-01T00:00:00-05:00[America/New_York]');
  * const end = Temporal.ZonedDateTime.from('2025-01-07T00:00:00+09:00[Asia/Tokyo]');
- * const date = Temporal.ZonedDateTime.from('2025-01-03T12:00:00Z[UTC]');
+ * const date = Temporal.ZonedDateTime.from('2025-01-03T12:00:00+00:00[UTC]');
  *
  * isWithinInterval(date, { start, end }); // true
  * ```

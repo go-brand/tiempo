@@ -1,59 +1,57 @@
 ---
 title: addMonths
-description: Add months to a datetime or calendar date
+description: Add a number of months to a date or datetime.
 ---
 
-Add months to a datetime or calendar date. Handles month-end dates correctly.
-
-PlainDate inputs return a PlainDate and preserve its calendar, without choosing a timezone. Instant inputs continue to return a ZonedDateTime in UTC; ZonedDateTime inputs preserve their timezone. Counts may be negative; fractional calendar counts are rejected by Temporal. Month/year arithmetic uses Temporal’s default month-end constraining.
+Adds calendar months and keeps the day of the month and the wall-clock time. A day that does not exist in the target month moves back to that month's last day: January 31 plus one month is February 28.
 
 ## Signature
 
 ```ts
+function addMonths(input: Temporal.PlainDate, months: number): Temporal.PlainDate;
 function addMonths(
   input: Temporal.Instant | Temporal.ZonedDateTime,
   months: number
 ): Temporal.ZonedDateTime;
-function addMonths(input: Temporal.PlainDate, months: number): Temporal.PlainDate;
 ```
 
 ## Parameters
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `input` | `Temporal.Instant \| Temporal.ZonedDateTime \| Temporal.PlainDate` | The datetime to add months to |
-| `months` | `number` | Number of months to add (can be negative) |
+| `input` | `Temporal.PlainDate \| Temporal.Instant \| Temporal.ZonedDateTime` | The starting date or datetime |
+| `months` | `number` | Whole number of months to add; negative goes back. Fractions throw a `RangeError`. |
 
 ## Returns
 
-A `Temporal.PlainDate` for a date-only input, or a `Temporal.ZonedDateTime` for an Instant/ZonedDateTime input, with the months added.
+A `PlainDate` for a `PlainDate` input. Otherwise a `ZonedDateTime` in the input's timezone, or in UTC for an `Instant`.
 
 ## Examples
 
-### Basic usage
+### Renew a subscription started on January 31
 
 ```ts
 import { addMonths } from '@gobrand/tiempo';
 
-const instant = Temporal.Instant.from('2025-01-20T12:00:00Z');
-addMonths(instant, 3);
-// 2025-04-20T12:00:00Z[UTC]
+const started = Temporal.PlainDate.from('2026-01-31');
+
+addMonths(started, 1); // 2026-02-28
+addMonths(started, 2); // 2026-03-31
+addMonths(started, 3); // 2026-04-30
 ```
 
-### Month-end handling
+### Run a monthly billing job at 09:00 Madrid time
+
+Spain moves to summer time on March 29; the job stays at 09:00.
 
 ```ts
-const endOfJan = Temporal.Instant.from('2025-01-31T12:00:00Z');
-addMonths(endOfJan, 1);
-// 2025-02-28T12:00:00Z[UTC] (Jan 31 → Feb 28)
+import { addMonths } from '@gobrand/tiempo';
+
+const billingRun = Temporal.ZonedDateTime.from('2026-03-15T09:00:00+01:00[Europe/Madrid]');
+
+addMonths(billingRun, 1); // 2026-04-15T09:00:00+02:00[Europe/Madrid]
 ```
 
-## Date-only arithmetic
+## Good to know
 
-```ts
-import { addMonths, toPlainDate } from '@gobrand/tiempo';
-
-const date = toPlainDate('2024-01-31');
-const result = addMonths(date, 1); // Temporal.PlainDate
-result.toString(); // "2024-02-29"
-```
+- Count each renewal from the original date. Chaining loses the 31st: one month after February 28 is March 28.

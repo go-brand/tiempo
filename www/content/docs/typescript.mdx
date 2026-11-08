@@ -1,148 +1,96 @@
 ---
 title: TypeScript
-description: Type-safe datetime handling with full IDE support
+description: Timezone autocomplete, precise return types, and exported option types
 ---
 
-tiempo is built with TypeScript from the ground up. Beyond basic type definitions, it provides smart type inference that catches errors at compile time and enhances your IDE experience with autocomplete suggestions.
+tiempo's types autocomplete timezone names, return the right Temporal type for your input, and reject calls that mix dates with timestamps.
 
-## Timezone Types
+## Timezone autocomplete
 
-tiempo exports two timezone types:
-
-- **`Timezone`** - Suggests known IANA timezone names and `UTC`, while accepting arbitrary strings for forward compatibility
-- **`IANATimezone`** - Suggests known IANA identifiers, while also accepting arbitrary strings (including `UTC`)
+Timezone parameters are typed as `Timezone`, so your editor suggests IANA names as you type.
 
 ```ts
-import { toZonedTime, type Timezone, type IANATimezone } from '@gobrand/tiempo';
+import { toZonedTime, type Timezone } from '@gobrand/tiempo';
 
-// Timezone: accepts IANA timezones with autocomplete
-const tz: Timezone = 'America/New_York';  // ✓ Autocomplete works!
-const utc: Timezone = 'UTC';              // ✓ UTC is accepted
+const officeTimezone: Timezone = 'Europe/Madrid';
 
-// Works directly in function calls
-const zoned = toZonedTime('2025-01-20T20:00:00Z', 'Europe/London');
-// While typing 'Europe/', the IDE suggests names such as Europe/London.
-
-// IANATimezone: autocomplete with an open string fallback
-const iana: IANATimezone = 'America/New_York';  // ✓ Valid
-const alsoUtc: IANATimezone = 'UTC';           // Accepted
-const dynamicZone: IANATimezone = 'runtime-provided-zone'; // Also compiles
+toZonedTime('2026-03-14T18:30:00Z', officeTimezone).toString(); // 2026-03-14T19:30:00+01:00[Europe/Madrid]
 ```
 
-These types provide autocomplete, not validation. Temporal validates identifiers when they are used; an arbitrary string compiling does not mean it is a valid timezone. Use `Timezone` to match Tiempo function parameters.
-
-## Smart Function Overloads
-
-Some functions use TypeScript overloads to provide context-aware options based on what you pass in. This prevents invalid configurations at compile time.
-
-### toIso Example
-
-When converting to ISO 8601 strings, the `mode` option only makes sense for `ZonedDateTime` (which has timezone information to preserve or convert). For `Instant`, there's no choice—it's always UTC:
+Use it in your own types too:
 
 ```ts
-import { Temporal } from '@js-temporal/polyfill';
+import { toZonedTime, format, type Timezone } from '@gobrand/tiempo';
+
+interface UserPreferences {
+  timezone: Timezone;
+}
+
+function formatForUser(timestamp: string, prefs: UserPreferences): string {
+  return format(toZonedTime(timestamp, prefs.timezone), 'EEE d MMM, HH:mm');
+}
+
+formatForUser('2026-03-14T18:30:00Z', { timezone: 'Asia/Tokyo' }); // "Sun 15 Mar, 03:30"
+```
+
+Any string still compiles, so timezones from a database or the browser work; an unknown name throws a `RangeError` when used.
+
+## Return types follow your input
+
+```ts
+import { addDays, toZonedTime } from '@gobrand/tiempo';
+
+const dueDate = addDays(Temporal.PlainDate.from('2026-03-14'), 30); // Temporal.PlainDate
+const meeting = addDays(toZonedTime('2026-03-14T17:30:00Z', 'America/New_York'), 1); // Temporal.ZonedDateTime
+
+dueDate.toString(); // 2026-04-13
+meeting.toString(); // 2026-03-15T13:30:00-04:00[America/New_York]
+```
+
+Options appear only where they apply: `mode` exists for a `ZonedDateTime`, not for an `Instant`.
+
+```ts
 import { toIso } from '@gobrand/tiempo';
 
-const instant = Temporal.Instant.from('2025-01-20T20:00:00Z');
-const zoned = Temporal.ZonedDateTime.from('2025-01-20T15:00:00-05:00[America/New_York]');
+const flight = Temporal.ZonedDateTime.from('2026-06-01T10:15:00+02:00[Europe/Madrid]');
 
-// Instant: no options needed (always UTC)
-toIso(instant);                      // "2025-01-20T20:00:00Z"
-
-// ZonedDateTime: mode option available
-toIso(zoned);                        // "2025-01-20T20:00:00Z" (UTC, default)
-toIso(zoned, { mode: 'utc' });       // "2025-01-20T20:00:00Z"
-toIso(zoned, { mode: 'offset' });    // "2025-01-20T15:00:00-05:00"
+toIso(flight); // "2026-06-01T08:15:00Z"
+toIso(flight, { mode: 'offset' }); // "2026-06-01T10:15:00+02:00"
+toIso(flight.toInstant()); // "2026-06-01T08:15:00Z"
 ```
 
-### toIso9075 Example
-
-The same pattern applies to SQL-formatted timestamps:
+## Mixing dates and timestamps is a type error
 
 ```ts
-import { toIso9075 } from '@gobrand/tiempo';
+import { isBefore } from '@gobrand/tiempo';
 
-// Instant: only representation option (no mode)
-toIso9075(instant);                           // "2025-01-20 20:00:00"
-toIso9075(instant, { representation: 'date' }); // "2025-01-20"
+const dueDate = Temporal.PlainDate.from('2026-03-14');
+const paidAt = Temporal.Instant.from('2026-03-13T22:00:00Z');
 
-// ZonedDateTime: both mode and representation available
-toIso9075(zoned);                             // "2025-01-20 20:00:00" (UTC, default)
-toIso9075(zoned, { mode: 'local' });          // "2025-01-20 15:00:00"
-toIso9075(zoned, { representation: 'time' }); // "20:00:00"
+// @ts-expect-error A calendar date can't be compared with an exact moment
+isBefore(paidAt, dueDate);
 ```
 
-TypeScript will show an error if you try to pass `mode` to an `Instant`—the option simply doesn't exist in that overload's type signature.
+Convert first with `toPlainDate(paidAt, timezone)`.
 
-## Exported Types
-
-tiempo exports all its types for use in your own code:
+## Exported types
 
 ```ts
 import type {
-  // Timezone
   Timezone,
   IANATimezone,
-
-  // ISO conversion
   IsoMode,
   ToIsoOptions,
-
-  // ISO 9075 (SQL) conversion
   Iso9075Mode,
   Iso9075Representation,
   ToIso9075Options,
-
-  // Formatting
   FormatOptions,
   FormatPlainDateOptions,
-
-  // Relative time
+  SimpleFormatOptions,
   IntlFormatDistanceOptions,
+  DifferenceOptions,
+  RoundToNearestHourOptions,
+  RoundToNearestMinuteOptions,
+  RoundToNearestSecondOptions,
 } from '@gobrand/tiempo';
 ```
-
-### Using Timezone in Your Code
-
-The `Timezone` type is useful for typing your own functions and data structures:
-
-```ts
-import type { Timezone } from '@gobrand/tiempo';
-
-interface UserPreferences {
-  timezone: Timezone;  // Autocomplete in your own interfaces!
-  locale: string;
-}
-
-function formatForUser(date: Date, prefs: UserPreferences): string {
-  const zoned = toZonedTime(date, prefs.timezone);
-  return format(zoned, 'PPpp');
-}
-```
-
-## Temporal Types
-
-tiempo uses the `@js-temporal/polyfill` package. You can import Temporal directly from the polyfill for type annotations:
-
-```ts
-import { Temporal } from '@js-temporal/polyfill';
-import { toInstant, toZonedTime } from '@gobrand/tiempo';
-
-// Explicit type annotations
-const zoned: Temporal.ZonedDateTime = toZonedTime(new Date(), 'America/New_York');
-const instant: Temporal.Instant = toInstant(zoned);
-const plainDate: Temporal.PlainDate = zoned.toPlainDate();
-
-// Types are also inferred automatically
-const zoned2 = toZonedTime(new Date(), 'UTC');  // Temporal.ZonedDateTime
-```
-
-### Common Temporal Types
-
-| Type | Description |
-|------|-------------|
-| `Temporal.Instant` | A fixed point in time (UTC timestamp) |
-| `Temporal.ZonedDateTime` | A datetime with timezone information |
-| `Temporal.PlainDate` | A calendar date without time or timezone |
-| `Temporal.PlainTime` | A wall-clock time without date or timezone |
-| `Temporal.Duration` | A length of time |

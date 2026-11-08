@@ -33,129 +33,137 @@ npm install @gobrand/tiempo
 
 | Function | Description | Reference |
 |----------|-------------|-----------|
-| `toInstant()` | Convert a timeline representation to a Temporal Instant | [details](references/conversion/to-instant.md) |
-| `toZonedTime()` | Convert to a timezone-aware ZonedDateTime | [details](references/conversion/to-zoned-time.md) |
-| `toPlainDate()` | Parse a plain date or extract calendar date from a datetime | [details](references/conversion/to-plain-date.md) |
-| `toPlainTime()` | Parse a plain time or extract wall-clock time from a datetime | [details](references/conversion/to-plain-time.md) |
-| `toIso()` | Convert to an ISO 8601 string | [details](references/conversion/to-iso.md) |
-| `toIso9075()` | Convert to ISO 9075 (SQL) format string | [details](references/conversion/to-iso9075.md) |
-| `toDate()` | Convert to a JavaScript Date object | [details](references/conversion/to-date.md) |
+| `toInstant()` | Turn a string, timestamp, Date, or ZonedDateTime into an Instant. | [details](references/conversion/to-instant.md) |
+| `toZonedTime()` | Show an exact moment in a timezone, as a ZonedDateTime. | [details](references/conversion/to-zoned-time.md) |
+| `toPlainDate()` | Get a calendar date from a string, fields, or a timestamp. | [details](references/conversion/to-plain-date.md) |
+| `toPlainTime()` | Get a clock time from a string, fields, or a timestamp. | [details](references/conversion/to-plain-time.md) |
+| `toIso()` | Turn an Instant or ZonedDateTime into an ISO 8601 string. | [details](references/conversion/to-iso.md) |
+| `toIso9075()` | Turn an Instant or ZonedDateTime into a SQL datetime string. | [details](references/conversion/to-iso9075.md) |
+| `toDate()` | Turn an Instant or ZonedDateTime into a JavaScript Date. | [details](references/conversion/to-date.md) |
 
 ## Current Time
 
 | Function | Description | Reference |
 |----------|-------------|-----------|
-| `now()` | Get the current date and time as a ZonedDateTime | [details](references/current-time/now.md) |
-| `today()` | Get today's date as a PlainDate | [details](references/current-time/today.md) |
+| `now()` | Get the current date and time in a timezone. | [details](references/current-time/now.md) |
+| `today()` | Get today's date in a timezone, as a PlainDate. | [details](references/current-time/today.md) |
 
 ## Formatting
 
 | Function | Description | Reference |
 |----------|-------------|-----------|
-| `format()` | Format a datetime or calendar date using date-fns-like tokens | [details](references/formatting/format.md) |
-| `formatPlainDate()` | Format a PlainDate using date-fns-like format tokens | [details](references/formatting/format-plain-date.md) |
-| `simpleFormat()` | Human-friendly date/time formatting with explicit control over what to display | [details](references/formatting/simple-format.md) |
-| `intlFormatDistance()` | Format the distance between dates as human-readable, internationalized strings | [details](references/formatting/intl-format-distance.md) |
+| `format()` | Format a date or time as text using date-fns-style tokens. | [details](references/formatting/format.md) |
+| `formatPlainDate()` | Format a calendar date as text using date-fns-style tokens. | [details](references/formatting/format-plain-date.md) |
+| `simpleFormat()` | Format a date, a time, or both in a short human-friendly style. | [details](references/formatting/simple-format.md) |
+| `intlFormatDistance()` | Describe the time between two moments, like "in 3 days" or "2 hours ago". | [details](references/formatting/intl-format-distance.md) |
 
 ## Arithmetic
 
 | Function | Description | Reference |
 |----------|-------------|-----------|
-| `addYears()` | Add years to a datetime or calendar date | [details](references/arithmetic/add-years.md) |
-| `addQuarters()` | Add quarters to a datetime | [details](references/arithmetic/add-quarters.md) |
-| `addMonths()` | Add months to a datetime or calendar date | [details](references/arithmetic/add-months.md) |
-| `addWeeks()` | Add weeks to a datetime or calendar date | [details](references/arithmetic/add-weeks.md) |
-| `addDays()` | Add days to a datetime or calendar date (DST-safe) | [details](references/arithmetic/add-days.md) |
-| `addHours()` | Add hours to a datetime | [details](references/arithmetic/add-hours.md) |
-| `addMinutes()` | Add minutes to a datetime | [details](references/arithmetic/add-minutes.md) |
-| `addSeconds()` | Add seconds to a datetime | [details](references/arithmetic/add-seconds.md) |
-| `addMilliseconds()` | Add milliseconds to a datetime | [details](references/arithmetic/add-milliseconds.md) |
-| `addMicroseconds()` | Add microseconds to a datetime | [details](references/arithmetic/add-microseconds.md) |
-| `addNanoseconds()` | Add nanoseconds to a datetime | [details](references/arithmetic/add-nanoseconds.md) |
-| `subYears()` | Subtract years from a datetime or calendar date | [details](references/arithmetic/sub-years.md) |
-| `subQuarters()` | Subtract quarters from a datetime | [details](references/arithmetic/sub-quarters.md) |
-| `subMonths()` | Subtract months from a datetime or calendar date | [details](references/arithmetic/sub-months.md) |
-| `subWeeks()` | Subtract weeks from a datetime or calendar date | [details](references/arithmetic/sub-weeks.md) |
-| `subDays()` | Subtract days from a datetime or calendar date | [details](references/arithmetic/sub-days.md) |
-| `subHours()` | Subtract hours from a datetime | [details](references/arithmetic/sub-hours.md) |
-| `subMinutes()` | Subtract minutes from a datetime | [details](references/arithmetic/sub-minutes.md) |
-| `subSeconds()` | Subtract seconds from a datetime | [details](references/arithmetic/sub-seconds.md) |
-| `subMilliseconds()` | Subtract milliseconds from a datetime | [details](references/arithmetic/sub-milliseconds.md) |
-| `subMicroseconds()` | Subtract microseconds from a datetime | [details](references/arithmetic/sub-microseconds.md) |
-| `subNanoseconds()` | Subtract nanoseconds from a datetime | [details](references/arithmetic/sub-nanoseconds.md) |
+| `addYears()` | Add a number of years to a date or datetime. | [details](references/arithmetic/add-years.md) |
+| `addQuarters()` | Add a number of quarters (3-month periods) to a date or datetime. | [details](references/arithmetic/add-quarters.md) |
+| `addMonths()` | Add a number of months to a date or datetime. | [details](references/arithmetic/add-months.md) |
+| `addWeeks()` | Add a number of weeks to a date or datetime. | [details](references/arithmetic/add-weeks.md) |
+| `addDays()` | Add a number of calendar days to a date or datetime. | [details](references/arithmetic/add-days.md) |
+| `addHours()` | Add a number of hours of elapsed time to a datetime. | [details](references/arithmetic/add-hours.md) |
+| `addMinutes()` | Add a number of minutes to a datetime. | [details](references/arithmetic/add-minutes.md) |
+| `addSeconds()` | Add a number of seconds to a datetime. | [details](references/arithmetic/add-seconds.md) |
+| `addMilliseconds()` | Add a number of milliseconds to a datetime. | [details](references/arithmetic/add-milliseconds.md) |
+| `addMicroseconds()` | Add a number of microseconds to a datetime. | [details](references/arithmetic/add-microseconds.md) |
+| `addNanoseconds()` | Add a number of nanoseconds to a datetime. | [details](references/arithmetic/add-nanoseconds.md) |
+| `subYears()` | Subtract a number of years from a date or datetime. | [details](references/arithmetic/sub-years.md) |
+| `subQuarters()` | Subtract a number of quarters (3-month periods) from a date or datetime. | [details](references/arithmetic/sub-quarters.md) |
+| `subMonths()` | Subtract a number of months from a date or datetime. | [details](references/arithmetic/sub-months.md) |
+| `subWeeks()` | Subtract a number of weeks from a date or datetime. | [details](references/arithmetic/sub-weeks.md) |
+| `subDays()` | Subtract a number of calendar days from a date or datetime. | [details](references/arithmetic/sub-days.md) |
+| `subHours()` | Subtract a number of hours of elapsed time from a datetime. | [details](references/arithmetic/sub-hours.md) |
+| `subMinutes()` | Subtract a number of minutes from a datetime. | [details](references/arithmetic/sub-minutes.md) |
+| `subSeconds()` | Subtract a number of seconds from a datetime. | [details](references/arithmetic/sub-seconds.md) |
+| `subMilliseconds()` | Subtract a number of milliseconds from a datetime. | [details](references/arithmetic/sub-milliseconds.md) |
+| `subMicroseconds()` | Subtract a number of microseconds from a datetime. | [details](references/arithmetic/sub-microseconds.md) |
+| `subNanoseconds()` | Subtract a number of nanoseconds from a datetime. | [details](references/arithmetic/sub-nanoseconds.md) |
 
 ## Boundaries
 
 | Function | Description | Reference |
 |----------|-------------|-----------|
-| `startOfDay()` | Get the first moment of the day | [details](references/boundaries/start-of-day.md) |
-| `endOfDay()` | Get the last moment of the day | [details](references/boundaries/end-of-day.md) |
-| `startOfWeek()` | Get the first boundary of the week (Monday) | [details](references/boundaries/start-of-week.md) |
-| `endOfWeek()` | Get the last boundary of the week (Sunday) | [details](references/boundaries/end-of-week.md) |
-| `startOfMonth()` | Get the first boundary of the month | [details](references/boundaries/start-of-month.md) |
-| `endOfMonth()` | Get the last boundary of the month | [details](references/boundaries/end-of-month.md) |
-| `startOfQuarter()` | Get the first moment of the quarter | [details](references/boundaries/start-of-quarter.md) |
-| `endOfQuarter()` | Get the last moment of the quarter | [details](references/boundaries/end-of-quarter.md) |
-| `startOfYear()` | Get the first boundary of the year | [details](references/boundaries/start-of-year.md) |
-| `endOfYear()` | Get the last boundary of the year | [details](references/boundaries/end-of-year.md) |
+| `startOfDay()` | Get the first moment of a day, in a given timezone. | [details](references/boundaries/start-of-day.md) |
+| `endOfDay()` | Get the last nanosecond of a day, in a given timezone. | [details](references/boundaries/end-of-day.md) |
+| `startOfWeek()` | Get the Monday that starts the week of a date or datetime. | [details](references/boundaries/start-of-week.md) |
+| `endOfWeek()` | Get the Sunday that ends the week of a date or datetime. | [details](references/boundaries/end-of-week.md) |
+| `startOfMonth()` | Get the first day of the month for a date or datetime. | [details](references/boundaries/start-of-month.md) |
+| `endOfMonth()` | Get the last day of the month for a date or datetime. | [details](references/boundaries/end-of-month.md) |
+| `startOfQuarter()` | Get the first day of the calendar quarter for a date or datetime. | [details](references/boundaries/start-of-quarter.md) |
+| `endOfQuarter()` | Get the last day of the calendar quarter for a date or datetime. | [details](references/boundaries/end-of-quarter.md) |
+| `startOfYear()` | Get 1 January of the year for a date or datetime. | [details](references/boundaries/start-of-year.md) |
+| `endOfYear()` | Get 31 December of the year for a date or datetime. | [details](references/boundaries/end-of-year.md) |
+
+## Rounding
+
+| Function | Description | Reference |
+|----------|-------------|-----------|
+| `roundToNearestHour()` | Round a datetime to the hour, or to blocks of 2 to 12 hours. | [details](references/rounding/round-to-nearest-hour.md) |
+| `roundToNearestMinute()` | Round a datetime to the minute, or to slots such as 5, 15, or 30 minutes. | [details](references/rounding/round-to-nearest-minute.md) |
+| `roundToNearestSecond()` | Round a datetime to the second, or to intervals such as 10 or 30 seconds. | [details](references/rounding/round-to-nearest-second.md) |
 
 ## Comparison
 
 | Function | Description | Reference |
 |----------|-------------|-----------|
-| `isBefore()` | Check if one date, time, or datetime is before another | [details](references/comparison/is-before.md) |
-| `isAfter()` | Check if one date, time, or datetime is after another | [details](references/comparison/is-after.md) |
-| `isEqual()` | Check if two dates, times, or datetimes are the same | [details](references/comparison/is-equal.md) |
-| `isWithinInterval()` | Check if a datetime falls within an interval | [details](references/comparison/is-within-interval.md) |
-| `isFuture()` | Check if a datetime is in the future | [details](references/comparison/is-future.md) |
-| `isPast()` | Check if a datetime is in the past | [details](references/comparison/is-past.md) |
-| `isToday()` | Check if a value falls on today's date in a timezone | [details](references/comparison/is-today.md) |
-| `isTomorrow()` | Check if a value falls on tomorrow's date in a timezone | [details](references/comparison/is-tomorrow.md) |
-| `isYesterday()` | Check if a value falls on yesterday's date in a timezone | [details](references/comparison/is-yesterday.md) |
-| `isSameDay()` | Check if two datetimes are on the same calendar day | [details](references/comparison/is-same-day.md) |
-| `isSameWeek()` | Check if two datetimes are in the same ISO week | [details](references/comparison/is-same-week.md) |
-| `isSameMonth()` | Check if two datetimes are in the same calendar month | [details](references/comparison/is-same-month.md) |
-| `isSameQuarter()` | Check if two datetimes are in the same calendar quarter | [details](references/comparison/is-same-quarter.md) |
-| `isSameYear()` | Check if two datetimes are in the same calendar year | [details](references/comparison/is-same-year.md) |
-| `isSameHour()` | Check if two datetimes are in the same hour | [details](references/comparison/is-same-hour.md) |
-| `isSameMinute()` | Check if two datetimes are in the same minute | [details](references/comparison/is-same-minute.md) |
-| `isSameSecond()` | Check if two datetimes are in the same second | [details](references/comparison/is-same-second.md) |
-| `isSameMillisecond()` | Check if two datetimes are in the same millisecond | [details](references/comparison/is-same-millisecond.md) |
-| `isSameMicrosecond()` | Check if two datetimes are in the same microsecond | [details](references/comparison/is-same-microsecond.md) |
-| `isSameNanosecond()` | Check if two datetimes are in the same nanosecond | [details](references/comparison/is-same-nanosecond.md) |
-| `isPlainDateBefore()` | Check if a PlainDate is before another PlainDate | [details](references/comparison/is-plain-date-before.md) |
-| `isPlainDateAfter()` | Check if a PlainDate is after another PlainDate | [details](references/comparison/is-plain-date-after.md) |
-| `isPlainDateEqual()` | Check if two PlainDates are equal | [details](references/comparison/is-plain-date-equal.md) |
-| `isPlainTimeBefore()` | Check if a PlainTime is before another PlainTime | [details](references/comparison/is-plain-time-before.md) |
-| `isPlainTimeAfter()` | Check if a PlainTime is after another PlainTime | [details](references/comparison/is-plain-time-after.md) |
-| `isPlainTimeEqual()` | Check if two PlainTimes are equal | [details](references/comparison/is-plain-time-equal.md) |
+| `isBefore()` | Check whether one date, time, or timestamp comes before another. | [details](references/comparison/is-before.md) |
+| `isAfter()` | Check whether one date, time, or timestamp comes after another. | [details](references/comparison/is-after.md) |
+| `isEqual()` | Check whether two dates, times, or timestamps are the same. | [details](references/comparison/is-equal.md) |
+| `isWithinInterval()` | Check whether a timestamp falls between a start and an end. | [details](references/comparison/is-within-interval.md) |
+| `isFuture()` | Check whether a timestamp is later than the current moment. | [details](references/comparison/is-future.md) |
+| `isPast()` | Check whether a timestamp is earlier than the current moment. | [details](references/comparison/is-past.md) |
+| `isToday()` | Check whether a value falls on today's date in a timezone. | [details](references/comparison/is-today.md) |
+| `isTomorrow()` | Check whether a value falls on tomorrow's date in a timezone. | [details](references/comparison/is-tomorrow.md) |
+| `isYesterday()` | Check whether a value falls on yesterday's date in a timezone. | [details](references/comparison/is-yesterday.md) |
+| `isSameDay()` | Check whether two timestamps fall on the same calendar day. | [details](references/comparison/is-same-day.md) |
+| `isSameWeek()` | Check whether two timestamps fall in the same ISO week. | [details](references/comparison/is-same-week.md) |
+| `isSameMonth()` | Check whether two timestamps fall in the same calendar month. | [details](references/comparison/is-same-month.md) |
+| `isSameQuarter()` | Check whether two dates or timestamps fall in the same calendar quarter. | [details](references/comparison/is-same-quarter.md) |
+| `isSameYear()` | Check whether two timestamps fall in the same calendar year. | [details](references/comparison/is-same-year.md) |
+| `isSameHour()` | Check whether two timestamps fall in the same clock hour. | [details](references/comparison/is-same-hour.md) |
+| `isSameMinute()` | Check whether two timestamps fall in the same clock minute. | [details](references/comparison/is-same-minute.md) |
+| `isSameSecond()` | Check whether two timestamps fall in the same clock second. | [details](references/comparison/is-same-second.md) |
+| `isSameMillisecond()` | Check whether two timestamps fall in the same millisecond. | [details](references/comparison/is-same-millisecond.md) |
+| `isSameMicrosecond()` | Check whether two timestamps fall in the same microsecond. | [details](references/comparison/is-same-microsecond.md) |
+| `isSameNanosecond()` | Check whether two timestamps have the same wall-clock reading. | [details](references/comparison/is-same-nanosecond.md) |
+| `isPlainDateBefore()` | Check whether one calendar date comes before another. | [details](references/comparison/is-plain-date-before.md) |
+| `isPlainDateAfter()` | Check whether one calendar date comes after another. | [details](references/comparison/is-plain-date-after.md) |
+| `isPlainDateEqual()` | Check whether two calendar dates are the same day. | [details](references/comparison/is-plain-date-equal.md) |
+| `isPlainTimeBefore()` | Check whether one wall-clock time comes before another. | [details](references/comparison/is-plain-time-before.md) |
+| `isPlainTimeAfter()` | Check whether one wall-clock time comes after another. | [details](references/comparison/is-plain-time-after.md) |
+| `isPlainTimeEqual()` | Check whether two wall-clock times are the same. | [details](references/comparison/is-plain-time-equal.md) |
 
 ## Sorting & Selection
 
 | Function | Description | Reference |
 |----------|-------------|-----------|
-| `compareAsc()` | Comparator for sorting dates and times in ascending order | [details](references/selection/compare-asc.md) |
-| `compareDesc()` | Comparator for sorting dates and times in descending order | [details](references/selection/compare-desc.md) |
+| `compareAsc()` | Comparator that sorts dates and times oldest first | [details](references/selection/compare-asc.md) |
+| `compareDesc()` | Comparator that sorts dates and times newest first | [details](references/selection/compare-desc.md) |
 | `min()` | Get the earliest date, time, or datetime in an array | [details](references/selection/min.md) |
 | `max()` | Get the latest date, time, or datetime in an array | [details](references/selection/max.md) |
-| `clamp()` | Restrict a date, time, or datetime to an interval | [details](references/selection/clamp.md) |
+| `clamp()` | Keep a date, time, or datetime inside a range | [details](references/selection/clamp.md) |
 | `closestTo()` | Find the date, time, or datetime nearest to a target | [details](references/selection/closest-to.md) |
 
 ## Difference
 
 | Function | Description | Reference |
 |----------|-------------|-----------|
-| `differenceInYears()` | Calculate the difference between two dates in years | [details](references/difference/difference-in-years.md) |
-| `differenceInQuarters()` | Calculate the difference between two dates in quarters | [details](references/difference/difference-in-quarters.md) |
-| `differenceInMonths()` | Calculate the difference between two dates in months | [details](references/difference/difference-in-months.md) |
-| `differenceInWeeks()` | Calculate the difference between two dates in weeks | [details](references/difference/difference-in-weeks.md) |
-| `differenceInDays()` | Calculate the difference between two dates in days | [details](references/difference/difference-in-days.md) |
-| `differenceInHours()` | Calculate the difference between two dates in hours | [details](references/difference/difference-in-hours.md) |
-| `differenceInMinutes()` | Calculate the difference between two dates in minutes | [details](references/difference/difference-in-minutes.md) |
-| `differenceInSeconds()` | Calculate the difference between two dates in seconds | [details](references/difference/difference-in-seconds.md) |
-| `differenceInMilliseconds()` | Calculate the difference between two datetimes in milliseconds | [details](references/difference/difference-in-milliseconds.md) |
-| `differenceInMicroseconds()` | Calculate the difference between two datetimes in microseconds | [details](references/difference/difference-in-microseconds.md) |
-| `differenceInNanoseconds()` | Calculate the difference between two datetimes in nanoseconds | [details](references/difference/difference-in-nanoseconds.md) |
+| `differenceInYears()` | Count the full years between two dates or datetimes | [details](references/difference/difference-in-years.md) |
+| `differenceInQuarters()` | Count the quarters (3-month blocks) between two dates or datetimes | [details](references/difference/difference-in-quarters.md) |
+| `differenceInMonths()` | Count the calendar months between two dates or datetimes | [details](references/difference/difference-in-months.md) |
+| `differenceInWeeks()` | Count the weeks between two dates or datetimes | [details](references/difference/difference-in-weeks.md) |
+| `differenceInDays()` | Count the days between two dates or datetimes | [details](references/difference/difference-in-days.md) |
+| `differenceInHours()` | Count the hours elapsed between two datetimes | [details](references/difference/difference-in-hours.md) |
+| `differenceInMinutes()` | Count the minutes elapsed between two datetimes | [details](references/difference/difference-in-minutes.md) |
+| `differenceInSeconds()` | Count the seconds elapsed between two datetimes | [details](references/difference/difference-in-seconds.md) |
+| `differenceInMilliseconds()` | Count the milliseconds elapsed between two datetimes | [details](references/difference/difference-in-milliseconds.md) |
+| `differenceInMicroseconds()` | Count the microseconds elapsed between two datetimes | [details](references/difference/difference-in-microseconds.md) |
+| `differenceInNanoseconds()` | Get the exact nanoseconds between two datetimes as a bigint | [details](references/difference/difference-in-nanoseconds.md) |
 
 ## Business Days
 
@@ -170,23 +178,20 @@ npm install @gobrand/tiempo
 
 | Function | Description | Reference |
 |----------|-------------|-----------|
-| `eachYearOfInterval()` | Get all years in an interval as PlainDate or ZonedDateTime values | [details](references/intervals/each-year-of-interval.md) |
-| `eachQuarterOfInterval()` | Get all quarters in an interval as ZonedDateTime array | [details](references/intervals/each-quarter-of-interval.md) |
-| `eachMonthOfInterval()` | Get all months in an interval as PlainDate or ZonedDateTime values | [details](references/intervals/each-month-of-interval.md) |
-| `eachWeekOfInterval()` | Get all weeks (ISO Monday start) in an interval as PlainDate or ZonedDateTime values | [details](references/intervals/each-week-of-interval.md) |
-| `eachDayOfInterval()` | Get all days in an interval as PlainDate or ZonedDateTime values | [details](references/intervals/each-day-of-interval.md) |
-| `eachHourOfInterval()` | Get all hours in an interval as ZonedDateTime array | [details](references/intervals/each-hour-of-interval.md) |
-| `eachMinuteOfInterval()` | Get all minutes in an interval as ZonedDateTime array | [details](references/intervals/each-minute-of-interval.md) |
+| `eachYearOfInterval()` | List 1 January of each year a range touches | [details](references/intervals/each-year-of-interval.md) |
+| `eachQuarterOfInterval()` | List the first day of each quarter a range touches | [details](references/intervals/each-quarter-of-interval.md) |
+| `eachMonthOfInterval()` | List the first day of each month a range touches | [details](references/intervals/each-month-of-interval.md) |
+| `eachWeekOfInterval()` | List the Monday of each week a range touches | [details](references/intervals/each-week-of-interval.md) |
+| `eachDayOfInterval()` | List every day from start to end, including both | [details](references/intervals/each-day-of-interval.md) |
+| `eachHourOfInterval()` | List the start of every hour from start to end | [details](references/intervals/each-hour-of-interval.md) |
+| `eachMinuteOfInterval()` | List the start of every minute from start to end | [details](references/intervals/each-minute-of-interval.md) |
 
 ## Utilities
 
 | Function | Description | Reference |
 |----------|-------------|-----------|
-| `getQuarter()` | Get the quarter (1-4) that a datetime falls in | [details](references/utilities/get-quarter.md) |
-| `browserTimezone()` | Get the browser/device timezone | [details](references/utilities/browser-timezone.md) |
-| `roundToNearestHour()` | Round a datetime to the nearest hour boundary | [details](references/utilities/round-to-nearest-hour.md) |
-| `roundToNearestMinute()` | Round a datetime to the nearest minute boundary | [details](references/utilities/round-to-nearest-minute.md) |
-| `roundToNearestSecond()` | Round a datetime to the nearest second boundary | [details](references/utilities/round-to-nearest-second.md) |
+| `getQuarter()` | Get the calendar quarter (1 to 4) of a date or datetime. | [details](references/utilities/get-quarter.md) |
+| `browserTimezone()` | Get the IANA timezone of the device running the code. | [details](references/utilities/browser-timezone.md) |
 
 ## Types
 

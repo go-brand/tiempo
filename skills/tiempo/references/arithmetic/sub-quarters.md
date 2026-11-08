@@ -1,6 +1,6 @@
 # subQuarters
 
-Subtracts the specified number of quarters (3-month blocks) from a datetime.
+The reverse of [addQuarters](https://tiempo.gobrand.app/docs/arithmetic/add-quarters): goes back three calendar months per quarter. A day missing from the target month moves back to its last day: May 31 minus one quarter is February 28.
 
 ## Signature
 
@@ -8,29 +8,30 @@ Subtracts the specified number of quarters (3-month blocks) from a datetime.
 function subQuarters(
   input: Temporal.Instant | Temporal.ZonedDateTime,
   quarters: number
-): Temporal.ZonedDateTime
-function subQuarters(
-  input: Temporal.PlainDate,
-  quarters: number
-): Temporal.PlainDate
+): Temporal.ZonedDateTime;
+function subQuarters(input: Temporal.PlainDate, quarters: number): Temporal.PlainDate;
 ```
 
-Input type determines output type: a `PlainDate` stays in calendar space and returns a `PlainDate` (no timezone needed).
+## Parameters
 
-## Example
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `input` | `Temporal.PlainDate \| Temporal.Instant \| Temporal.ZonedDateTime` | The starting date or datetime |
+| `quarters` | `number` | Whole number of quarters to subtract; negative goes forward. Fractions throw a `RangeError`. |
+
+## Returns
+
+A `PlainDate` for a `PlainDate` input. Otherwise a `ZonedDateTime` in the input's timezone, or in UTC for an `Instant`.
+
+## Examples
+
+### Compare with the previous quarter and the same quarter last year
 
 ```ts
 import { subQuarters } from '@gobrand/tiempo';
 
-const now = Temporal.Now.zonedDateTimeISO();
+const q2Start = Temporal.PlainDate.from('2026-04-01');
 
-// Get last quarter
-const lastQuarter = subQuarters(now, 1);
-
-// Get a year ago (4 quarters)
-const yearAgo = subQuarters(now, 4);
-
-// From a PlainDate (returns a PlainDate)
-subQuarters(Temporal.PlainDate.from('2025-07-20'), 1);
-// 2025-04-20
+subQuarters(q2Start, 1); // 2026-01-01
+subQuarters(q2Start, 4); // 2025-04-01
 ```

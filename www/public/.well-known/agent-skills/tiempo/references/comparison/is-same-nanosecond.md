@@ -1,6 +1,6 @@
 # isSameNanosecond
 
-Returns true if both datetimes are in the same nanosecond. This is the highest precision comparison available.
+Returns `true` when both timestamps show the same date and time down to the nanosecond, each read in its own timezone (Instants in UTC). To ask whether two values are the same instant, use [isEqual](https://tiempo.gobrand.app/docs/comparison/is-equal) instead.
 
 ## Signature
 
@@ -8,18 +8,35 @@ Returns true if both datetimes are in the same nanosecond. This is the highest p
 function isSameNanosecond(
   date1: Temporal.Instant | Temporal.ZonedDateTime,
   date2: Temporal.Instant | Temporal.ZonedDateTime
-): boolean
+): boolean;
 ```
 
-## Example
+## Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `date1` | `Instant \| ZonedDateTime` | The first timestamp |
+| `date2` | `Instant \| ZonedDateTime` | The second timestamp |
+
+## Returns
+
+`true` if both values match from the year down to the nanosecond in their own timezones, otherwise `false`.
+
+## Examples
+
+### The same instant in two timezones has different clock readings
 
 ```ts
-import { isSameNanosecond } from '@gobrand/tiempo';
+import { isEqual, isSameNanosecond } from '@gobrand/tiempo';
 
-const time1 = Temporal.ZonedDateTime.from('2025-01-20T15:30:45.123456789Z[UTC]');
-const time2 = Temporal.ZonedDateTime.from('2025-01-20T15:30:45.123456789Z[UTC]');
-const time3 = Temporal.ZonedDateTime.from('2025-01-20T15:30:45.123456790Z[UTC]');
+const madrid = Temporal.ZonedDateTime.from('2026-06-15T12:00:00+02:00[Europe/Madrid]');
+const newYork = Temporal.ZonedDateTime.from('2026-06-15T06:00:00-04:00[America/New_York]');
 
-isSameNanosecond(time1, time2); // true (exact match)
-isSameNanosecond(time1, time3); // false (different nanosecond)
+isEqual(madrid, newYork); // true (same instant)
+isSameNanosecond(madrid, newYork); // false (12:00 and 06:00)
 ```
+
+## Good to know
+
+- When clocks fall back, a reading repeats: `01:30-04:00` and `01:30-05:00` in New York are an hour apart, but `isSameNanosecond` returns `true`.
+- To require the same instant, timezone, and calendar, use `zoned1.equals(zoned2)`.

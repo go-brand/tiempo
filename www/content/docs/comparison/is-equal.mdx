@@ -1,11 +1,9 @@
 ---
 title: isEqual
-description: Check if two dates, times, or datetimes are the same
+description: Check whether two dates, times, or timestamps are the same.
 ---
 
-Returns true if both values are the same point in their domain.
-
-Timeline values (Instant, ZonedDateTime) are equal when they are the same exact instant, even if their timezones differ. PlainDate pairs compare dates; PlainTime pairs compare wall-clock times. Mixed domains are rejected by TypeScript and throw a TypeError at runtime.
+Returns `true` when both values are the same date, the same time, or the same instant. Timestamps written in different timezones are equal when they are the same moment.
 
 ## Signature
 
@@ -15,48 +13,43 @@ function isEqual(date1: Temporal.PlainTime, date2: Temporal.PlainTime): boolean;
 function isEqual(
   date1: Temporal.Instant | Temporal.ZonedDateTime,
   date2: Temporal.Instant | Temporal.ZonedDateTime
-): boolean
+): boolean;
 ```
 
 ## Parameters
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `date1` | `PlainDate`, `PlainTime`, or `Instant \| ZonedDateTime` | The first value |
-| `date2` | Same domain as `date1` | The second value |
+| `date1` | `PlainDate`, `PlainTime`, `Instant`, or `ZonedDateTime` | The first value |
+| `date2` | Same kind as `date1`; `Instant` and `ZonedDateTime` can be mixed | The second value |
 
 ## Returns
 
-`true` if `date1` equals `date2`, `false` otherwise.
+`true` if `date1` equals `date2`, otherwise `false`.
 
 ## Examples
 
-### Same instant, different timezones
+### Match the same moment stored in different timezones
 
 ```ts
 import { isEqual } from '@gobrand/tiempo';
 
-const ny = Temporal.ZonedDateTime.from('2025-01-20T10:00:00-05:00[America/New_York]');
-const utc = Temporal.Instant.from('2025-01-20T15:00:00Z');
+const newYork = Temporal.ZonedDateTime.from('2026-01-20T10:00:00-05:00[America/New_York]');
+const utc = Temporal.Instant.from('2026-01-20T15:00:00Z');
 
-isEqual(ny, utc); // true
+isEqual(newYork, utc); // true
 ```
 
-### Dates and clock times
+### Compare two dates or two clock times
 
 ```ts
 import { isEqual } from '@gobrand/tiempo';
 
-isEqual(Temporal.PlainDate.from('2025-01-20'), Temporal.PlainDate.from('2025-01-21')); // false
+isEqual(Temporal.PlainDate.from('2026-01-20'), Temporal.PlainDate.from('2026-01-21')); // false
 isEqual(Temporal.PlainTime.from('09:00'), Temporal.PlainTime.from('09:00:00.000')); // true
 ```
 
-## Which equality to use
+## Good to know
 
-| Question | Use |
-|----------|-----|
-| Same moment in time? | `isEqual` |
-| Same wall-clock reading (year through nanosecond)? | `isSameNanosecond` |
-| Same moment, timezone, and calendar? | `zoned1.equals(zoned2)` |
-
-During a repeated DST hour, `01:30-04:00` and `01:30-05:00` in New York are different instants: `isEqual` returns false while `isSameNanosecond` returns true.
+- Comparing a PlainDate, a PlainTime, and a timestamp with each other is a TypeScript error and throws a `TypeError`.
+- To compare wall-clock readings instead of instants, use [isSameNanosecond](/docs/comparison/is-same-nanosecond). To also require the same timezone and calendar, use `zoned1.equals(zoned2)`.

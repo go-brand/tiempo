@@ -1,12 +1,6 @@
 # eachMonthOfInterval
 
-Returns the start of every month touched by the interval. PlainDate endpoints return `PlainDate[]`; Instant/ZonedDateTime endpoints return `ZonedDateTime[]` in the start timezone. Both endpoint periods are included.
-
-## Temporal compatibility and calendars
-
-Accepts native Temporal and polyfill endpoints, including mixed pairs. Results use the start endpoint’s timezone and calendar; the end is interpreted in that same context. Non-ISO calendar years and months are preserved rather than reinterpreted as ISO fields.
-
-Two PlainDate endpoints return `PlainDate[]`: the start of every month touched by the interval, in the start calendar. The first result may precede the input start date. Equal endpoints produce one period start; reversed original endpoints produce `[]`. PlainDate/timeline mixing is rejected. Native and polyfill endpoints may be mixed within a supported domain.
+Returns the 1st of every month from the month containing `start` to the month containing `end`.
 
 ## Signature
 
@@ -26,106 +20,43 @@ function eachMonthOfInterval(interval: {
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `interval` | `{ start, end }` | Two PlainDate endpoints, or two Instant/ZonedDateTime endpoints |
+| `interval.start` | `PlainDate` or `Instant \| ZonedDateTime` | Start of the range |
+| `interval.end` | Same kind as `start` | End of the range, included |
 
 ## Returns
 
-PlainDate endpoints return date-only period starts in the start calendar. Other supported inputs keep the timeline behavior below.
-
-Array of `Temporal.ZonedDateTime` at the start of each month in the interval.
-
-For `Instant` inputs, UTC is used as the timezone. For `ZonedDateTime` inputs, the timezone of the start date is preserved.
+PlainDate endpoints give a `PlainDate[]`. Instant or ZonedDateTime endpoints give a `ZonedDateTime[]` at the start of each 1st, in the timezone of `start` (UTC for an Instant). A reversed range gives `[]`.
 
 ## Examples
 
-### Date-only period starts
-
-```ts
-import { toPlainDate, eachMonthOfInterval } from '@gobrand/tiempo';
-
-const starts = eachMonthOfInterval({
-  start: toPlainDate('2026-01-15'),
-  end: toPlainDate('2026-03-02'),
-});
-starts.map(date => date.toString()); // ['2026-01-01', '2026-02-01', '2026-03-01']
-```
-
-### Basic usage
+### Rows for a monthly report
 
 ```ts
 import { eachMonthOfInterval } from '@gobrand/tiempo';
 
-const start = Temporal.ZonedDateTime.from('2025-01-15T10:00:00Z[UTC]');
-const end = Temporal.ZonedDateTime.from('2025-04-20T14:00:00Z[UTC]');
+const months = eachMonthOfInterval({
+  start: Temporal.PlainDate.from('2026-01-15'),
+  end: Temporal.PlainDate.from('2026-04-02'),
+});
 
-const months = eachMonthOfInterval({ start, end });
-// [
-//   2025-01-01T00:00:00Z[UTC],
-//   2025-02-01T00:00:00Z[UTC],
-//   2025-03-01T00:00:00Z[UTC],
-//   2025-04-01T00:00:00Z[UTC]
-// ]
+months.map((month) => month.toPlainYearMonth().toString()); // ['2026-01', '2026-02', '2026-03', '2026-04']
 ```
 
-### Cross-year boundary
+### Instant endpoints are read in UTC
 
 ```ts
-const start = Temporal.ZonedDateTime.from('2024-11-15T00:00:00Z[UTC]');
-const end = Temporal.ZonedDateTime.from('2025-02-15T00:00:00Z[UTC]');
+import { eachMonthOfInterval } from '@gobrand/tiempo';
 
-const months = eachMonthOfInterval({ start, end });
-// [
-//   2024-11-01T00:00:00Z[UTC],
-//   2024-12-01T00:00:00Z[UTC],
-//   2025-01-01T00:00:00Z[UTC],
-//   2025-02-01T00:00:00Z[UTC]
-// ]
+const months = eachMonthOfInterval({
+  start: Temporal.Instant.from('2026-10-31T23:30:00Z'), // already 1 November in Madrid
+  end: Temporal.Instant.from('2026-12-01T00:00:00Z'),
+});
+
+months.map(String); // ['2026-10-01T00:00:00+00:00[UTC]', '2026-11-01T00:00:00+00:00[UTC]', '2026-12-01T00:00:00+00:00[UTC]']
 ```
 
-### With timezone
+To group by a local calendar, convert with [toZonedTime](https://tiempo.gobrand.app/docs/conversion/to-zoned-time) first.
 
-```ts
-const start = Temporal.ZonedDateTime.from('2025-01-15T00:00:00-05:00[America/New_York]');
-const end = Temporal.ZonedDateTime.from('2025-03-15T00:00:00-04:00[America/New_York]');
+## Good to know
 
-const months = eachMonthOfInterval({ start, end });
-// [
-//   2025-01-01T00:00:00-05:00[America/New_York],
-//   2025-02-01T00:00:00-05:00[America/New_York],
-//   2025-03-01T00:00:00-05:00[America/New_York]
-// ]
-```
-
-## Common Patterns
-
-### Generate monthly billing periods
-
-```ts
-import { eachMonthOfInterval, addMonths } from '@gobrand/tiempo';
-
-function getMonthlyBillingPeriods(
-  contractStart: Temporal.ZonedDateTime,
-  contractEnd: Temporal.ZonedDateTime
-) {
-  return eachMonthOfInterval({ start: contractStart, end: contractEnd }).map(monthStart => ({
-    periodStart: monthStart,
-    periodEnd: addMonths(monthStart, 1).subtract({ nanoseconds: 1 })
-  }));
-}
-```
-
-### Build month selector options
-
-```ts
-import { eachMonthOfInterval, format } from '@gobrand/tiempo';
-
-function getMonthOptions(year: number, timezone: string) {
-  const start = Temporal.ZonedDateTime.from(`${year}-01-01T00:00:00[${timezone}]`);
-  const end = Temporal.ZonedDateTime.from(`${year}-12-31T00:00:00[${timezone}]`);
-
-  return eachMonthOfInterval({ start, end }).map(month => ({
-    value: month.toPlainYearMonth().toString(),
-    label: format(month, 'MMMM yyyy')
-  }));
-}
-```
+- Mixing a PlainDate with an Instant or ZonedDateTime is a TypeScript error and throws a `TypeError`.

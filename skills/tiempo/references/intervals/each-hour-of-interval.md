@@ -1,10 +1,6 @@
 # eachHourOfInterval
 
-Returns an array of ZonedDateTime objects for each hour within the interval. Each element represents a local hour boundary or the first valid instant after an offset transition within an hour. The interval is inclusive of both start and end hours.
-
-Completely missing hours are skipped. Partial hours start at the transition, and repeated hours have separate entries for each offset. Later entries realign to local hour boundaries, so steps need not be 60 elapsed minutes. For example, Lord Howe spring-forward results include `01:00`, `02:30`, `03:00`, and `04:00`.
-
-Reversed original endpoints return an empty array, even inside the same hour.
+Returns the start of every hour from the hour containing `start` to the hour containing `end`.
 
 ## Signature
 
@@ -19,96 +15,46 @@ function eachHourOfInterval(interval: {
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `interval` | `{ start, end }` | The interval with start and end datetimes |
+| `interval.start` | `Instant \| ZonedDateTime` | Start of the range |
+| `interval.end` | `Instant \| ZonedDateTime` | End of the range, included |
 
 ## Returns
 
-Array of `Temporal.ZonedDateTime` at the start of each hour in the interval.
-
-For `Instant` inputs, UTC is used as the timezone. For `ZonedDateTime` inputs, the timezone of the start date is preserved.
+A `ZonedDateTime[]` in the timezone of `start` (UTC for an Instant). A reversed range gives `[]`.
 
 ## Examples
 
-### Basic usage
+### Hourly slots for a booking calendar
 
 ```ts
 import { eachHourOfInterval } from '@gobrand/tiempo';
 
-const start = Temporal.ZonedDateTime.from('2025-01-06T10:30:00Z[UTC]');
-const end = Temporal.ZonedDateTime.from('2025-01-06T14:15:00Z[UTC]');
+const hours = eachHourOfInterval({
+  start: Temporal.ZonedDateTime.from('2026-06-15T09:30:00-07:00[America/Los_Angeles]'),
+  end: Temporal.ZonedDateTime.from('2026-06-15T12:15:00-07:00[America/Los_Angeles]'),
+});
 
-const hours = eachHourOfInterval({ start, end });
-// [
-//   2025-01-06T10:00:00Z[UTC],
-//   2025-01-06T11:00:00Z[UTC],
-//   2025-01-06T12:00:00Z[UTC],
-//   2025-01-06T13:00:00Z[UTC],
-//   2025-01-06T14:00:00Z[UTC]
-// ]
+hours.map((hour) => hour.toPlainTime().toString()); // ['09:00:00', '10:00:00', '11:00:00', '12:00:00']
 ```
 
-### Cross-day boundary
+### The nights the clocks change
 
 ```ts
-const start = Temporal.ZonedDateTime.from('2025-01-06T22:00:00Z[UTC]');
-const end = Temporal.ZonedDateTime.from('2025-01-07T02:00:00Z[UTC]');
+import { eachHourOfInterval } from '@gobrand/tiempo';
 
-const hours = eachHourOfInterval({ start, end });
-// [
-//   2025-01-06T22:00:00Z[UTC],
-//   2025-01-06T23:00:00Z[UTC],
-//   2025-01-07T00:00:00Z[UTC],
-//   2025-01-07T01:00:00Z[UTC],
-//   2025-01-07T02:00:00Z[UTC]
-// ]
+const springForward = eachHourOfInterval({
+  start: Temporal.ZonedDateTime.from('2026-03-08T00:00:00-05:00[America/New_York]'),
+  end: Temporal.ZonedDateTime.from('2026-03-08T04:00:00-04:00[America/New_York]'),
+});
+springForward.map(String); // ['2026-03-08T00:00:00-05:00[America/New_York]', '2026-03-08T01:00:00-05:00[America/New_York]', '2026-03-08T03:00:00-04:00[America/New_York]', '2026-03-08T04:00:00-04:00[America/New_York]']
+
+const fallBack = eachHourOfInterval({
+  start: Temporal.ZonedDateTime.from('2026-11-01T00:00:00-04:00[America/New_York]'),
+  end: Temporal.ZonedDateTime.from('2026-11-01T02:00:00-05:00[America/New_York]'),
+});
+fallBack.map(String); // ['2026-11-01T00:00:00-04:00[America/New_York]', '2026-11-01T01:00:00-04:00[America/New_York]', '2026-11-01T01:00:00-05:00[America/New_York]', '2026-11-01T02:00:00-05:00[America/New_York]']
 ```
 
-### With timezone
+## Good to know
 
-```ts
-const start = Temporal.ZonedDateTime.from('2025-01-06T09:00:00-05:00[America/New_York]');
-const end = Temporal.ZonedDateTime.from('2025-01-06T12:00:00-05:00[America/New_York]');
-
-const hours = eachHourOfInterval({ start, end });
-// [
-//   2025-01-06T09:00:00-05:00[America/New_York],
-//   2025-01-06T10:00:00-05:00[America/New_York],
-//   2025-01-06T11:00:00-05:00[America/New_York],
-//   2025-01-06T12:00:00-05:00[America/New_York]
-// ]
-```
-
-## Common Patterns
-
-### Generate hourly time slots
-
-```ts
-import { eachHourOfInterval, addHours, format } from '@gobrand/tiempo';
-
-function getHourlySlots(
-  dayStart: Temporal.ZonedDateTime,
-  dayEnd: Temporal.ZonedDateTime
-) {
-  return eachHourOfInterval({ start: dayStart, end: dayEnd }).map(hour => ({
-    start: hour,
-    end: addHours(hour, 1),
-    label: format(hour, 'h:mm a')
-  }));
-}
-```
-
-### Build hour picker
-
-```ts
-import { eachHourOfInterval, format } from '@gobrand/tiempo';
-
-function getHourOptions(date: Temporal.ZonedDateTime) {
-  const dayStart = date.startOfDay();
-  const dayEnd = dayStart.add({ hours: 23 });
-
-  return eachHourOfInterval({ start: dayStart, end: dayEnd }).map(hour => ({
-    value: hour.hour,
-    label: format(hour, 'h:mm a')
-  }));
-}
-```
+- Entries follow the local clock. In a zone with a 30-minute DST shift, such as Australia/Lord_Howe, the partial hour starts at the transition (for example 02:30) and later entries return to :00.

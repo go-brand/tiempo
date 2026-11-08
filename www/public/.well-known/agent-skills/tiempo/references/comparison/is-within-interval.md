@@ -1,6 +1,6 @@
 # isWithinInterval
 
-Returns true if the given datetime is within the interval (inclusive of start and end). Compares by the underlying instant (epoch time), not by calendar date/time.
+Returns `true` when the timestamp is between `start` and `end`, both included. Values compare by exact instant, so the start, end, and checked value can be written in different timezones.
 
 ## Signature
 
@@ -11,104 +11,52 @@ function isWithinInterval(
     start: Temporal.Instant | Temporal.ZonedDateTime;
     end: Temporal.Instant | Temporal.ZonedDateTime;
   }
-): boolean
+): boolean;
 ```
 
 ## Parameters
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `date` | `Temporal.Instant \| Temporal.ZonedDateTime` | The datetime to check |
-| `interval` | `{ start, end }` | The interval with start and end datetimes |
+| `date` | `Instant \| ZonedDateTime` | The timestamp to check |
+| `interval` | `{ start, end }` | The window, each end an `Instant` or `ZonedDateTime` |
 
 ## Returns
 
-`true` if `date` is within the interval (inclusive), `false` otherwise.
+`true` if `date` is within the interval, including its start and end, otherwise `false`.
 
 ## Examples
 
-### Basic usage
+### Check whether an order counts for a New York sale
 
 ```ts
 import { isWithinInterval } from '@gobrand/tiempo';
 
-const start = Temporal.ZonedDateTime.from('2025-01-01T00:00:00Z[UTC]');
-const end = Temporal.ZonedDateTime.from('2025-01-07T00:00:00Z[UTC]');
-const date = Temporal.ZonedDateTime.from('2025-01-03T00:00:00Z[UTC]');
+const blackFriday = {
+  start: Temporal.ZonedDateTime.from('2026-11-27T00:00:00-05:00[America/New_York]'),
+  end: Temporal.ZonedDateTime.from('2026-11-30T23:59:59-05:00[America/New_York]')
+};
 
-isWithinInterval(date, { start, end }); // true
+const order = Temporal.ZonedDateTime.from('2026-11-27T05:30:00+01:00[Europe/Madrid]');
+
+isWithinInterval(order, blackFriday); // false (still 23:30 on November 26 in New York)
 ```
 
-### Date outside the interval
-
-```ts
-const start = Temporal.ZonedDateTime.from('2025-01-01T00:00:00Z[UTC]');
-const end = Temporal.ZonedDateTime.from('2025-01-07T00:00:00Z[UTC]');
-const date = Temporal.ZonedDateTime.from('2025-01-10T00:00:00Z[UTC]');
-
-isWithinInterval(date, { start, end }); // false
-```
-
-### Inclusive boundaries
-
-```ts
-const start = Temporal.ZonedDateTime.from('2025-01-01T00:00:00Z[UTC]');
-const end = Temporal.ZonedDateTime.from('2025-01-07T00:00:00Z[UTC]');
-
-// Date equal to interval start (inclusive)
-isWithinInterval(start, { start, end }); // true
-
-// Date equal to interval end (inclusive)
-isWithinInterval(end, { start, end }); // true
-```
-
-### With Instant
-
-```ts
-const start = Temporal.Instant.from('2025-01-01T00:00:00Z');
-const end = Temporal.Instant.from('2025-01-07T00:00:00Z');
-const date = Temporal.Instant.from('2025-01-03T00:00:00Z');
-
-isWithinInterval(date, { start, end }); // true
-```
-
-### Different timezones - compares by instant
-
-```ts
-const start = Temporal.ZonedDateTime.from('2025-01-01T00:00:00-05:00[America/New_York]');
-const end = Temporal.ZonedDateTime.from('2025-01-07T00:00:00+09:00[Asia/Tokyo]');
-const date = Temporal.ZonedDateTime.from('2025-01-03T12:00:00Z[UTC]');
-
-isWithinInterval(date, { start, end }); // true
-```
-
-## Common Patterns
-
-### Validate booking availability
+### Accept a check-in at the last moment of a 15-minute slot
 
 ```ts
 import { isWithinInterval } from '@gobrand/tiempo';
 
-function isSlotAvailable(
-  slot: Temporal.ZonedDateTime,
-  availableFrom: Temporal.ZonedDateTime,
-  availableUntil: Temporal.ZonedDateTime
-) {
-  return isWithinInterval(slot, { start: availableFrom, end: availableUntil });
-}
+const slot = {
+  start: Temporal.Instant.from('2026-05-12T17:00:00Z'),
+  end: Temporal.Instant.from('2026-05-12T17:15:00Z')
+};
+
+isWithinInterval(Temporal.Instant.from('2026-05-12T17:15:00Z'), slot); // true (the end is included)
+isWithinInterval(Temporal.Instant.from('2026-05-12T17:15:01Z'), slot); // false
 ```
 
-### Check if event is currently active
+## Good to know
 
-```ts
-import { isWithinInterval, now } from '@gobrand/tiempo';
-
-function isEventActive(
-  eventStart: Temporal.ZonedDateTime,
-  eventEnd: Temporal.ZonedDateTime,
-  timezone: string
-) {
-  const currentTime = now(timezone);
-  return isWithinInterval(currentTime, { start: eventStart, end: eventEnd });
-}
-```
+- If `start` is after `end`, the result is always `false`. It does not throw.
+- Only timestamps are accepted. For PlainDates, use `!isBefore(date, start) && !isAfter(date, end)` with [isBefore](https://tiempo.gobrand.app/docs/comparison/is-before) and [isAfter](https://tiempo.gobrand.app/docs/comparison/is-after).

@@ -19,8 +19,8 @@ import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
  * @example
  * ```ts
  * // Same timezone, same week (both in week 4 of 2025)
- * const monday = Temporal.ZonedDateTime.from('2025-01-20T08:00:00Z[UTC]'); // Monday, Week 4
- * const sunday = Temporal.ZonedDateTime.from('2025-01-26T23:59:59Z[UTC]'); // Sunday, Week 4
+ * const monday = Temporal.ZonedDateTime.from('2025-01-20T08:00:00+00:00[UTC]'); // Monday, Week 4
+ * const sunday = Temporal.ZonedDateTime.from('2025-01-26T23:59:59+00:00[UTC]'); // Sunday, Week 4
  *
  * isSameWeek(monday, sunday); // true
  * ```
@@ -28,8 +28,8 @@ import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
  * @example
  * ```ts
  * // Same timezone, different weeks
- * const week3 = Temporal.ZonedDateTime.from('2025-01-19T23:59:59Z[UTC]'); // Sunday, Week 3
- * const week4 = Temporal.ZonedDateTime.from('2025-01-20T00:00:00Z[UTC]'); // Monday, Week 4
+ * const week3 = Temporal.ZonedDateTime.from('2025-01-19T23:59:59+00:00[UTC]'); // Sunday, Week 3
+ * const week4 = Temporal.ZonedDateTime.from('2025-01-20T00:00:00+00:00[UTC]'); // Monday, Week 4
  *
  * isSameWeek(week3, week4); // false
  * ```
@@ -63,9 +63,9 @@ import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
  * ```ts
  * // ISO week years can differ from calendar years
  * // December 29, 2024 is in Week 52 of 2024
- * const dec29 = Temporal.ZonedDateTime.from('2024-12-29T12:00:00Z[UTC]');
+ * const dec29 = Temporal.ZonedDateTime.from('2024-12-29T12:00:00+00:00[UTC]');
  * // January 5, 2025 is in Week 1 of 2025
- * const jan5 = Temporal.ZonedDateTime.from('2025-01-05T12:00:00Z[UTC]');
+ * const jan5 = Temporal.ZonedDateTime.from('2025-01-05T12:00:00+00:00[UTC]');
  *
  * isSameWeek(dec29, jan5); // false (different ISO weeks)
  * ```

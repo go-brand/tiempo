@@ -1,11 +1,9 @@
 ---
 title: isToday
-description: Check if a value falls on today's date in a timezone
+description: Check whether a value falls on today's date in a timezone.
 ---
 
-Returns true if the value falls on today's date in the given timezone.
-
-"Today" depends on where you are, so the timezone is required. Instant and ZonedDateTime inputs are converted to that timezone before taking their date. PlainDate inputs are compared with today's date in that timezone directly.
+Returns `true` when the value falls on today's date in the given timezone. Instants and ZonedDateTimes are converted to that timezone first; PlainDates are compared as they are.
 
 ## Signature
 
@@ -13,7 +11,7 @@ Returns true if the value falls on today's date in the given timezone.
 function isToday(
   date: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate,
   timezone: Timezone
-): boolean
+): boolean;
 ```
 
 ## Parameters
@@ -25,33 +23,20 @@ function isToday(
 
 ## Returns
 
-`true` if `date` is on today's date in `timezone`, `false` otherwise.
+`true` if `date` is on today's date in `timezone`, otherwise `false`.
 
 ## Examples
+
+### Check whether an event is today for the viewer
 
 ```ts
 import { isToday, today } from '@gobrand/tiempo';
 
-isToday(Temporal.Now.instant(), 'America/New_York'); // true
 isToday(today('Asia/Tokyo'), 'Asia/Tokyo'); // true
+isToday(Temporal.Instant.from('2020-03-01T09:00:00Z'), 'America/New_York'); // false
 ```
 
-### Label events for a user
+## Good to know
 
-```ts
-import { isToday, isTomorrow, isYesterday } from '@gobrand/tiempo';
-
-function dayLabel(start: Temporal.Instant, timezone: string): string | undefined {
-  if (isToday(start, timezone)) return 'Today';
-  if (isTomorrow(start, timezone)) return 'Tomorrow';
-  if (isYesterday(start, timezone)) return 'Yesterday';
-  return undefined;
-}
-```
-
-The same instant can be today in one timezone and tomorrow in another. Pass the viewer's timezone, not the server's.
-
-## Related
-
-- [isTomorrow](/docs/comparison/is-tomorrow), [isYesterday](/docs/comparison/is-yesterday)
-- [today](/docs/current-time/today) returns today's PlainDate in a timezone
+- "Today" depends on the timezone: the same instant can be today in New York and tomorrow in Tokyo. Pass the viewer's timezone, not the server's.
+- See also [isTomorrow](/docs/comparison/is-tomorrow), [isYesterday](/docs/comparison/is-yesterday), and [today](/docs/current-time/today).

@@ -1,6 +1,6 @@
 ---
 title: Installation
-description: Get started with tiempo in your project
+description: Install tiempo and get Temporal working in your project
 ---
 
 ## Install
@@ -9,53 +9,61 @@ description: Get started with tiempo in your project
 @gobrand/tiempo
 ```
 
-## Requirements
+tiempo runs on Node.js 20+ and in modern browsers. TypeScript is optional; if you use it, 5.0 or later gives you full type inference and timezone autocomplete.
 
-- Node.js 18+ or modern browser
-- TypeScript 5.0+ (recommended)
+## Where `Temporal` comes from
 
-## Polyfill
+tiempo depends on [`@js-temporal/polyfill`](https://github.com/js-temporal/temporal-polyfill), so it works whether or not your runtime has Temporal built in. You only need `Temporal` yourself when you create values directly, such as `Temporal.PlainDate.from('2026-03-15')`:
 
-tiempo includes [`@js-temporal/polyfill`](https://github.com/js-temporal/temporal-polyfill), so applications can use it in environments without native Temporal. The shipped runtime remains polyfill-backed. Temporal inputs created by native implementations are also accepted; callers do not need to convert them first.
-
-Operations preserve their documented date, timezone and calendar semantics. Some functions derive results using the caller's implementation, while parsing and other constructors use tiempo's implementation. Do not rely on every result passing `instanceof` against one Temporal constructor. `toInstant(instant)` returns the original Instant; plain-date and plain-time conversions return new values.
-
-The bundled polyfill remains the default. An optional native-only entry point may be evaluated later; no removal date is planned. Eventual removal would require an explicit native runtime baseline, a migration path for environments that need an application-supplied polyfill, and declarations that no longer require the polyfill package. Selecting native Temporal while retaining a static polyfill import does not eliminate the download. No runtime requirement changes are included in this update.
-
-## Usage with ORMs
-
-tiempo works seamlessly with ORMs like Drizzle. Drizzle timestamp columns can be configured with `mode: 'date'` (returns `Date` objects) or `mode: 'string'` (returns ISO strings)—tiempo's `toZonedTime()` accepts both:
-
-```ts
-import { toZonedTime, toDate, toIso, addWeeks } from '@gobrand/tiempo';
-
-// From Drizzle: could be Date (mode: 'date') or string (mode: 'string')
-const post = await db.query.posts.findFirst();
-
-// Convert to ZonedDateTime for timezone-aware operations
-// toZonedTime accepts both Date and string, so this works either way
-const publishedAt = toZonedTime(post.publishedAt, 'America/New_York');
-
-// Perform datetime operations...
-const nextWeek = publishedAt.add({ weeks: 1 });  // native Temporal API
-// or: addWeeks(publishedAt, 1)                  // tiempo utility for familiar API
-
-// Convert back for database storage
-await db.update(posts).set({
-  publishedAt: toDate(nextWeek),  // for mode: 'date'
-  // or: toIso(nextWeek),         // for mode: 'string'
-});
-```
-
-## TypeScript Support
-
-tiempo is written in TypeScript and includes full type definitions. All functions are fully typed with proper Temporal types from the polyfill.
+- **Runtimes with built-in Temporal** (Node.js 26+, recent browsers): use the global `Temporal`.
+- **Everywhere else**: import it from the polyfill, which is already installed with tiempo.
 
 ```ts
 import { Temporal } from '@js-temporal/polyfill';
-import { toZonedTime, format } from '@gobrand/tiempo';
-
-// Types are inferred correctly
-const zoned: Temporal.ZonedDateTime = toZonedTime(new Date(), 'UTC');
-const formatted: string = format(zoned, 'yyyy-MM-dd');
 ```
+
+The examples in these docs use `Temporal` without an import. tiempo accepts values from either source, and you can mix them.
+
+## First conversion
+
+Most apps receive timestamps as ISO strings or `Date` objects. Convert them into the timezone you care about, work with them, and send UTC back:
+
+```ts
+import { toZonedTime, addDays, format, toIso } from '@gobrand/tiempo';
+
+// From your API or database
+const createdAt = toZonedTime('2026-03-14T18:30:00Z', 'Europe/Madrid');
+
+format(createdAt, 'EEE d MMM, HH:mm'); // "Sat 14 Mar, 19:30"
+
+const followUp = addDays(createdAt, 3);
+
+toIso(followUp); // "2026-03-17T18:30:00Z"
+```
+
+## Databases and ORMs
+
+ORMs usually hand you a `Date` or an ISO string. Drizzle, for example, returns a `Date` for `mode: 'date'` timestamp columns and a string for `mode: 'string'`. `toZonedTime` accepts both, and `toDate` / `toIso` convert back:
+
+```ts
+import { toZonedTime, addWeeks, toDate, toIso } from '@gobrand/tiempo';
+
+const post = await db.query.posts.findFirst();
+
+// Works for both Date and ISO string columns
+const publishedAt = toZonedTime(post.publishedAt, 'America/New_York');
+const republishAt = addWeeks(publishedAt, 1);
+
+await db.update(posts).set({
+  republishAt: toDate(republishAt), // mode: 'date'
+  // republishAt: toIso(republishAt), // mode: 'string'
+});
+```
+
+Store UTC (`toIso` or `toDate`) and convert to a timezone only when you need local calendar logic or display.
+
+## Next steps
+
+- [API conventions](/docs/api-conventions) explains the four value types and argument order.
+- [Coming from date-fns](/docs/date-fns) maps the functions you already know.
+- [Recipes](/docs/recipes) has complete examples for common scheduling tasks.

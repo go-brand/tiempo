@@ -1,60 +1,44 @@
 ---
 title: today
-description: Get today's date as a PlainDate
+description: Get today's date in a timezone, as a PlainDate.
 ---
 
-Get today's date as a `PlainDate` in the specified timezone.
+Returns today's date in the timezone you name. At 23:30 UTC it is already tomorrow in Tokyo, so the timezone matters.
 
 ## Signature
 
 ```ts
 function today(timezone: Timezone): Temporal.PlainDate
-
-type Timezone = 'UTC' | string;
 ```
 
 ## Parameters
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `timezone` | `Timezone` | IANA timezone identifier (e.g., "America/New_York", "Europe/London") or "UTC" |
+| `timezone` | `Timezone` | An IANA timezone name, such as `'Asia/Tokyo'`, or `'UTC'`. |
 
 ## Returns
 
-A `Temporal.PlainDate` representing today's date.
+A `Temporal.PlainDate`.
 
 ## Examples
 
-### Server-side: Get today in UTC
+### Count the days until an invoice is due
 
 ```ts
-import { today } from '@gobrand/tiempo';
+import { today, toPlainDate, differenceInDays } from '@gobrand/tiempo';
 
-const todayUtc = today("UTC");
+const due = toPlainDate('2026-12-31');
+const daysLeft = differenceInDays(due, today('America/New_York')); // 53 on 2026-11-08
 ```
 
-### Server-side: Get today in user's timezone
+### Set a trial end date 14 days out
 
 ```ts
-import { today } from '@gobrand/tiempo';
+import { today, addDays, differenceInDays } from '@gobrand/tiempo';
 
-// Get timezone from user preferences (stored in DB)
-const todayUser = today(user.timezone);
-```
+const start = today('Europe/Madrid');
+const trialEnds = addDays(start, 14);
 
-### Client-side: Get today in browser's timezone
-
-```ts
-import { today, browserTimezone } from '@gobrand/tiempo';
-
-const todayLocal = today(browserTimezone());
-```
-
-### Get today in a specific timezone
-
-```ts
-import { today } from '@gobrand/tiempo';
-
-const todayInMadrid = today("Europe/Madrid");
-const todayInTokyo = today("Asia/Tokyo");
+differenceInDays(trialEnds, start); // 14
 ```

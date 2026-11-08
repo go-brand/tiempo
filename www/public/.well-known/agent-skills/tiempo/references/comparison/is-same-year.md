@@ -1,6 +1,6 @@
 # isSameYear
 
-Returns true if both datetimes are in the same calendar year.
+Returns `true` when both timestamps fall in the same calendar year. Like [isSameDay](https://tiempo.gobrand.app/docs/comparison/is-same-day), each value is read in its own timezone, with Instants in UTC.
 
 ## Signature
 
@@ -8,29 +8,30 @@ Returns true if both datetimes are in the same calendar year.
 function isSameYear(
   date1: Temporal.Instant | Temporal.ZonedDateTime,
   date2: Temporal.Instant | Temporal.ZonedDateTime
-): boolean
+): boolean;
 ```
 
 ## Parameters
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `date1` | `Temporal.Instant \| Temporal.ZonedDateTime` | The first datetime |
-| `date2` | `Temporal.Instant \| Temporal.ZonedDateTime` | The second datetime |
+| `date1` | `Instant \| ZonedDateTime` | The first timestamp |
+| `date2` | `Instant \| ZonedDateTime` | The second timestamp |
 
 ## Returns
 
-`true` if both datetimes are in the same calendar year, `false` otherwise.
+`true` if both values have the same year in their own timezones, otherwise `false`.
 
 ## Examples
+
+### Count a New Year's Eve donation in the right tax year
 
 ```ts
 import { isSameYear } from '@gobrand/tiempo';
 
-const jan2025 = Temporal.ZonedDateTime.from('2025-01-15T00:00:00Z[UTC]');
-const dec2025 = Temporal.ZonedDateTime.from('2025-12-31T23:59:59Z[UTC]');
-const jan2026 = Temporal.ZonedDateTime.from('2026-01-01T00:00:00Z[UTC]');
+const donation = Temporal.ZonedDateTime.from('2026-12-31T22:00:00-08:00[America/Los_Angeles]');
+const taxYearStart = Temporal.ZonedDateTime.from('2026-01-01T00:00:00-08:00[America/Los_Angeles]');
 
-isSameYear(jan2025, dec2025); // true
-isSameYear(dec2025, jan2026); // false
+isSameYear(donation, taxYearStart); // true (2026 in Los Angeles)
+isSameYear(donation.toInstant(), taxYearStart.toInstant()); // false (2027 in UTC)
 ```

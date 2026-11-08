@@ -18,7 +18,7 @@ import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
  * // From Instant (always UTC)
  * const instant = Temporal.Instant.from('2025-01-20T12:00:00Z');
  * const result = addMonths(instant, 3);
- * // 2025-04-20T12:00:00Z[UTC] (3 months later)
+ * // 2025-04-20T12:00:00+00:00[UTC] (3 months later)
  * ```
  *
  * @example
@@ -34,7 +34,7 @@ import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
  * // Month-end handling
  * const instant = Temporal.Instant.from('2025-01-31T12:00:00Z');
  * const result = addMonths(instant, 1);
- * // 2025-02-28T12:00:00Z[UTC] (Jan 31 → Feb 28)
+ * // 2025-02-28T12:00:00+00:00[UTC] (Jan 31 → Feb 28)
  * ```
  */
 export function addMonths(input: Temporal.PlainDate, months: number): Temporal.PlainDate;

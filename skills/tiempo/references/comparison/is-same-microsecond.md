@@ -1,6 +1,6 @@
 # isSameMicrosecond
 
-Returns true if both datetimes are in the same microsecond.
+Returns `true` when both timestamps fall in the same microsecond, ignoring nanoseconds. Like [isSameDay](https://tiempo.gobrand.app/docs/comparison/is-same-day), each value is read in its own timezone, with Instants in UTC.
 
 ## Signature
 
@@ -8,18 +8,32 @@ Returns true if both datetimes are in the same microsecond.
 function isSameMicrosecond(
   date1: Temporal.Instant | Temporal.ZonedDateTime,
   date2: Temporal.Instant | Temporal.ZonedDateTime
-): boolean
+): boolean;
 ```
 
-## Example
+## Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `date1` | `Instant \| ZonedDateTime` | The first timestamp |
+| `date2` | `Instant \| ZonedDateTime` | The second timestamp |
+
+## Returns
+
+`true` if both values match from the year down to the microsecond in their own timezones, otherwise `false`.
+
+## Examples
+
+### Match an event against the row read back from PostgreSQL
+
+`timestamptz` columns store microseconds, so the nanoseconds are dropped on write.
 
 ```ts
-import { isSameMicrosecond } from '@gobrand/tiempo';
+import { isEqual, isSameMicrosecond } from '@gobrand/tiempo';
 
-const time1 = Temporal.ZonedDateTime.from('2025-01-20T15:30:45.123456789Z[UTC]');
-const time2 = Temporal.ZonedDateTime.from('2025-01-20T15:30:45.123456999Z[UTC]');
-const time3 = Temporal.ZonedDateTime.from('2025-01-20T15:30:45.123457000Z[UTC]');
+const recordedAt = Temporal.Instant.from('2026-06-01T08:00:00.123456789Z');
+const storedAt = Temporal.Instant.from('2026-06-01T08:00:00.123456Z');
 
-isSameMicrosecond(time1, time2); // true (both at .123456xxx)
-isSameMicrosecond(time1, time3); // false (different microsecond)
+isSameMicrosecond(recordedAt, storedAt); // true
+isEqual(recordedAt, storedAt); // false
 ```

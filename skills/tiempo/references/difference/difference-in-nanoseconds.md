@@ -1,6 +1,6 @@
 # differenceInNanoseconds
 
-Returns the number of nanoseconds between two datetimes. Returns a `bigint` for precision.
+Returns the exact nanoseconds elapsed from `earlierDate` to `laterDate` as a `bigint`.
 
 ## Signature
 
@@ -11,13 +11,19 @@ function differenceInNanoseconds(
 ): bigint
 ```
 
-## Example
+## Examples
+
+### Measure a span from a trace
 
 ```ts
 import { differenceInNanoseconds } from '@gobrand/tiempo';
 
-const later = Temporal.Instant.from('2025-01-20T10:00:00.000001500Z');
-const earlier = Temporal.Instant.from('2025-01-20T10:00:00Z');
+const spanStart = Temporal.Instant.fromEpochNanoseconds(1_777_887_000_000_000_000n);
+const spanEnd = Temporal.Instant.fromEpochNanoseconds(1_777_887_000_000_000_750n);
 
-differenceInNanoseconds(later, earlier); // 1500n (bigint)
+differenceInNanoseconds(spanEnd, spanStart); // 750 (750n)
 ```
+
+## Good to know
+
+- The result is a `bigint`, so do arithmetic with other bigints: `/ 1_000n`, not `/ 1000`.

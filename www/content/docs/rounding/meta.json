@@ -1,0 +1,10 @@
+{
+  "title": "Rounding",
+  "description": "Round a datetime to the nearest hour, minute, or second",
+  "icon": "Timer",
+  "pages": [
+    "round-to-nearest-hour",
+    "round-to-nearest-minute",
+    "round-to-nearest-second"
+  ]
+}

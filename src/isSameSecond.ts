@@ -17,8 +17,8 @@ import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
  * @example
  * ```ts
  * // Same timezone, same second
- * const time1 = Temporal.ZonedDateTime.from('2025-01-20T14:30:45.000Z[UTC]');
- * const time2 = Temporal.ZonedDateTime.from('2025-01-20T14:30:45.999Z[UTC]');
+ * const time1 = Temporal.ZonedDateTime.from('2025-01-20T14:30:45.000+00:00[UTC]');
+ * const time2 = Temporal.ZonedDateTime.from('2025-01-20T14:30:45.999+00:00[UTC]');
  *
  * isSameSecond(time1, time2); // true
  * ```
@@ -26,8 +26,8 @@ import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
  * @example
  * ```ts
  * // Same timezone, different seconds
- * const sec45 = Temporal.ZonedDateTime.from('2025-01-20T14:30:45Z[UTC]');
- * const sec46 = Temporal.ZonedDateTime.from('2025-01-20T14:30:46Z[UTC]');
+ * const sec45 = Temporal.ZonedDateTime.from('2025-01-20T14:30:45+00:00[UTC]');
+ * const sec46 = Temporal.ZonedDateTime.from('2025-01-20T14:30:46+00:00[UTC]');
  *
  * isSameSecond(sec45, sec46); // false
  * ```

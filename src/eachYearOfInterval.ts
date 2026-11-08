@@ -22,26 +22,26 @@ import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
  *
  * @example
  * ```ts
- * const start = Temporal.ZonedDateTime.from('2022-06-15T10:00:00Z[UTC]');
- * const end = Temporal.ZonedDateTime.from('2025-03-20T14:00:00Z[UTC]');
+ * const start = Temporal.ZonedDateTime.from('2022-06-15T10:00:00+00:00[UTC]');
+ * const end = Temporal.ZonedDateTime.from('2025-03-20T14:00:00+00:00[UTC]');
  *
  * const years = eachYearOfInterval({ start, end });
  * // [
- * //   2022-01-01T00:00:00Z[UTC],
- * //   2023-01-01T00:00:00Z[UTC],
- * //   2024-01-01T00:00:00Z[UTC],
- * //   2025-01-01T00:00:00Z[UTC]
+ * //   2022-01-01T00:00:00+00:00[UTC],
+ * //   2023-01-01T00:00:00+00:00[UTC],
+ * //   2024-01-01T00:00:00+00:00[UTC],
+ * //   2025-01-01T00:00:00+00:00[UTC]
  * // ]
  * ```
  *
  * @example
  * ```ts
  * // Single year
- * const start = Temporal.ZonedDateTime.from('2025-01-15T00:00:00Z[UTC]');
- * const end = Temporal.ZonedDateTime.from('2025-12-31T23:59:59Z[UTC]');
+ * const start = Temporal.ZonedDateTime.from('2025-01-15T00:00:00+00:00[UTC]');
+ * const end = Temporal.ZonedDateTime.from('2025-12-31T23:59:59+00:00[UTC]');
  *
  * const years = eachYearOfInterval({ start, end });
- * // [2025-01-01T00:00:00Z[UTC]]
+ * // [2025-01-01T00:00:00+00:00[UTC]]
  * ```
  *
  * @example

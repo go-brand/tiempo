@@ -1,6 +1,6 @@
 {
   "title": "Intervals",
-  "description": "Iterate over intervals to get arrays of ZonedDateTime objects",
+  "description": "List every day, hour, week, month, or other period in a range",
   "icon": "CalendarRange",
   "pages": [
     "each-year-of-interval",

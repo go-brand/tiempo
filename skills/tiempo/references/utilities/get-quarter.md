@@ -1,8 +1,6 @@
 # getQuarter
 
-Returns the quarter (1, 2, 3, or 4) that a datetime falls in. Quarters: Q1 = Jan–Mar, Q2 = Apr–Jun, Q3 = Jul–Sep, Q4 = Oct–Dec.
-
-`Temporal` has no native quarter field, so this fills the gap. A quarter is intrinsic to the calendar date, so **no timezone is ever needed**: `Instant` inputs are interpreted in UTC, `ZonedDateTime` inputs use their own timezone, and `PlainDate` inputs use their calendar month directly.
+Returns the calendar quarter a date falls in: 1 for January to March, 2 for April to June, 3 for July to September, 4 for October to December.
 
 ## Signature
 
@@ -16,36 +14,38 @@ function getQuarter(
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `input` | `Temporal.Instant \| Temporal.ZonedDateTime \| Temporal.PlainDate` | The datetime or date to get the quarter for |
+| `input` | `Temporal.Instant \| Temporal.ZonedDateTime \| Temporal.PlainDate` | The date or moment to look up |
 
 ## Returns
 
-The quarter number, typed as the literal union `1 | 2 | 3 | 4` for exhaustiveness checking and safe lookup-table indexing.
+The quarter as `1 | 2 | 3 | 4`.
 
 ## Examples
+
+### Label invoices by quarter
 
 ```ts
 import { getQuarter } from '@gobrand/tiempo';
 
-getQuarter(Temporal.Instant.from('2025-02-15T12:00:00Z')); // 1
-getQuarter(Temporal.Instant.from('2025-05-15T12:00:00Z')); // 2
-getQuarter(Temporal.Instant.from('2025-08-15T12:00:00Z')); // 3
-getQuarter(Temporal.Instant.from('2025-11-15T12:00:00Z')); // 4
+const issuedOn = Temporal.PlainDate.from('2026-05-14');
+
+`Q${getQuarter(issuedOn)} ${issuedOn.year}`; // "Q2 2026"
 ```
 
-### Timezone awareness
+### The quarter depends on the timezone
+
+`ZonedDateTime` inputs use their own timezone; `Instant` inputs use UTC.
 
 ```ts
-// Same instant, different quarter depending on perspective
-const zoned = Temporal.ZonedDateTime.from('2025-03-31T23:00:00-04:00[America/New_York]');
+import { getQuarter, toZonedTime } from '@gobrand/tiempo';
 
-getQuarter(zoned);                      // 1 (March in New York)
-getQuarter(zoned.withTimeZone('UTC'));  // 2 (April in UTC)
+const paidAt = Temporal.Instant.from('2026-04-01T02:00:00Z');
+
+getQuarter(paidAt); // 2 (1 April in UTC)
+getQuarter(toZonedTime(paidAt, 'America/New_York')); // 1 (still 31 March in New York)
 ```
 
-### From a PlainDate (no timezone)
+## Good to know
 
-```ts
-getQuarter(Temporal.PlainDate.from('2025-02-15')); // 1
-getQuarter(Temporal.PlainDate.from('2025-11-15')); // 4
-```
+- For a fiscal year that starts in April, use `getQuarter(subMonths(date, 3))`.
+- For the quarter's first and last day, use [startOfQuarter](https://tiempo.gobrand.app/docs/boundaries/start-of-quarter) and [endOfQuarter](https://tiempo.gobrand.app/docs/boundaries/end-of-quarter).

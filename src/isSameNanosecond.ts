@@ -17,8 +17,8 @@ import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
  * @example
  * ```ts
  * // Same timezone, exact same nanosecond
- * const time1 = Temporal.ZonedDateTime.from('2025-01-20T14:30:45.123456789Z[UTC]');
- * const time2 = Temporal.ZonedDateTime.from('2025-01-20T14:30:45.123456789Z[UTC]');
+ * const time1 = Temporal.ZonedDateTime.from('2025-01-20T14:30:45.123456789+00:00[UTC]');
+ * const time2 = Temporal.ZonedDateTime.from('2025-01-20T14:30:45.123456789+00:00[UTC]');
  *
  * isSameNanosecond(time1, time2); // true
  * ```
@@ -26,8 +26,8 @@ import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
  * @example
  * ```ts
  * // Same timezone, different nanoseconds
- * const ns789 = Temporal.ZonedDateTime.from('2025-01-20T14:30:45.123456789Z[UTC]');
- * const ns790 = Temporal.ZonedDateTime.from('2025-01-20T14:30:45.123456790Z[UTC]');
+ * const ns789 = Temporal.ZonedDateTime.from('2025-01-20T14:30:45.123456789+00:00[UTC]');
+ * const ns790 = Temporal.ZonedDateTime.from('2025-01-20T14:30:45.123456790+00:00[UTC]');
  *
  * isSameNanosecond(ns789, ns790); // false
  * ```

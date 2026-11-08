@@ -1,11 +1,9 @@
 ---
 title: clamp
-description: Restrict a date, time, or datetime to an interval
+description: Keep a date, time, or datetime inside a range
 ---
 
-Restricts a value to an inclusive interval. Returns the value itself when it is inside, otherwise the nearer endpoint.
-
-All three values are returned as given, keeping their type, timezone, and calendar. Timeline values compare by exact instant, PlainDates by date, and PlainTimes by wall-clock time. Mixed domains throw a TypeError.
+Returns `value` when it is inside the inclusive range, otherwise the nearer endpoint. Whichever value is returned comes back exactly as given: same type, timezone, and calendar.
 
 ## Signature
 
@@ -28,8 +26,8 @@ function clamp(
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `value` | `PlainDate`, `PlainTime`, or `Instant \| ZonedDateTime` | The value to restrict |
-| `interval` | `{ start, end }` in the same domain | Inclusive bounds |
+| `value` | `PlainDate`, `PlainTime`, or `Instant \| ZonedDateTime` | The value to keep in range |
+| `interval` | `{ start, end }` of the same kind | Inclusive bounds |
 
 ## Returns
 
@@ -43,15 +41,15 @@ function clamp(
 import { clamp } from '@gobrand/tiempo';
 
 const period = {
-  start: Temporal.PlainDate.from('2025-01-01'),
-  end: Temporal.PlainDate.from('2025-01-31'),
+  start: Temporal.PlainDate.from('2026-01-01'),
+  end: Temporal.PlainDate.from('2026-01-31'),
 };
 
-clamp(Temporal.PlainDate.from('2025-02-14'), period); // 2025-01-31
-clamp(Temporal.PlainDate.from('2025-01-10'), period); // 2025-01-10
+clamp(Temporal.PlainDate.from('2026-02-14'), period); // 2026-01-31
+clamp(Temporal.PlainDate.from('2026-01-10'), period); // 2026-01-10
 ```
 
-### Keep a time inside opening hours
+### Keep a delivery time inside opening hours
 
 ```ts
 import { clamp } from '@gobrand/tiempo';
@@ -59,4 +57,9 @@ import { clamp } from '@gobrand/tiempo';
 const opening = { start: Temporal.PlainTime.from('09:00'), end: Temporal.PlainTime.from('17:00') };
 
 clamp(Temporal.PlainTime.from('07:45'), opening); // 09:00:00
+clamp(Temporal.PlainTime.from('18:30'), opening); // 17:00:00
 ```
+
+## Good to know
+
+- Mixing a PlainDate or PlainTime with another kind throws a `TypeError`.

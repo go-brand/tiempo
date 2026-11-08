@@ -15,7 +15,7 @@ import { normalizeWithPlainDate } from './shared/normalizeWithPlainDate';
  * // From Instant (always UTC)
  * const instant = Temporal.Instant.from('2025-01-15T12:00:00Z');
  * const end = endOfMonth(instant);
- * // 2025-01-31T23:59:59.999999999Z[UTC]
+ * // 2025-01-31T23:59:59.999999999+00:00[UTC]
  * ```
  *
  * @example

@@ -17,7 +17,7 @@ import { addMonths } from './addMonths';
  * ```ts
  * const instant = Temporal.Instant.from('2025-04-20T12:00:00Z');
  * const result = subMonths(instant, 3);
- * // 2025-01-20T12:00:00Z[UTC] (3 months earlier)
+ * // 2025-01-20T12:00:00+00:00[UTC] (3 months earlier)
  * ```
  */
 export function subMonths(input: Temporal.PlainDate, months: number): Temporal.PlainDate;

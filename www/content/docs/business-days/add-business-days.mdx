@@ -3,11 +3,7 @@ title: addBusinessDays
 description: Add Monday–Friday days, skipping weekends
 ---
 
-Adds business days (Monday–Friday), skipping Saturdays and Sundays. Holidays are not considered.
-
-Starting on a weekend, the first business day counted is the next Monday (or the previous Friday for negative values). Adding 0 returns the same date, even on a weekend. Large counts run in constant time.
-
-Instant inputs are converted to UTC. ZonedDateTime inputs keep their timezone and time of day, adjusting the offset across DST. PlainDate inputs stay dates.
+Adds business days (Monday–Friday), skipping Saturdays and Sundays. Use it for due dates like "reply within 3 business days". Holidays are not considered.
 
 ## Signature
 
@@ -23,7 +19,7 @@ function addBusinessDays(
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `input` | `Instant \| ZonedDateTime \| PlainDate` | The starting value |
+| `input` | `PlainDate`, `Instant`, or `ZonedDateTime` | The starting value |
 | `days` | `number` | Whole business days to add; negative subtracts |
 
 ## Returns
@@ -32,36 +28,34 @@ A `PlainDate` for a PlainDate input, otherwise a `ZonedDateTime`. Throws a `Rang
 
 ## Examples
 
+### Set a due date a few business days out
+
 ```ts
 import { addBusinessDays } from '@gobrand/tiempo';
 
-const friday = Temporal.PlainDate.from('2025-01-24');
+const friday = Temporal.PlainDate.from('2026-01-23');
 
-addBusinessDays(friday, 1); // 2025-01-27
-addBusinessDays(friday, 5); // 2025-01-31
-addBusinessDays(friday, -1); // 2025-01-23
+addBusinessDays(friday, 1); // 2026-01-26
+addBusinessDays(friday, 5); // 2026-01-30
+addBusinessDays(friday, -1); // 2026-01-22
 ```
 
-### Due date that keeps local time
+### Keep the local time across a DST change
 
 ```ts
 import { addBusinessDays } from '@gobrand/tiempo';
 
-const received = Temporal.ZonedDateTime.from('2025-03-07T09:00:00-05:00[America/New_York]');
+const received = Temporal.ZonedDateTime.from('2026-03-06T09:00:00-05:00[America/New_York]');
 
-addBusinessDays(received, 1).toString(); // 2025-03-10T09:00:00-04:00[America/New_York]
+addBusinessDays(received, 1); // 2026-03-09T09:00:00-04:00[America/New_York] (still 09:00 after DST starts)
 ```
 
-Still 09:00 local time after the switch to daylight saving time.
-
-### Holidays
-
-Holiday calendars vary by country and company, so tiempo leaves them to you. Skip them with a loop:
+### Skip your own holidays
 
 ```ts
 import { addBusinessDays } from '@gobrand/tiempo';
 
-const holidays = new Set(['2025-01-27']);
+const holidays = new Set(['2026-01-26']);
 
 function addWorkingDays(date: Temporal.PlainDate, days: number): Temporal.PlainDate {
   let result = date;
@@ -72,5 +66,9 @@ function addWorkingDays(date: Temporal.PlainDate, days: number): Temporal.PlainD
   return result;
 }
 
-addWorkingDays(Temporal.PlainDate.from('2025-01-24'), 1); // 2025-01-28
+addWorkingDays(Temporal.PlainDate.from('2026-01-23'), 1); // 2026-01-27
 ```
+
+## Good to know
+
+- Starting on a weekend, the first business day counted is the next Monday (or the previous Friday for negative values). Adding 0 returns the same date, even on a weekend.

@@ -28,8 +28,8 @@ it.each([
 });
 
 it.each([
-  [0, '[dayCount, reversedCount, calendarDates, nextDay, isEarlier]', [2, -2, ['2026-10-10', '2026-10-11', '2026-10-12'], '2026-10-11', true]],
-  [1, 'monthStarts', ['2026-01-01', '2026-02-01', '2026-03-01']],
+  [1, '[dayCount, reversedCount, calendarDates, nextDay, isEarlier]', [2, -2, ['2026-10-10', '2026-10-11', '2026-10-12'], '2026-10-11', true]],
+  [2, 'monthStarts', ['2026-01-01', '2026-02-01', '2026-03-01']],
 ] as const)('executes API conventions example %i', async (index, expression, expected) => {
   const text = readFileSync('www/content/docs/api-conventions.mdx', 'utf8');
   const examples = [...text.matchAll(/```ts\n([\s\S]*?)```/g)];

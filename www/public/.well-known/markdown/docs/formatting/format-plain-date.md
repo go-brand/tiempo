@@ -1,8 +1,6 @@
 # formatPlainDate
 
-Format a `Temporal.PlainDate` using date-fns-like format tokens. Only supports date-related tokens (no time or timezone tokens).
-
-`format(date, pattern, options)` also accepts PlainDate with the same date-token and locale behavior. This specialized helper remains supported.
+Formats a `PlainDate` with date tokens. Same as [format](https://tiempo.gobrand.app/docs/formatting/format) with a `PlainDate`.
 
 ## Signature
 
@@ -10,44 +8,43 @@ Format a `Temporal.PlainDate` using date-fns-like format tokens. Only supports d
 function formatPlainDate(
   date: Temporal.PlainDate,
   formatStr: string,
-  options?: FormatPlainDateOptions
+  options?: { locale?: string }
 ): string
-
-interface FormatPlainDateOptions {
-  locale?: string;
-}
 ```
 
 ## Parameters
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `date` | `Temporal.PlainDate` | The date to format |
-| `formatStr` | `string` | Format string using date-fns tokens |
-| `options.locale` | `string` | Locale for formatting (default: "en-US") |
+| `date` | `Temporal.PlainDate` | The date to format. |
+| `formatStr` | `string` | The pattern. Era, year, quarter, month, day, and weekday [tokens](https://tiempo.gobrand.app/docs/formatting/format#tokens) are supported. Text in single quotes is printed as is. |
+| `options.locale` | `string` | Locale for month and weekday names. Default `'en-US'`. |
+
+## Returns
+
+The formatted string.
 
 ## Examples
 
-### Basic formatting
+### Show an invoice due date
 
 ```ts
-import { formatPlainDate } from '@gobrand/tiempo';
+import { formatPlainDate, toPlainDate } from '@gobrand/tiempo';
 
-const date = Temporal.PlainDate.from("2025-01-20");
+const due = toPlainDate('2026-04-15');
 
-formatPlainDate(date, "yyyy-MM-dd");
-// "2025-01-20"
-
-formatPlainDate(date, "MMMM d, yyyy");
-// "January 20, 2025"
-
-formatPlainDate(date, "EEEE, MMMM do, yyyy");
-// "Monday, January 20th, 2025"
+formatPlainDate(due, 'EEEE, MMMM do'); // "Wednesday, April 15th"
+formatPlainDate(due, 'dd/MM/yyyy'); // 15/04/2026
 ```
 
-### With locale
+### Show a hotel check-in date in French
 
 ```ts
-formatPlainDate(date, "MMMM d, yyyy", { locale: "es-ES" });
-// "enero 20, 2025"
+import { formatPlainDate, toPlainDate } from '@gobrand/tiempo';
+
+formatPlainDate(toPlainDate('2026-08-14'), 'EEEE d MMMM yyyy', { locale: 'fr-FR' }); // "vendredi 14 août 2026"
 ```
+
+## Good to know
+
+- Time tokens are printed as is: `'HH:mm'` gives `"HH:mm"`.

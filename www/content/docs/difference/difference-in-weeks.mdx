@@ -1,15 +1,9 @@
 ---
 title: differenceInWeeks
-description: Calculate the difference between two dates in weeks
+description: Count the weeks between two dates or datetimes
 ---
 
-Returns the number of weeks between two dates or datetimes.
-
-## Temporal compatibility
-
-Accepts native Temporal and `@js-temporal/polyfill` values, including mixed pairs. Instant inputs use UTC. For ZonedDateTime inputs, calendar totals use the timezone and calendar of `earlierDate`; the inputs must have matching calendar identifiers. Nanosecond precision is preserved when passing values between implementations; the returned JavaScript number still has floating-point precision limits.
-
-Two PlainDates are also accepted. They use calendar arithmetic without a timezone and must have matching calendar identifiers. Results are truncated toward zero unless `{ fractional: true }` is supplied. PlainDate/timeline pairs are rejected; explicitly convert a timestamp to a date when that matches your task.
+Returns the weeks of 7 calendar days from `earlierDate` to `laterDate`.
 
 ## Signature
 
@@ -27,7 +21,7 @@ function differenceInWeeks(
 ): number
 
 interface DifferenceOptions {
-  fractional?: boolean; // default false — truncates toward zero
+  fractional?: boolean;
 }
 ```
 
@@ -35,46 +29,39 @@ interface DifferenceOptions {
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `laterDate` | `Temporal.PlainDate \| Temporal.Instant \| Temporal.ZonedDateTime` | The later value; pair PlainDate only with PlainDate |
-| `earlierDate` | `Temporal.PlainDate \| Temporal.Instant \| Temporal.ZonedDateTime` | The earlier value in the same domain |
-| `options.fractional` | `boolean` | Return the precise fractional value instead of truncating toward zero (default: false) |
+| `laterDate` | `PlainDate` or `Instant \| ZonedDateTime` | The value to subtract from |
+| `earlierDate` | Same kind as `laterDate` | The value to subtract |
+| `options.fractional` | `boolean` | Return the exact value instead of truncating toward zero (default `false`) |
 
 ## Returns
 
-The number of weeks between the two datetimes, truncated toward zero by default. Pass `{ fractional: true }` to get the precise fractional value.
+A signed number of weeks, truncated toward zero unless `fractional` is set.
 
 ## Examples
 
-### Date-only weeks
-
-```ts
-import { toPlainDate, differenceInWeeks } from '@gobrand/tiempo';
-
-const earlier = toPlainDate('2026-01-01');
-const later = toPlainDate('2026-01-11');
-
-differenceInWeeks(later, earlier); // 1
-```
-
-The argument order is the first value minus the second. Fractional calendar totals are relative to the second argument. Months and years vary in length, so reversing arbitrary inputs need not produce exactly opposite fractional results.
+### Count full weeks since a project kickoff
 
 ```ts
 import { differenceInWeeks } from '@gobrand/tiempo';
 
-const later = Temporal.Instant.from('2025-02-03T12:00:00Z');
-const earlier = Temporal.Instant.from('2025-01-20T12:00:00Z');
+const kickoff = Temporal.PlainDate.from('2026-01-05');
+const review = Temporal.PlainDate.from('2026-03-30');
 
-differenceInWeeks(later, earlier); // 2
+differenceInWeeks(review, kickoff); // 12
 ```
 
-### Fractional results
-
-By default the result is truncated toward zero. Pass `{ fractional: true }` for the precise value.
+### Get partial weeks
 
 ```ts
-const later = Temporal.Instant.from('2025-01-30T12:00:00Z');
-const earlier = Temporal.Instant.from('2025-01-20T00:00:00Z');
+import { differenceInWeeks } from '@gobrand/tiempo';
 
-differenceInWeeks(later, earlier);                       // 1   (truncated)
-differenceInWeeks(later, earlier, { fractional: true }); // 1.5 (precise)
+const trialStart = Temporal.Instant.from('2026-01-05T00:00:00Z');
+const cancelled = Temporal.Instant.from('2026-01-15T12:00:00Z');
+
+differenceInWeeks(cancelled, trialStart); // 1
+differenceInWeeks(cancelled, trialStart, { fractional: true }); // 1.5
 ```
+
+## Good to know
+
+- Mixing a PlainDate with an Instant or ZonedDateTime is a TypeScript error and throws a `TypeError`.

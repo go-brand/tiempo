@@ -1,9 +1,9 @@
 ---
 title: format
-description: Format a datetime or calendar date using date-fns-like tokens
+description: Format a date or time as text using date-fns-style tokens.
 ---
 
-Format a `Temporal.Instant`, `ZonedDateTime`, or `PlainDate` using date-fns-like format tokens. PlainDate formatting is equivalent to `formatPlainDate`; it uses date-only information and accepts a locale, without a timezone override.
+Formats a date or time as text with date-fns-style tokens, such as `"MMMM d, yyyy"`.
 
 ## Signature
 
@@ -11,133 +11,119 @@ Format a `Temporal.Instant`, `ZonedDateTime`, or `PlainDate` using date-fns-like
 function format(
   input: Temporal.PlainDate,
   formatStr: string,
-  options?: FormatPlainDateOptions & { timeZone?: never }
-): string;
+  options?: { locale?: string }
+): string
+
 function format(
   input: Temporal.Instant | Temporal.ZonedDateTime,
   formatStr: string,
-  options?: FormatOptions
+  options?: { locale?: string; timeZone?: Timezone }
 ): string
-
-interface FormatPlainDateOptions {
-  locale?: string;
-}
-
-interface FormatOptions {
-  locale?: string;
-  timeZone?: Timezone;
-}
 ```
 
 ## Parameters
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `input` | `Temporal.Instant \| Temporal.ZonedDateTime \| Temporal.PlainDate` | The datetime or calendar date to format |
-| `formatStr` | `string` | Format string using date-fns tokens |
-| `options.locale` | `string` | Locale for formatting (default: "en-US") |
-| `options.timeZone` | `Timezone` | Override timezone for Instant/ZonedDateTime formatting only |
+| `input` | `Temporal.Instant \| Temporal.ZonedDateTime \| Temporal.PlainDate` | The value to format. |
+| `formatStr` | `string` | The pattern. See [Tokens](#tokens). Text in single quotes is printed as is. |
+| `options.locale` | `string` | Locale for month, weekday, and timezone names. Default `'en-US'`. |
+| `options.timeZone` | `Timezone` | Timezone to show the moment in. Default: UTC for an `Instant`, its own timezone for a `ZonedDateTime`. |
 
-For ISO offset tokens, widths 1–3 omit offset seconds; widths 4–5 include seconds when present. For example, historical Paris `+00:09:21` formats as `+00:09` with `XXX` and `+00:09:21` with `XXXXX`. Uppercase `X` tokens use `Z` only for an actual zero offset.
+## Returns
 
-## Format Tokens
-
-| Token | Example | Description |
-|-------|---------|-------------|
-| `yyyy` | 2025 | 4-digit year |
-| `yy` | 25 | 2-digit year |
-| `MMMM` | January | Full month name |
-| `MMM` | Jan | Abbreviated month name |
-| `MM` | 01 | 2-digit month |
-| `M` | 1 | Month number |
-| `Mo` | 1st | Month with ordinal |
-| `dd` | 20 | 2-digit day |
-| `d` | 20 | Day number |
-| `do` | 20th | Day with ordinal |
-| `EEEE` | Monday | Full weekday name |
-| `EEE` | Mon | Abbreviated weekday |
-| `HH` | 15 | 24-hour (2-digit) |
-| `H` | 15 | 24-hour |
-| `hh` | 03 | 12-hour (2-digit) |
-| `h` | 3 | 12-hour |
-| `mm` | 30 | Minutes (2-digit) |
-| `ss` | 45 | Seconds (2-digit) |
-| `SSS` | 123 | Milliseconds |
-| `a` | PM | AM/PM (locale-aware) |
-| `z` | EST | Timezone abbreviation |
-| `zzzz` | Eastern Standard Time | Full timezone name |
-| `XXX` | -05:00 | Timezone offset (Z for UTC) |
-| `X` | +0530 | Timezone offset (Z for UTC); includes minutes |
-| `x` | +0530 | Timezone offset; includes minutes |
-
-The offset tokens include the minutes of the offset for zones that need them — India (+05:30) renders as `+0530` and Nepal (+05:45) as `+0545`. The AM/PM tokens (`a`, `aa`, `aaa`, `aaaa`, `aaaaa`) respect the `locale` option, so non-English locales render their own day-period text.
+The formatted string.
 
 ## Examples
 
-### Basic formatting
+### Show an appointment to a customer
 
 ```ts
 import { format } from '@gobrand/tiempo';
 
-const zoned = Temporal.ZonedDateTime.from("2025-01-20T15:00:00-05:00[America/New_York]");
+const appointment = Temporal.ZonedDateTime.from('2026-06-02T14:05:00[America/Los_Angeles]');
 
-format(zoned, "yyyy-MM-dd");
-// "2025-01-20"
-
-format(zoned, "MMMM d, yyyy");
-// "January 20, 2025"
-
-format(zoned, "h:mm a");
-// "3:00 PM"
-
-format(zoned, "EEEE, MMMM do, yyyy 'at' h:mm a");
-// "Monday, January 20th, 2025 at 3:00 PM"
+format(appointment, "EEEE, MMMM d 'at' h:mm a"); // "Tuesday, June 2 at 2:05 PM"
+format(appointment, 'MMM d, h:mm a zzz'); // "Jun 2, 2:05 PM PDT"
 ```
 
-### With locale
-
-```ts
-format(zoned, "MMMM d, yyyy", { locale: "es-ES" });
-// "enero 20, 2025"
-
-format(zoned, "EEEE, d MMMM yyyy", { locale: "fr-FR" });
-// "lundi, 20 janvier 2025"
-```
-
-### Escaping text
-
-Use single quotes to include literal text:
-
-```ts
-format(zoned, "'Today is' EEEE");
-// "Today is Monday"
-
-format(zoned, "MMMM do, yyyy 'at' h:mm a");
-// "January 20th, 2025 at 3:00 PM"
-```
-
-## Common Patterns
-
-### Internationalization
+### Show a UTC payment time in the customer's timezone
 
 ```ts
 import { format } from '@gobrand/tiempo';
 
-// Japanese
-format(date, "yyyy年M月d日 (EEEE)", { locale: 'ja-JP' });
-// "2025年1月20日 (月曜日)"
+const paidAt = Temporal.Instant.from('2026-06-02T14:05:00Z');
+
+format(paidAt, 'yyyy-MM-dd HH:mm z'); // "2026-06-02 14:05 UTC"
+format(paidAt, 'yyyy-MM-dd HH:mm z', { timeZone: 'America/New_York' }); // "2026-06-02 10:05 EDT"
 ```
 
-## Calendar dates
+### Format a due date in Spanish
 
 ```ts
 import { format, toPlainDate } from '@gobrand/tiempo';
 
-const birthday = toPlainDate('1990-06-15');
-format(birthday, 'yyyy-MM-dd'); // "1990-06-15"
-format(birthday, 'MMMM d, yyyy', { locale: 'en-US' }); // "June 15, 1990"
+const due = toPlainDate('2026-04-15');
+
+format(due, "EEEE d 'de' MMMM", { locale: 'es-ES' }); // "miércoles 15 de abril"
 ```
 
-Use the date tokens supported by `formatPlainDate`. As in that helper, unsupported time/zone tokens remain literal text; they do not create a time or timezone. For example, `format(birthday, 'HH:mm')` returns `"HH:mm"`. Quote intentional literal text. Passing a `timeZone` option for a PlainDate is rejected by TypeScript and throws a TypeError at runtime.
+## Tokens
 
-Instant inputs still default to UTC; ZonedDateTime inputs use their zone unless overridden. `formatPlainDate` remains supported.
+Results for `2026-06-02T14:05:07.123-07:00[America/Los_Angeles]` in `en-US`. A `PlainDate` supports the era, year, quarter, month, day, and weekday tokens.
+
+| Unit | Token | Result |
+|------|-------|--------|
+| Era | `G`, `GG`, `GGG` | AD |
+| | `GGGG` | Anno Domini |
+| | `GGGGG` | A |
+| Year | `y` | 2026 |
+| | `yy` | 26 |
+| | `yyy`, `yyyy` | 2026 (padded to 3 or 4 digits) |
+| Quarter | `Q`, `QQQQQ` | 2 |
+| | `QQ` | 02 |
+| | `QQQ` | Q2 |
+| | `QQQQ` | 2nd quarter |
+| Month | `M` | 6 |
+| | `MM` | 06 |
+| | `Mo` | 6th |
+| | `MMM` | Jun |
+| | `MMMM` | June |
+| | `MMMMM` | J |
+| Day of month | `d` | 2 |
+| | `dd` | 02 |
+| | `do` | 2nd |
+| Day of week | `E`, `EE`, `EEE` | Tue |
+| | `EEEE` | Tuesday |
+| | `EEEEE` | T |
+| | `EEEEEE` | Tu |
+| AM/PM | `a`, `aa` | PM |
+| | `aaa` | pm |
+| | `aaaa` | p.m. |
+| | `aaaaa` | p |
+| Hour (0–23) | `H` | 14 |
+| | `HH` | 14 (2 digits) |
+| Hour (1–12) | `h` | 2 |
+| | `hh` | 02 |
+| Minute | `m` | 5 |
+| | `mm` | 05 |
+| Second | `s` | 7 |
+| | `ss` | 07 |
+| Fraction of second | `S` | 1 |
+| | `SS` | 12 |
+| | `SSS` | 123 |
+| Offset (`Z` for UTC) | `X` | -07 |
+| | `XX`, `XXXX` | -0700 |
+| | `XXX`, `XXXXX` | -07:00 |
+| Offset | `x` | -07 |
+| | `xx`, `xxxx` | -0700 |
+| | `xxx`, `xxxxx` | -07:00 |
+| Timezone name | `z`, `zz`, `zzz` | PDT |
+| | `zzzz` | Pacific Daylight Time |
+| Timestamp | `T` | 1780434307123 (milliseconds) |
+| | `t` | 1780434307 (seconds) |
+
+## Good to know
+
+- Quote every word that is not a token. Letters like `a` and `t` are tokens, so `'h:mm a at'` prints `"2:05 PM PM1780434307"`. Write `"h:mm a 'at'"` instead.
+- Unsupported letters (such as `D`, `w`, `L`) are printed as is, and ordinals (`do`, `Mo`, `QQQQ`) are always English.

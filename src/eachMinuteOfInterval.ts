@@ -17,31 +17,31 @@ import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
  *
  * @example
  * ```ts
- * const start = Temporal.ZonedDateTime.from('2025-01-06T10:30:00Z[UTC]');
- * const end = Temporal.ZonedDateTime.from('2025-01-06T10:33:45Z[UTC]');
+ * const start = Temporal.ZonedDateTime.from('2025-01-06T10:30:00+00:00[UTC]');
+ * const end = Temporal.ZonedDateTime.from('2025-01-06T10:33:45+00:00[UTC]');
  *
  * const minutes = eachMinuteOfInterval({ start, end });
  * // [
- * //   2025-01-06T10:30:00Z[UTC],
- * //   2025-01-06T10:31:00Z[UTC],
- * //   2025-01-06T10:32:00Z[UTC],
- * //   2025-01-06T10:33:00Z[UTC]
+ * //   2025-01-06T10:30:00+00:00[UTC],
+ * //   2025-01-06T10:31:00+00:00[UTC],
+ * //   2025-01-06T10:32:00+00:00[UTC],
+ * //   2025-01-06T10:33:00+00:00[UTC]
  * // ]
  * ```
  *
  * @example
  * ```ts
  * // Cross-hour boundary
- * const start = Temporal.ZonedDateTime.from('2025-01-06T10:58:00Z[UTC]');
- * const end = Temporal.ZonedDateTime.from('2025-01-06T11:02:00Z[UTC]');
+ * const start = Temporal.ZonedDateTime.from('2025-01-06T10:58:00+00:00[UTC]');
+ * const end = Temporal.ZonedDateTime.from('2025-01-06T11:02:00+00:00[UTC]');
  *
  * const minutes = eachMinuteOfInterval({ start, end });
  * // [
- * //   2025-01-06T10:58:00Z[UTC],
- * //   2025-01-06T10:59:00Z[UTC],
- * //   2025-01-06T11:00:00Z[UTC],
- * //   2025-01-06T11:01:00Z[UTC],
- * //   2025-01-06T11:02:00Z[UTC]
+ * //   2025-01-06T10:58:00+00:00[UTC],
+ * //   2025-01-06T10:59:00+00:00[UTC],
+ * //   2025-01-06T11:00:00+00:00[UTC],
+ * //   2025-01-06T11:01:00+00:00[UTC],
+ * //   2025-01-06T11:02:00+00:00[UTC]
  * // ]
  * ```
  */

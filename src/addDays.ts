@@ -18,7 +18,7 @@ import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
  * // From Instant (always UTC)
  * const instant = Temporal.Instant.from('2025-01-20T12:00:00Z');
  * const result = addDays(instant, 5);
- * // 2025-01-25T12:00:00Z[UTC] (5 days later)
+ * // 2025-01-25T12:00:00+00:00[UTC] (5 days later)
  * ```
  *
  * @example
@@ -34,7 +34,7 @@ import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
  * // Negative values subtract days
  * const instant = Temporal.Instant.from('2025-01-20T12:00:00Z');
  * const result = addDays(instant, -7);
- * // 2025-01-13T12:00:00Z[UTC] (7 days earlier)
+ * // 2025-01-13T12:00:00+00:00[UTC] (7 days earlier)
  * ```
  */
 export function addDays(input: Temporal.PlainDate, days: number): Temporal.PlainDate;

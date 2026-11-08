@@ -1,68 +1,24 @@
 # browserTimezone
 
-Get the IANA timezone identifier configured on the user's device.
-
-This is primarily useful in **client-side code** (browsers, React Native) to detect the user's timezone without requiring them to select it manually.
+Returns the IANA timezone of the device running the code, such as `"Europe/Madrid"`. On a server that is the server's timezone (often `"UTC"`), not the user's.
 
 ## Signature
 
 ```ts
-function browserTimezone(): string
+function browserTimezone(): IANATimezone
 ```
 
 ## Returns
 
-The IANA timezone identifier (e.g., `"America/New_York"`, `"Europe/London"`, `"Asia/Tokyo"`).
+An IANA timezone string, accepted by any function that takes a `Timezone`.
 
-## Examples
-
-### Client-side: Convert UTC to user's local time
+## Example
 
 ```ts
-import { toZonedTime, browserTimezone } from '@gobrand/tiempo';
+import { browserTimezone, toZonedTime } from '@gobrand/tiempo';
 
-const utcFromApi = "2025-01-20T20:00:00Z";
-const userTime = toZonedTime(utcFromApi, browserTimezone());
-```
+const timezone = browserTimezone();
+typeof timezone; // string
 
-### Get the timezone for display
-
-```ts
-import { browserTimezone } from '@gobrand/tiempo';
-
-const tz = browserTimezone();
-// => "America/New_York"
-
-// Show in UI
-<span>Your timezone: {tz}</span>
-```
-
-### Send timezone to server
-
-```ts
-import { browserTimezone } from '@gobrand/tiempo';
-
-// Include in API requests so server knows user's timezone
-fetch('/api/events', {
-  headers: {
-    'X-Timezone': browserTimezone()
-  }
-});
-```
-
-## Server-side Warning
-
-On servers, `browserTimezone()` returns the **server's** configured timezone (often `"UTC"`), not the user's timezone.
-
-For user-specific timezones on the server:
-
-```ts
-// Get from user preferences (stored in DB)
-const userTime = toZonedTime(utcString, user.timezone);
-
-// Or get from request header (sent by client)
-const userTime = toZonedTime(utcString, req.headers['x-timezone']);
-
-// For UTC operations, use the string literal
-const utcTime = toZonedTime(utcString, "UTC");
+const meeting = toZonedTime('2026-03-10T16:00:00Z', timezone); // the meeting in the user's local time
 ```

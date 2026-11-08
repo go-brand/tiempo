@@ -16,7 +16,7 @@ import { normalizeTemporalInput } from "./shared/normalizeTemporalInput";
  * ```ts
  * const instant = Temporal.Instant.from('2025-01-20T12:00:00Z');
  * addQuarters(instant, 2);
- * // 2025-07-20T12:00:00Z[UTC] (6 months later)
+ * // 2025-07-20T12:00:00+00:00[UTC] (6 months later)
  * ```
  *
  * @example

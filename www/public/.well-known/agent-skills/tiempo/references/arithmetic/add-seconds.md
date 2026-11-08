@@ -1,6 +1,6 @@
 # addSeconds
 
-Add seconds to a datetime.
+Adds exact seconds of elapsed time, for token expiry, timeouts, and other durations given in seconds.
 
 ## Signature
 
@@ -8,26 +8,31 @@ Add seconds to a datetime.
 function addSeconds(
   input: Temporal.Instant | Temporal.ZonedDateTime,
   seconds: number
-): Temporal.ZonedDateTime
+): Temporal.ZonedDateTime;
 ```
 
 ## Parameters
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `input` | `Temporal.Instant \| Temporal.ZonedDateTime` | The datetime to add seconds to |
-| `seconds` | `number` | Number of seconds to add (can be negative) |
+| `input` | `Temporal.Instant \| Temporal.ZonedDateTime` | The starting datetime |
+| `seconds` | `number` | Whole number of seconds to add; negative goes back. Fractions throw a `RangeError`; use [addMilliseconds](https://tiempo.gobrand.app/docs/arithmetic/add-milliseconds) for sub-second amounts. |
 
 ## Returns
 
-A `Temporal.ZonedDateTime` with the seconds added.
+A `ZonedDateTime` in the input's timezone, or in UTC for an `Instant`.
 
 ## Examples
+
+### Compute when an access token expires
+
+An OAuth response gives `expires_in` in seconds. Call `.toInstant()` to store the result as a timestamp.
 
 ```ts
 import { addSeconds } from '@gobrand/tiempo';
 
-const instant = Temporal.Instant.from('2025-01-20T12:00:00Z');
-addSeconds(instant, 90);
-// 2025-01-20T12:01:30Z[UTC]
+const issuedAt = Temporal.Instant.from('2026-04-01T10:00:00Z');
+
+addSeconds(issuedAt, 3600); // 2026-04-01T11:00:00+00:00[UTC]
+addSeconds(issuedAt, 3600).toInstant(); // 2026-04-01T11:00:00Z
 ```

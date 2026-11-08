@@ -1,43 +1,37 @@
 ---
 title: isPast
-description: Check if a datetime is in the past
+description: Check whether a timestamp is earlier than the current moment.
 ---
 
-Returns true if the given datetime is in the past (before the current instant).
+Returns `true` when the timestamp is before the current instant. It compares exact instants, so it needs no timezone.
 
 ## Signature
 
 ```ts
-function isPast(
-  date: Temporal.Instant | Temporal.ZonedDateTime
-): boolean
+function isPast(date: Temporal.Instant | Temporal.ZonedDateTime): boolean;
 ```
 
 ## Parameters
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `date` | `Temporal.Instant \| Temporal.ZonedDateTime` | The datetime to check |
+| `date` | `Instant \| ZonedDateTime` | The timestamp to check |
 
 ## Returns
 
-`true` if the datetime is in the past, `false` otherwise.
+`true` if `date` is before the current instant, otherwise `false`.
 
 ## Examples
+
+### Check whether a coupon has expired
 
 ```ts
 import { isPast } from '@gobrand/tiempo';
 
-const yesterday = Temporal.Now.zonedDateTimeISO().subtract({ days: 1 });
-const tomorrow = Temporal.Now.zonedDateTimeISO().add({ days: 1 });
-
-isPast(yesterday); // true
-isPast(tomorrow);  // false
+isPast(Temporal.ZonedDateTime.from('2020-05-31T23:59:59+02:00[Europe/Madrid]')); // true
+isPast(Temporal.Instant.from('2100-01-01T00:00:00Z')); // false
 ```
 
-### With Instant
+## Good to know
 
-```ts
-const pastInstant = Temporal.Now.instant().subtract({ hours: 1 });
-isPast(pastInstant); // true
-```
+- To compare against a time other than now, use [isBefore](/docs/comparison/is-before). For a calendar day, use [isYesterday](/docs/comparison/is-yesterday), which takes a timezone.

@@ -20,41 +20,41 @@ import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
  *
  * @example
  * ```ts
- * const start = Temporal.ZonedDateTime.from('2025-01-06T10:00:00Z[UTC]'); // Monday
- * const end = Temporal.ZonedDateTime.from('2025-01-22T14:00:00Z[UTC]');   // Wednesday
+ * const start = Temporal.ZonedDateTime.from('2025-01-06T10:00:00+00:00[UTC]'); // Monday
+ * const end = Temporal.ZonedDateTime.from('2025-01-22T14:00:00+00:00[UTC]');   // Wednesday
  *
  * const weeks = eachWeekOfInterval({ start, end });
  * // [
- * //   2025-01-06T00:00:00Z[UTC],  // Week 2
- * //   2025-01-13T00:00:00Z[UTC],  // Week 3
- * //   2025-01-20T00:00:00Z[UTC]   // Week 4
+ * //   2025-01-06T00:00:00+00:00[UTC],  // Week 2
+ * //   2025-01-13T00:00:00+00:00[UTC],  // Week 3
+ * //   2025-01-20T00:00:00+00:00[UTC]   // Week 4
  * // ]
  * ```
  *
  * @example
  * ```ts
  * // Mid-week start
- * const start = Temporal.ZonedDateTime.from('2025-01-08T10:00:00Z[UTC]'); // Wednesday
- * const end = Temporal.ZonedDateTime.from('2025-01-15T14:00:00Z[UTC]');   // Wednesday
+ * const start = Temporal.ZonedDateTime.from('2025-01-08T10:00:00+00:00[UTC]'); // Wednesday
+ * const end = Temporal.ZonedDateTime.from('2025-01-15T14:00:00+00:00[UTC]');   // Wednesday
  *
  * const weeks = eachWeekOfInterval({ start, end });
  * // [
- * //   2025-01-06T00:00:00Z[UTC],  // Monday of week containing Jan 8
- * //   2025-01-13T00:00:00Z[UTC]   // Monday of week containing Jan 15
+ * //   2025-01-06T00:00:00+00:00[UTC],  // Monday of week containing Jan 8
+ * //   2025-01-13T00:00:00+00:00[UTC]   // Monday of week containing Jan 15
  * // ]
  * ```
  *
  * @example
  * ```ts
  * // Cross-year boundary
- * const start = Temporal.ZonedDateTime.from('2024-12-25T00:00:00Z[UTC]');
- * const end = Temporal.ZonedDateTime.from('2025-01-08T00:00:00Z[UTC]');
+ * const start = Temporal.ZonedDateTime.from('2024-12-25T00:00:00+00:00[UTC]');
+ * const end = Temporal.ZonedDateTime.from('2025-01-08T00:00:00+00:00[UTC]');
  *
  * const weeks = eachWeekOfInterval({ start, end });
  * // [
- * //   2024-12-23T00:00:00Z[UTC],  // Monday of week containing Dec 25
- * //   2024-12-30T00:00:00Z[UTC],  // Monday of week containing Dec 30
- * //   2025-01-06T00:00:00Z[UTC]   // Monday of week containing Jan 8
+ * //   2024-12-23T00:00:00+00:00[UTC],  // Monday of week containing Dec 25
+ * //   2024-12-30T00:00:00+00:00[UTC],  // Monday of week containing Dec 30
+ * //   2025-01-06T00:00:00+00:00[UTC]   // Monday of week containing Jan 8
  * // ]
  * ```
  */

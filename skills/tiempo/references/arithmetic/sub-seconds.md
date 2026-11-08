@@ -1,6 +1,6 @@
 # subSeconds
 
-Subtracts the specified number of seconds from a datetime.
+The reverse of [addSeconds](https://tiempo.gobrand.app/docs/arithmetic/add-seconds): goes back exact seconds of elapsed time.
 
 ## Signature
 
@@ -8,19 +8,28 @@ Subtracts the specified number of seconds from a datetime.
 function subSeconds(
   input: Temporal.Instant | Temporal.ZonedDateTime,
   seconds: number
-): Temporal.ZonedDateTime
+): Temporal.ZonedDateTime;
 ```
 
-## Example
+## Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `input` | `Temporal.Instant \| Temporal.ZonedDateTime` | The starting datetime |
+| `seconds` | `number` | Whole number of seconds to subtract; negative goes forward. Fractions throw a `RangeError`. |
+
+## Returns
+
+A `ZonedDateTime` in the input's timezone, or in UTC for an `Instant`.
+
+## Examples
+
+### Find the start of a 60-second rate-limit window
 
 ```ts
 import { subSeconds } from '@gobrand/tiempo';
 
-const now = Temporal.Now.zonedDateTimeISO();
+const requestAt = Temporal.Instant.from('2026-04-01T10:00:30Z');
 
-// Get 30 seconds ago
-const thirtySecondsAgo = subSeconds(now, 30);
-
-// Get 1 minute ago
-const minuteAgo = subSeconds(now, 60);
+subSeconds(requestAt, 60); // 2026-04-01T09:59:30+00:00[UTC]
 ```

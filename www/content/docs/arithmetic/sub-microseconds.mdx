@@ -1,9 +1,9 @@
 ---
 title: subMicroseconds
-description: Subtract microseconds from a datetime
+description: Subtract a number of microseconds from a datetime.
 ---
 
-Subtracts the specified number of microseconds from a datetime.
+The reverse of [addMicroseconds](/docs/arithmetic/add-microseconds): goes back exact microseconds of elapsed time.
 
 ## Signature
 
@@ -11,19 +11,28 @@ Subtracts the specified number of microseconds from a datetime.
 function subMicroseconds(
   input: Temporal.Instant | Temporal.ZonedDateTime,
   microseconds: number
-): Temporal.ZonedDateTime
+): Temporal.ZonedDateTime;
 ```
 
-## Example
+## Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `input` | `Temporal.Instant \| Temporal.ZonedDateTime` | The starting datetime |
+| `microseconds` | `number` | Whole number of microseconds to subtract; negative goes forward. Fractions throw a `RangeError`. |
+
+## Returns
+
+A `ZonedDateTime` in the input's timezone, or in UTC for an `Instant`.
+
+## Examples
+
+### Find when a 340 µs trace span started
 
 ```ts
 import { subMicroseconds } from '@gobrand/tiempo';
 
-const instant = Temporal.Instant.from('2025-01-20T12:00:00.001500Z');
+const spanEnd = Temporal.Instant.from('2026-04-01T10:00:00.000465Z');
 
-subMicroseconds(instant, 500);
-// 2025-01-20T12:00:00.001Z[UTC]
-
-subMicroseconds(instant, 1500);
-// 2025-01-20T12:00:00Z[UTC]
+subMicroseconds(spanEnd, 340); // 2026-04-01T10:00:00.000125+00:00[UTC]
 ```

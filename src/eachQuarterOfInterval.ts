@@ -24,8 +24,8 @@ import { quarterStartMonth } from "./shared/quarter";
  *
  * @example
  * ```ts
- * const start = Temporal.ZonedDateTime.from('2025-02-15T10:00:00Z[UTC]');
- * const end = Temporal.ZonedDateTime.from('2025-11-20T14:00:00Z[UTC]');
+ * const start = Temporal.ZonedDateTime.from('2025-02-15T10:00:00+00:00[UTC]');
+ * const end = Temporal.ZonedDateTime.from('2025-11-20T14:00:00+00:00[UTC]');
  * eachQuarterOfInterval({ start, end });
  * // [2025-01-01…, 2025-04-01…, 2025-07-01…, 2025-10-01…]
  * ```
