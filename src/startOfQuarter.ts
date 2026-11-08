@@ -1,5 +1,4 @@
-import { isPlainDate } from "./shared/temporal";
-import type { Temporal } from "@js-temporal/polyfill";
+import { type Temporal, isPlainDate } from "./shared/temporal";
 import type { Timezone } from "./types";
 import { normalizeWithPlainDate } from "./shared/normalizeWithPlainDate";
 import { quarterStartMonth } from "./shared/quarter";

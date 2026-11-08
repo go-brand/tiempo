@@ -1,4 +1,4 @@
-import type { Temporal } from '@js-temporal/polyfill';
+import type { Temporal } from './shared/temporal';
 import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
 import { isAfter } from './shared/isAfter';
 import { nowZoned } from './shared/nowZoned';

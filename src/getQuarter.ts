@@ -1,5 +1,4 @@
-import type { Temporal } from "@js-temporal/polyfill";
-import { isPlainDate } from "./shared/temporal";
+import { type Temporal, isPlainDate } from "./shared/temporal";
 import { normalizeTemporalInput } from "./shared/normalizeTemporalInput";
 import { quarterOfMonth } from "./shared/quarter";
 

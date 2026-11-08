@@ -1,5 +1,4 @@
-import { isPlainDate } from './shared/temporal';
-import type { Temporal } from '@js-temporal/polyfill';
+import { type Temporal, isPlainDate } from './shared/temporal';
 import type { Timezone } from './types';
 import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
 import { plainDateToZonedDateTime } from './shared/plainDateToZonedDateTime';

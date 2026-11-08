@@ -1,5 +1,4 @@
-import { isInstant } from './temporal';
-import type { Temporal } from '@js-temporal/polyfill';
+import { type Temporal, isInstant } from './temporal';
 
 /**
  * @internal

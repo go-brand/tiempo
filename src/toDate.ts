@@ -1,5 +1,4 @@
-import { isInstant } from './shared/temporal';
-import type { Temporal } from '@js-temporal/polyfill';
+import { type Temporal, isInstant } from './shared/temporal';
 
 /**
  * Convert a Temporal.Instant or ZonedDateTime to a Date object.

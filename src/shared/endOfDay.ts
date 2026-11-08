@@ -1,4 +1,4 @@
-import type { Temporal } from '@js-temporal/polyfill';
+import type { Temporal } from './temporal';
 
 /**
  * Internal helper: Returns the last nanosecond of a given ZonedDateTime's day.

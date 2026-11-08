@@ -1,4 +1,4 @@
-import type { Temporal } from '@js-temporal/polyfill';
+import type { Temporal } from './shared/temporal';
 import { differenceInDays } from './differenceInDays.js';
 import { differenceInHours } from './differenceInHours.js';
 import { differenceInMinutes } from './differenceInMinutes.js';

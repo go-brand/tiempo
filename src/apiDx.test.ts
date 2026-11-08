@@ -1,5 +1,5 @@
+import type { Temporal } from './shared/temporal';
 import { describe, expect, expectTypeOf, it } from 'vitest';
-import type { Temporal } from '@js-temporal/polyfill';
 import {
   addHours,
   format,

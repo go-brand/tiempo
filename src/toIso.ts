@@ -1,5 +1,4 @@
-import { isInstant } from './shared/temporal';
-import type { Temporal } from '@js-temporal/polyfill';
+import { type Temporal, isInstant } from './shared/temporal';
 
 export type IsoMode = 'utc' | 'offset';
 

@@ -1,5 +1,4 @@
-import type { Temporal } from "@js-temporal/polyfill";
-import { isPlainDate } from "./shared/temporal";
+import { type Temporal, isPlainDate } from "./shared/temporal";
 import { differenceInMonths } from "./differenceInMonths";
 import type { DifferenceOptions } from "./shared/differenceOptions";
 
