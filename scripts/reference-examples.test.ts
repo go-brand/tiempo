@@ -1,6 +1,12 @@
-import { globSync, readFileSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { codeBlocks, runExample } from './reference-examples';
+
+// fs.globSync needs Node 22; CI also tests Node 20.
+const files = (dir: string, extension: string) =>
+  readdirSync(dir)
+    .filter((name) => name.endsWith(extension))
+    .map((name) => `${dir}/${name}`);
 
 // Pages whose examples are complete programs with exact `// result` comments.
 const EXECUTABLE_PAGES = [
@@ -9,8 +15,8 @@ const EXECUTABLE_PAGES = [
   'www/content/docs/comparison/is-today.mdx',
   'www/content/docs/comparison/is-tomorrow.mdx',
   'www/content/docs/comparison/is-yesterday.mdx',
-  ...globSync('www/content/docs/selection/*.mdx'),
-  ...globSync('www/content/docs/business-days/*.mdx')
+  ...files('www/content/docs/selection', '.mdx'),
+  ...files('www/content/docs/business-days', '.mdx')
 ];
 
 describe('reference page examples', () => {
@@ -26,7 +32,7 @@ describe('reference page examples', () => {
 });
 
 describe('JSDoc examples', () => {
-  const sources = globSync('src/*.ts').filter((file) => !file.endsWith('.test.ts'));
+  const sources = files('src', '.ts').filter((file) => !file.endsWith('.test.ts'));
 
   it.each(sources)('%s does not contradict its result comments', async (file) => {
     const text = readFileSync(file, 'utf8');
