@@ -1,8 +1,5 @@
-import { Temporal, isPlainDate, isPlainTime } from './shared/temporal';
-import { isPlainDateAfter } from './isPlainDateAfter';
-import { isPlainTimeAfter } from './isPlainTimeAfter';
-import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
-import { isAfter as isAfterInternal } from './shared/isAfter';
+import type { Temporal } from './shared/temporal';
+import { compare, type Comparable } from './shared/compare';
 
 /**
  * Returns true if the first datetime is after the second datetime.
@@ -48,24 +45,6 @@ export function isAfter(
   date1: Temporal.Instant | Temporal.ZonedDateTime,
   date2: Temporal.Instant | Temporal.ZonedDateTime
 ): boolean;
-export function isAfter(
-  date1: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate | Temporal.PlainTime,
-  date2: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate | Temporal.PlainTime
-): boolean {
-  if (isPlainDate(date1) || isPlainDate(date2)) {
-    if (!isPlainDate(date1) || !isPlainDate(date2)) {
-      throw new TypeError('PlainDate comparisons require two PlainDate values');
-    }
-    return isPlainDateAfter(date1, date2);
-  }
-  if (isPlainTime(date1) || isPlainTime(date2)) {
-    if (!isPlainTime(date1) || !isPlainTime(date2)) {
-      throw new TypeError('PlainTime comparisons require two PlainTime values');
-    }
-    return isPlainTimeAfter(date1, date2);
-  }
-  const zoned1 = normalizeTemporalInput(date1);
-  const zoned2 = normalizeTemporalInput(date2);
-
-  return isAfterInternal(zoned1, zoned2);
+export function isAfter(date1: Comparable, date2: Comparable): boolean {
+  return compare(date1, date2) > 0;
 }

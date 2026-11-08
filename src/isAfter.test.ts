@@ -5,46 +5,30 @@ import { isAfter } from './isAfter';
 describe('isAfter', () => {
   describe('with ZonedDateTime', () => {
     it('returns true when date1 is after date2', () => {
-      const earlier = Temporal.ZonedDateTime.from(
-        '2025-01-20T10:00:00-05:00[America/New_York]'
-      );
-      const later = Temporal.ZonedDateTime.from(
-        '2025-01-20T16:00:00-05:00[America/New_York]'
-      );
+      const earlier = Temporal.ZonedDateTime.from('2025-01-20T10:00:00-05:00[America/New_York]');
+      const later = Temporal.ZonedDateTime.from('2025-01-20T16:00:00-05:00[America/New_York]');
 
       expect(isAfter(later, earlier)).toBe(true);
     });
 
     it('returns false when date1 is before date2', () => {
-      const earlier = Temporal.ZonedDateTime.from(
-        '2025-01-20T10:00:00-05:00[America/New_York]'
-      );
-      const later = Temporal.ZonedDateTime.from(
-        '2025-01-20T16:00:00-05:00[America/New_York]'
-      );
+      const earlier = Temporal.ZonedDateTime.from('2025-01-20T10:00:00-05:00[America/New_York]');
+      const later = Temporal.ZonedDateTime.from('2025-01-20T16:00:00-05:00[America/New_York]');
 
       expect(isAfter(earlier, later)).toBe(false);
     });
 
     it('returns false when dates are equal', () => {
-      const date1 = Temporal.ZonedDateTime.from(
-        '2025-01-20T10:00:00-05:00[America/New_York]'
-      );
-      const date2 = Temporal.ZonedDateTime.from(
-        '2025-01-20T10:00:00-05:00[America/New_York]'
-      );
+      const date1 = Temporal.ZonedDateTime.from('2025-01-20T10:00:00-05:00[America/New_York]');
+      const date2 = Temporal.ZonedDateTime.from('2025-01-20T10:00:00-05:00[America/New_York]');
 
       expect(isAfter(date1, date2)).toBe(false);
     });
 
     it('compares by instant, not calendar datetime', () => {
       // Same calendar time, different timezones = different instants
-      const ny = Temporal.ZonedDateTime.from(
-        '2025-01-20T10:00:00-05:00[America/New_York]'
-      );
-      const tokyo = Temporal.ZonedDateTime.from(
-        '2025-01-20T10:00:00+09:00[Asia/Tokyo]'
-      );
+      const ny = Temporal.ZonedDateTime.from('2025-01-20T10:00:00-05:00[America/New_York]');
+      const tokyo = Temporal.ZonedDateTime.from('2025-01-20T10:00:00+09:00[Asia/Tokyo]');
 
       // NY 10:00 is 15:00 UTC
       // Tokyo 10:00 is 01:00 UTC
@@ -54,12 +38,8 @@ describe('isAfter', () => {
     });
 
     it('handles dates in different timezones', () => {
-      const ny = Temporal.ZonedDateTime.from(
-        '2025-01-20T10:00:00-05:00[America/New_York]'
-      );
-      const tokyo = Temporal.ZonedDateTime.from(
-        '2025-01-21T00:00:00+09:00[Asia/Tokyo]'
-      );
+      const ny = Temporal.ZonedDateTime.from('2025-01-20T10:00:00-05:00[America/New_York]');
+      const tokyo = Temporal.ZonedDateTime.from('2025-01-21T00:00:00+09:00[Asia/Tokyo]');
 
       // NY 10:00 is 15:00 UTC on Jan 20
       // Tokyo 00:00 is 15:00 UTC on Jan 20
@@ -115,9 +95,7 @@ describe('isAfter', () => {
   describe('with mixed types', () => {
     it('compares Instant with ZonedDateTime', () => {
       const instant = Temporal.Instant.from('2025-01-20T15:00:00Z');
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-01-20T10:00:00-05:00[America/New_York]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-01-20T10:00:00-05:00[America/New_York]');
 
       // NY 10:00 is 15:00 UTC - same instant
       expect(isAfter(instant, zoned)).toBe(false);
@@ -125,9 +103,7 @@ describe('isAfter', () => {
     });
 
     it('compares ZonedDateTime with Instant', () => {
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-01-20T10:00:00-05:00[America/New_York]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-01-20T10:00:00-05:00[America/New_York]');
       const instant = Temporal.Instant.from('2025-01-20T16:00:00Z');
 
       // NY 10:00 is 15:00 UTC, instant is 16:00 UTC
@@ -138,35 +114,23 @@ describe('isAfter', () => {
 
   describe('edge cases', () => {
     it('handles dates far in the past', () => {
-      const past = Temporal.ZonedDateTime.from(
-        '1970-01-01T00:00:00Z[UTC]'
-      );
-      const present = Temporal.ZonedDateTime.from(
-        '2025-01-20T10:00:00Z[UTC]'
-      );
+      const past = Temporal.ZonedDateTime.from('1970-01-01T00:00:00Z[UTC]');
+      const present = Temporal.ZonedDateTime.from('2025-01-20T10:00:00Z[UTC]');
 
       expect(isAfter(present, past)).toBe(true);
     });
 
     it('handles dates far in the future', () => {
-      const present = Temporal.ZonedDateTime.from(
-        '2025-01-20T10:00:00Z[UTC]'
-      );
-      const future = Temporal.ZonedDateTime.from(
-        '2100-01-01T00:00:00Z[UTC]'
-      );
+      const present = Temporal.ZonedDateTime.from('2025-01-20T10:00:00Z[UTC]');
+      const future = Temporal.ZonedDateTime.from('2100-01-01T00:00:00Z[UTC]');
 
       expect(isAfter(future, present)).toBe(true);
     });
 
     it('handles DST transitions', () => {
       // March 9, 2025: DST begins in New York (2 AM -> 3 AM)
-      const beforeDst = Temporal.ZonedDateTime.from(
-        '2025-03-09T01:30:00-05:00[America/New_York]'
-      );
-      const afterDst = Temporal.ZonedDateTime.from(
-        '2025-03-09T03:30:00-04:00[America/New_York]'
-      );
+      const beforeDst = Temporal.ZonedDateTime.from('2025-03-09T01:30:00-05:00[America/New_York]');
+      const afterDst = Temporal.ZonedDateTime.from('2025-03-09T03:30:00-04:00[America/New_York]');
 
       // Only 1 hour of wall-clock time passed, but they are still sequential instants
       expect(isAfter(afterDst, beforeDst)).toBe(true);
