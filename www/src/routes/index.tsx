@@ -265,22 +265,18 @@ await api.tasks.update({ dueAt: toIso(rescheduled) });`;
       <section className="relative px-4 pb-8 pt-16 md:pt-24">
         <div className="max-w-4xl mx-auto">
           <h1 className="mb-6 text-4xl font-bold leading-[1.15] tracking-tight text-neutral-100 md:text-5xl lg:text-6xl">
-            Timezone-safe dates for JavaScript&apos;s Temporal API.
+            Dates without the bugs.
           </h1>
 
           <p className="mb-8 max-w-2xl text-lg font-light leading-relaxed text-neutral-400 md:text-xl">
-            If you know{" "}
+            The{" "}
             <Link
               to="/date-fns"
               className="text-neutral-200 underline decoration-neutral-700 underline-offset-4 transition-colors hover:text-amber-300"
             >
               date-fns
-            </Link>
-            , you already know tiempo: <code className="text-neutral-300">addDays</code>,{" "}
-            <code className="text-neutral-300">format</code>,{" "}
-            <code className="text-neutral-300">differenceInDays</code> and 100+ more. Real
-            timezones, safe daylight-saving math, and calendar dates that are never mistaken for
-            timestamps.
+            </Link>{" "}
+            functions you know, built on Temporal. Timezones and daylight saving, handled.
           </p>
 
           <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:flex-wrap sm:items-center">
@@ -461,21 +457,34 @@ await api.tasks.update({ dueAt: toIso(rescheduled) });`;
         </div>
       </section>
 
-      {/* Features section */}
+      {/* Date bugs section */}
       <section className="relative py-24 px-4">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-amber-950/5 to-transparent" />
         <div className="relative max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-neutral-100 mb-4">
-              The hard parts of time should feel simple.
-            </h2>
-            <p className="text-lg text-neutral-400 max-w-2xl mx-auto">
-              Work in your users&apos; timezones, move dates safely across daylight saving
-              changes, and send exact UTC back to your API.
-            </p>
-          </div>
+          <h2 className="mb-12 text-center text-3xl font-bold text-neutral-100 md:text-4xl">
+            The date bugs you&apos;ve shipped before.
+          </h2>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 rounded-xl border overflow-clip">
+          <div className="grid overflow-clip rounded-xl border md:grid-cols-3">
+            <FeatureCard
+              icon={
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  />
+                </svg>
+              }
+              title="The due date shows a day early"
+              description="A date stays a date. No hidden midnight to shift it."
+            />
             <FeatureCard
               icon={
                 <svg
@@ -493,8 +502,8 @@ await api.tasks.update({ dueAt: toIso(rescheduled) });`;
                   />
                 </svg>
               }
-              title="Your team's timezone, anywhere"
-              description="Convert an ISO timestamp into America/New_York, Asia/Tokyo, or UTC—regardless of where your code runs."
+              title="Right on your laptop, wrong on the server"
+              description="Local time always comes with an explicit timezone."
             />
             <FeatureCard
               icon={
@@ -513,123 +522,20 @@ await api.tasks.update({ dueAt: toIso(rescheduled) });`;
                   />
                 </svg>
               }
-              title="DST-safe calendar math"
-              description="Adding a day means the next calendar day, not 24 hours. Your 9 AM schedule stays at 9 AM when clocks change."
-            />
-            <FeatureCard
-              icon={
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                  aria-hidden="true"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                  />
-                </svg>
-              }
-              title="A date is not a timestamp"
-              description="Billing dates, birthdays, and holidays stay PlainDate values until you decide they represent a real moment."
-            />
-            <FeatureCard
-              icon={
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                  aria-hidden="true"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                  />
-                </svg>
-              }
-              title="Type mix-ups get caught early"
-              description="Comparing a calendar date with a timestamp is a TypeScript error, not a silent timezone guess. Timezone names autocomplete as you type."
-            />
-            <FeatureCard
-              icon={
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                  aria-hidden="true"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"
-                  />
-                </svg>
-              }
-              title="Nanosecond precision"
-              description="Keep exact API and database timestamps without routing them through Date's millisecond limit."
-            />
-            <FeatureCard
-              icon={
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                  aria-hidden="true"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-              }
-              title="No hidden date mutations"
-              description="Every operation returns a new value, so updating one schedule cannot quietly change another part of your app."
+              title="Off by an hour after daylight saving"
+              description="Adding a day keeps the same local time."
             />
           </div>
         </div>
       </section>
 
-      {/* Code examples section */}
+      {/* Code example section */}
       <section className="relative py-24 px-4">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-neutral-100 mb-3">
-              The usual time problems, solved.
-            </h2>
-            <p className="text-lg text-neutral-400 max-w-2xl mx-auto">
-              Take an ISO timestamp from your API, work with it in the team&apos;s timezone, then
-              send exact UTC back.
-            </p>
-          </div>
-
-          <div className="space-y-8 overflow-hidden">
-            {/* End-to-end timezone workflow */}
-            <div className="grid lg:grid-cols-5 gap-6 lg:gap-16 items-start">
-              <div className="lg:col-span-2 flex flex-col justify-center lg:py-4">
-                <h3 className="text-xl font-semibold text-neutral-100 mb-2">
-                  Reschedule a team task without losing its timezone
-                </h3>
-                <p className="text-neutral-400 leading-relaxed">
-                  The backend deals in ISO. The team deals in local calendar days. Tiempo makes
-                  that boundary explicit, safe through DST, and easy to send back.
-                </p>
-              </div>
-              <div className="lg:col-span-3 min-w-0">
-                <CodeExample code={usageCode} />
-              </div>
-            </div>
-          </div>
+        <div className="mx-auto max-w-3xl">
+          <h2 className="mb-12 text-center text-3xl font-bold text-neutral-100 md:text-4xl">
+            Looks like the date code you already write.
+          </h2>
+          <CodeExample code={usageCode} />
         </div>
       </section>
 
@@ -641,13 +547,9 @@ await api.tasks.update({ dueAt: toIso(rescheduled) });`;
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-px bg-gradient-to-r from-transparent via-amber-500/50 to-transparent" />
 
             <div className="relative">
-              <h2 className="text-3xl md:text-4xl font-bold text-neutral-100 mb-4">
-                Make time code obvious.
+              <h2 className="text-3xl md:text-4xl font-bold text-neutral-100 mb-8">
+                Stop thinking about dates.
               </h2>
-              <p className="text-lg text-neutral-400 mb-8 max-w-xl mx-auto">
-                Install tiempo, keep timezones explicit, and let the types say what each value
-                means: a moment, a moment in a place, a date, or a time of day.
-              </p>
 
               <div className="flex flex-wrap gap-4 justify-center">
                 <Link
