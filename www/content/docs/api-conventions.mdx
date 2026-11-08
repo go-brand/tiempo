@@ -22,7 +22,7 @@ Functions keep the type you gave them:
 
 ## Dates and timestamps don't mix
 
-Passing a `PlainDate` together with an `Instant` or `ZonedDateTime` is a TypeScript error. Convert first, choosing the timezone:
+Passing a `PlainDate` together with an `Instant` or `ZonedDateTime` is a TypeScript error and a runtime `TypeError`. So is passing one where only a timestamp makes sense: a date has no hours, so `addHours(date, 1)` throws. Convert first, choosing the timezone:
 
 ```ts
 import { toPlainDate } from '@gobrand/tiempo';

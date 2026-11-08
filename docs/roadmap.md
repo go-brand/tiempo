@@ -1,12 +1,14 @@
 # Tiempo roadmap — a better date-fns for Temporal
 
-Updated 8 November 2026 for version `3.1.2`.
+Updated 8 November 2026 for version `3.1.3`.
 
 This is a prioritized recommendation backlog, revised after challenging all 43 original items. Confirmed implementation problems come from the [audited implementation review](reviews/2026-10-08-implementation-review.md). The [decision audit](reviews/2026-10-08-roadmap-decision-audit.md) records the evidence, tradeoffs, and acceptance criteria for each item. Unchecked items represent unfinished work, not approval to ship every proposed API. Breaking proposals are gated candidates for a future **v4**; fixes and additive improvements can ship earlier.
 
 The product standard: familiar standalone functions, predictable Temporal inputs and outputs, understandable timezone defaults, reliable formatting, and correct behavior at calendar boundaries. Keep direct Temporal primitives and the existing function-per-file organization. Optimize for successful real tasks and quick learning, including by AI agents. Recommendation rank is an aspiration, not a claim established by this review.
 
 ## Implementation status — 8 November 2026
+
+Version 3.1.3 makes timestamp-only functions reject other values at runtime. `addHours` and the other hour-to-nanosecond adders used to return a PlainDate unchanged, and the matching differences threw an unrelated BigInt error or returned `NaN`. All of them now throw `TypeError: Expected a Temporal.Instant or Temporal.ZonedDateTime, got …`, matching what their types already said.
 
 Version 3.1.2 (the 3.1.0 tag failed CI and npm rejected the 3.1.1 publish, so neither reached npm) ships the October correctness batch below plus additive API: `isEqual` (exact-instant equality, part of **15**), selection helpers (**38**: `compareAsc`, `compareDesc`, `min`, `max`, `clamp`, `closestTo`), relative-day predicates (**39**: `isToday`, `isTomorrow`, `isYesterday` with a required timezone), and a business-day pilot (**40**: `isWeekend`, `addBusinessDays`, `subBusinessDays`, `differenceInBusinessDays`). A date-fns mapping guide covers part of **35**. New reference pages and all JSDoc examples now execute in tests, which found and fixed several broken examples (**34**).
 
