@@ -31,7 +31,7 @@ Every function follows these, so agents and people can predict it:
 
 - `pnpm test --run` — runs every test against the polyfill, and against native Temporal on Node 26+.
 - `pnpm typecheck`, `pnpm build`, `pnpm smoke:tarball` (installs the packed package into a scratch project).
-- `pnpm release <patch|minor|major>` — needs a clean tree on `main`; tests, builds, bumps, tags, and pushes. CI publishes to npm on the tag.
+- `pnpm release <patch|minor|major>` — needs a clean tree on `main`; tests, builds, bumps, tags, and pushes. CI publishes to npm on the tag through npm trusted publishing (GitHub OIDC, no npm token; setup in `PUBLISHING.md`).
 - Website: `cd www && pnpm deploy` (Cloudflare Workers).
 
 ## Style
