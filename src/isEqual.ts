@@ -1,5 +1,5 @@
-import type { Temporal } from "./shared/temporal";
-import { compare, type Comparable } from "./shared/compare";
+import type { Temporal } from './shared/temporal';
+import { compare, type Comparable } from './shared/compare';
 
 /**
  * Returns true if both values are the same point in their domain.
@@ -27,7 +27,7 @@ export function isEqual(date1: Temporal.PlainDate, date2: Temporal.PlainDate): b
 export function isEqual(date1: Temporal.PlainTime, date2: Temporal.PlainTime): boolean;
 export function isEqual(
   date1: Temporal.Instant | Temporal.ZonedDateTime,
-  date2: Temporal.Instant | Temporal.ZonedDateTime,
+  date2: Temporal.Instant | Temporal.ZonedDateTime
 ): boolean;
 export function isEqual(date1: Comparable, date2: Comparable): boolean {
   return compare(date1, date2) === 0;

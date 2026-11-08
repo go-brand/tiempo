@@ -1,5 +1,5 @@
-import type { Temporal } from "./shared/temporal";
-import { compare, type Comparable } from "./shared/compare";
+import type { Temporal } from './shared/temporal';
+import { compare, type Comparable } from './shared/compare';
 
 /**
  * Compares two values for descending order: -1 if the first is later,
@@ -28,7 +28,7 @@ export function compareDesc(date1: Temporal.PlainDate, date2: Temporal.PlainDate
 export function compareDesc(date1: Temporal.PlainTime, date2: Temporal.PlainTime): -1 | 0 | 1;
 export function compareDesc(
   date1: Temporal.Instant | Temporal.ZonedDateTime,
-  date2: Temporal.Instant | Temporal.ZonedDateTime,
+  date2: Temporal.Instant | Temporal.ZonedDateTime
 ): -1 | 0 | 1;
 export function compareDesc(date1: Comparable, date2: Comparable): -1 | 0 | 1 {
   return compare(date2, date1);

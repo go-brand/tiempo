@@ -1,6 +1,6 @@
-import type { Temporal } from "./shared/temporal";
-import type { Timezone } from "./types";
-import { isDaysFromToday } from "./shared/relativeDay";
+import type { Temporal } from './shared/temporal';
+import type { Timezone } from './types';
+import { isDaysFromToday } from './shared/relativeDay';
 
 /**
  * Returns true if the value falls on today's date in the given timezone.
@@ -16,12 +16,12 @@ import { isDaysFromToday } from "./shared/relativeDay";
  * @example
  * ```ts
  * isToday(Temporal.Now.instant(), 'America/New_York'); // true
- * isToday(event.start, user.timezone); // label "Today" in the user's calendar
+ * isToday(Temporal.Now.instant().add({ hours: 48 }), 'America/New_York'); // false
  * ```
  */
 export function isToday(
   date: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate,
-  timezone: Timezone,
+  timezone: Timezone
 ): boolean {
   return isDaysFromToday(date, timezone, 0);
 }

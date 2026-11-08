@@ -1,5 +1,5 @@
-import { type Temporal, isPlainDate } from "./shared/temporal";
-import { addBusinessDays } from "./addBusinessDays";
+import { type Temporal, isPlainDate } from './shared/temporal';
+import { addBusinessDays } from './addBusinessDays';
 
 /**
  * Subtracts business days (Monday–Friday), skipping weekends. Holidays are
@@ -23,11 +23,11 @@ import { addBusinessDays } from "./addBusinessDays";
 export function subBusinessDays(input: Temporal.PlainDate, days: number): Temporal.PlainDate;
 export function subBusinessDays(
   input: Temporal.Instant | Temporal.ZonedDateTime,
-  days: number,
+  days: number
 ): Temporal.ZonedDateTime;
 export function subBusinessDays(
   input: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate,
-  days: number,
+  days: number
 ): Temporal.ZonedDateTime | Temporal.PlainDate {
   // Narrow each branch to the matching addBusinessDays overload.
   return isPlainDate(input) ? addBusinessDays(input, -days) : addBusinessDays(input, -days);

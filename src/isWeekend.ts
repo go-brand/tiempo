@@ -1,6 +1,6 @@
-import { type Temporal, isPlainDate } from "./shared/temporal";
-import { normalizeTemporalInput } from "./shared/normalizeTemporalInput";
-import { isWeekendDay } from "./shared/businessDays";
+import { type Temporal, isPlainDate } from './shared/temporal';
+import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
+import { isWeekendDay } from './shared/businessDays';
 
 /**
  * Returns true if the value falls on a Saturday or Sunday.
@@ -18,7 +18,7 @@ import { isWeekendDay } from "./shared/businessDays";
  * ```
  */
 export function isWeekend(
-  input: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate,
+  input: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate
 ): boolean {
   const date = isPlainDate(input) ? input : normalizeTemporalInput(input);
   return isWeekendDay(date.dayOfWeek);

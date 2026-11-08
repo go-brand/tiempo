@@ -19,9 +19,9 @@ import { type Temporal, isInstant } from './shared/temporal';
  * // date2.toISOString() === "2025-01-20T20:00:00.000Z"
  *
  * // Use with Drizzle ORM (for storing back to database)
- * const instant = Temporal.Instant.from("2025-01-20T20:00:00Z");
- * const date = toDate(instant);
- * await db.update(posts).set({ publishedAt: date });
+ * async function publish(id: string, at: Temporal.Instant) {
+ *   await db.update(posts).set({ publishedAt: toDate(at) }).where(eq(posts.id, id));
+ * }
  * ```
  */
 export function toDate(

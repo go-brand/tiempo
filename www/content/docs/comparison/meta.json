@@ -5,9 +5,13 @@
   "pages": [
     "is-before",
     "is-after",
+    "is-equal",
     "is-within-interval",
     "is-future",
     "is-past",
+    "is-today",
+    "is-tomorrow",
+    "is-yesterday",
     "is-same-day",
     "is-same-week",
     "is-same-month",

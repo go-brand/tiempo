@@ -52,7 +52,9 @@ const CATEGORIES = [
   "arithmetic",
   "boundaries",
   "comparison",
+  "selection",
   "difference",
+  "business-days",
   "intervals",
   "utilities",
 ] as const;
@@ -65,7 +67,9 @@ const CATEGORY_TITLES: Record<string, string> = {
   arithmetic: "Arithmetic",
   boundaries: "Boundaries",
   comparison: "Comparison",
+  selection: "Sorting & Selection",
   difference: "Difference",
+  "business-days": "Business Days",
   intervals: "Intervals",
   utilities: "Utilities",
 };

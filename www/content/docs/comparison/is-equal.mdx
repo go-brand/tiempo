@@ -1,0 +1,62 @@
+---
+title: isEqual
+description: Check if two dates, times, or datetimes are the same
+---
+
+Returns true if both values are the same point in their domain.
+
+Timeline values (Instant, ZonedDateTime) are equal when they are the same exact instant, even if their timezones differ. PlainDate pairs compare dates; PlainTime pairs compare wall-clock times. Mixed domains are rejected by TypeScript and throw a TypeError at runtime.
+
+## Signature
+
+```ts
+function isEqual(date1: Temporal.PlainDate, date2: Temporal.PlainDate): boolean;
+function isEqual(date1: Temporal.PlainTime, date2: Temporal.PlainTime): boolean;
+function isEqual(
+  date1: Temporal.Instant | Temporal.ZonedDateTime,
+  date2: Temporal.Instant | Temporal.ZonedDateTime
+): boolean
+```
+
+## Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `date1` | `PlainDate`, `PlainTime`, or `Instant \| ZonedDateTime` | The first value |
+| `date2` | Same domain as `date1` | The second value |
+
+## Returns
+
+`true` if `date1` equals `date2`, `false` otherwise.
+
+## Examples
+
+### Same instant, different timezones
+
+```ts
+import { isEqual } from '@gobrand/tiempo';
+
+const ny = Temporal.ZonedDateTime.from('2025-01-20T10:00:00-05:00[America/New_York]');
+const utc = Temporal.Instant.from('2025-01-20T15:00:00Z');
+
+isEqual(ny, utc); // true
+```
+
+### Dates and clock times
+
+```ts
+import { isEqual } from '@gobrand/tiempo';
+
+isEqual(Temporal.PlainDate.from('2025-01-20'), Temporal.PlainDate.from('2025-01-21')); // false
+isEqual(Temporal.PlainTime.from('09:00'), Temporal.PlainTime.from('09:00:00.000')); // true
+```
+
+## Which equality to use
+
+| Question | Use |
+|----------|-----|
+| Same moment in time? | `isEqual` |
+| Same wall-clock reading (year through nanosecond)? | `isSameNanosecond` |
+| Same moment, timezone, and calendar? | `zoned1.equals(zoned2)` |
+
+During a repeated DST hour, `01:30-04:00` and `01:30-05:00` in New York are different instants: `isEqual` returns false while `isSameNanosecond` returns true.

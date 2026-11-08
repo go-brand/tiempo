@@ -1,0 +1,53 @@
+import { globSync, readFileSync } from 'node:fs';
+import { describe, expect, it } from 'vitest';
+import { codeBlocks, runExample } from './reference-examples';
+
+// Pages whose examples are complete programs with exact `// result` comments.
+const EXECUTABLE_PAGES = [
+  'www/content/docs/date-fns.mdx',
+  'www/content/docs/comparison/is-equal.mdx',
+  'www/content/docs/comparison/is-today.mdx',
+  'www/content/docs/comparison/is-tomorrow.mdx',
+  'www/content/docs/comparison/is-yesterday.mdx',
+  ...globSync('www/content/docs/selection/*.mdx'),
+  ...globSync('www/content/docs/business-days/*.mdx')
+];
+
+describe('reference page examples', () => {
+  it.each(EXECUTABLE_PAGES)('%s produces its documented results', async (page) => {
+    const examples = codeBlocks(page).filter((block) => block.includes("'@gobrand/tiempo'"));
+    const checks = (await Promise.all(examples.map(runExample))).flat();
+
+    expect(checks.length).toBeGreaterThan(0);
+    for (const check of checks) {
+      expect(check.actual, check.line).toBe(check.expected);
+    }
+  });
+});
+
+describe('JSDoc examples', () => {
+  const sources = globSync('src/*.ts').filter((file) => !file.endsWith('.test.ts'));
+
+  it.each(sources)('%s does not contradict its result comments', async (file) => {
+    const text = readFileSync(file, 'utf8');
+    const blocks = [...text.matchAll(/```(?:ts|typescript)\n([\s\S]*?)```/g)].map((m) =>
+      m[1]!.replace(/^\s*\* ?/gm, '')
+    );
+
+    for (const block of blocks) {
+      let checks;
+      try {
+        checks = await runExample(block);
+      } catch (error) {
+        // Fragments may use names defined elsewhere; anything else is a broken example.
+        expect(String(error)).toMatch(/is not defined/);
+        continue;
+      }
+      for (const { line, expected, actual } of checks) {
+        // Prose comments such as `// → 14:00` or `// ~0.67` are illustrations, not values.
+        if (/^[→~]/.test(expected)) continue;
+        expect(actual.startsWith(expected.replace(/[:,n]$/, '')), `${line} → ${actual}`).toBe(true);
+      }
+    }
+  });
+});

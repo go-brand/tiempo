@@ -1,0 +1,6 @@
+{
+  "title": "Sorting & Selection",
+  "description": "Sort values and pick the earliest, latest, nearest, or bounded one",
+  "icon": "ArrowDownUp",
+  "pages": ["compare-asc", "compare-desc", "min", "max", "clamp", "closest-to"]
+}

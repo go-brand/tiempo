@@ -31,7 +31,7 @@ import type { DifferenceOptions } from './shared/differenceOptions';
  * @example
  * ```ts
  * // Works with ZonedDateTime
- * const later = Temporal.ZonedDateTime.from('2025-06-15T15:00:00-05:00[America/New_York]');
+ * const later = Temporal.ZonedDateTime.from('2025-06-15T15:00:00-04:00[America/New_York]');
  * const earlier = Temporal.ZonedDateTime.from('2025-01-15T15:00:00-05:00[America/New_York]');
  *
  * differenceInMonths(later, earlier); // 5

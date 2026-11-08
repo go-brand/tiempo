@@ -23,7 +23,7 @@ import { quarterStartMonth } from "./shared/quarter";
  * @example
  * ```ts
  * // From ZonedDateTime (uses its timezone)
- * const zoned = Temporal.ZonedDateTime.from('2025-08-15T15:30:00-05:00[America/New_York]');
+ * const zoned = Temporal.ZonedDateTime.from('2025-08-15T15:30:00-04:00[America/New_York]');
  * const start = startOfQuarter(zoned);
  * // 2025-07-01T00:00:00-04:00[America/New_York]
  * ```

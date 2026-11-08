@@ -1,5 +1,5 @@
-import type { Temporal } from "./shared/temporal";
-import { assertSameDomain, position, type Comparable, type Timeline } from "./shared/compare";
+import type { Temporal } from './shared/temporal';
+import { assertSameDomain, position, type Comparable, type Timeline } from './shared/compare';
 
 /**
  * Returns the candidate nearest to the target, or undefined when there are no
@@ -27,19 +27,19 @@ import { assertSameDomain, position, type Comparable, type Timeline } from "./sh
  */
 export function closestTo<T extends Timeline>(
   target: Timeline,
-  candidates: readonly T[],
+  candidates: readonly T[]
 ): T | undefined;
 export function closestTo(
   target: Temporal.PlainDate,
-  candidates: readonly Temporal.PlainDate[],
+  candidates: readonly Temporal.PlainDate[]
 ): Temporal.PlainDate | undefined;
 export function closestTo(
   target: Temporal.PlainTime,
-  candidates: readonly Temporal.PlainTime[],
+  candidates: readonly Temporal.PlainTime[]
 ): Temporal.PlainTime | undefined;
 export function closestTo(
   target: Comparable,
-  candidates: readonly Comparable[],
+  candidates: readonly Comparable[]
 ): Comparable | undefined {
   const origin = position(target);
   let closest: Comparable | undefined;

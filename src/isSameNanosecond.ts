@@ -36,10 +36,10 @@ import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
  * ```ts
  * // Different timezones - compares their local nanoseconds
  * const ny = Temporal.ZonedDateTime.from('2025-01-20T14:30:45.123456789-05:00[America/New_York]');
- * const tokyo = Temporal.ZonedDateTime.from('2025-01-21T04:30:45.987654321+09:00[Asia/Tokyo]');
+ * const tokyo = Temporal.ZonedDateTime.from('2025-01-21T04:30:45.123456789+09:00[Asia/Tokyo]');
  *
  * // Same instant, different local nanoseconds from each person's perspective
- * isSameNanosecond(ny, tokyo); // false (14:30:45.123456789 in NY, 04:30:45.987654321 in Tokyo)
+ * isSameNanosecond(ny, tokyo); // false (14:30:45.123456789 in NY, 04:30:45.123456789 in Tokyo)
  *
  * // Convert to UTC to compare in UTC timezone
  * isSameNanosecond(ny.withTimeZone('UTC'), tokyo.withTimeZone('UTC')); // true (both 19:30:45.123456789 in UTC)

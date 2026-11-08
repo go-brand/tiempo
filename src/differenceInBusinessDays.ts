@@ -1,5 +1,5 @@
-import { type Temporal, isPlainDate } from "./shared/temporal";
-import { isWeekendDay, isoDate } from "./shared/businessDays";
+import { type Temporal, isPlainDate } from './shared/temporal';
+import { isWeekendDay, isoDate } from './shared/businessDays';
 
 /**
  * Returns the number of business days (Monday–Friday) from earlierDate up to
@@ -25,22 +25,22 @@ import { isWeekendDay, isoDate } from "./shared/businessDays";
  */
 export function differenceInBusinessDays(
   laterDate: Temporal.PlainDate,
-  earlierDate: Temporal.PlainDate,
+  earlierDate: Temporal.PlainDate
 ): number;
 export function differenceInBusinessDays(
   laterDate: Temporal.Instant | Temporal.ZonedDateTime,
-  earlierDate: Temporal.Instant | Temporal.ZonedDateTime,
+  earlierDate: Temporal.Instant | Temporal.ZonedDateTime
 ): number;
 export function differenceInBusinessDays(
   laterDate: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate,
-  earlierDate: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate,
+  earlierDate: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate
 ): number {
   if (isPlainDate(laterDate) !== isPlainDate(earlierDate)) {
-    throw new TypeError("PlainDate differences require two PlainDate values");
+    throw new TypeError('PlainDate differences require two PlainDate values');
   }
   const later = isoDate(laterDate);
   const earlier = isoDate(earlierDate);
-  const days = earlier.until(later, { largestUnit: "days" }).days;
+  const days = earlier.until(later, { largestUnit: 'days' }).days;
   const [from, span] = days < 0 ? [later, -days] : [earlier, days];
 
   // Every full week holds five business days; walk the remainder.

@@ -1,6 +1,6 @@
-import type { Temporal } from "./shared/temporal";
-import type { Timezone } from "./types";
-import { isDaysFromToday } from "./shared/relativeDay";
+import type { Temporal } from './shared/temporal';
+import type { Timezone } from './types';
+import { isDaysFromToday } from './shared/relativeDay';
 
 /**
  * Returns true if the value falls on yesterday's date in the given timezone.
@@ -20,7 +20,7 @@ import { isDaysFromToday } from "./shared/relativeDay";
  */
 export function isYesterday(
   date: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate,
-  timezone: Timezone,
+  timezone: Timezone
 ): boolean {
   return isDaysFromToday(date, timezone, -1);
 }

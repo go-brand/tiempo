@@ -1,6 +1,6 @@
-import { type Temporal, isPlainDate } from "./shared/temporal";
-import { normalizeTemporalInput } from "./shared/normalizeTemporalInput";
-import { addWeekdays } from "./shared/businessDays";
+import { type Temporal, isPlainDate } from './shared/temporal';
+import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
+import { addWeekdays } from './shared/businessDays';
 
 /**
  * Adds business days (Monday–Friday), skipping weekends. Holidays are not
@@ -29,11 +29,11 @@ import { addWeekdays } from "./shared/businessDays";
 export function addBusinessDays(input: Temporal.PlainDate, days: number): Temporal.PlainDate;
 export function addBusinessDays(
   input: Temporal.Instant | Temporal.ZonedDateTime,
-  days: number,
+  days: number
 ): Temporal.ZonedDateTime;
 export function addBusinessDays(
   input: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate,
-  days: number,
+  days: number
 ): Temporal.ZonedDateTime | Temporal.PlainDate {
   if (isPlainDate(input)) {
     return addWeekdays(input, days);

@@ -21,7 +21,7 @@ import { normalizeWithPlainDate } from './shared/normalizeWithPlainDate';
  * @example
  * ```ts
  * // From ZonedDateTime (uses its timezone)
- * const zoned = Temporal.ZonedDateTime.from('2025-06-15T15:30:00-05:00[America/New_York]');
+ * const zoned = Temporal.ZonedDateTime.from('2025-06-15T15:30:00-04:00[America/New_York]');
  * const end = endOfYear(zoned);
  * // 2025-12-31T23:59:59.999999999-05:00[America/New_York]
  * ```
