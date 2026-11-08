@@ -1,8 +1,8 @@
-import { type Temporal, isPlainDate } from "./temporal";
-import type { Timezone } from "../types";
-import { compare } from "./compare";
-import { toPlainDate } from "../toPlainDate";
-import { today } from "../today";
+import { type Temporal, isPlainDate } from './temporal';
+import type { Timezone } from '../types';
+import { compare } from './compare';
+import { toPlainDate } from '../toPlainDate';
+import { today } from '../today';
 
 /**
  * @internal
@@ -12,7 +12,7 @@ import { today } from "../today";
 export function isDaysFromToday(
   input: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate,
   timezone: Timezone,
-  days: number,
+  days: number
 ): boolean {
   const date = isPlainDate(input) ? input : toPlainDate(input, timezone);
   return compare(date, today(timezone).add({ days })) === 0;

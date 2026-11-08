@@ -1,4 +1,4 @@
-import { Temporal, isPlainDate, isPlainTime } from "./temporal";
+import { Temporal, isPlainDate, isPlainTime } from './temporal';
 
 export type Timeline = Temporal.Instant | Temporal.ZonedDateTime;
 export type Comparable = Timeline | Temporal.PlainDate | Temporal.PlainTime;
@@ -10,10 +10,10 @@ export type Comparable = Timeline | Temporal.PlainDate | Temporal.PlainTime;
  */
 export function assertSameDomain(a: Comparable, b: Comparable): void {
   if ((isPlainDate(a) || isPlainDate(b)) && !(isPlainDate(a) && isPlainDate(b))) {
-    throw new TypeError("PlainDate comparisons require two PlainDate values");
+    throw new TypeError('PlainDate comparisons require two PlainDate values');
   }
   if ((isPlainTime(a) || isPlainTime(b)) && !(isPlainTime(a) && isPlainTime(b))) {
-    throw new TypeError("PlainTime comparisons require two PlainTime values");
+    throw new TypeError('PlainTime comparisons require two PlainTime values');
   }
 }
 
@@ -41,7 +41,7 @@ export function compare(a: Comparable, b: Comparable): -1 | 0 | 1 {
  */
 export function position(value: Comparable): bigint {
   if (isPlainDate(value)) {
-    return Temporal.PlainDate.from(ownDate(value)).toZonedDateTime("UTC").epochNanoseconds;
+    return Temporal.PlainDate.from(ownDate(value)).toZonedDateTime('UTC').epochNanoseconds;
   }
   if (isPlainTime(value)) {
     const seconds = (value.hour * 60 + value.minute) * 60 + value.second;

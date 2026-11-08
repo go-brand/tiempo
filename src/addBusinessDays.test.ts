@@ -55,6 +55,29 @@ describe('addBusinessDays', () => {
     }
   });
 
+  it('matches a day-by-day walk from every weekday and weekend start', () => {
+    const walk = (start: Temporal.PlainDate, days: number) => {
+      let result = start;
+      for (let remaining = Math.abs(days); remaining > 0;) {
+        result = result.add({ days: Math.sign(days) });
+        if (!isWeekend(result)) remaining--;
+      }
+      return result;
+    };
+
+    for (let offset = 0; offset < 14; offset++) {
+      const start = date('2025-01-20').add({ days: offset });
+      for (let days = -30; days <= 30; days++) {
+        expect(addBusinessDays(start, days).toString()).toBe(walk(start, days).toString());
+      }
+    }
+  });
+
+  it('handles large counts without walking every day', () => {
+    expect(addBusinessDays(date('2025-01-24'), 50_000).toString()).toBe('2216-09-20');
+    expect(() => addBusinessDays(date('2025-01-24'), 1e9)).toThrow(RangeError);
+  });
+
   it('always lands on a weekday and is undone by differenceInBusinessDays from a weekday', () => {
     const weekdays = ['2025-01-20', '2025-01-21', '2025-01-22', '2025-01-23', '2025-01-24'].map(
       date
