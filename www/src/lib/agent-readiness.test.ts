@@ -29,6 +29,9 @@ describe("agent readiness HTTP behavior", () => {
     expect(markdownAssetPath("/docs/conversion/to-instant/")).toBe(
       "/.well-known/markdown/docs/conversion/to-instant.md",
     );
+    expect(markdownAssetPath("/date-fns")).toBe(
+      "/.well-known/markdown/docs/date-fns.md",
+    );
     expect(markdownAssetPath("/installation")).toBeNull();
   });
 

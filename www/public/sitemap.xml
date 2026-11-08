@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://tiempo.gobrand.app/</loc></url>
+  <url><loc>https://tiempo.gobrand.app/date-fns</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/installation</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/api-conventions</loc></url>
