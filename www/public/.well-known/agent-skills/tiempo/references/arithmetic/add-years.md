@@ -1,6 +1,8 @@
 # addYears
 
-Add years to a datetime. Handles leap years correctly.
+Add years to a datetime or calendar date. Handles leap years correctly.
+
+PlainDate inputs return a PlainDate and preserve its calendar, without choosing a timezone. Instant inputs continue to return a ZonedDateTime in UTC; ZonedDateTime inputs preserve their timezone. Counts may be negative; fractional calendar counts are rejected by Temporal. Month/year arithmetic uses Temporal’s default month-end constraining.
 
 ## Signature
 
@@ -8,19 +10,20 @@ Add years to a datetime. Handles leap years correctly.
 function addYears(
   input: Temporal.Instant | Temporal.ZonedDateTime,
   years: number
-): Temporal.ZonedDateTime
+): Temporal.ZonedDateTime;
+function addYears(input: Temporal.PlainDate, years: number): Temporal.PlainDate;
 ```
 
 ## Parameters
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `input` | `Temporal.Instant \| Temporal.ZonedDateTime` | The datetime to add years to |
+| `input` | `Temporal.Instant \| Temporal.ZonedDateTime \| Temporal.PlainDate` | The datetime to add years to |
 | `years` | `number` | Number of years to add (can be negative) |
 
 ## Returns
 
-A `Temporal.ZonedDateTime` with the years added.
+A `Temporal.PlainDate` for a date-only input, or a `Temporal.ZonedDateTime` for an Instant/ZonedDateTime input, with the years added.
 
 ## Examples
 
@@ -47,4 +50,14 @@ addYears(leapDay, 1);
 ```ts
 addYears(instant, -5);
 // 2020-01-20T12:00:00Z[UTC]
+```
+
+## Date-only arithmetic
+
+```ts
+import { addYears, toPlainDate } from '@gobrand/tiempo';
+
+const date = toPlainDate('2024-01-31');
+const result = addYears(date, 1); // Temporal.PlainDate
+result.toString(); // "2025-01-31"
 ```

@@ -3,6 +3,7 @@
     "---Getting Started---",
     "index",
     "installation",
+    "api-conventions",
     "typescript",
     "type-matrix",
     "recipes",

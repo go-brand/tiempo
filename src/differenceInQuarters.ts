@@ -47,9 +47,10 @@ export function differenceInQuarters(
   options?: DifferenceOptions,
 ): number {
   // A quarter is three months, so work in elapsed months and divide by 3.
+  // Serialize the other date to preserve its calendar across implementations.
   const months =
     isPlainDate(laterDate) && isPlainDate(earlierDate)
-      ? earlierDate.until(laterDate).total({
+      ? earlierDate.until(laterDate.toString()).total({
           unit: "months",
           relativeTo: earlierDate,
         })

@@ -2,6 +2,8 @@
 
 Returns the number of seconds between two datetimes.
 
+Whole units are truncated toward zero after subtracting epoch nanoseconds. Numeric results use JavaScript `number` precision; use `differenceInNanoseconds` for an exact `bigint` elapsed difference.
+
 ## Signature
 
 ```ts

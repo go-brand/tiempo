@@ -51,6 +51,7 @@ export function eachMinuteOfInterval(interval: {
 }): Temporal.ZonedDateTime[] {
   const startZoned = normalizeTemporalInput(interval.start);
   const endZoned = normalizeTemporalInput(interval.end);
+  if (startZoned.epochNanoseconds > endZoned.epochNanoseconds) return [];
 
   const timezone = startZoned.timeZoneId;
 
@@ -64,7 +65,7 @@ export function eachMinuteOfInterval(interval: {
   const minutes: Temporal.ZonedDateTime[] = [];
   let current = startMinute;
 
-  while (Temporal.ZonedDateTime.compare(current, endMinute) <= 0) {
+  while (current.epochNanoseconds <= endMinute.epochNanoseconds) {
     minutes.push(current);
     current = current.add({ minutes: 1 });
   }

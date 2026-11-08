@@ -227,3 +227,22 @@ describe('eachDayOfInterval', () => {
     });
   });
 });
+
+
+it('returns no boundaries when original endpoints are reversed inside one bucket', () => {
+  const end = Temporal.ZonedDateTime.from('2025-01-15T12:30:15[UTC]');
+  expect(eachDayOfInterval({ start: end.add({ seconds: 1 }), end })).toEqual([]);
+  expect(eachDayOfInterval({ start: end, end })).toHaveLength(1);
+});
+
+
+it('omits a nonexistent calendar date without duplicating the following day', () => {
+  const days = eachDayOfInterval({
+    start: Temporal.ZonedDateTime.from('2011-12-29T12:00[Pacific/Apia]'),
+    end: Temporal.ZonedDateTime.from('2011-12-31T12:00[Pacific/Apia]'),
+  });
+  expect(days.map(value => value.toString())).toEqual([
+    '2011-12-29T00:00:00-10:00[Pacific/Apia]',
+    '2011-12-31T00:00:00+14:00[Pacific/Apia]',
+  ]);
+});

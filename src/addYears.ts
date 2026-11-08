@@ -1,15 +1,18 @@
 import type { Temporal } from '@js-temporal/polyfill';
+import { isPlainDate } from './shared/temporal';
 import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
 
 /**
- * Adds the specified number of years to a datetime.
+ * Adds the specified number of years to a datetime or date.
  *
  * Properly handles leap years and calendar edge cases through Temporal API.
  * Instant inputs are converted to UTC. For ZonedDateTime inputs, their timezone is preserved.
  *
- * @param input - A Temporal.Instant (UTC) or Temporal.ZonedDateTime
+ * PlainDate inputs stay in calendar space, preserving their calendar without a timezone.
+ *
+ * @param input - A Temporal.Instant (UTC), Temporal.ZonedDateTime, or Temporal.PlainDate
  * @param years - Number of years to add (can be negative to subtract)
- * @returns ZonedDateTime with years added, in the same timezone as input
+ * @returns PlainDate for a date input; otherwise ZonedDateTime with years added
  *
  * @example
  * ```ts
@@ -35,10 +38,17 @@ import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
  * // 2025-02-28T12:00:00Z[UTC] (Feb 29 → Feb 28)
  * ```
  */
+export function addYears(input: Temporal.PlainDate, years: number): Temporal.PlainDate;
 export function addYears(
   input: Temporal.Instant | Temporal.ZonedDateTime,
   years: number
-): Temporal.ZonedDateTime {
-  const zonedDateTime = normalizeTemporalInput(input);
-  return zonedDateTime.add({ years });
+): Temporal.ZonedDateTime;
+export function addYears(
+  input: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate,
+  years: number
+): Temporal.ZonedDateTime | Temporal.PlainDate {
+  if (isPlainDate(input)) {
+    return input.add({ years });
+  }
+  return normalizeTemporalInput(input).add({ years });
 }

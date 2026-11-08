@@ -1,7 +1,15 @@
-import { Temporal } from './shared/temporal';
+import { Temporal, isPlainDate } from './shared/temporal';
+import { isPlainDateAfter } from './isPlainDateAfter';
+import { isPlainDateBefore } from './isPlainDateBefore';
 import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
 
 /**
+ * PlainDate endpoints return date-only period starts in the start calendar.
+ * Mixed date-only/timeline endpoints are rejected. Reversed endpoints return [].
+ *
+ * Uses the start endpoint's calendar and timezone, including for the end bound.
+ * Native and polyfill endpoints may be mixed.
+ *
  * Returns an array of ZonedDateTime objects for each month within the interval.
  * Each element represents the first moment of the month (day 1 at midnight).
  * The interval is inclusive of both start and end months.
@@ -42,11 +50,36 @@ import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
  * ```
  */
 export function eachMonthOfInterval(interval: {
+  start: Temporal.PlainDate;
+  end: Temporal.PlainDate;
+}): Temporal.PlainDate[];
+export function eachMonthOfInterval(interval: {
   start: Temporal.Instant | Temporal.ZonedDateTime;
   end: Temporal.Instant | Temporal.ZonedDateTime;
-}): Temporal.ZonedDateTime[] {
+}): Temporal.ZonedDateTime[];
+export function eachMonthOfInterval(interval: {
+  start: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate;
+  end: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate;
+}): Temporal.ZonedDateTime[] | Temporal.PlainDate[] {
+  if (isPlainDate(interval.start) || isPlainDate(interval.end)) {
+    if (!isPlainDate(interval.start) || !isPlainDate(interval.end)) {
+      throw new TypeError('PlainDate intervals require two PlainDate endpoints');
+    }
+    if (isPlainDateAfter(interval.start, interval.end)) return [];
+    const end = interval.end.withCalendar(interval.start.calendarId);
+    const last = end.with({ day: 1 });
+    let current = interval.start.with({ day: 1 });
+    const dates: Temporal.PlainDate[] = [];
+    while (isPlainDateBefore(current, last)) {
+      dates.push(current);
+      current = current.add({ months: 1 });
+    }
+    dates.push(current);
+    return dates;
+  }
   const startZoned = normalizeTemporalInput(interval.start);
   const endZoned = normalizeTemporalInput(interval.end);
+  if (startZoned.epochNanoseconds > endZoned.epochNanoseconds) return [];
 
   const timezone = startZoned.timeZoneId;
 
@@ -54,13 +87,15 @@ export function eachMonthOfInterval(interval: {
   const startYearMonth = Temporal.PlainYearMonth.from({
     year: startZoned.year,
     month: startZoned.month,
+    calendar: startZoned.calendarId,
   });
 
   // Get end month in the same timezone
-  const endInTimezone = endZoned.withTimeZone(timezone);
+  const endInTimezone = endZoned.withTimeZone(timezone).withCalendar(startZoned.calendarId);
   const endYearMonth = Temporal.PlainYearMonth.from({
     year: endInTimezone.year,
     month: endInTimezone.month,
+    calendar: startZoned.calendarId,
   });
 
   const months: Temporal.ZonedDateTime[] = [];

@@ -2,6 +2,8 @@
 
 Returns true if the first date is before the second date. Compares calendar dates without time or timezone considerations.
 
+`isBefore` also accepts two PlainDate values with the same ordering rules. This specialized helper remains supported.
+
 ## Signature
 
 ```ts

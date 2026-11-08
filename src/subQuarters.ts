@@ -8,9 +8,9 @@ import { addQuarters } from "./addQuarters";
  * This is a convenience wrapper around addQuarters with the count negated.
  * PlainDate inputs stay in calendar space and return a PlainDate.
  *
- * @param input - A Temporal.Instant (UTC) or Temporal.ZonedDateTime
+ * @param input - A Temporal.Instant (UTC), Temporal.ZonedDateTime, or Temporal.PlainDate
  * @param quarters - Number of quarters to subtract
- * @returns A ZonedDateTime (for Instant/ZonedDateTime) with the quarters subtracted
+ * @returns PlainDate for a date input; otherwise ZonedDateTime with the quarters subtracted
  *
  * @example
  * ```ts

@@ -5,6 +5,8 @@ description: Calculate the difference between two dates in hours
 
 Returns the number of hours between two datetimes.
 
+Whole units are truncated toward zero after subtracting epoch nanoseconds. Numeric results use JavaScript `number` precision; use `differenceInNanoseconds` for an exact `bigint` elapsed difference.
+
 ## Signature
 
 ```ts

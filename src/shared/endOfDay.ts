@@ -10,5 +10,6 @@ export function getEndOfDay(
   return zonedDateTime
     .startOfDay()
     .add({ days: 1 })
+    .startOfDay()
     .subtract({ nanoseconds: 1 });
 }

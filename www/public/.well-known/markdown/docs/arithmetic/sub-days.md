@@ -1,6 +1,8 @@
 # subDays
 
-Subtracts the specified number of days from a datetime.
+Subtracts the specified number of days from a datetime or calendar date.
+
+PlainDate inputs return a PlainDate and preserve its calendar, without choosing a timezone. Instant inputs continue to return a ZonedDateTime in UTC; ZonedDateTime inputs preserve their timezone. Counts may be negative; fractional calendar counts are rejected by Temporal. Month/year arithmetic uses Temporal’s default month-end constraining.
 
 ## Signature
 
@@ -8,7 +10,8 @@ Subtracts the specified number of days from a datetime.
 function subDays(
   input: Temporal.Instant | Temporal.ZonedDateTime,
   days: number
-): Temporal.ZonedDateTime
+): Temporal.ZonedDateTime;
+function subDays(input: Temporal.PlainDate, days: number): Temporal.PlainDate;
 ```
 
 ## Example
@@ -23,4 +26,14 @@ const yesterday = subDays(now, 1);
 
 // Get a week ago
 const weekAgo = subDays(now, 7);
+```
+
+## Date-only arithmetic
+
+```ts
+import { subDays, toPlainDate } from '@gobrand/tiempo';
+
+const date = toPlainDate('2024-01-31');
+const result = subDays(date, 1); // Temporal.PlainDate
+result.toString(); // "2024-01-30"
 ```

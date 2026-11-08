@@ -1,15 +1,18 @@
 import type { Temporal } from '@js-temporal/polyfill';
+import { isPlainDate } from './shared/temporal';
 import { addWeeks } from './addWeeks';
 
 /**
- * Subtracts the specified number of weeks from a datetime.
+ * Subtracts the specified number of weeks from a datetime or date.
  *
  * This is a convenience wrapper around addWeeks with negated value.
  * Properly handles DST transitions and calendar edge cases through Temporal API.
  *
- * @param input - A Temporal.Instant (UTC) or Temporal.ZonedDateTime
+ * PlainDate inputs stay in calendar space, preserving their calendar without a timezone.
+ *
+ * @param input - A Temporal.Instant (UTC), Temporal.ZonedDateTime, or Temporal.PlainDate
  * @param weeks - Number of weeks to subtract
- * @returns ZonedDateTime with weeks subtracted, in the same timezone as input
+ * @returns PlainDate for a date input; otherwise ZonedDateTime with weeks subtracted
  *
  * @example
  * ```ts
@@ -18,9 +21,15 @@ import { addWeeks } from './addWeeks';
  * // 2025-01-20T12:00:00Z[UTC] (2 weeks earlier)
  * ```
  */
+export function subWeeks(input: Temporal.PlainDate, weeks: number): Temporal.PlainDate;
 export function subWeeks(
   input: Temporal.Instant | Temporal.ZonedDateTime,
   weeks: number
-): Temporal.ZonedDateTime {
-  return addWeeks(input, -weeks);
+): Temporal.ZonedDateTime;
+export function subWeeks(
+  input: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate,
+  weeks: number
+): Temporal.ZonedDateTime | Temporal.PlainDate {
+  // Narrow each branch to the matching addWeeks overload.
+  return isPlainDate(input) ? addWeeks(input, -weeks) : addWeeks(input, -weeks);
 }

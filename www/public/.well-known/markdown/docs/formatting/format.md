@@ -1,15 +1,24 @@
 # format
 
-Format a `Temporal.Instant` or `ZonedDateTime` using date-fns-like format tokens.
+Format a `Temporal.Instant`, `ZonedDateTime`, or `PlainDate` using date-fns-like format tokens. PlainDate formatting is equivalent to `formatPlainDate`; it uses date-only information and accepts a locale, without a timezone override.
 
 ## Signature
 
 ```ts
 function format(
+  input: Temporal.PlainDate,
+  formatStr: string,
+  options?: FormatPlainDateOptions & { timeZone?: never }
+): string;
+function format(
   input: Temporal.Instant | Temporal.ZonedDateTime,
   formatStr: string,
   options?: FormatOptions
 ): string
+
+interface FormatPlainDateOptions {
+  locale?: string;
+}
 
 interface FormatOptions {
   locale?: string;
@@ -21,10 +30,12 @@ interface FormatOptions {
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `input` | `Temporal.Instant \| Temporal.ZonedDateTime` | The datetime to format |
+| `input` | `Temporal.Instant \| Temporal.ZonedDateTime \| Temporal.PlainDate` | The datetime or calendar date to format |
 | `formatStr` | `string` | Format string using date-fns tokens |
 | `options.locale` | `string` | Locale for formatting (default: "en-US") |
-| `options.timeZone` | `Timezone` | Override timezone for formatting |
+| `options.timeZone` | `Timezone` | Override timezone for Instant/ZonedDateTime formatting only |
+
+For ISO offset tokens, widths 1–3 omit offset seconds; widths 4–5 include seconds when present. For example, historical Paris `+00:09:21` formats as `+00:09` with `XXX` and `+00:09:21` with `XXXXX`. Uppercase `X` tokens use `Z` only for an actual zero offset.
 
 ## Format Tokens
 
@@ -113,3 +124,17 @@ import { format } from '@gobrand/tiempo';
 format(date, "yyyy年M月d日 (EEEE)", { locale: 'ja-JP' });
 // "2025年1月20日 (月曜日)"
 ```
+
+## Calendar dates
+
+```ts
+import { format, toPlainDate } from '@gobrand/tiempo';
+
+const birthday = toPlainDate('1990-06-15');
+format(birthday, 'yyyy-MM-dd'); // "1990-06-15"
+format(birthday, 'MMMM d, yyyy', { locale: 'en-US' }); // "June 15, 1990"
+```
+
+Use the date tokens supported by `formatPlainDate`. As in that helper, unsupported time/zone tokens remain literal text; they do not create a time or timezone. For example, `format(birthday, 'HH:mm')` returns `"HH:mm"`. Quote intentional literal text. Passing a `timeZone` option for a PlainDate is rejected by TypeScript and throws a TypeError at runtime.
+
+Instant inputs still default to UTC; ZonedDateTime inputs use their zone unless overridden. `formatPlainDate` remains supported.

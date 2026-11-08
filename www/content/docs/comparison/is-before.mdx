@@ -1,13 +1,19 @@
 ---
 title: isBefore
-description: Check if one datetime is before another
+description: Check if one date, time, or datetime is before another
 ---
 
-Returns true if the first datetime is before the second datetime.
+Returns true if the first value is before the second value.
+
+Compare two PlainDates, two PlainTimes, or any Instant/ZonedDateTime pair. Dates use Temporal's date ordering, including values expressed in different calendars. Times use wall-clock ordering with nanosecond precision; midnight does not wrap into the next day. Timeline values compare by their exact instant.
+
+Mixed domains (for example, PlainDate and Instant) are rejected by TypeScript and throw a TypeError at runtime. Resolve calendar or clock values to a timeline explicitly when that is the intended comparison.
 
 ## Signature
 
 ```ts
+function isBefore(date1: Temporal.PlainDate, date2: Temporal.PlainDate): boolean;
+function isBefore(date1: Temporal.PlainTime, date2: Temporal.PlainTime): boolean;
 function isBefore(
   date1: Temporal.Instant | Temporal.ZonedDateTime,
   date2: Temporal.Instant | Temporal.ZonedDateTime
@@ -18,8 +24,8 @@ function isBefore(
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `date1` | `Temporal.Instant \| Temporal.ZonedDateTime` | The first datetime |
-| `date2` | `Temporal.Instant \| Temporal.ZonedDateTime` | The second datetime |
+| `date1` | `PlainDate`, `PlainTime`, or `Instant \| ZonedDateTime` | The first datetime |
+| `date2` | `PlainDate`, `PlainTime`, or `Instant \| ZonedDateTime` | The second datetime |
 
 ## Returns
 
@@ -53,7 +59,7 @@ isBefore(instant1, instant2); // true
 ```ts
 const ny = Temporal.ZonedDateTime.from('2025-01-20T10:00:00-05:00[America/New_York]');
 const tokyo = Temporal.ZonedDateTime.from('2025-01-21T00:00:00+09:00[Asia/Tokyo]');
-isBefore(ny, tokyo); // true (NY 10:00 AM = 15:00 UTC, Tokyo midnight = 15:00 UTC previous day)
+isBefore(ny, tokyo); // false: both are 2025-01-20T15:00:00Z
 ```
 
 ## Common Patterns
@@ -69,3 +75,14 @@ function validateEventDates(start: Temporal.ZonedDateTime, end: Temporal.ZonedDa
   }
 }
 ```
+
+## Dates and clock times
+
+```ts
+import { isBefore, toPlainDate, toPlainTime } from '@gobrand/tiempo';
+
+isBefore(toPlainDate('2025-01-20'), toPlainDate('2025-01-21')); // true
+isBefore(toPlainTime('09:00'), toPlainTime('17:00')); // true
+```
+
+The specialized `isPlainDateBefore`/`isPlainDateAfter` and `isPlainTimeBefore`/`isPlainTimeAfter` helpers remain available with the same ordering rules. Equal values return false.

@@ -1,10 +1,22 @@
 # differenceInMonths
 
-Returns the number of months between two datetimes.
+Returns the number of months between two dates or datetimes.
+
+## Temporal compatibility
+
+Accepts native Temporal and `@js-temporal/polyfill` values, including mixed pairs. Instant inputs use UTC. For ZonedDateTime inputs, calendar totals use the timezone and calendar of `earlierDate`; the inputs must have matching calendar identifiers. Nanosecond precision is preserved when passing values between implementations; the returned JavaScript number still has floating-point precision limits.
+
+Two PlainDates are also accepted. They use calendar arithmetic without a timezone and must have matching calendar identifiers. Results are truncated toward zero unless `{ fractional: true }` is supplied. PlainDate/timeline pairs are rejected; explicitly convert a timestamp to a date when that matches your task.
 
 ## Signature
 
 ```ts
+function differenceInMonths(
+  laterDate: Temporal.PlainDate,
+  earlierDate: Temporal.PlainDate,
+  options?: DifferenceOptions
+): number
+
 function differenceInMonths(
   laterDate: Temporal.Instant | Temporal.ZonedDateTime,
   earlierDate: Temporal.Instant | Temporal.ZonedDateTime,
@@ -20,8 +32,8 @@ interface DifferenceOptions {
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `laterDate` | `Temporal.Instant \| Temporal.ZonedDateTime` | The later datetime |
-| `earlierDate` | `Temporal.Instant \| Temporal.ZonedDateTime` | The earlier datetime |
+| `laterDate` | `Temporal.PlainDate \| Temporal.Instant \| Temporal.ZonedDateTime` | The later value; pair PlainDate only with PlainDate |
+| `earlierDate` | `Temporal.PlainDate \| Temporal.Instant \| Temporal.ZonedDateTime` | The earlier value in the same domain |
 | `options.fractional` | `boolean` | Return the precise fractional value instead of truncating toward zero (default: false) |
 
 ## Returns
@@ -29,6 +41,19 @@ interface DifferenceOptions {
 The number of months between the two datetimes, truncated toward zero by default. Pass `{ fractional: true }` to get the precise fractional value. Positive if `laterDate` is after `earlierDate`, negative if before.
 
 ## Examples
+
+### Date-only months
+
+```ts
+import { toPlainDate, differenceInMonths } from '@gobrand/tiempo';
+
+const earlier = toPlainDate('2026-01-15');
+const later = toPlainDate('2026-03-15');
+
+differenceInMonths(later, earlier); // 2
+```
+
+The argument order is the first value minus the second. Fractional calendar totals are relative to the second argument. Months and years vary in length, so reversing arbitrary inputs need not produce exactly opposite fractional results.
 
 ```ts
 import { differenceInMonths } from '@gobrand/tiempo';

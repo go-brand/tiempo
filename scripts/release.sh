@@ -52,7 +52,7 @@ echo -e "${GREEN}Starting release process...${NC}"
 
 # Run tests
 echo "Running tests..."
-pnpm test
+pnpm test --run
 
 # Run type check
 echo "Running type check..."

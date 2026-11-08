@@ -21,8 +21,6 @@ jobs:
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: 11.12.0
 
       - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
@@ -37,10 +35,13 @@ jobs:
         run: pnpm typecheck
 
       - name: Run tests
-        run: pnpm test
+        run: pnpm test --run
 
       - name: Build
         run: pnpm build
+
+      - name: Test installed package
+        run: pnpm smoke:tarball
 
   publish:
     needs: test
@@ -52,8 +53,6 @@ jobs:
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: 11.12.0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4

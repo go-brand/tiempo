@@ -2,6 +2,8 @@
 
 Returns true if the first time is before the second time. Compares wall-clock times without date or timezone considerations.
 
+`isBefore` also accepts two PlainTime values with the same ordering rules. This specialized helper remains supported.
+
 ## Signature
 
 ```ts

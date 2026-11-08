@@ -1,11 +1,13 @@
 import { Temporal } from './shared/temporal';
 import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
-import { differenceInMilliseconds } from './shared/differenceInMilliseconds';
 import type { DifferenceOptions } from './shared/differenceOptions';
 
 /**
  * Returns the number of seconds between two datetimes.
  * The result is positive if laterDate is after earlierDate, negative if before.
+ * Whole units are truncated toward zero after subtracting epoch nanoseconds.
+ * Numeric results use JavaScript number precision; use differenceInNanoseconds
+ * when an exact bigint elapsed difference is required.
  *
  * @param laterDate - The later datetime (Instant or ZonedDateTime)
  * @param earlierDate - The earlier datetime (Instant or ZonedDateTime)
@@ -46,6 +48,8 @@ export function differenceInSeconds(
   const zoned1 = normalizeTemporalInput(laterDate);
   const zoned2 = normalizeTemporalInput(earlierDate);
 
-  const precise = differenceInMilliseconds(zoned1, zoned2) / 1000;
-  return options?.fractional ? precise : Math.trunc(precise);
+  const nanoseconds = zoned1.epochNanoseconds - zoned2.epochNanoseconds;
+  return options?.fractional
+    ? Number(nanoseconds) / 1_000_000_000
+    : Number(nanoseconds / 1_000_000_000n);
 }

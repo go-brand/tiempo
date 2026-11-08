@@ -22,5 +22,9 @@ export function isPlainDateAfter(
   date1: Temporal.PlainDate,
   date2: Temporal.PlainDate
 ): boolean {
-  return Temporal.PlainDate.compare(date1, date2) > 0;
+  // Only foreign objects need conversion; strings retain their calendar annotations.
+  return Temporal.PlainDate.compare(
+    Temporal.PlainDate.prototype.isPrototypeOf(date1) ? date1 : date1.toString(),
+    Temporal.PlainDate.prototype.isPrototypeOf(date2) ? date2 : date2.toString()
+  ) > 0;
 }

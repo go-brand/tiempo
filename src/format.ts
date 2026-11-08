@@ -1,7 +1,8 @@
-import { isInstant } from './shared/temporal';
+import { isInstant, isPlainDate } from './shared/temporal';
 import type { Temporal } from '@js-temporal/polyfill';
 import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
 import type { Timezone } from './types';
+import { formatPlainDate, type FormatPlainDateOptions } from './formatPlainDate';
 
 export interface FormatOptions {
   locale?: string;
@@ -9,10 +10,11 @@ export interface FormatOptions {
 }
 
 /**
- * Format a Temporal.Instant or ZonedDateTime using date-fns-like format tokens.
- * Uses Intl.DateTimeFormat under the hood via Temporal's toLocaleString() for zero dependencies.
+ * Format a Temporal.Instant, ZonedDateTime, or PlainDate using date-fns-like format tokens.
+ * Uses Intl.DateTimeFormat for localized parts. PlainDate inputs delegate to
+ * formatPlainDate and accept locale options only; no time or timezone is invented.
  *
- * @param input - A Temporal.Instant or Temporal.ZonedDateTime to format
+ * @param input - A Temporal.Instant, Temporal.ZonedDateTime, or Temporal.PlainDate to format
  * @param formatStr - Format string using date-fns tokens (e.g., "yyyy-MM-dd HH:mm:ss")
  * @param options - Optional configuration for locale and timezone
  * @returns Formatted date string
@@ -31,10 +33,26 @@ export interface FormatOptions {
  * ```
  */
 export function format(
+  input: Temporal.PlainDate,
+  formatStr: string,
+  options?: FormatPlainDateOptions & { timeZone?: never }
+): string;
+export function format(
   input: Temporal.Instant | Temporal.ZonedDateTime,
+  formatStr: string,
+  options?: FormatOptions
+): string;
+export function format(
+  input: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate,
   formatStr: string,
   options: FormatOptions = {}
 ): string {
+  if (isPlainDate(input)) {
+    if (options.timeZone !== undefined) {
+      throw new TypeError('PlainDate formatting does not accept a timezone');
+    }
+    return formatPlainDate(input, formatStr, options);
+  }
   const { locale = 'en-US', timeZone } = options;
 
   // Convert to ZonedDateTime, applying custom timezone if provided
@@ -317,41 +335,17 @@ function formatToken(token: string, zonedDateTime: Temporal.ZonedDateTime, local
       return Math.floor(zonedDateTime.millisecond / 100).toString();
 
     // Timezone
-    case 'XXXXX': {
-      const offset = getTimezoneOffset(zonedDateTime);
-      return offset === '+00:00' ? 'Z' : offset;
-    }
-    case 'XXXX': {
-      const offset = getTimezoneOffset(zonedDateTime).replace(':', '');
-      return offset === '+0000' ? 'Z' : offset;
-    }
-    case 'XXX': {
-      const offset = getTimezoneOffset(zonedDateTime);
-      return offset === '+00:00' ? 'Z' : offset;
-    }
-    case 'XX': {
-      const offset = getTimezoneOffset(zonedDateTime).replace(':', '');
-      return offset === '+0000' ? 'Z' : offset;
-    }
-    case 'X': {
-      const offset = getTimezoneOffset(zonedDateTime); // "+05:30" / "+00:00"
-      if (offset === '+00:00') return 'Z';
-      const [hours, minutes] = offset.split(':');
-      return minutes === '00' ? hours! : `${hours}${minutes}`;
-    }
+    case 'XXXXX':
+    case 'XXXX':
+    case 'XXX':
+    case 'XX':
+    case 'X':
     case 'xxxxx':
-      return getTimezoneOffset(zonedDateTime);
     case 'xxxx':
-      return getTimezoneOffset(zonedDateTime).replace(':', '');
     case 'xxx':
-      return getTimezoneOffset(zonedDateTime);
     case 'xx':
-      return getTimezoneOffset(zonedDateTime).replace(':', '');
-    case 'x': {
-      const offset = getTimezoneOffset(zonedDateTime); // "+05:30" / "+00:00"
-      const [hours, minutes] = offset.split(':');
-      return minutes === '00' ? hours! : `${hours}${minutes}`;
-    }
+    case 'x':
+      return formatTimezoneOffset(zonedDateTime, token);
     case 'zzzz':
       return formatPart(zonedDateTime, 'timeZoneName', 'long', locale);
     case 'zzz':
@@ -376,9 +370,14 @@ function formatPart(
   style: 'narrow' | 'short' | 'long' | 'numeric' | '2-digit',
   locale: string
 ): string {
-  const options: Intl.DateTimeFormatOptions = {};
-  options[part] = style as any;
-  return zonedDateTime.toLocaleString(locale, options);
+  const options: Intl.DateTimeFormatOptions = {
+    [part]: style,
+    timeZone: zonedDateTime.timeZoneId,
+    calendar: zonedDateTime.calendarId === 'iso8601' ? undefined : zonedDateTime.calendarId,
+  };
+  return new Intl.DateTimeFormat(locale, options)
+    .formatToParts(zonedDateTime.epochMilliseconds)
+    .find(value => value.type === part)?.value ?? '';
 }
 
 function getOrdinalSuffix(num: number): string {
@@ -390,14 +389,14 @@ function getOrdinalSuffix(num: number): string {
   return 'th';
 }
 
-function getTimezoneOffset(zonedDateTime: Temporal.ZonedDateTime): string {
-  const offsetNs = zonedDateTime.offsetNanoseconds;
-  const offsetMinutes = offsetNs / (60 * 1e9);
-  const sign = offsetMinutes >= 0 ? '+' : '-';
-  const absMinutes = Math.abs(offsetMinutes);
-  const hours = Math.floor(absMinutes / 60);
-  const minutes = absMinutes % 60;
-  return `${sign}${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+function formatTimezoneOffset(zonedDateTime: Temporal.ZonedDateTime, token: string): string {
+  if (token[0] === 'X' && zonedDateTime.offsetNanoseconds === 0) return 'Z';
+
+  // Temporal supplies integer HH:mm[:ss] fields. Widths 1–3 omit seconds;
+  // widths 4–5 retain them when present, as specified by Unicode date tokens.
+  const offset = token.length >= 4 ? zonedDateTime.offset : zonedDateTime.offset.slice(0, 6);
+  if (token.length === 1 && offset.endsWith(':00')) return offset.slice(0, 3);
+  return token.length === 3 || token.length === 5 ? offset : offset.replaceAll(':', '');
 }
 
 /**
@@ -409,7 +408,7 @@ function getDayPeriod(zonedDateTime: Temporal.ZonedDateTime, locale: string): st
     hour: 'numeric',
     hour12: true,
     timeZone: zonedDateTime.timeZoneId,
-  }).formatToParts(new Date(zonedDateTime.epochMilliseconds));
+  }).formatToParts(zonedDateTime.epochMilliseconds);
   return parts.find((p) => p.type === 'dayPeriod')?.value ?? '';
 }
 

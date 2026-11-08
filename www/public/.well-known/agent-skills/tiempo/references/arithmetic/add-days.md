@@ -1,6 +1,8 @@
 # addDays
 
-Add days to a datetime. DST-safe—adds calendar days, not 24-hour periods.
+Add days to a datetime or calendar date. DST-safe—adds calendar days, not 24-hour periods.
+
+PlainDate inputs return a PlainDate and preserve its calendar, without choosing a timezone. Instant inputs continue to return a ZonedDateTime in UTC; ZonedDateTime inputs preserve their timezone. Counts may be negative; fractional calendar counts are rejected by Temporal. Month/year arithmetic uses Temporal’s default month-end constraining.
 
 ## Signature
 
@@ -8,19 +10,20 @@ Add days to a datetime. DST-safe—adds calendar days, not 24-hour periods.
 function addDays(
   input: Temporal.Instant | Temporal.ZonedDateTime,
   days: number
-): Temporal.ZonedDateTime
+): Temporal.ZonedDateTime;
+function addDays(input: Temporal.PlainDate, days: number): Temporal.PlainDate;
 ```
 
 ## Parameters
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `input` | `Temporal.Instant \| Temporal.ZonedDateTime` | The datetime to add days to |
+| `input` | `Temporal.Instant \| Temporal.ZonedDateTime \| Temporal.PlainDate` | The datetime to add days to |
 | `days` | `number` | Number of days to add (can be negative) |
 
 ## Returns
 
-A `Temporal.ZonedDateTime` with the days added.
+A `Temporal.PlainDate` for a date-only input, or a `Temporal.ZonedDateTime` for an Instant/ZonedDateTime input, with the days added.
 
 ## Examples
 
@@ -67,4 +70,14 @@ const nextDay = addDays(beforeDst, 1);
 const plus24h = addHours(beforeDst, 24);
 // 2025-03-09T13:00:00-04:00[America/New_York]
 // (One hour later because DST "lost" an hour)
+```
+
+## Date-only arithmetic
+
+```ts
+import { addDays, toPlainDate } from '@gobrand/tiempo';
+
+const date = toPlainDate('2024-01-31');
+const result = addDays(date, 1); // Temporal.PlainDate
+result.toString(); // "2024-02-01"
 ```

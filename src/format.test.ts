@@ -336,3 +336,29 @@ describe('format', () => {
     });
   });
 });
+
+
+describe('isolated localized parts', () => {
+  it.each(['en-US', 'es-ES', 'ja-JP'])('extracts only the requested era and timezone in %s', (locale) => {
+    const value = Temporal.ZonedDateTime.from('2025-01-20T15:00[America/New_York]');
+    for (const [token, part, style] of [['G', 'era', 'short'], ['GGGG', 'era', 'long'], ['z', 'timeZoneName', 'short'], ['zzzz', 'timeZoneName', 'long']] as const) {
+      const expected = new Intl.DateTimeFormat(locale, {
+        timeZone: value.timeZoneId, calendar: value.calendarId === 'iso8601' ? undefined : value.calendarId, [part]: style,
+      }).formatToParts(value.epochMilliseconds).find(p => p.type === part)!.value;
+      expect(format(value, token, { locale })).toBe(expected);
+    }
+  });
+});
+
+describe('historical offset seconds', () => {
+  it.each([
+    ['Europe/Paris', '+00:09', '+0009', '+00:09:21', '+000921'],
+    ['America/New_York', '-04:56', '-0456', '-04:56:02', '-045602'],
+  ])('formats integer offset components in %s', (zone, extended, basic, extendedSeconds, basicSeconds) => {
+    const value = Temporal.ZonedDateTime.from(`1880-01-01T12:00[${zone}]`);
+    for (const token of ['XXX', 'xxx']) expect(format(value, token)).toBe(extended);
+    for (const token of ['X', 'x', 'XX', 'xx']) expect(format(value, token)).toBe(basic);
+    for (const token of ['XXXXX', 'xxxxx']) expect(format(value, token)).toBe(extendedSeconds);
+    for (const token of ['XXXX', 'xxxx']) expect(format(value, token)).toBe(basicSeconds);
+  });
+});

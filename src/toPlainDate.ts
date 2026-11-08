@@ -1,4 +1,4 @@
-import { Temporal, isInstant, isZonedDateTime } from './shared/temporal';
+import { Temporal, isInstant, isZonedDateTime, isPlainDate } from './shared/temporal';
 import type { Timezone } from './types';
 
 // Pattern to detect plain date strings: YYYY-MM-DD
@@ -86,6 +86,7 @@ export function toPlainDate(
     throw new Error('Timezone is required unless input is a ZonedDateTime, PlainDateLike, or plain date string');
   }
 
-  // PlainDateLike object - pass directly to Temporal.PlainDate.from()
-  return Temporal.PlainDate.from(input);
+  // Foreign PlainDate objects expose calendarId, while property bags use calendar.
+  // A canonical string keeps the ISO date and calendar together across implementations.
+  return Temporal.PlainDate.from(isPlainDate(input) ? input.toString() : input);
 }

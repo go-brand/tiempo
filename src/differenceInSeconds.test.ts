@@ -127,3 +127,19 @@ describe('differenceInSeconds', () => {
     });
   });
 });
+
+
+describe('submillisecond precision', () => {
+  it('subtracts before truncating a whole unit in either direction', () => {
+    const earlier = Temporal.Instant.from('2025-01-01T00:00:00.000999999Z');
+    const later = earlier.add({ nanoseconds: 999000001 });
+    expect(differenceInSeconds(later, earlier)).toBe(0);
+    expect(differenceInSeconds(earlier, later) || 0).toBe(0);
+  });
+  it('retains a nanosecond when requesting a fractional result', () => {
+    const earlier = Temporal.Instant.from('2025-01-01T00:00:00.000999999Z');
+    const later = earlier.add({ nanoseconds: 1 });
+    expect(differenceInSeconds(later, earlier, { fractional: true })).toBe(1 / 1000000000);
+    expect(differenceInSeconds(earlier, later, { fractional: true })).toBe(-1 / 1000000000);
+  });
+});

@@ -1,13 +1,16 @@
-import { Temporal } from './shared/temporal';
+import { Temporal, isPlainDate, isPlainTime } from './shared/temporal';
+import { isPlainDateAfter } from './isPlainDateAfter';
+import { isPlainTimeAfter } from './isPlainTimeAfter';
 import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
 import { isAfter as isAfterInternal } from './shared/isAfter';
 
 /**
  * Returns true if the first datetime is after the second datetime.
- * Compares by the underlying instant (epoch time), not by calendar date/time.
+ * Timeline values compare by their instant. PlainDate pairs compare dates;
+ * PlainTime pairs compare wall-clock times without wrapping at midnight.
  *
- * @param date1 - First datetime (Instant or ZonedDateTime)
- * @param date2 - Second datetime (Instant or ZonedDateTime)
+ * @param date1 - First value in a matching date, time, or timeline pair
+ * @param date2 - Second value in the same comparison domain
  * @returns true if date1 is after date2, false otherwise
  *
  * @example
@@ -36,13 +39,31 @@ import { isAfter as isAfterInternal } from './shared/isAfter';
  * const tokyo = Temporal.ZonedDateTime.from('2025-01-21T00:00:00+09:00[Asia/Tokyo]');
  *
  * isAfter(tokyo, ny); // false
- * // NY 10:00 is 15:00 UTC, Tokyo 00:00 is 15:00 UTC the previous day (same instant)
+ * // NY 10:00 is 15:00 UTC, Tokyo 00:00 is 15:00 UTC on January 20 (same instant)
  * ```
  */
+export function isAfter(date1: Temporal.PlainDate, date2: Temporal.PlainDate): boolean;
+export function isAfter(date1: Temporal.PlainTime, date2: Temporal.PlainTime): boolean;
 export function isAfter(
   date1: Temporal.Instant | Temporal.ZonedDateTime,
   date2: Temporal.Instant | Temporal.ZonedDateTime
+): boolean;
+export function isAfter(
+  date1: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate | Temporal.PlainTime,
+  date2: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate | Temporal.PlainTime
 ): boolean {
+  if (isPlainDate(date1) || isPlainDate(date2)) {
+    if (!isPlainDate(date1) || !isPlainDate(date2)) {
+      throw new TypeError('PlainDate comparisons require two PlainDate values');
+    }
+    return isPlainDateAfter(date1, date2);
+  }
+  if (isPlainTime(date1) || isPlainTime(date2)) {
+    if (!isPlainTime(date1) || !isPlainTime(date2)) {
+      throw new TypeError('PlainTime comparisons require two PlainTime values');
+    }
+    return isPlainTimeAfter(date1, date2);
+  }
   const zoned1 = normalizeTemporalInput(date1);
   const zoned2 = normalizeTemporalInput(date2);
 

@@ -2,6 +2,12 @@
 
 Returns an array of ZonedDateTime objects for each quarter within the interval. Each element represents the first moment of the quarter (1st day of the quarter's starting month at midnight). The interval is inclusive of both start and end quarters. Quarters: Q1 = Jan–Mar, Q2 = Apr–Jun, Q3 = Jul–Sep, Q4 = Oct–Dec.
 
+## Temporal compatibility and calendars
+
+Accepts native Temporal and polyfill endpoints, including mixed pairs. Results use the start endpoint’s timezone and calendar; the end is interpreted in that same context. Non-ISO calendar years and months are preserved rather than reinterpreted as ISO fields.
+
+PlainDate endpoints also support mixed implementations. Mixing a PlainDate with a timeline endpoint is rejected with an explicit domain error. Quarter starts group ordinal calendar months in threes, restarting at month 1 each year. A calendar with thirteen months has an additional start at month 13; its final group is shorter. ISO calendars retain January, April, July and October starts.
+
 ## Signature
 
 ```ts

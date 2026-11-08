@@ -1,8 +1,11 @@
-import { Temporal } from './shared/temporal';
+import { Temporal, isPlainDate } from './shared/temporal';
 import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
 import type { DifferenceOptions } from './shared/differenceOptions';
 
 /**
+ * Two PlainDates use calendar arithmetic without a timezone. Their calendars must match.
+ * Native and polyfill inputs may be mixed within the same Temporal domain.
+ *
  * Returns the number of weeks between two datetimes.
  * The result is positive if laterDate is after earlierDate, negative if before.
  *
@@ -44,14 +47,33 @@ import type { DifferenceOptions } from './shared/differenceOptions';
  * ```
  */
 export function differenceInWeeks(
+  laterDate: Temporal.PlainDate,
+  earlierDate: Temporal.PlainDate,
+  options?: DifferenceOptions
+): number;
+export function differenceInWeeks(
   laterDate: Temporal.Instant | Temporal.ZonedDateTime,
   earlierDate: Temporal.Instant | Temporal.ZonedDateTime,
   options?: DifferenceOptions
+): number;
+export function differenceInWeeks(
+  laterDate: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate,
+  earlierDate: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate,
+  options?: DifferenceOptions
 ): number {
+  if (isPlainDate(laterDate) || isPlainDate(earlierDate)) {
+    if (!isPlainDate(laterDate) || !isPlainDate(earlierDate)) {
+      throw new TypeError('PlainDate differences require two PlainDate values');
+    }
+    const duration = earlierDate.until(laterDate.toString(), { largestUnit: 'days' });
+    const precise = duration.total({ unit: 'weeks', relativeTo: earlierDate });
+    return options?.fractional ? precise : Math.trunc(precise);
+  }
   const zoned1 = normalizeTemporalInput(laterDate);
   const zoned2 = normalizeTemporalInput(earlierDate);
 
-  const duration = zoned2.until(zoned1, { largestUnit: 'hours' });
+  // A canonical string preserves zone, calendar, and precision across implementations.
+  const duration = zoned2.until(zoned1.toString(), { largestUnit: 'hours' });
   const precise = duration.total({ unit: 'weeks', relativeTo: zoned2 });
   return options?.fractional ? precise : Math.trunc(precise);
 }

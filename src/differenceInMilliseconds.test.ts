@@ -230,3 +230,13 @@ describe('differenceInMilliseconds', () => {
     });
   });
 });
+
+
+describe('submillisecond precision', () => {
+  it('subtracts before truncating a whole unit in either direction', () => {
+    const earlier = Temporal.Instant.from('2025-01-01T00:00:00.000999999Z');
+    const later = earlier.add({ nanoseconds: 1 });
+    expect(differenceInMilliseconds(later, earlier)).toBe(0);
+    expect(differenceInMilliseconds(earlier, later) || 0).toBe(0);
+  });
+});

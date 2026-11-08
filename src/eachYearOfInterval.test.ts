@@ -226,3 +226,10 @@ describe('eachYearOfInterval', () => {
     });
   });
 });
+
+
+it('returns no boundaries when original endpoints are reversed inside one bucket', () => {
+  const end = Temporal.ZonedDateTime.from('2025-01-15T12:30:15[UTC]');
+  expect(eachYearOfInterval({ start: end.add({ seconds: 1 }), end })).toEqual([]);
+  expect(eachYearOfInterval({ start: end, end })).toHaveLength(1);
+});

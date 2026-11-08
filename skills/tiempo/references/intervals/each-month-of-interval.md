@@ -1,10 +1,21 @@
 # eachMonthOfInterval
 
-Returns an array of ZonedDateTime objects for each month within the interval. Each element represents the first moment of the month (day 1 at midnight). The interval is inclusive of both start and end months.
+Returns the start of every month touched by the interval. PlainDate endpoints return `PlainDate[]`; Instant/ZonedDateTime endpoints return `ZonedDateTime[]` in the start timezone. Both endpoint periods are included.
+
+## Temporal compatibility and calendars
+
+Accepts native Temporal and polyfill endpoints, including mixed pairs. Results use the start endpoint’s timezone and calendar; the end is interpreted in that same context. Non-ISO calendar years and months are preserved rather than reinterpreted as ISO fields.
+
+Two PlainDate endpoints return `PlainDate[]`: the start of every month touched by the interval, in the start calendar. The first result may precede the input start date. Equal endpoints produce one period start; reversed original endpoints produce `[]`. PlainDate/timeline mixing is rejected. Native and polyfill endpoints may be mixed within a supported domain.
 
 ## Signature
 
 ```ts
+function eachMonthOfInterval(interval: {
+  start: Temporal.PlainDate;
+  end: Temporal.PlainDate;
+}): Temporal.PlainDate[]
+
 function eachMonthOfInterval(interval: {
   start: Temporal.Instant | Temporal.ZonedDateTime;
   end: Temporal.Instant | Temporal.ZonedDateTime;
@@ -15,15 +26,29 @@ function eachMonthOfInterval(interval: {
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `interval` | `{ start, end }` | The interval with start and end datetimes |
+| `interval` | `{ start, end }` | Two PlainDate endpoints, or two Instant/ZonedDateTime endpoints |
 
 ## Returns
+
+PlainDate endpoints return date-only period starts in the start calendar. Other supported inputs keep the timeline behavior below.
 
 Array of `Temporal.ZonedDateTime` at the start of each month in the interval.
 
 For `Instant` inputs, UTC is used as the timezone. For `ZonedDateTime` inputs, the timezone of the start date is preserved.
 
 ## Examples
+
+### Date-only period starts
+
+```ts
+import { toPlainDate, eachMonthOfInterval } from '@gobrand/tiempo';
+
+const starts = eachMonthOfInterval({
+  start: toPlainDate('2026-01-15'),
+  end: toPlainDate('2026-03-02'),
+});
+starts.map(date => date.toString()); // ['2026-01-01', '2026-02-01', '2026-03-01']
+```
 
 ### Basic usage
 

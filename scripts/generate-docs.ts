@@ -1,7 +1,9 @@
 /**
  * Documentation Generator
  *
- * Single source of truth: MDX files in www/content/docs/
+ * API reference source: MDX files in www/content/docs/
+ * Skill index/type guidance: templates in this script
+ * Manual task guidance: skills/tiempo/references/best-practices/
  * Generates:
  * 1. Skill reference markdown files (skills/tiempo/references/)
  * 2. llms.txt (www/public/llms.txt)
@@ -357,6 +359,7 @@ function generateLlmsTxt(docs: DocFile[]): void {
     "",
     `- [Introduction](${DOCS_URL}): Overview of tiempo and key features`,
     `- [Installation](${DOCS_URL}/installation): Getting started with tiempo in your project`,
+    `- [API conventions](${DOCS_URL}/api-conventions): Argument order, interval objects, Temporal domains and return types`,
     `- [TypeScript](${DOCS_URL}/typescript): Type-safe datetime handling with timezone autocomplete`,
     `- [Type Matrix](${DOCS_URL}/type-matrix): Input, timezone, and return mappings for every public function`,
     `- [Recipes](${DOCS_URL}/recipes): Common timezone-safe datetime workflows`,
@@ -433,9 +436,9 @@ function generateSkillMd(docs: DocFile[]): void {
     "",
     "## Best Practices",
     "",
-    "- **Always use explicit timezones** - Never rely on implicit timezone behavior. [details](references/best-practices/explicit-timezone.md)",
+    "- **Choose the timezone for local intent** - Instant conveniences default to UTC; convert explicitly for local calendar work. [details](references/best-practices/explicit-timezone.md)",
     "- **Don't use JavaScript Date** - Use tiempo instead of Date for timezone work. [details](references/best-practices/no-js-date.md)",
-    "- **Store UTC, display local** - Backend stores UTC, frontend converts for display. [details](references/best-practices/utc-storage.md)",
+    "- **Store timestamps in UTC** - Preserve date-only values and future local scheduling intent separately. [details](references/best-practices/utc-storage.md)",
     "",
     "---",
     "",
@@ -474,10 +477,11 @@ function generateSkillMd(docs: DocFile[]): void {
   lines.push("```ts");
   lines.push("import type { Timezone, IANATimezone } from '@gobrand/tiempo';");
   lines.push("");
-  lines.push('// Timezone: accepts IANA timezones + "UTC"');
+  lines.push('// Timezone: suggested IANA names and UTC; arbitrary strings are also accepted');
   lines.push("const tz: Timezone = 'America/New_York';  // Autocomplete for 400+ timezones");
   lines.push("");
-  lines.push('// IANATimezone: strictly IANA identifiers (excludes "UTC")');
+  lines.push('// IANATimezone: suggested identifiers plus arbitrary strings (including "UTC")');
+  lines.push("// These types provide autocomplete, not runtime timezone validation.");
   lines.push("const iana: IANATimezone = 'Europe/London';");
   lines.push("```");
   lines.push("");

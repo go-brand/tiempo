@@ -8,6 +8,7 @@ tiempo provides a familiar date-fns-style API while leveraging the modern Tempor
 
 - [Introduction](https://tiempo.gobrand.app/docs): Overview of tiempo and key features
 - [Installation](https://tiempo.gobrand.app/docs/installation): Getting started with tiempo in your project
+- [API conventions](https://tiempo.gobrand.app/docs/api-conventions): Argument order, interval objects, Temporal domains and return types
 - [TypeScript](https://tiempo.gobrand.app/docs/typescript): Type-safe datetime handling with timezone autocomplete
 - [Type Matrix](https://tiempo.gobrand.app/docs/type-matrix): Input, timezone, and return mappings for every public function
 - [Recipes](https://tiempo.gobrand.app/docs/recipes): Common timezone-safe datetime workflows
@@ -30,26 +31,26 @@ tiempo provides a familiar date-fns-style API while leveraging the modern Tempor
 
 ## Formatting
 
-- [format](https://tiempo.gobrand.app/docs/formatting/format): Format a datetime using date-fns-like format tokens
+- [format](https://tiempo.gobrand.app/docs/formatting/format): Format a datetime or calendar date using date-fns-like tokens
 - [formatPlainDate](https://tiempo.gobrand.app/docs/formatting/format-plain-date): Format a PlainDate using date-fns-like format tokens
 - [simpleFormat](https://tiempo.gobrand.app/docs/formatting/simple-format): Human-friendly date/time formatting with explicit control over what to display
 - [intlFormatDistance](https://tiempo.gobrand.app/docs/formatting/intl-format-distance): Format the distance between dates as human-readable, internationalized strings
 
 ## Arithmetic
 
-- [addYears](https://tiempo.gobrand.app/docs/arithmetic/add-years): Add years to a datetime
+- [addYears](https://tiempo.gobrand.app/docs/arithmetic/add-years): Add years to a datetime or calendar date
 - [addQuarters](https://tiempo.gobrand.app/docs/arithmetic/add-quarters): Add quarters to a datetime
-- [addMonths](https://tiempo.gobrand.app/docs/arithmetic/add-months): Add months to a datetime
-- [addWeeks](https://tiempo.gobrand.app/docs/arithmetic/add-weeks): Add weeks to a datetime
-- [addDays](https://tiempo.gobrand.app/docs/arithmetic/add-days): Add days to a datetime (DST-safe)
+- [addMonths](https://tiempo.gobrand.app/docs/arithmetic/add-months): Add months to a datetime or calendar date
+- [addWeeks](https://tiempo.gobrand.app/docs/arithmetic/add-weeks): Add weeks to a datetime or calendar date
+- [addDays](https://tiempo.gobrand.app/docs/arithmetic/add-days): Add days to a datetime or calendar date (DST-safe)
 - [addHours](https://tiempo.gobrand.app/docs/arithmetic/add-hours): Add hours to a datetime
 - [addMinutes](https://tiempo.gobrand.app/docs/arithmetic/add-minutes): Add minutes to a datetime
 - [addSeconds](https://tiempo.gobrand.app/docs/arithmetic/add-seconds): Add seconds to a datetime
-- [subYears](https://tiempo.gobrand.app/docs/arithmetic/sub-years): Subtract years from a datetime
+- [subYears](https://tiempo.gobrand.app/docs/arithmetic/sub-years): Subtract years from a datetime or calendar date
 - [subQuarters](https://tiempo.gobrand.app/docs/arithmetic/sub-quarters): Subtract quarters from a datetime
-- [subMonths](https://tiempo.gobrand.app/docs/arithmetic/sub-months): Subtract months from a datetime
-- [subWeeks](https://tiempo.gobrand.app/docs/arithmetic/sub-weeks): Subtract weeks from a datetime
-- [subDays](https://tiempo.gobrand.app/docs/arithmetic/sub-days): Subtract days from a datetime
+- [subMonths](https://tiempo.gobrand.app/docs/arithmetic/sub-months): Subtract months from a datetime or calendar date
+- [subWeeks](https://tiempo.gobrand.app/docs/arithmetic/sub-weeks): Subtract weeks from a datetime or calendar date
+- [subDays](https://tiempo.gobrand.app/docs/arithmetic/sub-days): Subtract days from a datetime or calendar date
 - [subHours](https://tiempo.gobrand.app/docs/arithmetic/sub-hours): Subtract hours from a datetime
 - [subMinutes](https://tiempo.gobrand.app/docs/arithmetic/sub-minutes): Subtract minutes from a datetime
 - [subSeconds](https://tiempo.gobrand.app/docs/arithmetic/sub-seconds): Subtract seconds from a datetime
@@ -69,8 +70,8 @@ tiempo provides a familiar date-fns-style API while leveraging the modern Tempor
 
 ## Comparison
 
-- [isBefore](https://tiempo.gobrand.app/docs/comparison/is-before): Check if one datetime is before another
-- [isAfter](https://tiempo.gobrand.app/docs/comparison/is-after): Check if one datetime is after another
+- [isBefore](https://tiempo.gobrand.app/docs/comparison/is-before): Check if one date, time, or datetime is before another
+- [isAfter](https://tiempo.gobrand.app/docs/comparison/is-after): Check if one date, time, or datetime is after another
 - [isWithinInterval](https://tiempo.gobrand.app/docs/comparison/is-within-interval): Check if a datetime falls within an interval
 - [isFuture](https://tiempo.gobrand.app/docs/comparison/is-future): Check if a datetime is in the future
 - [isPast](https://tiempo.gobrand.app/docs/comparison/is-past): Check if a datetime is in the past
@@ -93,11 +94,11 @@ tiempo provides a familiar date-fns-style API while leveraging the modern Tempor
 
 ## Intervals
 
-- [eachYearOfInterval](https://tiempo.gobrand.app/docs/intervals/each-year-of-interval): Get all years in an interval as ZonedDateTime array
+- [eachYearOfInterval](https://tiempo.gobrand.app/docs/intervals/each-year-of-interval): Get all years in an interval as PlainDate or ZonedDateTime values
 - [eachQuarterOfInterval](https://tiempo.gobrand.app/docs/intervals/each-quarter-of-interval): Get all quarters in an interval as ZonedDateTime array
-- [eachMonthOfInterval](https://tiempo.gobrand.app/docs/intervals/each-month-of-interval): Get all months in an interval as ZonedDateTime array
-- [eachWeekOfInterval](https://tiempo.gobrand.app/docs/intervals/each-week-of-interval): Get all weeks (ISO Monday start) in an interval as ZonedDateTime array
-- [eachDayOfInterval](https://tiempo.gobrand.app/docs/intervals/each-day-of-interval): Get all days in an interval as ZonedDateTime array
+- [eachMonthOfInterval](https://tiempo.gobrand.app/docs/intervals/each-month-of-interval): Get all months in an interval as PlainDate or ZonedDateTime values
+- [eachWeekOfInterval](https://tiempo.gobrand.app/docs/intervals/each-week-of-interval): Get all weeks (ISO Monday start) in an interval as PlainDate or ZonedDateTime values
+- [eachDayOfInterval](https://tiempo.gobrand.app/docs/intervals/each-day-of-interval): Get all days in an interval as PlainDate or ZonedDateTime values
 - [eachHourOfInterval](https://tiempo.gobrand.app/docs/intervals/each-hour-of-interval): Get all hours in an interval as ZonedDateTime array
 - [eachMinuteOfInterval](https://tiempo.gobrand.app/docs/intervals/each-minute-of-interval): Get all minutes in an interval as ZonedDateTime array
 

@@ -13,7 +13,11 @@
 
 ## Polyfill
 
-tiempo uses the [`@js-temporal/polyfill`](https://github.com/js-temporal/temporal-polyfill) so the Temporal API behaves identically across every runtime today, including those without native `Temporal` (Safari, older Node). Preferring the runtime's native `Temporal` when present (Node 26+, Chrome 144+, Firefox 139+, Edge, Deno) to skip the polyfill is planned for a future release.
+tiempo includes [`@js-temporal/polyfill`](https://github.com/js-temporal/temporal-polyfill), so applications can use it in environments without native Temporal. The shipped runtime remains polyfill-backed. Temporal inputs created by native implementations are also accepted; callers do not need to convert them first.
+
+Operations preserve their documented date, timezone and calendar semantics. Some functions derive results using the caller's implementation, while parsing and other constructors use tiempo's implementation. Do not rely on every result passing `instanceof` against one Temporal constructor. `toInstant(instant)` returns the original Instant; plain-date and plain-time conversions return new values.
+
+The bundled polyfill remains the default. An optional native-only entry point may be evaluated later; no removal date is planned. Eventual removal would require an explicit native runtime baseline, a migration path for environments that need an application-supplied polyfill, and declarations that no longer require the polyfill package. Selecting native Temporal while retaining a static polyfill import does not eliminate the download. No runtime requirement changes are included in this update.
 
 ## Usage with ORMs
 

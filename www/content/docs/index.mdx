@@ -15,10 +15,12 @@ JavaScript's `Date` was modeled after a Java class deprecated 25+ years ago. The
 
 - **Any Timezone, Anywhere** - Date only works in UTC or device-local time. Temporal supports 400+ IANA timezones natively
 - **Nanosecond Precision** - Beyond milliseconds, for scientific computing, financial systems, and high-frequency operations
-- **DST-Safe Arithmetic** - Adding days means calendar days, not 24-hour periods. No more off-by-one-hour bugs
+- **DST-Safe Arithmetic** - Adding days means calendar days, not 24-hour periods. Timezone transitions follow Temporal rules
 - **Immutable by Design** - No side effects, no surprises, no debugging mysteries
 - **Distinct Types** - Separates `Instant` (timestamp), `ZonedDateTime` (timezone-aware), and `PlainDate` (calendar date)
-- **Type-Safe** - Autocomplete for 400+ timezones, invalid configurations caught at compile time
+- **Type-Safe** - Autocomplete for 400+ timezones, Temporal input and return types checked at compile time
+
+Read [API conventions](/docs/api-conventions) for argument order, interval objects, and choosing a Temporal type.
 
 ## Quick Example
 
@@ -26,11 +28,11 @@ JavaScript's `Date` was modeled after a Java class deprecated 25+ years ago. The
 import { toZonedTime, format, today, addDays, isBefore } from '@gobrand/tiempo';
 
 // Convert UTC to a timezone
-const nyTime = toZonedTime(new Date(), 'America/New_York');
+const nyTime = toZonedTime('2026-01-22T19:30:00Z', 'America/New_York');
 
 // Format with full control
 const formatted = format(nyTime, 'EEEE, MMMM d, yyyy h:mm a');
-// → "Thursday, January 23, 2026 2:30 PM"
+// → "Thursday, January 22, 2026 2:30 PM"
 
 // Today's date in any timezone
 const tokyoToday = today('Asia/Tokyo');

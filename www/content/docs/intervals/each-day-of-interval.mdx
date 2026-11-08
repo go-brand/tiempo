@@ -1,13 +1,25 @@
 ---
 title: eachDayOfInterval
-description: Get all days in an interval as ZonedDateTime array
+description: Get all days in an interval as PlainDate or ZonedDateTime values
 ---
 
-Returns an array of ZonedDateTime objects for each calendar day within the interval. Each element represents the start of day (midnight) in the timezone of the interval start. The interval is inclusive of both start and end days.
+Returns every calendar day in an interval, **including both endpoints**.
+
+- Two PlainDate endpoints return `PlainDate[]`, preserving the start calendar. No timezone or clock time is introduced.
+- Instant/ZonedDateTime endpoints return `ZonedDateTime[]`, at the first valid moment of each day in the start timezone.
+
+Reversed endpoints return `[]`; equal PlainDate endpoints return one date. Date-only intervals include every date. Timezone-aware intervals skip nonexistent local dates without duplicates. Native and polyfill values may be mixed.
+
+Both endpoints must be PlainDates, or both must be timeline values (Instant/ZonedDateTime). Mixing these domains is rejected in TypeScript and at runtime. If PlainDate endpoints use different calendars, the end is interpreted in the start calendar.
 
 ## Signature
 
 ```ts
+function eachDayOfInterval(interval: {
+  start: Temporal.PlainDate;
+  end: Temporal.PlainDate;
+}): Temporal.PlainDate[]
+
 function eachDayOfInterval(interval: {
   start: Temporal.Instant | Temporal.ZonedDateTime;
   end: Temporal.Instant | Temporal.ZonedDateTime;
@@ -18,15 +30,30 @@ function eachDayOfInterval(interval: {
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `interval` | `{ start, end }` | The interval with start and end datetimes |
+| `interval` | `{ start, end }` | Two PlainDate endpoints, or two Instant/ZonedDateTime endpoints |
 
 ## Returns
 
-Array of `Temporal.ZonedDateTime` at the start of each day in the interval.
+Array of `Temporal.PlainDate` for PlainDate endpoints, or `Temporal.ZonedDateTime` at the start of each day for timeline endpoints.
 
 For `Instant` inputs, UTC is used as the timezone. For `ZonedDateTime` inputs, the timezone of the start date is preserved.
 
 ## Examples
+
+### List calendar dates
+
+```ts
+import { toPlainDate, eachDayOfInterval } from '@gobrand/tiempo';
+
+const start = toPlainDate('2026-10-10');
+const end = toPlainDate('2026-10-12');
+const dates = eachDayOfInterval({ start, end }); // Temporal.PlainDate[]
+
+dates.map(date => date.toString()); // ['2026-10-10', '2026-10-11', '2026-10-12']
+eachDayOfInterval({ start: end, end: start }); // []
+```
+
+The interval includes three dates; `differenceInDays(end, start)` returns the two days between its endpoints.
 
 ### Basic usage
 

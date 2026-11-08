@@ -5,6 +5,12 @@ description: Calculate the difference between two dates in quarters
 
 Returns the number of quarters (3-month blocks) between two datetimes.
 
+## Temporal compatibility
+
+Accepts native Temporal and `@js-temporal/polyfill` values, including mixed pairs. Instant inputs use UTC. For ZonedDateTime inputs, calendar totals use the timezone and calendar of `earlierDate`; the inputs must have matching calendar identifiers. Nanosecond precision is preserved when passing values between implementations; the returned JavaScript number still has floating-point precision limits.
+
+The PlainDate overload also supports mixed implementations, including non-ISO calendars. Both dates must have matching calendar identifiers.
+
 ## Signature
 
 ```ts

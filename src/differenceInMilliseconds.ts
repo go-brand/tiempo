@@ -5,6 +5,9 @@ import { differenceInMilliseconds as differenceInMillisecondsInternal } from './
 /**
  * Returns the number of milliseconds between two datetimes.
  * The result is positive if laterDate is after earlierDate, negative if before.
+ * Whole units are truncated toward zero after subtracting epoch nanoseconds.
+ * Numeric results use JavaScript number precision; use differenceInNanoseconds
+ * when an exact bigint elapsed difference is required.
  *
  * @param laterDate - The later datetime (Instant or ZonedDateTime)
  * @param earlierDate - The earlier datetime (Instant or ZonedDateTime)

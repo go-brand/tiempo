@@ -11,7 +11,7 @@
 ![tiempo banner](./tiempo_banner.png)
 
 
-- **Zero timezone bugs** - Real IANA timezone support, not UTC offset hacks
+- **IANA timezone support** - Named timezone rules and DST handling through Temporal
 - **DST-aware math** - `addDays(1)` means tomorrow, even across clock changes
 - **Nanosecond precision** - When milliseconds aren't enough
 - **Type-safe** - Full TypeScript, catches datetime errors at compile time
@@ -26,10 +26,10 @@ const utc = "2025-03-09T07:00:00Z";
 // Convert to user's timezone, manipulate, format
 const userTime = toZonedTime(utc, "America/New_York");
 const tomorrow = addDays(userTime, 1);  // DST transition handled correctly
-const display = format(tomorrow, "EEEE 'at' h:mm a");  // "Monday at 2:00 AM"
+const display = format(tomorrow, "EEEE 'at' h:mm a");  // "Monday at 3:00 AM"
 
 // Send back to backend as ISO 8601 string
-const payload = toIso(tomorrow);  // "2025-03-10T06:00:00Z"
+const payload = toIso(tomorrow);  // "2025-03-10T07:00:00Z"
 ```
 
 ## Install

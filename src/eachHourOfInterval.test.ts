@@ -217,3 +217,37 @@ describe('eachHourOfInterval', () => {
     });
   });
 });
+
+
+it('returns no boundaries when original endpoints are reversed inside one bucket', () => {
+  const end = Temporal.ZonedDateTime.from('2025-01-15T12:30:15[UTC]');
+  expect(eachHourOfInterval({ start: end.add({ seconds: 1 }), end })).toEqual([]);
+  expect(eachHourOfInterval({ start: end, end })).toHaveLength(1);
+});
+
+
+describe('partial-hour transitions', () => {
+  it('includes the first valid part of a missing hour then realigns to local hours', () => {
+    const hours = eachHourOfInterval({
+      start: Temporal.ZonedDateTime.from('2025-10-05T00:15[Australia/Lord_Howe]'),
+      end: Temporal.ZonedDateTime.from('2025-10-05T04:15[Australia/Lord_Howe]'),
+    });
+    expect(hours.map(value => value.toPlainTime().toString())).toEqual(['00:00:00', '01:00:00', '02:30:00', '03:00:00', '04:00:00']);
+  });
+
+  it('includes the repeated partial hour as a distinct occurrence', () => {
+    const hours = eachHourOfInterval({
+      start: Temporal.ZonedDateTime.from('2025-04-06T00:15[Australia/Lord_Howe]'),
+      end: Temporal.ZonedDateTime.from('2025-04-06T03:15[Australia/Lord_Howe]'),
+    });
+    expect(hours.map(value => `${value.toPlainTime()}${value.offset}`)).toEqual([
+      '00:00:00+11:00', '01:00:00+11:00', '01:30:00+10:30', '02:00:00+10:30', '03:00:00+10:30',
+    ]);
+  });
+
+  it.each(['01:30', '01:45'])('starts within the second partial occurrence at %s', (time) => {
+    const start = Temporal.ZonedDateTime.from(`2025-04-06T${time}+10:30[Australia/Lord_Howe]`);
+    const hours = eachHourOfInterval({ start, end: start.add({ minutes: 1 }) });
+    expect(hours.map(value => value.toString())).toEqual(['2025-04-06T01:30:00+10:30[Australia/Lord_Howe]']);
+  });
+});

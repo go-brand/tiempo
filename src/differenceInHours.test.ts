@@ -151,3 +151,19 @@ describe('differenceInHours', () => {
     });
   });
 });
+
+
+describe('submillisecond precision', () => {
+  it('subtracts before truncating a whole unit in either direction', () => {
+    const earlier = Temporal.Instant.from('2025-01-01T00:00:00.000999999Z');
+    const later = earlier.add({ nanoseconds: 3599999000001 });
+    expect(differenceInHours(later, earlier)).toBe(0);
+    expect(differenceInHours(earlier, later) || 0).toBe(0);
+  });
+  it('retains a nanosecond when requesting a fractional result', () => {
+    const earlier = Temporal.Instant.from('2025-01-01T00:00:00.000999999Z');
+    const later = earlier.add({ nanoseconds: 1 });
+    expect(differenceInHours(later, earlier, { fractional: true })).toBe(1 / 3600000000000);
+    expect(differenceInHours(earlier, later, { fractional: true })).toBe(-1 / 3600000000000);
+  });
+});

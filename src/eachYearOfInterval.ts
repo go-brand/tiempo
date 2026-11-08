@@ -1,7 +1,15 @@
-import { Temporal } from './shared/temporal';
+import { Temporal, isPlainDate } from './shared/temporal';
+import { isPlainDateAfter } from './isPlainDateAfter';
+import { isPlainDateBefore } from './isPlainDateBefore';
 import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
 
 /**
+ * PlainDate endpoints return date-only period starts in the start calendar.
+ * Mixed date-only/timeline endpoints are rejected. Reversed endpoints return [].
+ *
+ * Uses the start endpoint's calendar and timezone, including for the end bound.
+ * Native and polyfill endpoints may be mixed.
+ *
  * Returns an array of ZonedDateTime objects for each year within the interval.
  * Each element represents the first moment of the year (January 1st at midnight).
  * The interval is inclusive of both start and end years.
@@ -51,23 +59,48 @@ import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
  * ```
  */
 export function eachYearOfInterval(interval: {
+  start: Temporal.PlainDate;
+  end: Temporal.PlainDate;
+}): Temporal.PlainDate[];
+export function eachYearOfInterval(interval: {
   start: Temporal.Instant | Temporal.ZonedDateTime;
   end: Temporal.Instant | Temporal.ZonedDateTime;
-}): Temporal.ZonedDateTime[] {
+}): Temporal.ZonedDateTime[];
+export function eachYearOfInterval(interval: {
+  start: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate;
+  end: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate;
+}): Temporal.ZonedDateTime[] | Temporal.PlainDate[] {
+  if (isPlainDate(interval.start) || isPlainDate(interval.end)) {
+    if (!isPlainDate(interval.start) || !isPlainDate(interval.end)) {
+      throw new TypeError('PlainDate intervals require two PlainDate endpoints');
+    }
+    if (isPlainDateAfter(interval.start, interval.end)) return [];
+    const end = interval.end.withCalendar(interval.start.calendarId);
+    const last = end.with({ month: 1, day: 1 });
+    let current = interval.start.with({ month: 1, day: 1 });
+    const dates: Temporal.PlainDate[] = [];
+    while (isPlainDateBefore(current, last)) {
+      dates.push(current);
+      current = current.add({ years: 1 });
+    }
+    dates.push(current);
+    return dates;
+  }
   const startZoned = normalizeTemporalInput(interval.start);
   const endZoned = normalizeTemporalInput(interval.end);
+  if (startZoned.epochNanoseconds > endZoned.epochNanoseconds) return [];
 
   const timezone = startZoned.timeZoneId;
   const startYear = startZoned.year;
 
   // Get end year in the same timezone
-  const endInTimezone = endZoned.withTimeZone(timezone);
+  const endInTimezone = endZoned.withTimeZone(timezone).withCalendar(startZoned.calendarId);
   const endYear = endInTimezone.year;
 
   const years: Temporal.ZonedDateTime[] = [];
 
   for (let year = startYear; year <= endYear; year++) {
-    const firstOfYear = Temporal.PlainDate.from({ year, month: 1, day: 1 });
+    const firstOfYear = Temporal.PlainDate.from({ year, month: 1, day: 1, calendar: startZoned.calendarId });
     years.push(
       firstOfYear.toZonedDateTime({
         timeZone: timezone,

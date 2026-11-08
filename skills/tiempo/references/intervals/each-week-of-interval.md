@@ -1,10 +1,19 @@
 # eachWeekOfInterval
 
-Returns an array of ZonedDateTime objects for each week within the interval. Each element represents the first moment of the week (Monday at midnight). Uses ISO 8601 week definition where weeks start on Monday. The interval is inclusive of both start and end weeks.
+Returns the start of every week touched by the interval. PlainDate endpoints return `PlainDate[]`; Instant/ZonedDateTime endpoints return `ZonedDateTime[]` in the start timezone. Both endpoint periods are included.
+
+Two PlainDate endpoints return `PlainDate[]`: the start of every week touched by the interval, in the start calendar. The first result may precede the input start date. Equal endpoints produce one period start; reversed original endpoints produce `[]`. PlainDate/timeline mixing is rejected. Native and polyfill endpoints may be mixed within a supported domain.
+
+Weeks begin Monday.
 
 ## Signature
 
 ```ts
+function eachWeekOfInterval(interval: {
+  start: Temporal.PlainDate;
+  end: Temporal.PlainDate;
+}): Temporal.PlainDate[]
+
 function eachWeekOfInterval(interval: {
   start: Temporal.Instant | Temporal.ZonedDateTime;
   end: Temporal.Instant | Temporal.ZonedDateTime;
@@ -15,15 +24,29 @@ function eachWeekOfInterval(interval: {
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `interval` | `{ start, end }` | The interval with start and end datetimes |
+| `interval` | `{ start, end }` | Two PlainDate endpoints, or two Instant/ZonedDateTime endpoints |
 
 ## Returns
+
+PlainDate endpoints return date-only period starts in the start calendar. Other supported inputs keep the timeline behavior below.
 
 Array of `Temporal.ZonedDateTime` at the start of each week (Monday) in the interval.
 
 For `Instant` inputs, UTC is used as the timezone. For `ZonedDateTime` inputs, the timezone of the start date is preserved.
 
 ## Examples
+
+### Date-only period starts
+
+```ts
+import { toPlainDate, eachWeekOfInterval } from '@gobrand/tiempo';
+
+const starts = eachWeekOfInterval({
+  start: toPlainDate('2026-01-07'),
+  end: toPlainDate('2026-01-14'),
+});
+starts.map(date => date.toString()); // ['2026-01-05', '2026-01-12']
+```
 
 ### Basic usage
 

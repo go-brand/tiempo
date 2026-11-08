@@ -2,6 +2,8 @@
 
 Format a `Temporal.PlainDate` using date-fns-like format tokens. Only supports date-related tokens (no time or timezone tokens).
 
+`format(date, pattern, options)` also accepts PlainDate with the same date-token and locale behavior. This specialized helper remains supported.
+
 ## Signature
 
 ```ts

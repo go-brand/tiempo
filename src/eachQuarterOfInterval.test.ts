@@ -146,3 +146,15 @@ describe("eachQuarterOfInterval", () => {
     });
   });
 });
+
+
+it('returns no boundaries when original endpoints are reversed inside one bucket', () => {
+  const end = Temporal.ZonedDateTime.from('2025-01-15T12:30:15[UTC]');
+  expect(eachQuarterOfInterval({ start: end.add({ seconds: 1 }), end })).toEqual([]);
+  expect(eachQuarterOfInterval({ start: end, end })).toHaveLength(1);
+});
+
+
+it('returns no quarters for reversed PlainDates in the same quarter', () => {
+  expect(eachQuarterOfInterval({ start: Temporal.PlainDate.from('2025-02-02'), end: Temporal.PlainDate.from('2025-02-01') })).toEqual([]);
+});

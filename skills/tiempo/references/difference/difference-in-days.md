@@ -1,10 +1,24 @@
 # differenceInDays
 
-Returns the number of days between two datetimes. Uses calendar-aware calculation, which means it properly handles DST transitions where days can be 23, 24, or 25 hours long.
+Returns the signed number of days between two dates or datetimes: `laterDate` minus `earlierDate`.
+
+Two `PlainDate` values produce whole calendar days without a timezone. Instant/ZonedDateTime inputs use the existing calendar-aware calculation, including DST transitions where days can be 23, 24, or 25 hours long.
+
+## Temporal compatibility
+
+Accepts native Temporal and `@js-temporal/polyfill` values, including mixed pairs. Instant inputs use UTC. For ZonedDateTime inputs, calendar totals use the timezone and calendar of `earlierDate`; the inputs must have matching calendar identifiers. Nanosecond precision is preserved when passing values between implementations; the returned JavaScript number still has floating-point precision limits.
+
+PlainDate inputs must be paired with another PlainDate and use matching calendar identifiers. Mixing a PlainDate with an Instant or ZonedDateTime is rejected in TypeScript and at runtime. Convert timestamps explicitly with `toPlainDate` when you want to compare dates.
 
 ## Signature
 
 ```ts
+function differenceInDays(
+  laterDate: Temporal.PlainDate,
+  earlierDate: Temporal.PlainDate,
+  options?: DifferenceOptions
+): number
+
 function differenceInDays(
   laterDate: Temporal.Instant | Temporal.ZonedDateTime,
   earlierDate: Temporal.Instant | Temporal.ZonedDateTime,
@@ -20,15 +34,31 @@ interface DifferenceOptions {
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `laterDate` | `Temporal.Instant \| Temporal.ZonedDateTime` | The later datetime |
-| `earlierDate` | `Temporal.Instant \| Temporal.ZonedDateTime` | The earlier datetime |
+| `laterDate` | `Temporal.PlainDate \| Temporal.Instant \| Temporal.ZonedDateTime` | The later date or datetime; pair PlainDate only with PlainDate |
+| `earlierDate` | `Temporal.PlainDate \| Temporal.Instant \| Temporal.ZonedDateTime` | The earlier value in the same domain |
 | `options.fractional` | `boolean` | Return the precise fractional value instead of truncating toward zero (default: false) |
 
 ## Returns
 
-The number of days between the two datetimes, truncated toward zero by default. Pass `{ fractional: true }` to get the precise fractional value.
+For PlainDate pairs, a signed integer: positive, negative, or zero. `{ fractional: true }` still returns that integer because date-only inputs have no partial days.
+
+For timeline pairs, the number of days is truncated toward zero by default. Pass `{ fractional: true }` to get the fractional value.
 
 ## Examples
+
+### Date-only deadlines and stays
+
+```ts
+import { toPlainDate, differenceInDays } from '@gobrand/tiempo';
+
+const checkIn = toPlainDate('2026-10-10');
+const checkOut = toPlainDate('2026-10-12');
+
+differenceInDays(checkOut, checkIn); // 2
+differenceInDays(checkIn, checkOut); // -2
+```
+
+This counts days between the dates. To list every date including both endpoints, use `eachDayOfInterval`—the same range contains three dates.
 
 ### Basic usage
 

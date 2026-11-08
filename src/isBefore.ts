@@ -1,13 +1,16 @@
-import { Temporal } from './shared/temporal';
+import { Temporal, isPlainDate, isPlainTime } from './shared/temporal';
+import { isPlainDateBefore } from './isPlainDateBefore';
+import { isPlainTimeBefore } from './isPlainTimeBefore';
 import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
 import { isBefore as isBeforeInternal } from './shared/isBefore';
 
 /**
  * Returns true if the first datetime is before the second datetime.
- * Compares by the underlying instant (epoch time), not by calendar date/time.
+ * Timeline values compare by their instant. PlainDate pairs compare dates;
+ * PlainTime pairs compare wall-clock times without wrapping at midnight.
  *
- * @param date1 - First datetime (Instant or ZonedDateTime)
- * @param date2 - Second datetime (Instant or ZonedDateTime)
+ * @param date1 - First value in a matching date, time, or timeline pair
+ * @param date2 - Second value in the same comparison domain
  * @returns true if date1 is before date2, false otherwise
  *
  * @example
@@ -35,14 +38,32 @@ import { isBefore as isBeforeInternal } from './shared/isBefore';
  * const ny = Temporal.ZonedDateTime.from('2025-01-20T10:00:00-05:00[America/New_York]');
  * const tokyo = Temporal.ZonedDateTime.from('2025-01-21T00:00:00+09:00[Asia/Tokyo]');
  *
- * isBefore(ny, tokyo); // true
- * // NY 10:00 is 15:00 UTC, Tokyo 00:00 is 15:00 UTC the previous day
+ * isBefore(ny, tokyo); // false
+ * // NY 10:00 is 15:00 UTC, Tokyo 00:00 is 15:00 UTC on January 20
  * ```
  */
+export function isBefore(date1: Temporal.PlainDate, date2: Temporal.PlainDate): boolean;
+export function isBefore(date1: Temporal.PlainTime, date2: Temporal.PlainTime): boolean;
 export function isBefore(
   date1: Temporal.Instant | Temporal.ZonedDateTime,
   date2: Temporal.Instant | Temporal.ZonedDateTime
+): boolean;
+export function isBefore(
+  date1: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate | Temporal.PlainTime,
+  date2: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate | Temporal.PlainTime
 ): boolean {
+  if (isPlainDate(date1) || isPlainDate(date2)) {
+    if (!isPlainDate(date1) || !isPlainDate(date2)) {
+      throw new TypeError('PlainDate comparisons require two PlainDate values');
+    }
+    return isPlainDateBefore(date1, date2);
+  }
+  if (isPlainTime(date1) || isPlainTime(date2)) {
+    if (!isPlainTime(date1) || !isPlainTime(date2)) {
+      throw new TypeError('PlainTime comparisons require two PlainTime values');
+    }
+    return isPlainTimeBefore(date1, date2);
+  }
   const zoned1 = normalizeTemporalInput(date1);
   const zoned2 = normalizeTemporalInput(date2);
 

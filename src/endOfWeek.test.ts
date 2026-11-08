@@ -346,3 +346,11 @@ describe('endOfWeek', () => {
     });
   });
 });
+
+
+describe('skipped midnight regression', () => {
+  it('ends on the correct calendar day after a midnight gap', () => {
+    const value = Temporal.ZonedDateTime.from('2025-09-07T12:00[America/Santiago]');
+    expect(endOfWeek(value).toString()).toBe('2025-09-07T23:59:59.999999999-03:00[America/Santiago]');
+  });
+});

@@ -6,8 +6,8 @@ tiempo is built with TypeScript from the ground up. Beyond basic type definition
 
 tiempo exports two timezone types:
 
-- **`Timezone`** - Accepts all 418 IANA timezones (with autocomplete), `UTC`, and any string for forward compatibility
-- **`IANATimezone`** - Strictly the 418 IANA timezone identifiers only
+- **`Timezone`** - Suggests known IANA timezone names and `UTC`, while accepting arbitrary strings for forward compatibility
+- **`IANATimezone`** - Suggests known IANA identifiers, while also accepting arbitrary strings (including `UTC`)
 
 ```ts
 import { toZonedTime, type Timezone, type IANATimezone } from '@gobrand/tiempo';
@@ -17,14 +17,16 @@ const tz: Timezone = 'America/New_York';  // ✓ Autocomplete works!
 const utc: Timezone = 'UTC';              // ✓ UTC is accepted
 
 // Works directly in function calls
-const zoned = toZonedTime(new Date(), 'Europe/');  // IDE suggests: Europe/London, Europe/Paris, ...
+const zoned = toZonedTime('2025-01-20T20:00:00Z', 'Europe/London');
+// While typing 'Europe/', the IDE suggests names such as Europe/London.
 
-// IANATimezone: strictly IANA identifiers only
+// IANATimezone: autocomplete with an open string fallback
 const iana: IANATimezone = 'America/New_York';  // ✓ Valid
-// const invalid: IANATimezone = 'UTC';          // ✗ Type error - UTC is not an IANA timezone
+const alsoUtc: IANATimezone = 'UTC';           // Accepted
+const dynamicZone: IANATimezone = 'runtime-provided-zone'; // Also compiles
 ```
 
-Use `Timezone` for function parameters that accept any valid timezone. Use `IANATimezone` when you need to ensure only region-based IANA identifiers are used.
+These types provide autocomplete, not validation. Temporal validates identifiers when they are used; an arbitrary string compiling does not mean it is a valid timezone. Use `Timezone` to match Tiempo function parameters.
 
 ## Smart Function Overloads
 

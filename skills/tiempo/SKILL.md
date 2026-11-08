@@ -13,9 +13,9 @@ npm install @gobrand/tiempo
 
 ## Best Practices
 
-- **Always use explicit timezones** - Never rely on implicit timezone behavior. [details](references/best-practices/explicit-timezone.md)
+- **Choose the timezone for local intent** - Instant conveniences default to UTC; convert explicitly for local calendar work. [details](references/best-practices/explicit-timezone.md)
 - **Don't use JavaScript Date** - Use tiempo instead of Date for timezone work. [details](references/best-practices/no-js-date.md)
-- **Store UTC, display local** - Backend stores UTC, frontend converts for display. [details](references/best-practices/utc-storage.md)
+- **Store timestamps in UTC** - Preserve date-only values and future local scheduling intent separately. [details](references/best-practices/utc-storage.md)
 
 ---
 
@@ -42,7 +42,7 @@ npm install @gobrand/tiempo
 
 | Function | Description | Reference |
 |----------|-------------|-----------|
-| `format()` | Format a datetime using date-fns-like format tokens | [details](references/formatting/format.md) |
+| `format()` | Format a datetime or calendar date using date-fns-like tokens | [details](references/formatting/format.md) |
 | `formatPlainDate()` | Format a PlainDate using date-fns-like format tokens | [details](references/formatting/format-plain-date.md) |
 | `simpleFormat()` | Human-friendly date/time formatting with explicit control over what to display | [details](references/formatting/simple-format.md) |
 | `intlFormatDistance()` | Format the distance between dates as human-readable, internationalized strings | [details](references/formatting/intl-format-distance.md) |
@@ -51,22 +51,22 @@ npm install @gobrand/tiempo
 
 | Function | Description | Reference |
 |----------|-------------|-----------|
-| `addYears()` | Add years to a datetime | [details](references/arithmetic/add-years.md) |
+| `addYears()` | Add years to a datetime or calendar date | [details](references/arithmetic/add-years.md) |
 | `addQuarters()` | Add quarters to a datetime | [details](references/arithmetic/add-quarters.md) |
-| `addMonths()` | Add months to a datetime | [details](references/arithmetic/add-months.md) |
-| `addWeeks()` | Add weeks to a datetime | [details](references/arithmetic/add-weeks.md) |
-| `addDays()` | Add days to a datetime (DST-safe) | [details](references/arithmetic/add-days.md) |
+| `addMonths()` | Add months to a datetime or calendar date | [details](references/arithmetic/add-months.md) |
+| `addWeeks()` | Add weeks to a datetime or calendar date | [details](references/arithmetic/add-weeks.md) |
+| `addDays()` | Add days to a datetime or calendar date (DST-safe) | [details](references/arithmetic/add-days.md) |
 | `addHours()` | Add hours to a datetime | [details](references/arithmetic/add-hours.md) |
 | `addMinutes()` | Add minutes to a datetime | [details](references/arithmetic/add-minutes.md) |
 | `addSeconds()` | Add seconds to a datetime | [details](references/arithmetic/add-seconds.md) |
 | `addMilliseconds()` | Add milliseconds to a datetime | [details](references/arithmetic/add-milliseconds.md) |
 | `addMicroseconds()` | Add microseconds to a datetime | [details](references/arithmetic/add-microseconds.md) |
 | `addNanoseconds()` | Add nanoseconds to a datetime | [details](references/arithmetic/add-nanoseconds.md) |
-| `subYears()` | Subtract years from a datetime | [details](references/arithmetic/sub-years.md) |
+| `subYears()` | Subtract years from a datetime or calendar date | [details](references/arithmetic/sub-years.md) |
 | `subQuarters()` | Subtract quarters from a datetime | [details](references/arithmetic/sub-quarters.md) |
-| `subMonths()` | Subtract months from a datetime | [details](references/arithmetic/sub-months.md) |
-| `subWeeks()` | Subtract weeks from a datetime | [details](references/arithmetic/sub-weeks.md) |
-| `subDays()` | Subtract days from a datetime | [details](references/arithmetic/sub-days.md) |
+| `subMonths()` | Subtract months from a datetime or calendar date | [details](references/arithmetic/sub-months.md) |
+| `subWeeks()` | Subtract weeks from a datetime or calendar date | [details](references/arithmetic/sub-weeks.md) |
+| `subDays()` | Subtract days from a datetime or calendar date | [details](references/arithmetic/sub-days.md) |
 | `subHours()` | Subtract hours from a datetime | [details](references/arithmetic/sub-hours.md) |
 | `subMinutes()` | Subtract minutes from a datetime | [details](references/arithmetic/sub-minutes.md) |
 | `subSeconds()` | Subtract seconds from a datetime | [details](references/arithmetic/sub-seconds.md) |
@@ -93,8 +93,8 @@ npm install @gobrand/tiempo
 
 | Function | Description | Reference |
 |----------|-------------|-----------|
-| `isBefore()` | Check if one datetime is before another | [details](references/comparison/is-before.md) |
-| `isAfter()` | Check if one datetime is after another | [details](references/comparison/is-after.md) |
+| `isBefore()` | Check if one date, time, or datetime is before another | [details](references/comparison/is-before.md) |
+| `isAfter()` | Check if one date, time, or datetime is after another | [details](references/comparison/is-after.md) |
 | `isWithinInterval()` | Check if a datetime falls within an interval | [details](references/comparison/is-within-interval.md) |
 | `isFuture()` | Check if a datetime is in the future | [details](references/comparison/is-future.md) |
 | `isPast()` | Check if a datetime is in the past | [details](references/comparison/is-past.md) |
@@ -136,11 +136,11 @@ npm install @gobrand/tiempo
 
 | Function | Description | Reference |
 |----------|-------------|-----------|
-| `eachYearOfInterval()` | Get all years in an interval as ZonedDateTime array | [details](references/intervals/each-year-of-interval.md) |
+| `eachYearOfInterval()` | Get all years in an interval as PlainDate or ZonedDateTime values | [details](references/intervals/each-year-of-interval.md) |
 | `eachQuarterOfInterval()` | Get all quarters in an interval as ZonedDateTime array | [details](references/intervals/each-quarter-of-interval.md) |
-| `eachMonthOfInterval()` | Get all months in an interval as ZonedDateTime array | [details](references/intervals/each-month-of-interval.md) |
-| `eachWeekOfInterval()` | Get all weeks (ISO Monday start) in an interval as ZonedDateTime array | [details](references/intervals/each-week-of-interval.md) |
-| `eachDayOfInterval()` | Get all days in an interval as ZonedDateTime array | [details](references/intervals/each-day-of-interval.md) |
+| `eachMonthOfInterval()` | Get all months in an interval as PlainDate or ZonedDateTime values | [details](references/intervals/each-month-of-interval.md) |
+| `eachWeekOfInterval()` | Get all weeks (ISO Monday start) in an interval as PlainDate or ZonedDateTime values | [details](references/intervals/each-week-of-interval.md) |
+| `eachDayOfInterval()` | Get all days in an interval as PlainDate or ZonedDateTime values | [details](references/intervals/each-day-of-interval.md) |
 | `eachHourOfInterval()` | Get all hours in an interval as ZonedDateTime array | [details](references/intervals/each-hour-of-interval.md) |
 | `eachMinuteOfInterval()` | Get all minutes in an interval as ZonedDateTime array | [details](references/intervals/each-minute-of-interval.md) |
 
@@ -159,9 +159,10 @@ npm install @gobrand/tiempo
 ```ts
 import type { Timezone, IANATimezone } from '@gobrand/tiempo';
 
-// Timezone: accepts IANA timezones + "UTC"
+// Timezone: suggested IANA names and UTC; arbitrary strings are also accepted
 const tz: Timezone = 'America/New_York';  // Autocomplete for 400+ timezones
 
-// IANATimezone: strictly IANA identifiers (excludes "UTC")
+// IANATimezone: suggested identifiers plus arbitrary strings (including "UTC")
+// These types provide autocomplete, not runtime timezone validation.
 const iana: IANATimezone = 'Europe/London';
 ```

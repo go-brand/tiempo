@@ -5,6 +5,12 @@ description: Parse a plain date or extract calendar date from a datetime
 
 Parse a plain date string or `PlainDateLike` object, extract the calendar date from a `ZonedDateTime`, or convert a UTC ISO string, Date, or Instant to a specified timezone and extract the date.
 
+## Temporal compatibility
+
+Native and polyfill PlainDate objects are accepted through the PlainDateLike overload. The result is a new PlainDate with the same calendar and ISO date, including non-ISO calendars. Property bags continue to use an explicit `calendar` field.
+
+ZonedDateTime inputs without a timezone override preserve their calendar. With an override, conversion passes through an Instant and produces an ISO-calendar date in the requested timezone.
+
 ## Signature
 
 ```ts

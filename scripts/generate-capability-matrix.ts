@@ -12,6 +12,7 @@
 import * as ts from "typescript";
 import * as fs from "node:fs";
 import * as path from "node:path";
+import { fileURLToPath } from "node:url";
 import {
   capabilityCell,
   capabilityMatrixIntro,
@@ -54,6 +55,7 @@ interface Row {
   acceptsPlainTime: boolean;
   otherIn: string[];
   returns: string[];
+  signatures: string[];
 }
 
 function camelToKebab(name: string): string {
@@ -82,7 +84,7 @@ function clean(typeText: string): string {
 
 const has = (s: string, re: RegExp) => re.test(s);
 
-function analyze(name: string, decls: ts.FunctionDeclaration[], sf: ts.SourceFile): Row {
+export function analyze(name: string, decls: ts.FunctionDeclaration[], sf: ts.SourceFile): Row {
   // Prefer overload signatures (no body); fall back to the implementation.
   const overloads = decls.filter((d) => !d.body);
   const signatures = overloads.length > 0 ? overloads : decls;
@@ -91,8 +93,11 @@ function analyze(name: string, decls: ts.FunctionDeclaration[], sf: ts.SourceFil
   const returnSet = new Set<string>();
 
   for (const sig of signatures) {
-    for (const p of sig.parameters) {
-      if (p.type) paramText.push(p.type.getText(sf));
+    for (const [index, p] of sig.parameters.entries()) {
+      if (!p.type) continue;
+      const type = p.type.getText(sf);
+      // Scalar amounts, format patterns and options are not date/time inputs.
+      if (index === 0 || /\bTemporal\./.test(type)) paramText.push(type);
     }
     if (sig.type) returnSet.add(clean(sig.type.getText(sf)));
   }
@@ -100,6 +105,7 @@ function analyze(name: string, decls: ts.FunctionDeclaration[], sf: ts.SourceFil
   const params = paramText.join(" | ");
   const otherIn: string[] = [];
   if (has(params, /\bstring\b/)) otherIn.push("string");
+  if (has(params, /\bnumber\b/)) otherIn.push("number");
   if (has(params, /\bDate\b/)) otherIn.push("Date");
   if (has(params, /\bPlainDateLike\b/)) otherIn.push("PlainDateLike");
   if (has(params, /\bPlainTimeLike\b/)) otherIn.push("PlainTimeLike");
@@ -114,6 +120,13 @@ function analyze(name: string, decls: ts.FunctionDeclaration[], sf: ts.SourceFil
     acceptsPlainTime: has(params, /\bPlainTime\b/) || has(params, /\bPlainTimeLike\b/),
     otherIn,
     returns: [...returnSet],
+    signatures: signatures.map(sig => {
+      const parameters = sig.parameters.map(p => {
+        const optional = p.questionToken || p.initializer ? "?" : "";
+        return `${p.name.getText(sf)}${optional}: ${clean(p.type!.getText(sf))}`;
+      });
+      return `${name}(${parameters.join(", ")}): ${clean(sig.type!.getText(sf))}`;
+    }),
   };
 }
 
@@ -162,7 +175,9 @@ function render(rows: Row[]): string {
     "",
     capabilityMatrixIntro,
     "",
-    "> **How to read this.** The **accepts** columns mark whether a function takes that Temporal type as a date/time input. **Other in** lists non-Temporal or `*Like` inputs (`string`, `Date`, `PlainDateLike`, …). **Returns** is the literal return type. `✅` means supported. A written note marks an intentional non-operation. `·` only means the type is not accepted; it is not automatically a missing feature.",
+    "> **How to read this.** The **accepts** columns mark whether a function takes that Temporal type as a date/time input. **Other in** lists non-Temporal or `*Like` inputs (`string`, `number`, `Date`, `PlainDateLike`, …). **Returns** is the literal return type. `✅` means supported. A written note marks an intentional non-operation. `·` only means the type is not accepted; it is not automatically a missing feature.",
+    "",
+    "The summary combines overloads. For exact input-to-output mappings, optional parameters and required timezones, see [Callable signatures](#callable-signatures).",
     "",
     "## API Rules",
     "",
@@ -194,6 +209,10 @@ function render(rows: Row[]): string {
     lines.push("");
   }
 
+  lines.push("## Callable signatures", "", "Each line is one public overload. Implementation-only unions are omitted. Temporal prefixes are shortened for readability.", "");
+  for (const row of rows) {
+    lines.push(`### ${row.name}`, "", "```ts", ...row.signatures, "```", "");
+  }
   return lines.join("\n");
 }
 
@@ -204,4 +223,4 @@ function main() {
   console.log(`✓ Wrote ${OUT_PATH} (${rows.length} functions)`);
 }
 
-main();
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main();

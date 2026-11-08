@@ -3,9 +3,11 @@ title: eachHourOfInterval
 description: Get all hours in an interval as ZonedDateTime array
 ---
 
-Returns an array of ZonedDateTime objects for each hour within the interval. Each element represents the start of the hour (minute/second/etc. set to 0). The interval is inclusive of both start and end hours.
+Returns an array of ZonedDateTime objects for each hour within the interval. Each element represents a local hour boundary or the first valid instant after an offset transition within an hour. The interval is inclusive of both start and end hours.
 
-Note: During DST transitions, some hours may be skipped (spring forward) or the array may contain fewer/more hours than expected based on wall-clock time.
+Completely missing hours are skipped. Partial hours start at the transition, and repeated hours have separate entries for each offset. Later entries realign to local hour boundaries, so steps need not be 60 elapsed minutes. For example, Lord Howe spring-forward results include `01:00`, `02:30`, `03:00`, and `04:00`.
+
+Reversed original endpoints return an empty array, even inside the same hour.
 
 ## Signature
 

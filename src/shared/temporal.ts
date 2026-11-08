@@ -6,11 +6,11 @@ import { Temporal as PolyfillTemporal } from "@js-temporal/polyfill";
  *
  * Shipping behavior is unchanged: production code always resolves to
  * `@js-temporal/polyfill`. Native-first was reverted because tiempo passes
- * caller-provided Temporal objects into static methods
- * (`Temporal.ZonedDateTime.compare`, etc.), and a native static method throws
- * ("Must specify time zone.") when handed an object created by a different
- * implementation. Re-enabling native-first by default requires normalizing
- * inputs into the resolved implementation at the boundary.
+ * caller-provided Temporal objects into methods that may require matching
+ * implementations. Timeline comparisons use epoch nanoseconds; calendar differences bridge
+ * implementations with canonical strings. Conversion and interval input boundaries are
+ * audited as well. Runtime support and declaration migration still gate removal
+ * of the bundled polyfill; constructor identity is not uniform across outputs.
  *
  * For tests only, `TIEMPO_TEMPORAL` selects the implementation so the same
  * suite runs against both the polyfill and the runtime's native `Temporal`:
@@ -18,11 +18,15 @@ import { Temporal as PolyfillTemporal } from "@js-temporal/polyfill";
  *   - `TIEMPO_TEMPORAL=native` uses `globalThis.Temporal` (Node >= 26).
  *   - unset defaults to the polyfill, matching shipped behavior.
  * Tests import `Temporal` from here so both lib and test objects come from the
- * same implementation; mixing implementations triggers the revert bug above.
+ * same implementation. timelineInterop.test.ts separately covers native,
+ * polyfill and mixed timeline inputs against both selections.
  *
  * Import `Temporal` from here so the implementation choice stays in one place.
  */
-const useNative = process.env.TIEMPO_TEMPORAL === "native" && "Temporal" in globalThis;
+const useNative =
+  typeof process !== "undefined" &&
+  process.env?.TIEMPO_TEMPORAL === "native" &&
+  "Temporal" in globalThis;
 
 export const Temporal = useNative
   ? (globalThis as unknown as { Temporal: typeof PolyfillTemporal }).Temporal
@@ -71,4 +75,8 @@ export function isZonedDateTime(value: unknown): value is Temporal.ZonedDateTime
 
 export function isPlainDate(value: unknown): value is Temporal.PlainDate {
   return brand(value) === "Temporal.PlainDate";
+}
+
+export function isPlainTime(value: unknown): value is Temporal.PlainTime {
+  return brand(value) === "Temporal.PlainTime";
 }

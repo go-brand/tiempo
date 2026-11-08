@@ -1,56 +1,21 @@
-# Always Use Explicit Timezones
+# Choose the Timezone for Local Intent
 
-Never rely on implicit timezone behavior. Always specify the timezone explicitly.
+Tiempo's Instant arithmetic, boundary, interval and formatting conveniences use deterministic UTC context. They do not infer the host's local timezone. ZonedDateTime inputs retain their zone unless a function explicitly accepts an override.
 
-## The Problem
-
-JavaScript's Date object and many datetime libraries use the system's local timezone by default. This causes bugs when:
-- Code runs on servers in different regions
-- Code runs in browsers with different user settings
-- Tests pass locally but fail in CI (different timezone)
-
-## The Solution
-
-Always pass the timezone explicitly to tiempo functions:
+For UTC reporting, the UTC default is useful. For a person's local day, convert to their zone before calendar work:
 
 ```ts
-// ❌ Bad - implicit timezone (uses system default)
-const date = new Date("2025-03-09");
-const now = new Date();
+import { toInstant, toZonedTime, startOfDay, format } from '@gobrand/tiempo';
 
-// ✅ Good - explicit timezone
-import { toZonedTime, now, today } from '@gobrand/tiempo';
-
-const nyTime = toZonedTime(utcDate, 'America/New_York');
-const currentTime = now('America/New_York');
-const todayInTokyo = today('Asia/Tokyo');
+const instant = toInstant('2025-01-01T01:00:00Z');
+const utcDay = startOfDay(instant); // 2025-01-01T00:00Z[UTC]
+const local = toZonedTime(instant, 'America/New_York');
+const localDay = startOfDay(local); // 2024-12-31T00:00-05:00[America/New_York]
+const display = format(local, 'yyyy-MM-dd'); // "2024-12-31"
 ```
 
-## Server-side Patterns
+Use a stored user timezone when the task concerns that user's calendar. Use `browserTimezone()` when the browser's timezone is the intended context. Functions such as `toZonedTime`, `now` and `today` require an explicit timezone; check the callable signature instead of assuming one uniform parameter list.
 
-```ts
-// Get timezone from user preferences (stored in DB)
-const userTime = toZonedTime(utcDate, user.timezone);
+Keep birthdays and other date-only values as PlainDate. A timezone is needed when resolving a local date/time to an actual moment, not for every calendar-date operation.
 
-// Get timezone from request header (sent by client)
-const userTime = toZonedTime(utcDate, req.headers['x-timezone']);
-
-// For UTC operations
-const utcTime = toZonedTime(utcDate, "UTC");
-```
-
-## Client-side Patterns
-
-```ts
-import { toZonedTime, browserTimezone } from '@gobrand/tiempo';
-
-// Auto-detect browser timezone
-const localTime = toZonedTime(utcDate, browserTimezone());
-```
-
-## Benefits
-
-- **Predictable**: Same behavior regardless of where code runs
-- **Testable**: Tests work the same in any environment
-- **Debuggable**: Clear what timezone is being used
-- **Explicit**: No hidden assumptions in code
+Timezone types offer autocomplete while accepting arbitrary strings for forward compatibility. Temporal validates the identifier when it is used; TypeScript accepting a string does not prove the zone exists.
