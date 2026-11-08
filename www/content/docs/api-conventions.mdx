@@ -1,20 +1,46 @@
 ---
 title: API conventions
-description: Learn argument order, intervals, Temporal input types, and return values
+description: The rules every tiempo function follows, so you can predict any of them
 ---
 
-## Two values or an interval?
+Every function follows the same few rules, so once you know them you can guess the rest.
 
-Difference functions take **two values in subtraction order**: the first minus the second. Interval functions take **one range object** with named `start` and `end` endpoints. These calling shapes follow date-fns conventions.
+## Pick the value that matches your data
 
-| Task | Shape | Meaning |
-|------|-------|---------|
-| Calculate a difference | `differenceInDays(later, earlier)` | Signed day count; swapping arguments can make it negative |
-| Compare two values | `isBefore(a, b)` | Whether `a` comes before `b` |
-| Add an amount | `addDays(date, amount)` | A new value, leaving the input unchanged |
-| List a range | `eachDayOfInterval({ start, end })` | Every date/day from start through end, inclusive |
+| Value | What it is | Use it for |
+|-------|------------|------------|
+| `Instant` | One exact moment, no timezone | A `created_at` timestamp from your database |
+| `ZonedDateTime` | An exact moment in a specific timezone | A meeting at 09:30 in America/Los_Angeles |
+| `PlainDate` | A calendar date, no time or timezone | A birthday, a due date, a date-picker value |
+| `PlainTime` | A clock time, no date or timezone | Opening hours, a daily reminder at 08:00 |
 
-An interval is a value describing a range. Its `{ start, end }` object gives the endpoints explicit names. Some functions also accept an optional options argument for choices such as fractional results or locale.
+Functions keep the type you gave them:
+
+- **`Instant` inputs are read in UTC** and datetime results come back as UTC `ZonedDateTime`s.
+- **`ZonedDateTime` inputs keep their timezone.** `addDays` on a Tokyo time returns a Tokyo time.
+- **`PlainDate` inputs stay dates.** No timezone is invented for them.
+
+## Dates and timestamps don't mix
+
+Passing a `PlainDate` together with an `Instant` or `ZonedDateTime` is a TypeScript error. Convert first, choosing the timezone:
+
+```ts
+import { toPlainDate } from '@gobrand/tiempo';
+
+// Which calendar date was this order placed on, for a customer in Tokyo?
+const orderDate = toPlainDate(Temporal.Instant.from('2026-03-14T18:30:00Z'), 'Asia/Tokyo'); // 2026-03-15
+```
+
+## Argument order: two values or an interval
+
+Differences take `(laterDate, earlierDate)`, like subtraction. Ranges take one `{ start, end }` object. Both follow date-fns.
+
+| Task | Call | Result |
+|------|------|--------|
+| How far apart? | `differenceInDays(later, earlier)` | Signed count; swap the arguments and it turns negative |
+| Which comes first? | `isBefore(a, b)` | `true` if `a` is before `b` |
+| Move a value | `addDays(date, 3)` | A new value; the input is never changed |
+| List a range | `eachDayOfInterval({ start, end })` | Every day from start through end, inclusive |
 
 ```ts
 import { toPlainDate, differenceInDays, eachDayOfInterval, addDays, isBefore } from '@gobrand/tiempo';
@@ -30,24 +56,11 @@ const nextDay = addDays(start, 1).toString(); // '2026-10-11'
 const isEarlier = isBefore(start, end); // true
 ```
 
-There are **two days between** these endpoints and **three dates in** the inclusive interval.
+Two days between the dates; three dates in the range.
 
-## Choose the value that matches your task
+## Week, month, quarter and year ranges start at the period boundary
 
-| Value | Use it for | Example |
-|-------|------------|---------|
-| `PlainDate` | Calendar dates without a clock or timezone | A birthday, deadline date, or date-picker selection |
-| `Instant` | One exact point in time | A timestamp stored in a database |
-| `ZonedDateTime` | An exact time with timezone and calendar context | An event viewed in America/New_York |
-| `PlainTime` | Clock time without a date or timezone | A daily opening time |
-
-Calendar differences and day/week/month/quarter/year intervals accept two PlainDates, or a compatible Instant/ZonedDateTime pair. They reject mixing PlainDate with a timestamp. Convert a timestamp with `toPlainDate(timestamp, timezone)` when your task is about its local date. Parse strings explicitly with the conversion functions.
-
-Date-only inputs produce date-only interval results. Timeline intervals produce ZonedDateTimes; an Instant start uses UTC. Native Temporal and polyfill values may be mixed within a supported domain.
-
-## Period intervals include boundary starts
-
-`eachWeekOfInterval`, `eachMonthOfInterval`, `eachQuarterOfInterval`, and `eachYearOfInterval` return the start of every period touched by the interval. The first result can be before the input's start date. Weeks begin on Monday. Reversed original endpoints return `[]`.
+`eachWeekOfInterval`, `eachMonthOfInterval`, `eachQuarterOfInterval` and `eachYearOfInterval` return the start of every period the range touches, so the first result can be before your start date. Weeks start on Monday.
 
 ```ts
 import { toPlainDate, eachMonthOfInterval } from '@gobrand/tiempo';
@@ -59,10 +72,20 @@ const monthStarts = eachMonthOfInterval({
 // ['2026-01-01', '2026-02-01', '2026-03-01']
 ```
 
-## Whole and fractional differences
+## Whole numbers by default
 
-Differences truncate toward zero by default. Pass `{ fractional: true }` for fractional weeks, months or years. PlainDate day differences are always integers because dates have no clock component.
+Differences are truncated toward zero: 1 day and 23 hours is `1`. Pass `{ fractional: true }` for the exact value.
 
-Calendar differences use matching calendars and the second argument as their reference. Months and years have variable lengths, so fractional results can depend on direction. Do not assume swapping any two calendar inputs always gives the exact negative fractional result. Date intervals use the start calendar, interpreting their end in that context.
+## "Today" always needs a timezone
 
-See the [type matrix](/docs/type-matrix) for every supported overload and the [recipes](/docs/recipes) for complete tasks.
+It can be tomorrow in Tokyo and still today in New York, so these functions take the timezone instead of guessing: `today('Europe/Madrid')`, `isToday(value, 'Asia/Tokyo')`.
+
+## Selection functions return what you gave them
+
+`min`, `max`, `clamp` and `closestTo` return one of the values you passed in, unchanged.
+
+## Native Temporal and the polyfill
+
+Values from your runtime's built-in `Temporal` and from `@js-temporal/polyfill` both work, and can be mixed. Avoid `instanceof` checks on results.
+
+Every input and return type is in the [type matrix](/docs/type-matrix).

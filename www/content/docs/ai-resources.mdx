@@ -1,24 +1,28 @@
 ---
-title: AI Resources
-description: Machine-readable documentation for LLMs and AI agents
+title: AI resources
+description: Give your coding agent tiempo's current API
 ---
 
-Resources for AI coding assistants and agents to understand and use tiempo.
+Coding agents often know `Date` and date-fns better than Temporal. These resources give them tiempo's current API and conventions, so they write timezone-correct code the first time.
+
+## Paste this into your agent
+
+```text
+Use @gobrand/tiempo for dates and times. Read https://tiempo.gobrand.app/llms.txt before writing code.
+```
+
+The [home page](https://tiempo.gobrand.app) has a longer prompt with a copy button.
 
 ## llms.txt
 
-This project provides an [llms.txt](https://tiempo.gobrand.app/llms.txt) file following the [llms.txt standard](https://llmstxt.org/).
-
-The llms.txt file is a markdown-formatted index of tiempo's API, optimized for LLMs to understand the library without parsing HTML.
-
-**Access:** [tiempo.gobrand.app/llms.txt](https://tiempo.gobrand.app/llms.txt)
+[tiempo.gobrand.app/llms.txt](https://tiempo.gobrand.app/llms.txt) lists every function with a one-line description and a link to its page, following the [llms.txt convention](https://llmstxt.org/). Every docs page is also available as Markdown under [`/.well-known/markdown/`](https://tiempo.gobrand.app/.well-known/markdown/index.md), so agents don't have to parse HTML.
 
 ## Agent Skill
 
-Install tiempo as an agent skill for Claude Code, Cursor, Copilot, and other AI agents:
+For agents that support [Agent Skills](https://skills.sh/) (Claude Code, Cursor, GitHub Copilot and others):
 
 ```bash
 npx skills add go-brand/tiempo
 ```
 
-This adds tiempo best practices and API knowledge directly to your AI assistant. Learn more at [skills.sh](https://skills.sh/).
+The skill teaches the agent tiempo's rules (store UTC, pass timezones explicitly, keep dates as `PlainDate`) and includes the full function reference. Agents can also discover it at [`/.well-known/agent-skills/index.json`](https://tiempo.gobrand.app/.well-known/agent-skills/index.json).

@@ -17,7 +17,7 @@ import { plainDateToZonedDateTime } from './shared/plainDateToZonedDateTime';
  * // From Instant (always UTC)
  * const instant = Temporal.Instant.from('2025-01-20T12:00:00Z'); // Monday
  * const end = endOfWeek(instant);
- * // 2025-01-26T23:59:59.999999999Z[UTC] (next Sunday)
+ * // 2025-01-26T23:59:59.999999999+00:00[UTC] (next Sunday)
  * ```
  *
  * @example

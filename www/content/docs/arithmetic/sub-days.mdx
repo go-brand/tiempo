@@ -1,42 +1,41 @@
 ---
 title: subDays
-description: Subtract days from a datetime or calendar date
+description: Subtract a number of calendar days from a date or datetime.
 ---
 
-Subtracts the specified number of days from a datetime or calendar date.
-
-PlainDate inputs return a PlainDate and preserve its calendar, without choosing a timezone. Instant inputs continue to return a ZonedDateTime in UTC; ZonedDateTime inputs preserve their timezone. Counts may be negative; fractional calendar counts are rejected by Temporal. Month/year arithmetic uses Temporal’s default month-end constraining.
+The reverse of [addDays](/docs/arithmetic/add-days): goes back calendar days and keeps the wall-clock time across a daylight saving time change. For exact 24-hour periods, use [subHours](/docs/arithmetic/sub-hours).
 
 ## Signature
 
 ```ts
+function subDays(input: Temporal.PlainDate, days: number): Temporal.PlainDate;
 function subDays(
   input: Temporal.Instant | Temporal.ZonedDateTime,
   days: number
 ): Temporal.ZonedDateTime;
-function subDays(input: Temporal.PlainDate, days: number): Temporal.PlainDate;
 ```
 
-## Example
+## Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `input` | `Temporal.PlainDate \| Temporal.Instant \| Temporal.ZonedDateTime` | The starting date or datetime |
+| `days` | `number` | Whole number of days to subtract; negative goes forward. Fractions throw a `RangeError`. |
+
+## Returns
+
+A `PlainDate` for a `PlainDate` input. Otherwise a `ZonedDateTime` in the input's timezone, or in UTC for an `Instant`.
+
+## Examples
+
+### Send a reminder three days before hotel check-in
+
+US daylight saving time starts between the two dates; the reminder stays at 15:00.
 
 ```ts
 import { subDays } from '@gobrand/tiempo';
 
-const now = Temporal.Now.zonedDateTimeISO();
+const checkIn = Temporal.ZonedDateTime.from('2026-03-10T15:00:00-04:00[America/New_York]');
 
-// Get yesterday
-const yesterday = subDays(now, 1);
-
-// Get a week ago
-const weekAgo = subDays(now, 7);
-```
-
-## Date-only arithmetic
-
-```ts
-import { subDays, toPlainDate } from '@gobrand/tiempo';
-
-const date = toPlainDate('2024-01-31');
-const result = subDays(date, 1); // Temporal.PlainDate
-result.toString(); // "2024-01-30"
+subDays(checkIn, 3); // 2026-03-07T15:00:00-05:00[America/New_York]
 ```

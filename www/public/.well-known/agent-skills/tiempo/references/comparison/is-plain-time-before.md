@@ -1,42 +1,33 @@
 # isPlainTimeBefore
 
-Returns true if the first time is before the second time. Compares wall-clock times without date or timezone considerations.
-
-`isBefore` also accepts two PlainTime values with the same ordering rules. This specialized helper remains supported.
+Returns `true` when the first time comes before the second. Same answer as [isBefore](https://tiempo.gobrand.app/docs/comparison/is-before), but accepts only PlainTimes; times do not wrap at midnight, so `23:00` is not before `01:00`.
 
 ## Signature
 
 ```ts
-function isPlainTimeBefore(
-  time1: Temporal.PlainTime,
-  time2: Temporal.PlainTime
-): boolean
+function isPlainTimeBefore(time1: Temporal.PlainTime, time2: Temporal.PlainTime): boolean;
 ```
 
-## Example
+## Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `time1` | `PlainTime` | The time being checked |
+| `time2` | `PlainTime` | The time to compare against |
+
+## Returns
+
+`true` if `time1` is before `time2`, otherwise `false`. Equal times return `false`.
+
+## Examples
+
+### Take orders until last call
 
 ```ts
 import { isPlainTimeBefore } from '@gobrand/tiempo';
-import { Temporal } from '@js-temporal/polyfill';
 
-const morning = Temporal.PlainTime.from('09:00');
-const evening = Temporal.PlainTime.from('17:00');
+const lastOrder = Temporal.PlainTime.from('21:30');
 
-isPlainTimeBefore(morning, evening); // true
-isPlainTimeBefore(evening, morning); // false
-isPlainTimeBefore(morning, morning); // false
-```
-
-## Use Case: Business Hours Check
-
-```ts
-import { isPlainTimeBefore, now } from '@gobrand/tiempo';
-import { Temporal } from '@js-temporal/polyfill';
-
-const currentTime = now('America/New_York').toPlainTime();
-const openTime = Temporal.PlainTime.from('09:00');
-const closeTime = Temporal.PlainTime.from('17:00');
-
-const isOpen = !isPlainTimeBefore(currentTime, openTime) &&
-               isPlainTimeBefore(currentTime, closeTime);
+isPlainTimeBefore(Temporal.PlainTime.from('21:29:59'), lastOrder); // true
+isPlainTimeBefore(Temporal.PlainTime.from('21:30'), lastOrder); // false
 ```

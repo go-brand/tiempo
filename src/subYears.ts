@@ -17,7 +17,7 @@ import { addYears } from './addYears';
  * ```ts
  * const instant = Temporal.Instant.from('2025-01-20T12:00:00Z');
  * const result = subYears(instant, 2);
- * // 2023-01-20T12:00:00Z[UTC] (2 years earlier)
+ * // 2023-01-20T12:00:00+00:00[UTC] (2 years earlier)
  * ```
  */
 export function subYears(input: Temporal.PlainDate, years: number): Temporal.PlainDate;

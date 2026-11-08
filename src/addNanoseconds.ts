@@ -15,7 +15,7 @@ import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
  * // From Instant (always UTC)
  * const instant = Temporal.Instant.from('2025-01-20T12:00:00Z');
  * const result = addNanoseconds(instant, 500);
- * // 2025-01-20T12:00:00.000000500Z[UTC] (500 nanoseconds later)
+ * // 2025-01-20T12:00:00.000000500+00:00[UTC] (500 nanoseconds later)
  * ```
  *
  * @example
@@ -31,7 +31,7 @@ import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
  * // Negative values subtract nanoseconds
  * const instant = Temporal.Instant.from('2025-01-20T12:00:00.000001Z');
  * const result = addNanoseconds(instant, -500);
- * // 2025-01-20T12:00:00.000000500Z[UTC] (500 nanoseconds earlier)
+ * // 2025-01-20T12:00:00.000000500+00:00[UTC] (500 nanoseconds earlier)
  * ```
  */
 export function addNanoseconds(

@@ -1,11 +1,9 @@
 ---
 title: differenceInMilliseconds
-description: Calculate the difference between two datetimes in milliseconds
+description: Count the milliseconds elapsed between two datetimes
 ---
 
-Returns the number of milliseconds between two datetimes.
-
-Whole units are truncated toward zero after subtracting epoch nanoseconds. Numeric results use JavaScript `number` precision; use `differenceInNanoseconds` for an exact `bigint` elapsed difference.
+Returns the whole milliseconds elapsed from `earlierDate` to `laterDate`, truncated toward zero.
 
 ## Signature
 
@@ -16,34 +14,15 @@ function differenceInMilliseconds(
 ): number
 ```
 
-## Example
+## Examples
+
+### Measure how long a request took
 
 ```ts
 import { differenceInMilliseconds } from '@gobrand/tiempo';
 
-const later = Temporal.Instant.from('2025-01-20T10:00:01.500Z');
-const earlier = Temporal.Instant.from('2025-01-20T10:00:00Z');
+const sent = Temporal.Instant.from('2026-05-04T09:30:00.000Z');
+const received = Temporal.Instant.from('2026-05-04T09:30:01.250Z');
 
-differenceInMilliseconds(later, earlier); // 1500
-```
-
-## Common Patterns
-
-### Performance measurement
-
-```ts
-import { differenceInMilliseconds } from '@gobrand/tiempo';
-
-async function measureOperation<T>(
-  operation: () => Promise<T>
-): Promise<{ result: T; durationMs: number }> {
-  const start = Temporal.Now.zonedDateTimeISO();
-  const result = await operation();
-  const end = Temporal.Now.zonedDateTimeISO();
-
-  return {
-    result,
-    durationMs: differenceInMilliseconds(end, start),
-  };
-}
+differenceInMilliseconds(received, sent); // 1250
 ```

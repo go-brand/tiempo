@@ -1,83 +1,67 @@
 # addDays
 
-Add days to a datetime or calendar date. DST-safe—adds calendar days, not 24-hour periods.
-
-PlainDate inputs return a PlainDate and preserve its calendar, without choosing a timezone. Instant inputs continue to return a ZonedDateTime in UTC; ZonedDateTime inputs preserve their timezone. Counts may be negative; fractional calendar counts are rejected by Temporal. Month/year arithmetic uses Temporal’s default month-end constraining.
+Adds calendar days and keeps the wall-clock time, so 09:00 stays 09:00 across a daylight saving time change. For exact 24-hour periods, use [addHours](https://tiempo.gobrand.app/docs/arithmetic/add-hours).
 
 ## Signature
 
 ```ts
+function addDays(input: Temporal.PlainDate, days: number): Temporal.PlainDate;
 function addDays(
   input: Temporal.Instant | Temporal.ZonedDateTime,
   days: number
 ): Temporal.ZonedDateTime;
-function addDays(input: Temporal.PlainDate, days: number): Temporal.PlainDate;
 ```
 
 ## Parameters
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `input` | `Temporal.Instant \| Temporal.ZonedDateTime \| Temporal.PlainDate` | The datetime to add days to |
-| `days` | `number` | Number of days to add (can be negative) |
+| `input` | `Temporal.PlainDate \| Temporal.Instant \| Temporal.ZonedDateTime` | The starting date or datetime |
+| `days` | `number` | Whole number of days to add; negative goes back. Fractions throw a `RangeError`. |
 
 ## Returns
 
-A `Temporal.PlainDate` for a date-only input, or a `Temporal.ZonedDateTime` for an Instant/ZonedDateTime input, with the days added.
+A `PlainDate` for a `PlainDate` input. Otherwise a `ZonedDateTime` in the input's timezone, or in UTC for an `Instant`.
 
 ## Examples
 
-### Basic usage
+### Set an invoice due date 30 days out
 
 ```ts
 import { addDays } from '@gobrand/tiempo';
 
-const instant = Temporal.Instant.from('2025-01-20T12:00:00Z');
-addDays(instant, 5);
-// 2025-01-25T12:00:00Z[UTC]
+const issued = Temporal.PlainDate.from('2026-03-16');
+
+addDays(issued, 30); // 2026-04-15
 ```
 
-### Preserves timezone
+### Keep a daily reminder at 09:00 across a DST change
 
-```ts
-const zoned = Temporal.ZonedDateTime.from('2025-01-20T15:30:00-05:00[America/New_York]');
-addDays(zoned, 10);
-// 2025-01-30T15:30:00-05:00[America/New_York]
-```
-
-### Negative values subtract
-
-```ts
-addDays(instant, -7);
-// 2025-01-13T12:00:00Z[UTC]
-```
-
-## DST Handling
-
-`addDays` properly handles Daylight Saving Time transitions:
+March 8, 2026 is only 23 hours long in New York.
 
 ```ts
 import { addDays, addHours } from '@gobrand/tiempo';
 
-// DST transition in US (March 9, 2025 at 2:00 AM)
-const beforeDst = Temporal.ZonedDateTime.from('2025-03-08T12:00:00-05:00[America/New_York]');
+const reminder = Temporal.ZonedDateTime.from('2026-03-07T09:00:00-05:00[America/New_York]');
 
-// Adding 1 day = calendar day (still 12:00 PM)
-const nextDay = addDays(beforeDst, 1);
-// 2025-03-09T12:00:00-04:00[America/New_York]
-
-// Compare with addHours: Adding 24 hours = 24 hours of elapsed time
-const plus24h = addHours(beforeDst, 24);
-// 2025-03-09T13:00:00-04:00[America/New_York]
-// (One hour later because DST "lost" an hour)
+addDays(reminder, 1); // 2026-03-08T09:00:00-04:00[America/New_York]
+addHours(reminder, 24); // 2026-03-08T10:00:00-04:00[America/New_York]
 ```
 
-## Date-only arithmetic
+### Count days in a local timezone, not UTC
+
+An `Instant` is counted in UTC. Convert it with [toZonedTime](https://tiempo.gobrand.app/docs/conversion/to-zoned-time) to keep a local time.
 
 ```ts
-import { addDays, toPlainDate } from '@gobrand/tiempo';
+import { addDays, toZonedTime } from '@gobrand/tiempo';
 
-const date = toPlainDate('2024-01-31');
-const result = addDays(date, 1); // Temporal.PlainDate
-result.toString(); // "2024-02-01"
+const checkIn = Temporal.Instant.from('2026-03-07T20:00:00Z');
+
+addDays(checkIn, 2); // 2026-03-09T20:00:00+00:00[UTC]
+addDays(toZonedTime(checkIn, 'America/New_York'), 2); // 2026-03-09T15:00:00-04:00[America/New_York]
 ```
+
+## Good to know
+
+- A local time skipped by a DST change moves forward by the gap: 02:30 on March 7 plus one day is 03:30 on March 8 in New York.
+- To skip weekends, use [addBusinessDays](https://tiempo.gobrand.app/docs/business-days/add-business-days).

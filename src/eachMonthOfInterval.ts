@@ -22,30 +22,30 @@ import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
  *
  * @example
  * ```ts
- * const start = Temporal.ZonedDateTime.from('2025-01-15T10:00:00Z[UTC]');
- * const end = Temporal.ZonedDateTime.from('2025-04-20T14:00:00Z[UTC]');
+ * const start = Temporal.ZonedDateTime.from('2025-01-15T10:00:00+00:00[UTC]');
+ * const end = Temporal.ZonedDateTime.from('2025-04-20T14:00:00+00:00[UTC]');
  *
  * const months = eachMonthOfInterval({ start, end });
  * // [
- * //   2025-01-01T00:00:00Z[UTC],
- * //   2025-02-01T00:00:00Z[UTC],
- * //   2025-03-01T00:00:00Z[UTC],
- * //   2025-04-01T00:00:00Z[UTC]
+ * //   2025-01-01T00:00:00+00:00[UTC],
+ * //   2025-02-01T00:00:00+00:00[UTC],
+ * //   2025-03-01T00:00:00+00:00[UTC],
+ * //   2025-04-01T00:00:00+00:00[UTC]
  * // ]
  * ```
  *
  * @example
  * ```ts
  * // Cross-year boundary
- * const start = Temporal.ZonedDateTime.from('2024-11-15T00:00:00Z[UTC]');
- * const end = Temporal.ZonedDateTime.from('2025-02-15T00:00:00Z[UTC]');
+ * const start = Temporal.ZonedDateTime.from('2024-11-15T00:00:00+00:00[UTC]');
+ * const end = Temporal.ZonedDateTime.from('2025-02-15T00:00:00+00:00[UTC]');
  *
  * const months = eachMonthOfInterval({ start, end });
  * // [
- * //   2024-11-01T00:00:00Z[UTC],
- * //   2024-12-01T00:00:00Z[UTC],
- * //   2025-01-01T00:00:00Z[UTC],
- * //   2025-02-01T00:00:00Z[UTC]
+ * //   2024-11-01T00:00:00+00:00[UTC],
+ * //   2024-12-01T00:00:00+00:00[UTC],
+ * //   2025-01-01T00:00:00+00:00[UTC],
+ * //   2025-02-01T00:00:00+00:00[UTC]
  * // ]
  * ```
  */

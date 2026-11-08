@@ -14,7 +14,7 @@ import { addNanoseconds } from './addNanoseconds';
  * ```ts
  * const instant = Temporal.Instant.from('2025-01-20T12:00:00.000001Z');
  * const result = subNanoseconds(instant, 500);
- * // 2025-01-20T12:00:00.000000500Z[UTC] (500 nanoseconds earlier)
+ * // 2025-01-20T12:00:00.000000500+00:00[UTC] (500 nanoseconds earlier)
  * ```
  */
 export function subNanoseconds(

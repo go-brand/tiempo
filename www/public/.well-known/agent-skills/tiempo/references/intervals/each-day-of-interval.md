@@ -1,13 +1,6 @@
 # eachDayOfInterval
 
-Returns every calendar day in an interval, **including both endpoints**.
-
-- Two PlainDate endpoints return `PlainDate[]`, preserving the start calendar. No timezone or clock time is introduced.
-- Instant/ZonedDateTime endpoints return `ZonedDateTime[]`, at the first valid moment of each day in the start timezone.
-
-Reversed endpoints return `[]`; equal PlainDate endpoints return one date. Date-only intervals include every date. Timezone-aware intervals skip nonexistent local dates without duplicates. Native and polyfill values may be mixed.
-
-Both endpoints must be PlainDates, or both must be timeline values (Instant/ZonedDateTime). Mixing these domains is rejected in TypeScript and at runtime. If PlainDate endpoints use different calendars, the end is interpreted in the start calendar.
+Returns every calendar day from `start` to `end`, including both.
 
 ## Signature
 
@@ -27,116 +20,55 @@ function eachDayOfInterval(interval: {
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `interval` | `{ start, end }` | Two PlainDate endpoints, or two Instant/ZonedDateTime endpoints |
+| `interval.start` | `PlainDate` or `Instant \| ZonedDateTime` | Start of the range |
+| `interval.end` | Same kind as `start` | End of the range, included |
 
 ## Returns
 
-Array of `Temporal.PlainDate` for PlainDate endpoints, or `Temporal.ZonedDateTime` at the start of each day for timeline endpoints.
-
-For `Instant` inputs, UTC is used as the timezone. For `ZonedDateTime` inputs, the timezone of the start date is preserved.
+PlainDate endpoints give a `PlainDate[]`. Instant or ZonedDateTime endpoints give a `ZonedDateTime[]` at the start of each day, in the timezone of `start` (UTC for an Instant). A reversed range gives `[]`.
 
 ## Examples
 
-### List calendar dates
+### Build a week view for a calendar
 
 ```ts
-import { toPlainDate, eachDayOfInterval } from '@gobrand/tiempo';
+import { eachDayOfInterval, isWeekend } from '@gobrand/tiempo';
 
-const start = toPlainDate('2026-10-10');
-const end = toPlainDate('2026-10-12');
-const dates = eachDayOfInterval({ start, end }); // Temporal.PlainDate[]
+const week = eachDayOfInterval({
+  start: Temporal.PlainDate.from('2026-03-02'),
+  end: Temporal.PlainDate.from('2026-03-08'),
+});
 
-dates.map(date => date.toString()); // ['2026-10-10', '2026-10-11', '2026-10-12']
-eachDayOfInterval({ start: end, end: start }); // []
+week.map(String); // ['2026-03-02', '2026-03-03', '2026-03-04', '2026-03-05', '2026-03-06', '2026-03-07', '2026-03-08']
+week.filter((day) => !isWeekend(day)).length; // 5
 ```
 
-The interval includes three dates; `differenceInDays(end, start)` returns the two days between its endpoints.
-
-### Basic usage
+### Days of a trip in the traveller's timezone
 
 ```ts
 import { eachDayOfInterval } from '@gobrand/tiempo';
 
-const start = Temporal.ZonedDateTime.from('2025-01-06T10:00:00Z[UTC]');
-const end = Temporal.ZonedDateTime.from('2025-01-10T14:00:00Z[UTC]');
+const days = eachDayOfInterval({
+  start: Temporal.ZonedDateTime.from('2026-03-07T15:00:00-05:00[America/New_York]'),
+  end: Temporal.ZonedDateTime.from('2026-03-09T08:00:00-04:00[America/New_York]'),
+});
 
-const days = eachDayOfInterval({ start, end });
-// [
-//   2025-01-06T00:00:00Z[UTC],
-//   2025-01-07T00:00:00Z[UTC],
-//   2025-01-08T00:00:00Z[UTC],
-//   2025-01-09T00:00:00Z[UTC],
-//   2025-01-10T00:00:00Z[UTC]
-// ]
+days.map(String); // ['2026-03-07T00:00:00-05:00[America/New_York]', '2026-03-08T00:00:00-05:00[America/New_York]', '2026-03-09T00:00:00-04:00[America/New_York]']
 ```
 
-### With timezone
+### Reversed ranges return an empty array
 
 ```ts
-const start = Temporal.ZonedDateTime.from('2025-01-06T10:00:00-05:00[America/New_York]');
-const end = Temporal.ZonedDateTime.from('2025-01-08T14:00:00-05:00[America/New_York]');
+import { eachDayOfInterval } from '@gobrand/tiempo';
 
-const days = eachDayOfInterval({ start, end });
-// [
-//   2025-01-06T00:00:00-05:00[America/New_York],
-//   2025-01-07T00:00:00-05:00[America/New_York],
-//   2025-01-08T00:00:00-05:00[America/New_York]
-// ]
+const checkIn = Temporal.PlainDate.from('2026-07-14');
+const checkOut = Temporal.PlainDate.from('2026-07-17');
+
+eachDayOfInterval({ start: checkIn, end: checkOut }).length; // 4
+eachDayOfInterval({ start: checkOut, end: checkIn }); // []
 ```
 
-### With Instant (uses UTC)
+## Good to know
 
-```ts
-const start = Temporal.Instant.from('2025-01-06T00:00:00Z');
-const end = Temporal.Instant.from('2025-01-08T00:00:00Z');
-
-const days = eachDayOfInterval({ start, end });
-// [
-//   2025-01-06T00:00:00Z[UTC],
-//   2025-01-07T00:00:00Z[UTC],
-//   2025-01-08T00:00:00Z[UTC]
-// ]
-```
-
-### Single day interval
-
-```ts
-const date = Temporal.ZonedDateTime.from('2025-01-15T12:00:00Z[UTC]');
-
-eachDayOfInterval({ start: date, end: date });
-// [2025-01-15T00:00:00Z[UTC]]
-```
-
-## Common Patterns
-
-### Build a calendar grid
-
-```ts
-import { eachDayOfInterval, startOfMonth, endOfMonth, startOfWeek, endOfWeek } from '@gobrand/tiempo';
-
-function getCalendarDays(month: Temporal.ZonedDateTime) {
-  const monthStart = startOfMonth(month);
-  const monthEnd = endOfMonth(month);
-
-  // Extend to full weeks for calendar grid
-  const calendarStart = startOfWeek(monthStart);
-  const calendarEnd = endOfWeek(monthEnd);
-
-  return eachDayOfInterval({ start: calendarStart, end: calendarEnd });
-}
-```
-
-### Generate date range for availability
-
-```ts
-import { eachDayOfInterval, isSameDay } from '@gobrand/tiempo';
-
-function getAvailableDays(
-  rangeStart: Temporal.ZonedDateTime,
-  rangeEnd: Temporal.ZonedDateTime,
-  bookedDates: Temporal.ZonedDateTime[]
-) {
-  return eachDayOfInterval({ start: rangeStart, end: rangeEnd })
-    .filter(day => !bookedDates.some(booked => isSameDay(day, booked)));
-}
-```
+- Both ends count: 14 to 17 July is 4 dates, while [differenceInDays](https://tiempo.gobrand.app/docs/difference/difference-in-days) counts 3 nights.
+- Mixing a PlainDate with an Instant or ZonedDateTime is a TypeScript error and throws a `TypeError`.

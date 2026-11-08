@@ -18,7 +18,7 @@ import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
  * // From Instant (always UTC)
  * const instant = Temporal.Instant.from('2025-01-20T12:00:00Z');
  * const result = addWeeks(instant, 2);
- * // 2025-02-03T12:00:00Z[UTC] (2 weeks later)
+ * // 2025-02-03T12:00:00+00:00[UTC] (2 weeks later)
  * ```
  *
  * @example
@@ -34,7 +34,7 @@ import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
  * // Negative values subtract weeks
  * const instant = Temporal.Instant.from('2025-01-20T12:00:00Z');
  * const result = addWeeks(instant, -1);
- * // 2025-01-13T12:00:00Z[UTC] (1 week earlier)
+ * // 2025-01-13T12:00:00+00:00[UTC] (1 week earlier)
  * ```
  */
 export function addWeeks(input: Temporal.PlainDate, weeks: number): Temporal.PlainDate;

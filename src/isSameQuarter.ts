@@ -17,8 +17,8 @@ import { quarterOfMonth } from "./shared/quarter";
  *
  * @example
  * ```ts
- * const jan = Temporal.ZonedDateTime.from('2025-01-15T08:00:00Z[UTC]');
- * const mar = Temporal.ZonedDateTime.from('2025-03-31T23:59:59Z[UTC]');
+ * const jan = Temporal.ZonedDateTime.from('2025-01-15T08:00:00+00:00[UTC]');
+ * const mar = Temporal.ZonedDateTime.from('2025-03-31T23:59:59+00:00[UTC]');
  * isSameQuarter(jan, mar); // true
  * ```
  *

@@ -5,17 +5,17 @@ description: Which Temporal types every function accepts and returns
 
 Every function at a glance — which Temporal types it **accepts** as input and what it **returns**. Generated directly from the current source API.
 
-> **How to read this.** The **accepts** columns mark whether a function takes that Temporal type as a date/time input. **Other in** lists non-Temporal or `*Like` inputs (`string`, `number`, `Date`, `PlainDateLike`, …). **Returns** is the literal return type. `✅` means supported. A written note marks an intentional non-operation. `·` only means the type is not accepted; it is not automatically a missing feature.
+> **How to read this.** ✅ means the function accepts that Temporal type. **Other in** lists other accepted inputs such as `string`, `number` or `Date`. **Returns** is the return type. `·` means the type is not accepted. A short note in a cell explains a deliberate choice.
 
-The summary combines overloads. For exact input-to-output mappings, optional parameters and required timezones, see [Callable signatures](#callable-signatures).
+Each row combines a function's overloads. For the exact input → output pairs and required timezones, see [Callable signatures](#callable-signatures).
 
-## API Rules
+## Rules of thumb
 
-- A `to<Type>` function returns `<Type>`. Temporal normalization helpers accept their target type when that produces a useful composable pipeline.
-- `ZonedDateTime` operations preserve the input timezone unless an explicit override is part of the signature.
-- Date-sized `PlainDate` operations stay in calendar space. Passing a timezone explicitly bridges a `PlainDate` to `ZonedDateTime`.
-- Formatting, comparison, difference, and projection functions intentionally return scalar values instead of preserving the input type.
-- Many `Instant` operations use implicit UTC calendar context and return `ZonedDateTime`. The table exposes that current contract; changing it would require a future breaking release.
+- A `to<Type>` function returns `<Type>`.
+- `ZonedDateTime` inputs keep their timezone.
+- `PlainDate` inputs stay dates. Functions that need a moment ask for an explicit timezone.
+- `Instant` inputs are read in UTC and datetime results come back as UTC `ZonedDateTime`s.
+- Formatting, comparison and difference functions return strings, booleans or numbers.
 
 ## Conversion
 
@@ -86,6 +86,14 @@ The summary combines overloads. For exact input-to-output mappings, optional par
 | `startOfQuarter` | ✅ | ✅ | ✅ | · | · | `ZonedDateTime` / `PlainDate` |
 | `startOfWeek` | ✅ | ✅ | ✅ | · | · | `ZonedDateTime` / `PlainDate` |
 | `startOfYear` | ✅ | ✅ | ✅ | · | · | `ZonedDateTime` / `PlainDate` |
+
+## Rounding
+
+| Function | Instant | Zoned | PlainDate | PlainTime | Other in | Returns |
+|----------|:-------:|:-----:|:---------:|:---------:|----------|---------|
+| `roundToNearestHour` | ✅ | ✅ | · | · | · | `ZonedDateTime` |
+| `roundToNearestMinute` | ✅ | ✅ | · | · | · | `ZonedDateTime` |
+| `roundToNearestSecond` | ✅ | ✅ | · | · | · | `ZonedDateTime` |
 
 ## Comparison
 
@@ -172,9 +180,6 @@ The summary combines overloads. For exact input-to-output mappings, optional par
 |----------|:-------:|:-----:|:---------:|:---------:|----------|---------|
 | `browserTimezone` | · | · | · | · | · | `IANATimezone` |
 | `getQuarter` | ✅ | ✅ | ✅ | · | · | `1 \| 2 \| 3 \| 4` |
-| `roundToNearestHour` | ✅ | ✅ | · | · | · | `ZonedDateTime` |
-| `roundToNearestMinute` | ✅ | ✅ | · | · | · | `ZonedDateTime` |
-| `roundToNearestSecond` | ✅ | ✅ | · | · | · | `ZonedDateTime` |
 
 ## Callable signatures
 

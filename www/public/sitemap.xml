@@ -54,6 +54,9 @@
   <url><loc>https://tiempo.gobrand.app/docs/boundaries/end-of-quarter</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/boundaries/start-of-year</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/boundaries/end-of-year</loc></url>
+  <url><loc>https://tiempo.gobrand.app/docs/rounding/round-to-nearest-hour</loc></url>
+  <url><loc>https://tiempo.gobrand.app/docs/rounding/round-to-nearest-minute</loc></url>
+  <url><loc>https://tiempo.gobrand.app/docs/rounding/round-to-nearest-second</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/comparison/is-before</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/comparison/is-after</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/comparison/is-equal</loc></url>
@@ -110,9 +113,6 @@
   <url><loc>https://tiempo.gobrand.app/docs/intervals/each-minute-of-interval</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/utilities/get-quarter</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/utilities/browser-timezone</loc></url>
-  <url><loc>https://tiempo.gobrand.app/docs/utilities/round-to-nearest-hour</loc></url>
-  <url><loc>https://tiempo.gobrand.app/docs/utilities/round-to-nearest-minute</loc></url>
-  <url><loc>https://tiempo.gobrand.app/docs/utilities/round-to-nearest-second</loc></url>
   <url><loc>https://tiempo.gobrand.app/llms.txt</loc></url>
   <url><loc>https://tiempo.gobrand.app/.well-known/agent-skills/index.json</loc></url>
 </urlset>

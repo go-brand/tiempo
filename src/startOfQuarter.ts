@@ -17,7 +17,7 @@ import { quarterStartMonth } from "./shared/quarter";
  * // From Instant (always UTC)
  * const instant = Temporal.Instant.from('2025-05-15T12:00:00Z');
  * const start = startOfQuarter(instant);
- * // 2025-04-01T00:00:00Z[UTC]
+ * // 2025-04-01T00:00:00+00:00[UTC]
  * ```
  *
  * @example
@@ -30,7 +30,7 @@ import { quarterStartMonth } from "./shared/quarter";
  *
  * @example
  * ```ts
- * // From PlainDate (requires timezone)
+ * // From a PlainDate in a timezone
  * const date = Temporal.PlainDate.from('2025-11-15');
  * const start = startOfQuarter(date, 'America/New_York');
  * // 2025-10-01T00:00:00-04:00[America/New_York]

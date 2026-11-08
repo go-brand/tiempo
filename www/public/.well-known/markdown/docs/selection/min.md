@@ -1,8 +1,6 @@
 # min
 
-Returns the earliest value in a non-empty array.
-
-The value is returned as given, keeping its type, timezone, and calendar. Ties return the first. Timeline values compare by exact instant, PlainDates by date, and PlainTimes by wall-clock time. Mixed domains throw a TypeError.
+Returns the earliest value in a non-empty array, exactly as it was given: same type, timezone, and calendar.
 
 ## Signature
 
@@ -16,7 +14,7 @@ function min(values: readonly Temporal.PlainTime[]): Temporal.PlainTime
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `values` | Array of one domain | At least one value |
+| `values` | Array of one kind | At least one value |
 
 ## Returns
 
@@ -24,27 +22,32 @@ The earliest value. Throws a `RangeError` for an empty array; check `values.leng
 
 ## Examples
 
+### Find the next deadline
+
 ```ts
 import { min } from '@gobrand/tiempo';
 
 const deadlines = [
-  Temporal.PlainDate.from('2025-03-01'),
-  Temporal.PlainDate.from('2025-01-15'),
-  Temporal.PlainDate.from('2025-02-10'),
+  Temporal.PlainDate.from('2026-03-01'),
+  Temporal.PlainDate.from('2026-01-15'),
+  Temporal.PlainDate.from('2026-02-10'),
 ];
 
-min(deadlines); // 2025-01-15
+min(deadlines); // 2026-01-15
 ```
 
-### Earliest instant across timezones
+### Earliest of two meetings in different timezones
 
 ```ts
 import { min } from '@gobrand/tiempo';
 
-const london = Temporal.ZonedDateTime.from('2025-01-20T15:00:00+00:00[Europe/London]');
-const tokyo = Temporal.ZonedDateTime.from('2025-01-21T00:00:00+09:00[Asia/Tokyo]'); // 15:00Z
+const london = Temporal.ZonedDateTime.from('2026-01-20T15:00:00+00:00[Europe/London]');
+const tokyo = Temporal.ZonedDateTime.from('2026-01-21T00:00:00+09:00[Asia/Tokyo]'); // 15:00 UTC
 
-min([london, tokyo]).timeZoneId; // Europe/London
+min([london, tokyo]).timeZoneId; // Europe/London (a tie: the first value wins)
 ```
 
-Both are the same instant, so the first one wins.
+## Good to know
+
+- Ties return the first of the tied values.
+- Mixing a PlainDate or PlainTime with another kind throws a `TypeError`.

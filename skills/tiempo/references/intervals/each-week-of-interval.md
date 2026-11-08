@@ -1,10 +1,6 @@
 # eachWeekOfInterval
 
-Returns the start of every week touched by the interval. PlainDate endpoints return `PlainDate[]`; Instant/ZonedDateTime endpoints return `ZonedDateTime[]` in the start timezone. Both endpoint periods are included.
-
-Two PlainDate endpoints return `PlainDate[]`: the start of every week touched by the interval, in the start calendar. The first result may precede the input start date. Equal endpoints produce one period start; reversed original endpoints produce `[]`. PlainDate/timeline mixing is rejected. Native and polyfill endpoints may be mixed within a supported domain.
-
-Weeks begin Monday.
+Returns the Monday of every week from the week containing `start` to the week containing `end`.
 
 ## Signature
 
@@ -24,104 +20,29 @@ function eachWeekOfInterval(interval: {
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `interval` | `{ start, end }` | Two PlainDate endpoints, or two Instant/ZonedDateTime endpoints |
+| `interval.start` | `PlainDate` or `Instant \| ZonedDateTime` | Start of the range |
+| `interval.end` | Same kind as `start` | End of the range, included |
 
 ## Returns
 
-PlainDate endpoints return date-only period starts in the start calendar. Other supported inputs keep the timeline behavior below.
-
-Array of `Temporal.ZonedDateTime` at the start of each week (Monday) in the interval.
-
-For `Instant` inputs, UTC is used as the timezone. For `ZonedDateTime` inputs, the timezone of the start date is preserved.
+PlainDate endpoints give a `PlainDate[]`. Instant or ZonedDateTime endpoints give a `ZonedDateTime[]` at the start of each Monday, in the timezone of `start` (UTC for an Instant). A reversed range gives `[]`.
 
 ## Examples
 
-### Date-only period starts
-
-```ts
-import { toPlainDate, eachWeekOfInterval } from '@gobrand/tiempo';
-
-const starts = eachWeekOfInterval({
-  start: toPlainDate('2026-01-07'),
-  end: toPlainDate('2026-01-14'),
-});
-starts.map(date => date.toString()); // ['2026-01-05', '2026-01-12']
-```
-
-### Basic usage
+### Rows for a weekly report
 
 ```ts
 import { eachWeekOfInterval } from '@gobrand/tiempo';
 
-const start = Temporal.ZonedDateTime.from('2025-01-06T10:00:00Z[UTC]'); // Monday
-const end = Temporal.ZonedDateTime.from('2025-01-22T14:00:00Z[UTC]');   // Wednesday
+const weeks = eachWeekOfInterval({
+  start: Temporal.PlainDate.from('2026-03-04'), // a Wednesday
+  end: Temporal.PlainDate.from('2026-03-25'),
+});
 
-const weeks = eachWeekOfInterval({ start, end });
-// [
-//   2025-01-06T00:00:00Z[UTC],  // Week 2
-//   2025-01-13T00:00:00Z[UTC],  // Week 3
-//   2025-01-20T00:00:00Z[UTC]   // Week 4
-// ]
+weeks.map(String); // ['2026-03-02', '2026-03-09', '2026-03-16', '2026-03-23']
 ```
 
-### Mid-week start
+## Good to know
 
-```ts
-const start = Temporal.ZonedDateTime.from('2025-01-08T10:00:00Z[UTC]'); // Wednesday
-const end = Temporal.ZonedDateTime.from('2025-01-15T14:00:00Z[UTC]');   // Wednesday
-
-const weeks = eachWeekOfInterval({ start, end });
-// [
-//   2025-01-06T00:00:00Z[UTC],  // Monday of week containing Jan 8
-//   2025-01-13T00:00:00Z[UTC]   // Monday of week containing Jan 15
-// ]
-```
-
-### Cross-year boundary
-
-```ts
-const start = Temporal.ZonedDateTime.from('2024-12-25T00:00:00Z[UTC]');
-const end = Temporal.ZonedDateTime.from('2025-01-08T00:00:00Z[UTC]');
-
-const weeks = eachWeekOfInterval({ start, end });
-// [
-//   2024-12-23T00:00:00Z[UTC],  // Monday of week containing Dec 25
-//   2024-12-30T00:00:00Z[UTC],  // Monday of week containing Dec 30
-//   2025-01-06T00:00:00Z[UTC]   // Monday of week containing Jan 8
-// ]
-```
-
-## Common Patterns
-
-### Generate weekly schedule
-
-```ts
-import { eachWeekOfInterval, addWeeks } from '@gobrand/tiempo';
-
-function getWeeklySchedule(
-  scheduleStart: Temporal.ZonedDateTime,
-  scheduleEnd: Temporal.ZonedDateTime
-) {
-  return eachWeekOfInterval({ start: scheduleStart, end: scheduleEnd }).map((weekStart, index) => ({
-    weekNumber: index + 1,
-    start: weekStart,
-    end: addWeeks(weekStart, 1).subtract({ nanoseconds: 1 })
-  }));
-}
-```
-
-### Build week picker
-
-```ts
-import { eachWeekOfInterval, format } from '@gobrand/tiempo';
-
-function getWeekOptions(
-  rangeStart: Temporal.ZonedDateTime,
-  rangeEnd: Temporal.ZonedDateTime
-) {
-  return eachWeekOfInterval({ start: rangeStart, end: rangeEnd }).map(weekStart => ({
-    value: weekStart.toString(),
-    label: `Week of ${format(weekStart, 'MMM d, yyyy')}`
-  }));
-}
-```
+- Weeks always start on Monday. There is no option to change this.
+- Mixing a PlainDate with an Instant or ZonedDateTime is a TypeScript error and throws a `TypeError`.

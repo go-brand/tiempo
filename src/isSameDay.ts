@@ -16,8 +16,8 @@ import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
  * @example
  * ```ts
  * // Same timezone, same day
- * const morning = Temporal.ZonedDateTime.from('2025-01-20T08:00:00Z[UTC]');
- * const evening = Temporal.ZonedDateTime.from('2025-01-20T23:00:00Z[UTC]');
+ * const morning = Temporal.ZonedDateTime.from('2025-01-20T08:00:00+00:00[UTC]');
+ * const evening = Temporal.ZonedDateTime.from('2025-01-20T23:00:00+00:00[UTC]');
  *
  * isSameDay(morning, evening); // true
  * ```
@@ -25,8 +25,8 @@ import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
  * @example
  * ```ts
  * // Same timezone, different days
- * const today = Temporal.ZonedDateTime.from('2025-01-20T23:59:59Z[UTC]');
- * const tomorrow = Temporal.ZonedDateTime.from('2025-01-21T00:00:00Z[UTC]');
+ * const today = Temporal.ZonedDateTime.from('2025-01-20T23:59:59+00:00[UTC]');
+ * const tomorrow = Temporal.ZonedDateTime.from('2025-01-21T00:00:00+00:00[UTC]');
  *
  * isSameDay(today, tomorrow); // false
  * ```

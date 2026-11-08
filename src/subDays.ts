@@ -17,7 +17,7 @@ import { addDays } from './addDays';
  * ```ts
  * const instant = Temporal.Instant.from('2025-01-25T12:00:00Z');
  * const result = subDays(instant, 5);
- * // 2025-01-20T12:00:00Z[UTC] (5 days earlier)
+ * // 2025-01-20T12:00:00+00:00[UTC] (5 days earlier)
  * ```
  */
 export function subDays(input: Temporal.PlainDate, days: number): Temporal.PlainDate;

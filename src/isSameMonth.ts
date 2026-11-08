@@ -16,8 +16,8 @@ import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
  * @example
  * ```ts
  * // Same timezone, same month
- * const start = Temporal.ZonedDateTime.from('2025-01-01T08:00:00Z[UTC]');
- * const end = Temporal.ZonedDateTime.from('2025-01-31T23:59:59Z[UTC]');
+ * const start = Temporal.ZonedDateTime.from('2025-01-01T08:00:00+00:00[UTC]');
+ * const end = Temporal.ZonedDateTime.from('2025-01-31T23:59:59+00:00[UTC]');
  *
  * isSameMonth(start, end); // true
  * ```
@@ -25,8 +25,8 @@ import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
  * @example
  * ```ts
  * // Same timezone, different months
- * const jan = Temporal.ZonedDateTime.from('2025-01-31T23:59:59Z[UTC]');
- * const feb = Temporal.ZonedDateTime.from('2025-02-01T00:00:00Z[UTC]');
+ * const jan = Temporal.ZonedDateTime.from('2025-01-31T23:59:59+00:00[UTC]');
+ * const feb = Temporal.ZonedDateTime.from('2025-02-01T00:00:00+00:00[UTC]');
  *
  * isSameMonth(jan, feb); // false
  * ```

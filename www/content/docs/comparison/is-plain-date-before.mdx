@@ -1,30 +1,37 @@
 ---
 title: isPlainDateBefore
-description: Check if a PlainDate is before another PlainDate
+description: Check whether one calendar date comes before another.
 ---
 
-Returns true if the first date is before the second date. Compares calendar dates without time or timezone considerations.
-
-`isBefore` also accepts two PlainDate values with the same ordering rules. This specialized helper remains supported.
+Returns `true` when the first date comes before the second. Same answer as [isBefore](/docs/comparison/is-before), but accepts only PlainDates.
 
 ## Signature
 
 ```ts
-function isPlainDateBefore(
-  date1: Temporal.PlainDate,
-  date2: Temporal.PlainDate
-): boolean
+function isPlainDateBefore(date1: Temporal.PlainDate, date2: Temporal.PlainDate): boolean;
 ```
 
-## Example
+## Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `date1` | `PlainDate` | The date being checked |
+| `date2` | `PlainDate` | The date to compare against |
+
+## Returns
+
+`true` if `date1` is before `date2`, otherwise `false`. Equal dates return `false`.
+
+## Examples
+
+### Check that a leave request starts before it ends
 
 ```ts
 import { isPlainDateBefore } from '@gobrand/tiempo';
 
-const jan20 = Temporal.PlainDate.from('2025-01-20');
-const jan25 = Temporal.PlainDate.from('2025-01-25');
+const firstDay = Temporal.PlainDate.from('2026-07-27');
+const lastDay = Temporal.PlainDate.from('2026-08-07');
 
-isPlainDateBefore(jan20, jan25); // true
-isPlainDateBefore(jan25, jan20); // false
-isPlainDateBefore(jan20, jan20); // false
+isPlainDateBefore(firstDay, lastDay); // true
+isPlainDateBefore(firstDay, firstDay); // false (same day)
 ```

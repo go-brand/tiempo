@@ -18,7 +18,7 @@ import { addDays, differenceInDays, format, toZonedTime } from '@gobrand/tiempo'
 const start = toZonedTime('2025-01-20T15:00:00Z', 'America/New_York');
 const end = addDays(start, 10);
 
-format(end, 'yyyy-MM-dd HH:mm'); // 2025-01-30 10:00
+format(end, 'yyyy-MM-dd HH:mm'); // "2025-01-30 10:00"
 differenceInDays(end, start); // 10
 ```
 

@@ -1,9 +1,9 @@
 ---
 title: addMinutes
-description: Add minutes to a datetime
+description: Add a number of minutes to a datetime.
 ---
 
-Add minutes to a datetime.
+Adds exact minutes of elapsed time, for booking slots, reservation holds, and short delays.
 
 ## Signature
 
@@ -11,26 +11,40 @@ Add minutes to a datetime.
 function addMinutes(
   input: Temporal.Instant | Temporal.ZonedDateTime,
   minutes: number
-): Temporal.ZonedDateTime
+): Temporal.ZonedDateTime;
 ```
 
 ## Parameters
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `input` | `Temporal.Instant \| Temporal.ZonedDateTime` | The datetime to add minutes to |
-| `minutes` | `number` | Number of minutes to add (can be negative) |
+| `input` | `Temporal.Instant \| Temporal.ZonedDateTime` | The starting datetime |
+| `minutes` | `number` | Whole number of minutes to add; negative goes back. Fractions throw a `RangeError`. |
 
 ## Returns
 
-A `Temporal.ZonedDateTime` with the minutes added.
+A `ZonedDateTime` in the input's timezone, or in UTC for an `Instant`.
 
 ## Examples
+
+### Find the next 15-minute booking slot
 
 ```ts
 import { addMinutes } from '@gobrand/tiempo';
 
-const instant = Temporal.Instant.from('2025-01-20T12:00:00Z');
-addMinutes(instant, 45);
-// 2025-01-20T12:45:00Z[UTC]
+const opens = Temporal.ZonedDateTime.from('2026-05-12T09:00:00+01:00[Europe/London]');
+
+addMinutes(opens, 15); // 2026-05-12T09:15:00+01:00[Europe/London]
+```
+
+### Hold a reservation for 10 minutes
+
+An `Instant` input returns a UTC `ZonedDateTime`.
+
+```ts
+import { addMinutes } from '@gobrand/tiempo';
+
+const heldAt = Temporal.Instant.from('2026-05-12T08:52:00Z');
+
+addMinutes(heldAt, 10); // 2026-05-12T09:02:00+00:00[UTC]
 ```

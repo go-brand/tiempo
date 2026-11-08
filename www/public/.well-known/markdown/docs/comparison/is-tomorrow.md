@@ -1,8 +1,6 @@
 # isTomorrow
 
-Returns true if the value falls on tomorrow's date in the given timezone.
-
-Instant and ZonedDateTime inputs are converted to the timezone before taking their date. PlainDate inputs are compared with tomorrow's date in that timezone directly.
+Returns `true` when the value falls on tomorrow's date in the given timezone. Instants and ZonedDateTimes are converted to that timezone first; PlainDates are compared as they are.
 
 ## Signature
 
@@ -10,7 +8,7 @@ Instant and ZonedDateTime inputs are converted to the timezone before taking the
 function isTomorrow(
   date: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate,
   timezone: Timezone
-): boolean
+): boolean;
 ```
 
 ## Parameters
@@ -22,9 +20,11 @@ function isTomorrow(
 
 ## Returns
 
-`true` if `date` is on tomorrow's date in `timezone`, `false` otherwise.
+`true` if `date` is on tomorrow's date in `timezone`, otherwise `false`.
 
 ## Examples
+
+### Check a date relative to today in Madrid
 
 ```ts
 import { isTomorrow, today } from '@gobrand/tiempo';
@@ -33,6 +33,4 @@ isTomorrow(today('Europe/Madrid').add({ days: 1 }), 'Europe/Madrid'); // true
 isTomorrow(today('Europe/Madrid'), 'Europe/Madrid'); // false
 ```
 
-## Related
-
-- [isToday](https://tiempo.gobrand.app/docs/comparison/is-today)
+See also [isToday](https://tiempo.gobrand.app/docs/comparison/is-today) and [isYesterday](https://tiempo.gobrand.app/docs/comparison/is-yesterday).

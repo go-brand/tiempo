@@ -1,0 +1,59 @@
+# roundToNearestMinute
+
+Rounds a datetime to the nearest minute, or to slots of several minutes with `nearestTo`.
+
+## Signature
+
+```ts
+function roundToNearestMinute(
+  input: Temporal.Instant | Temporal.ZonedDateTime,
+  options?: RoundToNearestMinuteOptions
+): Temporal.ZonedDateTime
+
+interface RoundToNearestMinuteOptions {
+  mode?: 'round' | 'ceil' | 'floor';
+  nearestTo?: 1 | 2 | 3 | 4 | 5 | 6 | 10 | 12 | 15 | 20 | 30;
+}
+```
+
+## Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `input` | `Temporal.Instant \| Temporal.ZonedDateTime` | The datetime to round |
+| `options.mode` | `'round' \| 'ceil' \| 'floor'` | `'round'` (default) goes to the nearest slot, halfway rounds up. `'ceil'` always goes up, `'floor'` always goes down |
+| `options.nearestTo` | `1 \| 2 \| 3 \| 4 \| 5 \| 6 \| 10 \| 12 \| 15 \| 20 \| 30` | Slot size in minutes, counted from the start of the hour. Default `1` |
+
+## Returns
+
+A `Temporal.ZonedDateTime` on the slot boundary, with seconds and smaller units set to zero. `ZonedDateTime` inputs keep their timezone; `Instant` inputs return a UTC `ZonedDateTime`.
+
+## Examples
+
+### Offer the next 15-minute booking slot
+
+```ts
+import { roundToNearestMinute } from '@gobrand/tiempo';
+
+const openedAt = Temporal.ZonedDateTime.from('2026-06-12T14:37:00[America/New_York]');
+
+roundToNearestMinute(openedAt, { mode: 'ceil', nearestTo: 15 }); // 2026-06-12T14:45:00-04:00[America/New_York] (next slot)
+roundToNearestMinute(openedAt, { mode: 'floor', nearestTo: 15 }); // 2026-06-12T14:30:00-04:00[America/New_York] (slot in progress)
+```
+
+### Round a timesheet to the nearest quarter hour
+
+```ts
+import { roundToNearestMinute } from '@gobrand/tiempo';
+
+const clockIn = Temporal.ZonedDateTime.from('2026-06-12T08:07:00[Europe/Madrid]');
+const clockOut = Temporal.ZonedDateTime.from('2026-06-12T17:08:00[Europe/Madrid]');
+
+roundToNearestMinute(clockIn, { nearestTo: 15 }); // 2026-06-12T08:00:00+02:00[Europe/Madrid] (7 minutes rounds down)
+roundToNearestMinute(clockOut, { nearestTo: 15 }); // 2026-06-12T17:15:00+02:00[Europe/Madrid] (8 minutes rounds up)
+```
+
+## Good to know
+
+- A time already on a slot boundary is returned unchanged in every mode.
+- `nearestTo` must divide 60. Other values, such as 7 or 45, are a TypeScript error and throw a `RangeError` at runtime.

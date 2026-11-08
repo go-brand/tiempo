@@ -1,17 +1,12 @@
 # toInstant
 
-Converts an `Instant`, `ZonedDateTime`, UTC ISO string, Unix timestamp, or JavaScript `Date` to a `Temporal.Instant`. The function is idempotent: an `Instant` input is returned unchanged.
+Turns any representation of a moment into a `Temporal.Instant`, which has no timezone.
 
 ## Signature
 
 ```ts
 function toInstant(
-  input:
-    | string
-    | number
-    | Date
-    | Temporal.Instant
-    | Temporal.ZonedDateTime
+  input: string | number | Date | Temporal.Instant | Temporal.ZonedDateTime
 ): Temporal.Instant
 ```
 
@@ -19,44 +14,33 @@ function toInstant(
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `input` | `string \| number \| Date \| Temporal.Instant \| Temporal.ZonedDateTime` | A representation of an exact moment |
+| `input` | `string \| number \| Date \| Temporal.Instant \| Temporal.ZonedDateTime` | An ISO string with `Z` or an offset, milliseconds since the epoch, a `Date`, an `Instant`, or a `ZonedDateTime`. |
 
 ## Returns
 
-A timezone-independent `Temporal.Instant` representing the same exact moment.
+A `Temporal.Instant` for the same moment. An `Instant` input is returned as is.
 
 ## Examples
 
-### From an ISO string
+### Parse a webhook timestamp
 
 ```ts
 import { toInstant } from '@gobrand/tiempo';
 
-const instant = toInstant('2025-01-20T20:00:00Z');
-// 2025-01-20T20:00:00Z
+toInstant('2026-02-10T09:05:00-05:00'); // 2026-02-10T14:05:00Z
+toInstant(1770732300000); // 2026-02-10T14:05:00Z
 ```
 
-### From a ZonedDateTime
+### Store a meeting as an exact moment
 
 ```ts
-const zoned = Temporal.ZonedDateTime.from(
-  '2025-01-20T15:00:00-05:00[America/New_York]'
-);
+import { toInstant } from '@gobrand/tiempo';
 
-const instant = toInstant(zoned);
-// 2025-01-20T20:00:00Z
+const meeting = Temporal.ZonedDateTime.from('2026-02-10T15:05:00[Europe/Madrid]');
+
+toInstant(meeting); // 2026-02-10T14:05:00Z
 ```
 
-### From an Instant
+## Good to know
 
-```ts
-const original = Temporal.Instant.from('2025-01-20T20:00:00Z');
-const normalized = toInstant(original);
-
-normalized === original;
-// true
-```
-
-## Why Instant, not UTC?
-
-An `Instant` has no timezone. It is an exact point on the timeline. Use `toZonedTime(instant, 'UTC')` when you specifically need a `ZonedDateTime` carrying UTC calendar and clock context.
+- A string without `Z` or an offset throws a `RangeError`.

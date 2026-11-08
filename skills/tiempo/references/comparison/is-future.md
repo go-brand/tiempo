@@ -1,61 +1,34 @@
 # isFuture
 
-Returns true if the given datetime is in the future (after the current instant).
+Returns `true` when the timestamp is after the current instant. It compares exact instants, so it needs no timezone.
 
 ## Signature
 
 ```ts
-function isFuture(
-  date: Temporal.Instant | Temporal.ZonedDateTime
-): boolean
+function isFuture(date: Temporal.Instant | Temporal.ZonedDateTime): boolean;
 ```
 
 ## Parameters
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `date` | `Temporal.Instant \| Temporal.ZonedDateTime` | The datetime to check |
+| `date` | `Instant \| ZonedDateTime` | The timestamp to check |
 
 ## Returns
 
-`true` if the datetime is in the future, `false` otherwise.
+`true` if `date` is after the current instant, otherwise `false`.
 
 ## Examples
 
-```ts
-import { isFuture } from '@gobrand/tiempo';
-
-const tomorrow = Temporal.Now.zonedDateTimeISO().add({ days: 1 });
-const yesterday = Temporal.Now.zonedDateTimeISO().subtract({ days: 1 });
-
-isFuture(tomorrow);  // true
-isFuture(yesterday); // false
-```
-
-### With Instant
-
-```ts
-const futureInstant = Temporal.Now.instant().add({ hours: 1 });
-isFuture(futureInstant); // true
-```
-
-### Works with any timezone
-
-```ts
-const futureInTokyo = Temporal.ZonedDateTime.from('2100-01-01T00:00:00+09:00[Asia/Tokyo]');
-isFuture(futureInTokyo); // true
-```
-
-## Common Patterns
-
-### Validate event dates
+### Check that a scheduled post is still ahead
 
 ```ts
 import { isFuture } from '@gobrand/tiempo';
 
-function validateEventStart(start: Temporal.ZonedDateTime) {
-  if (!isFuture(start)) {
-    throw new Error('Event start date must be in the future');
-  }
-}
+isFuture(Temporal.ZonedDateTime.from('2100-03-02T09:00:00+01:00[Europe/Madrid]')); // true
+isFuture(Temporal.Instant.from('2020-03-01T09:00:00Z')); // false
 ```
+
+## Good to know
+
+- To compare against a time other than now, use [isAfter](https://tiempo.gobrand.app/docs/comparison/is-after). For a calendar day, use [isTomorrow](https://tiempo.gobrand.app/docs/comparison/is-tomorrow), which takes a timezone.

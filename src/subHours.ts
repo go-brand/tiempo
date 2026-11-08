@@ -15,7 +15,7 @@ import { addHours } from './addHours';
  * ```ts
  * const instant = Temporal.Instant.from('2025-01-20T15:00:00Z');
  * const result = subHours(instant, 3);
- * // 2025-01-20T12:00:00Z[UTC] (3 hours earlier)
+ * // 2025-01-20T12:00:00+00:00[UTC] (3 hours earlier)
  * ```
  */
 export function subHours(

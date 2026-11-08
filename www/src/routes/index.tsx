@@ -397,13 +397,15 @@ await api.tasks.update({ dueAt: toIso(rescheduled) });`;
       <section className="relative px-4 pb-8 pt-16 md:pt-24">
         <div className="max-w-4xl mx-auto">
           <h1 className="mb-6 text-4xl font-bold leading-[1.15] tracking-tight text-neutral-100 md:text-5xl lg:text-6xl">
-            Date utilities for the Temporal era.
+            date-fns for the Temporal API.
           </h1>
 
           <p className="mb-8 max-w-2xl text-lg font-light leading-relaxed text-neutral-400 md:text-xl">
-            The functions you know from date-fns, built on JavaScript&apos;s Temporal API.
-            Timezone-aware, DST-safe, and typed so a calendar date is never mistaken for a
-            timestamp.
+            The date functions you already know, like <code className="text-neutral-300">addDays</code>,{" "}
+            <code className="text-neutral-300">format</code> and{" "}
+            <code className="text-neutral-300">differenceInDays</code>, built on JavaScript&apos;s
+            Temporal API. Timezone-aware, safe across daylight saving changes, and typed so a
+            calendar date is never mistaken for a timestamp.
           </p>
 
           <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:flex-wrap sm:items-center">
@@ -569,7 +571,7 @@ await api.tasks.update({ dueAt: toIso(rescheduled) });`;
       <section className="px-4 pb-6 pt-2">
         <div className="mx-auto grid max-w-6xl grid-cols-2 md:grid-cols-4">
           {[
-            ["90", "typed utilities"],
+            ["100+", "functions"],
             ["418", "timezone identifiers"],
             ["1 ns", "Temporal precision"],
             ["MIT", "open source"],
@@ -593,8 +595,8 @@ await api.tasks.update({ dueAt: toIso(rescheduled) });`;
               The hard parts of time should feel simple.
             </h2>
             <p className="text-lg text-neutral-400 max-w-2xl mx-auto">
-              Work in the timezone the business uses, move calendar days safely through DST, and
-              return exact ISO back to your API.
+              Work in your users&apos; timezones, move dates safely across daylight saving
+              changes, and send exact UTC back to your API.
             </p>
           </div>
 
@@ -731,8 +733,8 @@ await api.tasks.update({ dueAt: toIso(rescheduled) });`;
               The usual time problems, solved.
             </h2>
             <p className="text-lg text-neutral-400 max-w-2xl mx-auto">
-              Receive an ISO timestamp, work in the team's timezone, then send an exact ISO
-              string back to your API.
+              Take an ISO timestamp from your API, work with it in the team&apos;s timezone, then
+              send exact UTC back.
             </p>
           </div>
 
@@ -768,8 +770,8 @@ await api.tasks.update({ dueAt: toIso(rescheduled) });`;
                 Make time code obvious.
               </h2>
               <p className="text-lg text-neutral-400 mb-8 max-w-xl mx-auto">
-                Use Temporal without making every call site solve Temporal from scratch. Install
-                Tiempo and let the types carry the meaning.
+                Install tiempo, keep timezones explicit, and let the types say what each value
+                means: a moment, a moment in a place, a date, or a time of day.
               </p>
 
               <div className="flex flex-wrap gap-4 justify-center">

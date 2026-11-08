@@ -14,7 +14,7 @@ import { normalizeWithPlainDate } from './shared/normalizeWithPlainDate';
  * // From Instant (always UTC)
  * const instant = Temporal.Instant.from('2025-06-15T12:00:00Z');
  * const start = startOfYear(instant);
- * // 2025-01-01T00:00:00Z[UTC]
+ * // 2025-01-01T00:00:00+00:00[UTC]
  * ```
  *
  * @example

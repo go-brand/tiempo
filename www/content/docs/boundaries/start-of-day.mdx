@@ -1,9 +1,9 @@
 ---
 title: startOfDay
-description: Get the first moment of the day
+description: Get the first moment of a day, in a given timezone.
 ---
 
-Returns a `ZonedDateTime` at the first moment of the day (midnight, 00:00:00.000000000).
+Returns the first moment of a day as a `ZonedDateTime`. If a DST change skips midnight, it returns the first time that exists that day, such as 01:00.
 
 ## Signature
 
@@ -11,58 +11,50 @@ Returns a `ZonedDateTime` at the first moment of the day (midnight, 00:00:00.000
 function startOfDay(
   input: Temporal.Instant | Temporal.ZonedDateTime
 ): Temporal.ZonedDateTime
+
+function startOfDay(
+  input: Temporal.PlainDate,
+  timezone: Timezone
+): Temporal.ZonedDateTime
 ```
 
 ## Parameters
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `input` | `Temporal.Instant \| Temporal.ZonedDateTime` | The datetime to get the start of day for |
+| `input` | `Temporal.Instant \| Temporal.ZonedDateTime \| Temporal.PlainDate` | The moment or date whose day you want |
+| `timezone` | `Timezone` | Required with a `PlainDate`: the timezone the day is in |
 
 ## Returns
 
-A `Temporal.ZonedDateTime` at midnight of the same day.
+A `Temporal.ZonedDateTime` at the start of the day, in the input's timezone, in UTC for an `Instant`, or in `timezone` for a `PlainDate`.
 
 ## Examples
 
-### From Instant (always UTC)
-
-```ts
-import { startOfDay } from '@gobrand/tiempo';
-
-const instant = Temporal.Instant.from('2025-01-20T12:00:00Z');
-startOfDay(instant);
-// 2025-01-20T00:00:00Z[UTC]
-```
-
-### From ZonedDateTime (uses its timezone)
-
-```ts
-const zoned = Temporal.ZonedDateTime.from('2025-01-20T15:30:00-05:00[America/New_York]');
-startOfDay(zoned);
-// 2025-01-20T00:00:00-05:00[America/New_York]
-```
-
-### Need a different timezone? Convert first
-
-```ts
-const instant = Temporal.Instant.from('2025-01-20T12:00:00Z');
-const nyTime = instant.toZonedDateTimeISO('America/New_York');
-startOfDay(nyTime);
-// 2025-01-20T00:00:00-05:00[America/New_York]
-```
-
-## Common Patterns
-
-### Date range for current day
+### Query all orders placed on a day in Europe/Madrid
 
 ```ts
 import { startOfDay, endOfDay } from '@gobrand/tiempo';
 
-const now = Temporal.Now.zonedDateTimeISO('America/New_York');
-const dayStart = startOfDay(now);
-const dayEnd = endOfDay(now);
+const day = Temporal.PlainDate.from('2026-03-14');
 
-// Use for database queries
-// WHERE created_at >= dayStart AND created_at <= dayEnd
+startOfDay(day, 'Europe/Madrid'); // 2026-03-14T00:00:00+01:00[Europe/Madrid]
+startOfDay(day, 'Europe/Madrid').toInstant(); // 2026-03-13T23:00:00Z
+endOfDay(day, 'Europe/Madrid').toInstant(); // 2026-03-14T22:59:59.999999999Z
 ```
+
+### A day where midnight does not exist
+
+Chile moves its clocks from 00:00 to 01:00 on 6 September 2026.
+
+```ts
+import { startOfDay } from '@gobrand/tiempo';
+
+const flight = Temporal.ZonedDateTime.from('2026-09-06T14:00:00[America/Santiago]');
+
+startOfDay(flight); // 2026-09-06T01:00:00-03:00[America/Santiago]
+```
+
+## Good to know
+
+- An `Instant` uses the UTC day: 23:30 UTC on 14 March is already 15 March in Madrid. Convert with [toZonedTime](/docs/conversion/to-zoned-time) to use a user's day.

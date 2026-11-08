@@ -1,166 +1,67 @@
 # simpleFormat
 
-Format a Temporal date/time in a human-friendly way. Pass `date`, `time`, or both to control what's displayed.
+Formats a date, a time, or both in a short readable style, such as `Dec 3, 9am`, without a token pattern.
 
 ## Signature
 
 ```ts
 function simpleFormat(
   input: Temporal.PlainDate | Temporal.ZonedDateTime | Temporal.Instant,
-  options: SimpleFormatOptions
-): string;
+  options: {
+    date?: 'compact' | 'auto' | 'full';
+    time?: '12h' | '24h' | 'compact';
+    locale?: string;
+    timeZone?: Timezone;
+  } // at least one of `date` and `time`
+): string
 ```
 
-## Options
+## Parameters
 
-At least one of `date` or `time` is required.
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `input` | `Temporal.PlainDate \| Temporal.ZonedDateTime \| Temporal.Instant` | The value to format. |
+| `options.date` | `'compact' \| 'auto' \| 'full'` | `Dec 3`; `Dec 3` this year and `Dec 3, 2024` otherwise; `Dec 3, 2026`. |
+| `options.time` | `'12h' \| '24h' \| 'compact'` | `2:30 PM`; `14:30`; `2:30pm` or `9am`. |
+| `options.locale` | `string` | Default `'en-US'`. |
+| `options.timeZone` | `Timezone` | Timezone to show the moment in. Default: UTC for an `Instant`, its own timezone for a `ZonedDateTime`. |
 
-| Option | Type | Description |
-|--------|------|-------------|
-| `date` | `'compact' \| 'auto' \| 'full'` | Date format (see below) |
-| `time` | `'12h' \| '24h' \| 'compact'` | Time format (see below) |
-| `locale` | `string` | Locale for formatting (default: "en-US") |
-| `timeZone` | `Timezone` | Timezone for conversion |
+## Returns
 
-### Date formats
-
-- `'compact'` - "Dec 23" (never shows year)
-- `'auto'` - "Dec 23" or "Dec 23, 2020" (shows year only if not current year)
-- `'full'` - "Dec 23, 2026" (always shows year)
-
-### Time formats
-
-- `'12h'` - "3:30 PM"
-- `'24h'` - "15:30"
-- `'compact'` - "9am" or "2:30pm" (omits minutes when zero, lowercase am/pm)
+The formatted string. Date and time are joined with `, `.
 
 ## Examples
 
-### Date only
+### Show a booking in a list
 
 ```ts
 import { simpleFormat } from '@gobrand/tiempo';
 
-// Assuming current year is 2026
-const zdt = Temporal.ZonedDateTime.from("2026-12-23T15:30:00[America/New_York]");
-const pastZdt = Temporal.ZonedDateTime.from("2020-12-23T15:30:00[America/New_York]");
+const booking = Temporal.ZonedDateTime.from('2026-12-03T09:00:00[America/Chicago]');
 
-simpleFormat(zdt, { date: 'compact' });
-// "Dec 23"
-
-simpleFormat(zdt, { date: 'auto' });
-// "Dec 23"
-
-simpleFormat(pastZdt, { date: 'auto' });
-// "Dec 23, 2020"
-
-simpleFormat(zdt, { date: 'full' });
-// "Dec 23, 2026"
+simpleFormat(booking, { date: 'compact', time: 'compact' }); // "Dec 3, 9am"
+simpleFormat(booking, { date: 'full', time: '12h' }); // "Dec 3, 2026, 9:00 AM"
 ```
 
-### Time only
-
-```ts
-const zdt = Temporal.ZonedDateTime.from("2026-12-23T09:00:00[America/New_York]");
-const zdtWithMinutes = Temporal.ZonedDateTime.from("2026-12-23T14:30:00[America/New_York]");
-
-simpleFormat(zdt, { time: 'compact' });
-// "9am"
-
-simpleFormat(zdtWithMinutes, { time: 'compact' });
-// "2:30pm"
-
-simpleFormat(zdtWithMinutes, { time: '12h' });
-// "2:30 PM"
-
-simpleFormat(zdtWithMinutes, { time: '24h' });
-// "14:30"
-```
-
-### Date and time
-
-```ts
-const zdt = Temporal.ZonedDateTime.from("2026-12-23T09:00:00[America/New_York]");
-
-simpleFormat(zdt, { date: 'auto', time: 'compact' });
-// "Dec 23, 9am"
-
-simpleFormat(zdt, { date: 'full', time: '12h' });
-// "Dec 23, 2026, 9:00 AM"
-
-simpleFormat(zdt, { date: 'compact', time: '24h' });
-// "Dec 23, 09:00"
-```
-
-### With Instant
-
-```ts
-const instant = Temporal.Instant.from("2026-12-23T20:30:00Z");
-
-// Date only
-simpleFormat(instant, { date: 'auto', timeZone: 'America/New_York' });
-// "Dec 23"
-
-// Time only
-simpleFormat(instant, { time: 'compact', timeZone: 'America/New_York' });
-// "3:30pm"
-
-// Date and time
-simpleFormat(instant, { date: 'auto', time: '12h', timeZone: 'America/New_York' });
-// "Dec 23, 3:30 PM"
-```
-
-### With PlainDate
-
-```ts
-const plain = Temporal.PlainDate.from("2020-12-23");
-
-simpleFormat(plain, { date: 'auto' });
-// "Dec 23, 2020"
-
-simpleFormat(plain, { date: 'compact' });
-// "Dec 23"
-```
-
-### Localization
-
-```ts
-const zdt = Temporal.ZonedDateTime.from("2020-12-23T15:30:00[America/New_York]");
-
-simpleFormat(zdt, { date: 'auto', locale: 'es-ES' });
-// "23 dic 2020"
-
-simpleFormat(zdt, { date: 'auto', locale: 'de-DE' });
-// "23. Dez. 2020"
-```
-
-## Common Patterns
-
-### Card timestamps
+### Show a UTC shipping time to the customer
 
 ```ts
 import { simpleFormat } from '@gobrand/tiempo';
 
-// Show compact date for cards
-const cardDate = simpleFormat(post.createdAt, { date: 'auto' });
-// "Jan 23" or "Jan 23, 2024"
+const shippedAt = Temporal.Instant.from('2026-12-03T20:30:00Z');
+
+simpleFormat(shippedAt, { time: '24h', timeZone: 'Europe/Madrid' }); // 21:30
 ```
 
-### Event times
+### Date an old post in a feed
 
 ```ts
-// Compact time for event listings
-const eventTime = simpleFormat(event.startTime, { time: 'compact' });
-// "9am" or "2:30pm"
+import { simpleFormat, toPlainDate } from '@gobrand/tiempo';
+
+simpleFormat(toPlainDate('2024-12-23'), { date: 'auto' }); // "Dec 23, 2024"
 ```
 
-### Full datetime display
+## Good to know
 
-```ts
-// Date and time for detailed views
-const fullDisplay = simpleFormat(appointment.datetime, {
-  date: 'full',
-  time: '12h'
-});
-// "Dec 23, 2026, 3:30 PM"
-```
+- `time: 'compact'` is always English `am`/`pm`, whatever the locale.
+- A `PlainDate` with `time` is not rejected; it formats midnight (`12:00 AM`).

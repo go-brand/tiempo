@@ -1,6 +1,6 @@
 # isSameMinute
 
-Returns true if both datetimes are in the same minute.
+Returns `true` when both timestamps fall in the same minute, for example both between 09:30:00 and 09:30:59. Like [isSameDay](https://tiempo.gobrand.app/docs/comparison/is-same-day), each value is read in its own timezone, with Instants in UTC.
 
 ## Signature
 
@@ -8,18 +8,33 @@ Returns true if both datetimes are in the same minute.
 function isSameMinute(
   date1: Temporal.Instant | Temporal.ZonedDateTime,
   date2: Temporal.Instant | Temporal.ZonedDateTime
-): boolean
+): boolean;
 ```
 
-## Example
+## Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `date1` | `Instant \| ZonedDateTime` | The first timestamp |
+| `date2` | `Instant \| ZonedDateTime` | The second timestamp |
+
+## Returns
+
+`true` if both values have the same date, hour, and minute in their own timezones, otherwise `false`.
+
+## Examples
+
+### Group chat messages sent in the same minute
 
 ```ts
 import { isSameMinute } from '@gobrand/tiempo';
 
-const time1 = Temporal.ZonedDateTime.from('2025-01-20T15:30:45.123Z[UTC]');
-const time2 = Temporal.ZonedDateTime.from('2025-01-20T15:30:59.999Z[UTC]');
-const time3 = Temporal.ZonedDateTime.from('2025-01-20T15:31:00.000Z[UTC]');
+const first = Temporal.Instant.from('2026-09-22T14:30:05Z');
+const reply = Temporal.Instant.from('2026-09-22T14:30:58Z');
+const later = Temporal.Instant.from('2026-09-22T14:31:02Z');
 
-isSameMinute(time1, time2); // true (both at 15:30:xx)
-isSameMinute(time1, time3); // false (different minute)
+isSameMinute(first, reply); // true
+isSameMinute(reply, later); // false (4 seconds apart, but a new minute)
 ```
+
+To snap a time to a minute instead, use [roundToNearestMinute](https://tiempo.gobrand.app/docs/rounding/round-to-nearest-minute).

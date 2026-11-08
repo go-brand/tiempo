@@ -1,6 +1,6 @@
 # endOfMonth
 
-Returns the last boundary of the month. `PlainDate` inputs stay in calendar space and return the last date of the month; providing a timezone returns a `ZonedDateTime` at the last moment of that date.
+Returns the last day of the month, whether it has 28, 29, 30, or 31 days. It is the counterpart of [startOfMonth](https://tiempo.gobrand.app/docs/boundaries/start-of-month): a `PlainDate` returns a `PlainDate`, and with a timezone you get the last moment of the month.
 
 ## Signature
 
@@ -21,31 +21,32 @@ function endOfMonth(
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `input` | `Temporal.Instant \| Temporal.ZonedDateTime \| Temporal.PlainDate` | The date or datetime to get the end of month for |
-| `timezone` | `Timezone` | Required only when converting a `PlainDate` boundary to a `ZonedDateTime` |
+| `input` | `Temporal.Instant \| Temporal.ZonedDateTime \| Temporal.PlainDate` | Any date or moment in the month |
+| `timezone` | `Timezone` | Optional, `PlainDate` only: return the last day at 23:59:59.999999999 in this timezone instead of a date |
 
 ## Returns
 
-A `Temporal.PlainDate` for calendar-only input, or a `Temporal.ZonedDateTime` at the last moment of the last day for datetime input or an explicit timezone.
+- `PlainDate` input: the last day of the month as a `Temporal.PlainDate`.
+- Otherwise: a `Temporal.ZonedDateTime` one nanosecond before the next month begins. `Instant` inputs are read in UTC.
 
 ## Examples
+
+### Set an invoice due date at month end
 
 ```ts
 import { endOfMonth } from '@gobrand/tiempo';
 
-const instant = Temporal.Instant.from('2025-01-15T12:00:00Z');
-endOfMonth(instant);
-// 2025-01-31T23:59:59.999999999Z[UTC]
+endOfMonth(Temporal.PlainDate.from('2026-02-10')); // 2026-02-28
+endOfMonth(Temporal.PlainDate.from('2026-04-10')); // 2026-04-30
+endOfMonth(Temporal.PlainDate.from('2028-02-10')); // 2028-02-29 (leap year)
+```
 
-// February in a non-leap year
-const feb = Temporal.ZonedDateTime.from('2025-02-15T15:30:00-05:00[America/New_York]');
-endOfMonth(feb);
-// 2025-02-28T23:59:59.999999999-05:00[America/New_York]
+### Close a subscription period in America/New_York
 
-const date = Temporal.PlainDate.from('2024-02-15');
-endOfMonth(date);
-// 2024-02-29
+```ts
+import { endOfMonth } from '@gobrand/tiempo';
 
-endOfMonth(date, 'UTC');
-// 2024-02-29T23:59:59.999999999Z[UTC]
+const renewal = Temporal.ZonedDateTime.from('2026-07-14T09:00:00[America/New_York]');
+
+endOfMonth(renewal); // 2026-07-31T23:59:59.999999999-04:00[America/New_York]
 ```

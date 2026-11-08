@@ -9,14 +9,25 @@ const files = (dir: string, extension: string) =>
     .map((name) => `${dir}/${name}`);
 
 // Pages whose examples are complete programs with exact `// result` comments.
+const REFERENCE_SECTIONS = [
+  'conversion',
+  'formatting',
+  'current-time',
+  'boundaries',
+  'rounding',
+  'arithmetic',
+  'comparison',
+  'selection',
+  'difference',
+  'business-days',
+  'intervals',
+  'utilities'
+];
+
 const EXECUTABLE_PAGES = [
   'www/content/docs/date-fns.mdx',
-  'www/content/docs/comparison/is-equal.mdx',
-  'www/content/docs/comparison/is-today.mdx',
-  'www/content/docs/comparison/is-tomorrow.mdx',
-  'www/content/docs/comparison/is-yesterday.mdx',
-  ...files('www/content/docs/selection', '.mdx'),
-  ...files('www/content/docs/business-days', '.mdx')
+  'www/content/docs/recipes.mdx',
+  ...REFERENCE_SECTIONS.flatMap((section) => files(`www/content/docs/${section}`, '.mdx'))
 ];
 
 describe('reference page examples', () => {

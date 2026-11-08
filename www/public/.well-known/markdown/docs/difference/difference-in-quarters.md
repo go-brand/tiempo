@@ -1,12 +1,6 @@
 # differenceInQuarters
 
-Returns the number of quarters (3-month blocks) between two datetimes.
-
-## Temporal compatibility
-
-Accepts native Temporal and `@js-temporal/polyfill` values, including mixed pairs. Instant inputs use UTC. For ZonedDateTime inputs, calendar totals use the timezone and calendar of `earlierDate`; the inputs must have matching calendar identifiers. Nanosecond precision is preserved when passing values between implementations; the returned JavaScript number still has floating-point precision limits.
-
-The PlainDate overload also supports mixed implementations, including non-ISO calendars. Both dates must have matching calendar identifiers.
+Returns [differenceInMonths](https://tiempo.gobrand.app/docs/difference/difference-in-months) divided by 3.
 
 ## Signature
 
@@ -16,6 +10,7 @@ function differenceInQuarters(
   earlierDate: Temporal.Instant | Temporal.ZonedDateTime,
   options?: DifferenceOptions
 ): number
+
 function differenceInQuarters(
   laterDate: Temporal.PlainDate,
   earlierDate: Temporal.PlainDate,
@@ -23,7 +18,7 @@ function differenceInQuarters(
 ): number
 
 interface DifferenceOptions {
-  fractional?: boolean; // default false — truncates toward zero
+  fractional?: boolean;
 }
 ```
 
@@ -31,43 +26,28 @@ interface DifferenceOptions {
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `laterDate` | `Temporal.Instant \| Temporal.ZonedDateTime` | The later datetime |
-| `earlierDate` | `Temporal.Instant \| Temporal.ZonedDateTime` | The earlier datetime |
-| `options.fractional` | `boolean` | Return the precise fractional value instead of truncating toward zero (default: false) |
+| `laterDate` | `PlainDate` or `Instant \| ZonedDateTime` | The value to subtract from |
+| `earlierDate` | Same kind as `laterDate` | The value to subtract |
+| `options.fractional` | `boolean` | Return the exact value instead of truncating toward zero (default `false`) |
 
 ## Returns
 
-The number of quarters between the two datetimes, truncated toward zero by default. Pass `{ fractional: true }` to get the precise fractional value. Positive if `laterDate` is after `earlierDate`, negative if before.
+A signed number of quarters, truncated toward zero unless `fractional` is set.
 
 ## Examples
+
+### Count completed quarters of a contract
 
 ```ts
 import { differenceInQuarters } from '@gobrand/tiempo';
 
-const q1 = Temporal.Instant.from('2025-01-15T12:00:00Z');
-const q3 = Temporal.Instant.from('2025-07-15T12:00:00Z');
+const contractStart = Temporal.PlainDate.from('2026-02-15');
 
-differenceInQuarters(q3, q1); // 2
-differenceInQuarters(q1, q3); // -2
+differenceInQuarters(Temporal.PlainDate.from('2026-05-14'), contractStart); // 0
+differenceInQuarters(Temporal.PlainDate.from('2026-05-15'), contractStart); // 1
 ```
 
-### Fractional results
+## Good to know
 
-By default the result is truncated toward zero. Pass `{ fractional: true }` for the precise value.
-
-```ts
-const later = Temporal.Instant.from('2025-03-15T00:00:00Z');
-const earlier = Temporal.Instant.from('2025-01-15T00:00:00Z');
-
-differenceInQuarters(later, earlier);                       // 0     (truncated)
-differenceInQuarters(later, earlier, { fractional: true }); // ~0.67 (precise)
-```
-
-### From PlainDate (no timezone)
-
-```ts
-const later = Temporal.PlainDate.from('2025-07-20');
-const earlier = Temporal.PlainDate.from('2025-01-20');
-
-differenceInQuarters(later, earlier); // 2
-```
+- Quarters are counted from `earlierDate`, not aligned to Q1–Q4.
+- Mixing a PlainDate with an Instant or ZonedDateTime is a TypeScript error and throws a `TypeError`.

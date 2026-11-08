@@ -1,9 +1,9 @@
 ---
 title: toIso
-description: Convert to an ISO 8601 string
+description: Turn an Instant or ZonedDateTime into an ISO 8601 string.
 ---
 
-Convert a `Temporal.Instant` or `ZonedDateTime` to an ISO 8601 string.
+Turns a moment into an ISO 8601 string, in UTC by default.
 
 ## Signature
 
@@ -12,85 +12,42 @@ function toIso(input: Temporal.Instant): string
 
 function toIso(
   input: Temporal.ZonedDateTime,
-  options?: ToIsoOptions
+  options?: { mode?: 'utc' | 'offset' }
 ): string
-
-interface ToIsoOptions {
-  mode?: 'utc' | 'offset';
-}
 ```
 
 ## Parameters
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `input` | `Temporal.Instant \| Temporal.ZonedDateTime` | A Temporal.Instant or Temporal.ZonedDateTime |
-| `options.mode` | `'utc' \| 'offset'` | `'utc'` (default) outputs UTC time with Z suffix, `'offset'` outputs local time with offset suffix |
+| `input` | `Temporal.Instant \| Temporal.ZonedDateTime` | The moment to write out. |
+| `options.mode` | `'utc' \| 'offset'` | ZonedDateTime only. `'utc'` (default) writes UTC with `Z`. `'offset'` writes the local time with its offset. |
 
 ## Returns
 
-An ISO 8601 string representation.
-
-- **UTC mode** (default): `"2025-01-20T20:00:00Z"`
-- **Offset mode**: `"2025-01-20T15:00:00-05:00"`
+An ISO 8601 string, such as `2026-06-02T16:30:00Z`.
 
 ## Examples
 
-### From ZonedDateTime (UTC mode)
+### Send a booking time to an API in UTC
 
 ```ts
 import { toIso } from '@gobrand/tiempo';
 
-const zoned = Temporal.ZonedDateTime.from("2025-01-20T15:00:00-05:00[America/New_York]");
+const slot = Temporal.ZonedDateTime.from('2026-06-02T09:30:00[America/Los_Angeles]');
 
-toIso(zoned);
-// => "2025-01-20T20:00:00Z"
-
-toIso(zoned, { mode: 'utc' });
-// => "2025-01-20T20:00:00Z"
+toIso(slot); // 2026-06-02T16:30:00Z
+toIso(slot, { mode: 'offset' }); // 2026-06-02T09:30:00-07:00
 ```
 
-### From ZonedDateTime (Offset mode)
-
-```ts
-const zoned = Temporal.ZonedDateTime.from("2025-01-20T15:00:00-05:00[America/New_York]");
-
-toIso(zoned, { mode: 'offset' });
-// => "2025-01-20T15:00:00-05:00"
-```
-
-### From Instant
-
-```ts
-const instant = Temporal.Instant.from("2025-01-20T20:00:00Z");
-toIso(instant);
-// => "2025-01-20T20:00:00Z"
-```
-
-### Preserves Precision
-
-Sub-millisecond precision is preserved:
-
-```ts
-const zoned = toZonedTime("2025-01-20T20:00:00.123456789Z", "America/New_York");
-toIso(zoned);
-// => "2025-01-20T20:00:00.123456789Z"
-```
-
-## Common Patterns
-
-### API Responses (UTC)
+### Write out a payment timestamp
 
 ```ts
 import { toIso } from '@gobrand/tiempo';
 
-// Return normalized UTC string for APIs
-return { scheduledAt: toIso(eventTime) };
+toIso(Temporal.Instant.from('2026-03-31T22:15:00.250Z')); // 2026-03-31T22:15:00.25Z
 ```
 
-### User-facing Display (Offset)
+## Good to know
 
-```ts
-// Show local time with offset for clarity
-return { displayTime: toIso(userTime, { mode: 'offset' }) };
-```
+- The result never includes the timezone name. Use `zoned.toString()` to keep it: `2026-06-02T09:30:00-07:00[America/Los_Angeles]`.

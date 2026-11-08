@@ -1,6 +1,6 @@
 # addQuarters
 
-Add quarters (3-month blocks) to a datetime. Handles month-end dates correctly.
+Adds quarters of three calendar months. It works like [addMonths](https://tiempo.gobrand.app/docs/arithmetic/add-months): `addQuarters(date, 1)` equals `addMonths(date, 3)`, and a day missing from the target month moves back to its last day.
 
 ## Signature
 
@@ -8,49 +8,40 @@ Add quarters (3-month blocks) to a datetime. Handles month-end dates correctly.
 function addQuarters(
   input: Temporal.Instant | Temporal.ZonedDateTime,
   quarters: number
-): Temporal.ZonedDateTime
-function addQuarters(
-  input: Temporal.PlainDate,
-  quarters: number
-): Temporal.PlainDate
+): Temporal.ZonedDateTime;
+function addQuarters(input: Temporal.PlainDate, quarters: number): Temporal.PlainDate;
 ```
-
-Input type determines output type: a `PlainDate` stays in calendar space and returns a `PlainDate` (no timezone needed).
 
 ## Parameters
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `input` | `Temporal.Instant \| Temporal.ZonedDateTime` | The datetime to add quarters to |
-| `quarters` | `number` | Number of quarters to add (can be negative) |
+| `input` | `Temporal.PlainDate \| Temporal.Instant \| Temporal.ZonedDateTime` | The starting date or datetime |
+| `quarters` | `number` | Whole number of quarters to add; negative goes back. Fractions throw a `RangeError`. |
 
 ## Returns
 
-A `Temporal.ZonedDateTime` with the quarters added (each quarter is 3 months).
+A `PlainDate` for a `PlainDate` input. Otherwise a `ZonedDateTime` in the input's timezone, or in UTC for an `Instant`.
 
 ## Examples
 
-### Basic usage
+### Plan fiscal quarters for a year that starts on February 1
 
 ```ts
 import { addQuarters } from '@gobrand/tiempo';
 
-const instant = Temporal.Instant.from('2025-01-20T12:00:00Z');
-addQuarters(instant, 2);
-// 2025-07-20T12:00:00Z[UTC] (6 months later)
+const fiscalYearStart = Temporal.PlainDate.from('2026-02-01');
+
+addQuarters(fiscalYearStart, 1); // 2026-05-01 (Q2)
+addQuarters(fiscalYearStart, 4); // 2027-02-01 (next fiscal year)
 ```
 
-### Month-end handling
+### Move a month-end close date forward a quarter
 
 ```ts
-const endOfJan = Temporal.Instant.from('2025-01-31T12:00:00Z');
-addQuarters(endOfJan, 1);
-// 2025-04-30T12:00:00Z[UTC] (Jan 31 → Apr 30)
-```
+import { addQuarters } from '@gobrand/tiempo';
 
-### From a PlainDate (returns a PlainDate)
+const closeDate = Temporal.PlainDate.from('2026-11-30');
 
-```ts
-addQuarters(Temporal.PlainDate.from('2025-01-31'), 1);
-// 2025-04-30 (Jan 31 → Apr 30, still a PlainDate)
+addQuarters(closeDate, 1); // 2027-02-28
 ```

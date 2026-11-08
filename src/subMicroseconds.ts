@@ -14,7 +14,7 @@ import { addMicroseconds } from './addMicroseconds';
  * ```ts
  * const instant = Temporal.Instant.from('2025-01-20T12:00:00.001Z');
  * const result = subMicroseconds(instant, 500);
- * // 2025-01-20T12:00:00.000500Z[UTC] (500 microseconds earlier)
+ * // 2025-01-20T12:00:00.000500+00:00[UTC] (500 microseconds earlier)
  * ```
  */
 export function subMicroseconds(

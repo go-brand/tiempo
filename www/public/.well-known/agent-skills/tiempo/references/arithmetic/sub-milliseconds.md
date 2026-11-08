@@ -1,6 +1,6 @@
 # subMilliseconds
 
-Subtracts the specified number of milliseconds from a datetime.
+The reverse of [addMilliseconds](https://tiempo.gobrand.app/docs/arithmetic/add-milliseconds): goes back exact milliseconds of elapsed time.
 
 ## Signature
 
@@ -8,19 +8,28 @@ Subtracts the specified number of milliseconds from a datetime.
 function subMilliseconds(
   input: Temporal.Instant | Temporal.ZonedDateTime,
   milliseconds: number
-): Temporal.ZonedDateTime
+): Temporal.ZonedDateTime;
 ```
 
-## Example
+## Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `input` | `Temporal.Instant \| Temporal.ZonedDateTime` | The starting datetime |
+| `milliseconds` | `number` | Whole number of milliseconds to subtract; negative goes forward. Fractions throw a `RangeError`. |
+
+## Returns
+
+A `ZonedDateTime` in the input's timezone, or in UTC for an `Instant`.
+
+## Examples
+
+### Find when a 1,500 ms request started
 
 ```ts
 import { subMilliseconds } from '@gobrand/tiempo';
 
-const instant = Temporal.Instant.from('2025-01-20T12:00:01.500Z');
+const respondedAt = Temporal.Instant.from('2026-04-01T10:00:01.750Z');
 
-subMilliseconds(instant, 500);
-// 2025-01-20T12:00:01Z[UTC]
-
-subMilliseconds(instant, 1500);
-// 2025-01-20T12:00:00Z[UTC]
+subMilliseconds(respondedAt, 1500); // 2026-04-01T10:00:00.25+00:00[UTC]
 ```

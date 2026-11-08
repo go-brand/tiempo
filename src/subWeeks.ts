@@ -17,7 +17,7 @@ import { addWeeks } from './addWeeks';
  * ```ts
  * const instant = Temporal.Instant.from('2025-02-03T12:00:00Z');
  * const result = subWeeks(instant, 2);
- * // 2025-01-20T12:00:00Z[UTC] (2 weeks earlier)
+ * // 2025-01-20T12:00:00+00:00[UTC] (2 weeks earlier)
  * ```
  */
 export function subWeeks(input: Temporal.PlainDate, weeks: number): Temporal.PlainDate;

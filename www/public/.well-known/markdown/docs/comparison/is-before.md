@@ -1,10 +1,6 @@
 # isBefore
 
-Returns true if the first value is before the second value.
-
-Compare two PlainDates, two PlainTimes, or any Instant/ZonedDateTime pair. Dates use Temporal's date ordering, including values expressed in different calendars. Times use wall-clock ordering with nanosecond precision; midnight does not wrap into the next day. Timeline values compare by their exact instant.
-
-Mixed domains (for example, PlainDate and Instant) are rejected by TypeScript and throw a TypeError at runtime. Resolve calendar or clock values to a timeline explicitly when that is the intended comparison.
+Returns `true` when the first value comes strictly before the second. Timestamps compare by exact instant, so the timezone a value is written in does not change the answer.
 
 ## Signature
 
@@ -14,72 +10,58 @@ function isBefore(date1: Temporal.PlainTime, date2: Temporal.PlainTime): boolean
 function isBefore(
   date1: Temporal.Instant | Temporal.ZonedDateTime,
   date2: Temporal.Instant | Temporal.ZonedDateTime
-): boolean
+): boolean;
 ```
 
 ## Parameters
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `date1` | `PlainDate`, `PlainTime`, or `Instant \| ZonedDateTime` | The first datetime |
-| `date2` | `PlainDate`, `PlainTime`, or `Instant \| ZonedDateTime` | The second datetime |
+| `date1` | `PlainDate`, `PlainTime`, `Instant`, or `ZonedDateTime` | The value being checked |
+| `date2` | Same kind as `date1`; `Instant` and `ZonedDateTime` can be mixed | The value to compare against |
 
 ## Returns
 
-`true` if `date1` is before `date2`, `false` otherwise.
+`true` if `date1` is before `date2`, otherwise `false`. Equal values return `false`.
 
 ## Examples
 
-### Basic usage
+### Compare a departure and an arrival in different timezones
+
+The arrival reads 10:30 and the departure 17:00, but the comparison uses the real instants.
 
 ```ts
 import { isBefore } from '@gobrand/tiempo';
 
-const earlier = Temporal.ZonedDateTime.from('2025-01-20T10:00:00-05:00[America/New_York]');
-const later = Temporal.ZonedDateTime.from('2025-01-20T16:00:00-05:00[America/New_York]');
+const departure = Temporal.ZonedDateTime.from('2026-06-15T17:00:00+09:00[Asia/Tokyo]');
+const arrival = Temporal.ZonedDateTime.from('2026-06-15T10:30:00-07:00[America/Los_Angeles]');
 
-isBefore(earlier, later);  // true
-isBefore(later, earlier);  // false
-isBefore(earlier, earlier); // false
+isBefore(departure, arrival); // true (the arrival is 9.5 hours later)
 ```
 
-### With Instant
-
-```ts
-const instant1 = Temporal.Instant.from('2025-01-20T15:00:00Z');
-const instant2 = Temporal.Instant.from('2025-01-20T16:00:00Z');
-isBefore(instant1, instant2); // true
-```
-
-### Different timezones - compares by instant
-
-```ts
-const ny = Temporal.ZonedDateTime.from('2025-01-20T10:00:00-05:00[America/New_York]');
-const tokyo = Temporal.ZonedDateTime.from('2025-01-21T00:00:00+09:00[Asia/Tokyo]');
-isBefore(ny, tokyo); // false: both are 2025-01-20T15:00:00Z
-```
-
-## Common Patterns
-
-### Validate event dates
+### Reject a hotel booking that checks out on the check-in day
 
 ```ts
 import { isBefore } from '@gobrand/tiempo';
 
-function validateEventDates(start: Temporal.ZonedDateTime, end: Temporal.ZonedDateTime) {
-  if (!isBefore(start, end)) {
-    throw new Error('Event end date must be after start date');
-  }
-}
+const checkIn = Temporal.PlainDate.from('2026-08-14');
+
+isBefore(checkIn, Temporal.PlainDate.from('2026-08-14')); // false (a stay needs at least one night)
+isBefore(checkIn, Temporal.PlainDate.from('2026-08-15')); // true
 ```
 
-## Dates and clock times
+### Check whether a shift starts before the store opens
 
 ```ts
-import { isBefore, toPlainDate, toPlainTime } from '@gobrand/tiempo';
+import { isBefore } from '@gobrand/tiempo';
 
-isBefore(toPlainDate('2025-01-20'), toPlainDate('2025-01-21')); // true
-isBefore(toPlainTime('09:00'), toPlainTime('17:00')); // true
+const opensAt = Temporal.PlainTime.from('08:00');
+
+isBefore(Temporal.PlainTime.from('07:45'), opensAt); // true
 ```
 
-The specialized `isPlainDateBefore`/`isPlainDateAfter` and `isPlainTimeBefore`/`isPlainTimeAfter` helpers remain available with the same ordering rules. Equal values return false.
+## Good to know
+
+- Comparing a PlainDate, a PlainTime, and a timestamp with each other is a TypeScript error and throws a `TypeError`. Convert first with [toPlainDate](https://tiempo.gobrand.app/docs/conversion/to-plain-date) or [toZonedTime](https://tiempo.gobrand.app/docs/conversion/to-zoned-time).
+- PlainTimes do not wrap at midnight: `00:15` is before `23:30`.
+- To check "between two timestamps", use [isWithinInterval](https://tiempo.gobrand.app/docs/comparison/is-within-interval).

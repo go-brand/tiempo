@@ -1,9 +1,9 @@
 ---
 title: toDate
-description: Convert to a JavaScript Date object
+description: Turn an Instant or ZonedDateTime into a JavaScript Date.
 ---
 
-Convert a `Temporal.Instant` or `ZonedDateTime` to a JavaScript `Date` object.
+Turns a moment into a JavaScript `Date`, for drivers and libraries that only accept `Date`.
 
 ## Signature
 
@@ -17,41 +17,34 @@ function toDate(
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `input` | `Temporal.Instant \| Temporal.ZonedDateTime` | A Temporal.Instant or Temporal.ZonedDateTime |
+| `input` | `Temporal.Instant \| Temporal.ZonedDateTime` | The moment to convert. |
 
 ## Returns
 
-A JavaScript `Date` object representing the same moment in time.
+A `Date` for the same moment.
 
 ## Examples
 
-### From Instant
+### Save a renewal time to a Date column
 
 ```ts
 import { toDate } from '@gobrand/tiempo';
 
-const instant = Temporal.Instant.from("2025-01-20T20:00:00Z");
-const date = toDate(instant);
-// date.toISOString() === "2025-01-20T20:00:00.000Z"
+const renewsAt = Temporal.ZonedDateTime.from('2026-04-01T09:00:00[America/New_York]');
+
+toDate(renewsAt).toISOString(); // "2026-04-01T13:00:00.000Z"
 ```
 
-### From ZonedDateTime
+### Read it back in the user's timezone
 
 ```ts
-const zoned = Temporal.ZonedDateTime.from("2025-01-20T15:00:00-05:00[America/New_York]");
-const date = toDate(zoned);
-// date.toISOString() === "2025-01-20T20:00:00.000Z"
+import { toDate, toZonedTime } from '@gobrand/tiempo';
+
+const stored = toDate(Temporal.Instant.from('2026-04-01T13:00:00Z'));
+
+toZonedTime(stored, 'America/New_York'); // 2026-04-01T09:00:00-04:00[America/New_York]
 ```
 
-## Common Patterns
+## Good to know
 
-### ORM Integration (Drizzle, Prisma, etc.)
-
-```ts
-import { toDate } from '@gobrand/tiempo';
-
-// Writing: Convert back to Date for storage
-const instant = Temporal.Instant.from("2025-01-20T20:00:00Z");
-const date = toDate(instant);
-await db.update(posts).set({ publishedAt: date });
-```
+- A `Date` has no timezone and stores whole milliseconds, so the timezone and any digits past milliseconds are dropped.

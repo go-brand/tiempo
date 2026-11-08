@@ -1,9 +1,9 @@
 ---
 title: isSameHour
-description: Check if two datetimes are in the same hour
+description: Check whether two timestamps fall in the same clock hour.
 ---
 
-Returns true if both datetimes are in the same hour.
+Returns `true` when both timestamps fall in the same hour of the same day, for example both between 15:00 and 15:59. Like [isSameDay](/docs/comparison/is-same-day), each value is read in its own timezone, with Instants in UTC.
 
 ## Signature
 
@@ -11,18 +11,33 @@ Returns true if both datetimes are in the same hour.
 function isSameHour(
   date1: Temporal.Instant | Temporal.ZonedDateTime,
   date2: Temporal.Instant | Temporal.ZonedDateTime
-): boolean
+): boolean;
 ```
 
-## Example
+## Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `date1` | `Instant \| ZonedDateTime` | The first timestamp |
+| `date2` | `Instant \| ZonedDateTime` | The second timestamp |
+
+## Returns
+
+`true` if both values have the same date and hour in their own timezones, otherwise `false`.
+
+## Examples
+
+### Bucket API requests by hour
 
 ```ts
 import { isSameHour } from '@gobrand/tiempo';
 
-const time1 = Temporal.ZonedDateTime.from('2025-01-20T15:30:45.123Z[UTC]');
-const time2 = Temporal.ZonedDateTime.from('2025-01-20T15:45:00.000Z[UTC]');
-const time3 = Temporal.ZonedDateTime.from('2025-01-20T16:00:00.000Z[UTC]');
+const first = Temporal.Instant.from('2026-04-01T10:10:00Z');
 
-isSameHour(time1, time2); // true (both at 15:xx)
-isSameHour(time1, time3); // false (different hour)
+isSameHour(first, Temporal.Instant.from('2026-04-01T10:59:00Z')); // true
+isSameHour(first, Temporal.Instant.from('2026-04-01T11:00:00Z')); // false (a new clock hour, 50 minutes later)
 ```
+
+## Good to know
+
+- In zones with a half-hour offset, such as `Asia/Kolkata`, one UTC hour spans two local hours; convert with [toZonedTime](/docs/conversion/to-zoned-time) when the local hour is what you mean.

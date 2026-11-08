@@ -1,6 +1,6 @@
 # startOfMonth
 
-Returns the first boundary of the month. `PlainDate` inputs stay in calendar space and return the first date of the month; providing a timezone returns a `ZonedDateTime` at the start of that date.
+Returns the first day of the month. A `PlainDate` returns a `PlainDate`; pass a timezone to get the moment the month begins.
 
 ## Signature
 
@@ -21,43 +21,37 @@ function startOfMonth(
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `input` | `Temporal.Instant \| Temporal.ZonedDateTime \| Temporal.PlainDate` | The date or datetime to get the start of month for |
-| `timezone` | `Timezone` | Required only when converting a `PlainDate` boundary to a `ZonedDateTime` |
+| `input` | `Temporal.Instant \| Temporal.ZonedDateTime \| Temporal.PlainDate` | Any date or moment in the month |
+| `timezone` | `Timezone` | Optional, `PlainDate` only: return the 1st at 00:00 in this timezone instead of a date |
 
 ## Returns
 
-A `Temporal.PlainDate` for calendar-only input, or a `Temporal.ZonedDateTime` at the start of the first day for datetime input or an explicit timezone.
+- `PlainDate` input: the 1st of the month as a `Temporal.PlainDate`.
+- Otherwise: a `Temporal.ZonedDateTime` at the start of the 1st. `Instant` inputs are read in UTC.
 
 ## Examples
+
+### Query month-to-date revenue in Europe/Madrid
 
 ```ts
 import { startOfMonth } from '@gobrand/tiempo';
 
-const instant = Temporal.Instant.from('2025-01-15T12:00:00Z');
-startOfMonth(instant);
-// 2025-01-01T00:00:00Z[UTC]
+const asOf = Temporal.ZonedDateTime.from('2026-11-18T10:15:00[Europe/Madrid]');
 
-const zoned = Temporal.ZonedDateTime.from('2025-01-15T15:30:00-05:00[America/New_York]');
-startOfMonth(zoned);
-// 2025-01-01T00:00:00-05:00[America/New_York]
-
-const date = Temporal.PlainDate.from('2025-01-15');
-startOfMonth(date);
-// 2025-01-01
-
-startOfMonth(date, 'America/New_York');
-// 2025-01-01T00:00:00-05:00[America/New_York]
+startOfMonth(asOf); // 2026-11-01T00:00:00+01:00[Europe/Madrid]
+startOfMonth(asOf).toInstant(); // 2026-10-31T23:00:00Z
 ```
 
-## Common Patterns
-
-### Month-to-date
+### Find the first day of a billing period
 
 ```ts
-import { startOfMonth, now } from '@gobrand/tiempo';
+import { startOfMonth } from '@gobrand/tiempo';
 
-const current = now('America/New_York');
-const monthStart = startOfMonth(current);
+const signupDate = Temporal.PlainDate.from('2026-02-17');
 
-// Month-to-date range: [monthStart, current]
+startOfMonth(signupDate); // 2026-02-01
 ```
+
+## Good to know
+
+- An `Instant` uses the UTC month: a payment at 23:30 UTC on 31 March is in April for a user in Madrid. Convert with [toZonedTime](https://tiempo.gobrand.app/docs/conversion/to-zoned-time) to use the user's month.

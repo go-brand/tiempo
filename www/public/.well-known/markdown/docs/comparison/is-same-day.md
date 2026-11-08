@@ -1,8 +1,6 @@
 # isSameDay
 
-Returns true if both datetimes fall on the same calendar day.
-
-**Important**: This compares the local calendar day in each datetime's timezone. Convert to a common timezone before calling if you need to compare from a specific perspective.
+Returns `true` when both timestamps fall on the same calendar day. Each value is read in its own timezone, with Instants in UTC, so convert both to the viewer's timezone when that is the day you mean.
 
 ## Signature
 
@@ -10,77 +8,49 @@ Returns true if both datetimes fall on the same calendar day.
 function isSameDay(
   date1: Temporal.Instant | Temporal.ZonedDateTime,
   date2: Temporal.Instant | Temporal.ZonedDateTime
-): boolean
+): boolean;
 ```
 
 ## Parameters
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `date1` | `Temporal.Instant \| Temporal.ZonedDateTime` | The first datetime |
-| `date2` | `Temporal.Instant \| Temporal.ZonedDateTime` | The second datetime |
+| `date1` | `Instant \| ZonedDateTime` | The first timestamp |
+| `date2` | `Instant \| ZonedDateTime` | The second timestamp |
 
 ## Returns
 
-`true` if both datetimes are on the same calendar day, `false` otherwise.
+`true` if both values have the same year, month, and day in their own timezones, otherwise `false`.
 
 ## Examples
 
-### Same timezone, same day
+### Group orders by day for a customer in Tokyo
+
+Two orders placed two hours apart share a day in UTC but not in Tokyo.
 
 ```ts
-import { isSameDay } from '@gobrand/tiempo';
+import { isSameDay, toZonedTime } from '@gobrand/tiempo';
 
-const morning = Temporal.ZonedDateTime.from('2025-01-20T08:00:00Z[UTC]');
-const evening = Temporal.ZonedDateTime.from('2025-01-20T23:00:00Z[UTC]');
-isSameDay(morning, evening); // true
+const firstOrder = Temporal.Instant.from('2026-03-10T14:00:00Z');
+const secondOrder = Temporal.Instant.from('2026-03-10T16:00:00Z');
+
+isSameDay(firstOrder, secondOrder); // true (both March 10 in UTC)
+isSameDay(toZonedTime(firstOrder, 'Asia/Tokyo'), toZonedTime(secondOrder, 'Asia/Tokyo')); // false (23:00 on March 10, then 01:00 on March 11)
 ```
 
-### Same timezone, different days
+### Compare a call booked in New York with the agent's calendar in Tokyo
 
 ```ts
-const today = Temporal.ZonedDateTime.from('2025-01-20T23:59:59Z[UTC]');
-const tomorrow = Temporal.ZonedDateTime.from('2025-01-21T00:00:00Z[UTC]');
-isSameDay(today, tomorrow); // false
+import { isSameDay, toZonedTime } from '@gobrand/tiempo';
+
+const customer = Temporal.ZonedDateTime.from('2026-03-10T21:00:00-04:00[America/New_York]');
+const agent = Temporal.ZonedDateTime.from('2026-03-11T10:00:00+09:00[Asia/Tokyo]');
+
+isSameDay(customer, agent); // false (same instant, but March 10 in New York and March 11 in Tokyo)
+isSameDay(customer, toZonedTime(agent, 'America/New_York')); // true
 ```
 
-### Different timezones - compares their local calendar days
+## Good to know
 
-```ts
-const ny = Temporal.ZonedDateTime.from('2025-01-20T23:00:00-05:00[America/New_York]');
-const tokyo = Temporal.ZonedDateTime.from('2025-01-21T13:00:00+09:00[Asia/Tokyo]');
-// Same instant, different calendar days
-isSameDay(ny, tokyo); // false (Jan 20 in NY, Jan 21 in Tokyo)
-```
-
-### Convert to same timezone to compare from one perspective
-
-```ts
-isSameDay(ny.withTimeZone('UTC'), tokyo.withTimeZone('UTC')); // true (both Jan 21 in UTC)
-```
-
-## Common Patterns
-
-### Group items by day
-
-```ts
-import { isSameDay } from '@gobrand/tiempo';
-
-function groupByDay<T extends { date: Temporal.ZonedDateTime }>(items: T[]): T[][] {
-  const groups: T[][] = [];
-
-  for (const item of items) {
-    const existingGroup = groups.find(group =>
-      group[0] && isSameDay(group[0].date, item.date)
-    );
-
-    if (existingGroup) {
-      existingGroup.push(item);
-    } else {
-      groups.push([item]);
-    }
-  }
-
-  return groups;
-}
-```
+- Only timestamps are accepted. For two PlainDates, use [isEqual](https://tiempo.gobrand.app/docs/comparison/is-equal).
+- To check against the current day, use [isToday](https://tiempo.gobrand.app/docs/comparison/is-today), which takes the timezone as an argument.

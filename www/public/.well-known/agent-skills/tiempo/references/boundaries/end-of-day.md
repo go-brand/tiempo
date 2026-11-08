@@ -1,6 +1,6 @@
 # endOfDay
 
-Returns a `ZonedDateTime` at the last nanosecond of the day (23:59:59.999999999).
+Returns the last moment of a day, 23:59:59.999999999, as a `ZonedDateTime`. It takes the same inputs as [startOfDay](https://tiempo.gobrand.app/docs/boundaries/start-of-day) and is always one nanosecond before the next day starts, so 23- and 25-hour DST days are handled.
 
 ## Signature
 
@@ -8,34 +8,47 @@ Returns a `ZonedDateTime` at the last nanosecond of the day (23:59:59.999999999)
 function endOfDay(
   input: Temporal.Instant | Temporal.ZonedDateTime
 ): Temporal.ZonedDateTime
+
+function endOfDay(
+  input: Temporal.PlainDate,
+  timezone: Timezone
+): Temporal.ZonedDateTime
 ```
 
 ## Parameters
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `input` | `Temporal.Instant \| Temporal.ZonedDateTime` | The datetime to get the end of day for |
+| `input` | `Temporal.Instant \| Temporal.ZonedDateTime \| Temporal.PlainDate` | The moment or date whose day you want |
+| `timezone` | `Timezone` | Required with a `PlainDate`: the timezone the day is in |
 
 ## Returns
 
-A `Temporal.ZonedDateTime` at the last nanosecond of the same day.
+A `Temporal.ZonedDateTime` one nanosecond before the next day begins, in the input's timezone, in UTC for an `Instant`, or in `timezone` for a `PlainDate`.
 
 ## Examples
 
-### From Instant (always UTC)
+### Set a "due by end of day" deadline in Europe/London
 
 ```ts
 import { endOfDay } from '@gobrand/tiempo';
 
-const instant = Temporal.Instant.from('2025-01-20T12:00:00Z');
-endOfDay(instant);
-// 2025-01-20T23:59:59.999999999Z[UTC]
+const dueDate = Temporal.PlainDate.from('2026-06-30');
+
+endOfDay(dueDate, 'Europe/London'); // 2026-06-30T23:59:59.999999999+01:00[Europe/London]
+endOfDay(dueDate, 'Europe/London').toInstant(); // 2026-06-30T22:59:59.999999999Z
 ```
 
-### From ZonedDateTime (uses its timezone)
+### Close a daily sales report in America/New_York
 
 ```ts
-const zoned = Temporal.ZonedDateTime.from('2025-01-20T15:30:00-05:00[America/New_York]');
-endOfDay(zoned);
-// 2025-01-20T23:59:59.999999999-05:00[America/New_York]
+import { endOfDay } from '@gobrand/tiempo';
+
+const sale = Temporal.ZonedDateTime.from('2026-05-20T15:42:00[America/New_York]');
+
+endOfDay(sale); // 2026-05-20T23:59:59.999999999-04:00[America/New_York]
 ```
+
+## Good to know
+
+- For a half-open range (`>= start` and `< end`), use the next day's `startOfDay` as `end` instead.

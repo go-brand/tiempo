@@ -16,7 +16,7 @@ import { plainDateToZonedDateTime } from './shared/plainDateToZonedDateTime';
  * // From Instant (always UTC)
  * const instant = Temporal.Instant.from('2025-01-20T12:00:00Z'); // Monday
  * const start = startOfWeek(instant);
- * // 2025-01-20T00:00:00Z[UTC] (same day, it's already Monday)
+ * // 2025-01-20T00:00:00+00:00[UTC] (same day, it's already Monday)
  * ```
  *
  * @example

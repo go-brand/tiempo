@@ -16,7 +16,7 @@ import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
  * // From Instant (always UTC)
  * const instant = Temporal.Instant.from('2025-01-20T12:00:00Z');
  * const result = addHours(instant, 3);
- * // 2025-01-20T15:00:00Z[UTC] (3 hours later)
+ * // 2025-01-20T15:00:00+00:00[UTC] (3 hours later)
  * ```
  *
  * @example
@@ -32,7 +32,7 @@ import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
  * // Negative values subtract hours
  * const instant = Temporal.Instant.from('2025-01-20T12:00:00Z');
  * const result = addHours(instant, -5);
- * // 2025-01-20T07:00:00Z[UTC] (5 hours earlier)
+ * // 2025-01-20T07:00:00+00:00[UTC] (5 hours earlier)
  * ```
  */
 export function addHours(

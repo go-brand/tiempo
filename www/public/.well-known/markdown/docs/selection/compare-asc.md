@@ -2,8 +2,6 @@
 
 Compares two values for ascending order. Pass it to `Array#sort` to sort oldest first.
 
-Returns -1 if `date1` sorts first, 1 if `date2` sorts first, and 0 if they are equal. Timeline values compare by exact instant, PlainDates by date, and PlainTimes by wall-clock time. Mixed domains are rejected by TypeScript and throw a TypeError at runtime.
-
 ## Signature
 
 ```ts
@@ -20,31 +18,35 @@ function compareAsc(
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `date1` | `PlainDate`, `PlainTime`, or `Instant \| ZonedDateTime` | The first value |
-| `date2` | Same domain as `date1` | The second value |
+| `date2` | Same kind as `date1` | The second value |
 
 ## Returns
 
-`-1`, `0`, or `1`.
+`-1` if `date1` comes first, `1` if `date2` comes first, `0` if they are equal.
 
 ## Examples
 
-```ts
-import { compareAsc } from '@gobrand/tiempo';
-
-const dates = ['2025-03-01', '2024-12-31', '2025-01-15'].map((d) => Temporal.PlainDate.from(d));
-
-dates.sort(compareAsc).map(String); // ['2024-12-31', '2025-01-15', '2025-03-01']
-```
-
-### Mixed Instant and ZonedDateTime
-
-Timeline values can be mixed freely; they sort by the moment they represent.
+### Sort invoice due dates, soonest first
 
 ```ts
 import { compareAsc } from '@gobrand/tiempo';
 
-const instant = Temporal.Instant.from('2025-01-20T15:00:00Z');
-const tokyo = Temporal.ZonedDateTime.from('2025-01-21T00:30:00+09:00[Asia/Tokyo]'); // 15:30Z
+const dueDates = ['2026-03-01', '2025-12-31', '2026-01-15'].map((d) => Temporal.PlainDate.from(d));
 
-compareAsc(instant, tokyo); // -1
+dueDates.sort(compareAsc).map(String); // ['2025-12-31', '2026-01-15', '2026-03-01']
 ```
+
+### Order events logged in different timezones
+
+```ts
+import { compareAsc } from '@gobrand/tiempo';
+
+const serverLog = Temporal.Instant.from('2026-01-20T15:00:00Z');
+const tokyoLog = Temporal.ZonedDateTime.from('2026-01-21T00:30:00+09:00[Asia/Tokyo]'); // 15:30 UTC
+
+compareAsc(serverLog, tokyoLog); // -1
+```
+
+## Good to know
+
+- Mixing a PlainDate or PlainTime with another kind is a TypeScript error and throws a `TypeError`.

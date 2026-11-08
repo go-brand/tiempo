@@ -1,6 +1,6 @@
 # subNanoseconds
 
-Subtracts the specified number of nanoseconds from a datetime.
+The reverse of [addNanoseconds](https://tiempo.gobrand.app/docs/arithmetic/add-nanoseconds): goes back exact nanoseconds of elapsed time. The count is a `number`, not a `bigint`.
 
 ## Signature
 
@@ -8,19 +8,28 @@ Subtracts the specified number of nanoseconds from a datetime.
 function subNanoseconds(
   input: Temporal.Instant | Temporal.ZonedDateTime,
   nanoseconds: number
-): Temporal.ZonedDateTime
+): Temporal.ZonedDateTime;
 ```
 
-## Example
+## Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `input` | `Temporal.Instant \| Temporal.ZonedDateTime` | The starting datetime |
+| `nanoseconds` | `number` | Whole number of nanoseconds to subtract; negative goes forward. Fractions throw a `RangeError`. |
+
+## Returns
+
+A `ZonedDateTime` in the input's timezone, or in UTC for an `Instant`.
+
+## Examples
+
+### Find when an operation started from its measured duration
 
 ```ts
 import { subNanoseconds } from '@gobrand/tiempo';
 
-const instant = Temporal.Instant.from('2025-01-20T12:00:00.000001500Z');
+const finishedAt = Temporal.Instant.from('2026-04-01T10:00:00.25125Z');
 
-subNanoseconds(instant, 500);
-// 2025-01-20T12:00:00.000001Z[UTC]
-
-subNanoseconds(instant, 1500);
-// 2025-01-20T12:00:00Z[UTC]
+subNanoseconds(finishedAt, 1_250_000); // 2026-04-01T10:00:00.25+00:00[UTC]
 ```

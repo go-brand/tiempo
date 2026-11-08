@@ -14,7 +14,7 @@ import { addMinutes } from './addMinutes';
  * ```ts
  * const instant = Temporal.Instant.from('2025-01-20T12:30:00Z');
  * const result = subMinutes(instant, 15);
- * // 2025-01-20T12:15:00Z[UTC] (15 minutes earlier)
+ * // 2025-01-20T12:15:00+00:00[UTC] (15 minutes earlier)
  * ```
  */
 export function subMinutes(

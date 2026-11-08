@@ -1,12 +1,9 @@
 {
   "title": "Utilities",
-  "description": "Helper functions for timezone detection, rounding, and other utilities",
+  "description": "Read the quarter of a date and detect the browser's timezone",
   "icon": "Wrench",
   "pages": [
     "get-quarter",
-    "browser-timezone",
-    "round-to-nearest-hour",
-    "round-to-nearest-minute",
-    "round-to-nearest-second"
+    "browser-timezone"
   ]
 }

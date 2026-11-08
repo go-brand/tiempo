@@ -9,7 +9,7 @@ export interface ExampleCheck {
 }
 
 const STATEMENT =
-  /^(?:const|let|var|import|export|return|if|for|while|do|function|type|interface|\}|\/\/)/;
+  /^(?:(?:const|let|var|import|export|return|if|for|while|do|function|type|interface)\b|\}|\/\/)/;
 
 /**
  * Rewrites `expression; // result` lines into recorded checks. The expected

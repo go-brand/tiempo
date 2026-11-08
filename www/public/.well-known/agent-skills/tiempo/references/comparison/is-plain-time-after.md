@@ -1,28 +1,33 @@
 # isPlainTimeAfter
 
-Returns true if the first time is after the second time. Compares wall-clock times without date or timezone considerations.
-
-`isAfter` also accepts two PlainTime values with the same ordering rules. This specialized helper remains supported.
+Returns `true` when the first time comes after the second. Same answer as [isAfter](https://tiempo.gobrand.app/docs/comparison/is-after), but accepts only PlainTimes; times do not wrap at midnight, so `01:00` is not after `23:00`.
 
 ## Signature
 
 ```ts
-function isPlainTimeAfter(
-  time1: Temporal.PlainTime,
-  time2: Temporal.PlainTime
-): boolean
+function isPlainTimeAfter(time1: Temporal.PlainTime, time2: Temporal.PlainTime): boolean;
 ```
 
-## Example
+## Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `time1` | `PlainTime` | The time being checked |
+| `time2` | `PlainTime` | The time to compare against |
+
+## Returns
+
+`true` if `time1` is after `time2`, otherwise `false`. Equal times return `false`.
+
+## Examples
+
+### Ship orders placed after the 14:00 cutoff the next day
 
 ```ts
 import { isPlainTimeAfter } from '@gobrand/tiempo';
-import { Temporal } from '@js-temporal/polyfill';
 
-const morning = Temporal.PlainTime.from('09:00');
-const evening = Temporal.PlainTime.from('17:00');
+const cutoff = Temporal.PlainTime.from('14:00');
 
-isPlainTimeAfter(evening, morning); // true
-isPlainTimeAfter(morning, evening); // false
-isPlainTimeAfter(morning, morning); // false
+isPlainTimeAfter(Temporal.PlainTime.from('14:00:01'), cutoff); // true
+isPlainTimeAfter(Temporal.PlainTime.from('14:00'), cutoff); // false (exactly at the cutoff)
 ```
