@@ -1,6 +1,6 @@
 # Tiempo roadmap — a better date-fns for Temporal
 
-Updated 8 November 2026 for version `3.1.1`.
+Updated 8 November 2026 for version `3.1.2`.
 
 This is a prioritized recommendation backlog, revised after challenging all 43 original items. Confirmed implementation problems come from the [audited implementation review](reviews/2026-10-08-implementation-review.md). The [decision audit](reviews/2026-10-08-roadmap-decision-audit.md) records the evidence, tradeoffs, and acceptance criteria for each item. Unchecked items represent unfinished work, not approval to ship every proposed API. Breaking proposals are gated candidates for a future **v4**; fixes and additive improvements can ship earlier.
 
@@ -8,7 +8,7 @@ The product standard: familiar standalone functions, predictable Temporal inputs
 
 ## Implementation status — 8 November 2026
 
-Version 3.1.1 (the 3.1.0 tag failed CI and was never published) ships the October correctness batch below plus additive API: `isEqual` (exact-instant equality, part of **15**), selection helpers (**38**: `compareAsc`, `compareDesc`, `min`, `max`, `clamp`, `closestTo`), relative-day predicates (**39**: `isToday`, `isTomorrow`, `isYesterday` with a required timezone), and a business-day pilot (**40**: `isWeekend`, `addBusinessDays`, `subBusinessDays`, `differenceInBusinessDays`). A date-fns mapping guide covers part of **35**. New reference pages and all JSDoc examples now execute in tests, which found and fixed several broken examples (**34**).
+Version 3.1.2 (the 3.1.0 tag failed CI and npm rejected the 3.1.1 publish, so neither reached npm) ships the October correctness batch below plus additive API: `isEqual` (exact-instant equality, part of **15**), selection helpers (**38**: `compareAsc`, `compareDesc`, `min`, `max`, `clamp`, `closestTo`), relative-day predicates (**39**: `isToday`, `isTomorrow`, `isYesterday` with a required timezone), and a business-day pilot (**40**: `isWeekend`, `addBusinessDays`, `subBusinessDays`, `differenceInBusinessDays`). A date-fns mapping guide covers part of **35**. New reference pages and all JSDoc examples now execute in tests, which found and fixed several broken examples (**34**).
 
 ## Implementation status — 8 October 2026
 
