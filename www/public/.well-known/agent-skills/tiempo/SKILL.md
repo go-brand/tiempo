@@ -1,15 +1,25 @@
 ---
 name: tiempo
-description: Use when working with dates, times, timezones, or datetime conversions in TypeScript/JavaScript. Provides guidance on using the tiempo library for timezone-safe datetime handling with the Temporal API.
+description: Use when working with dates, times, timezones, or the Temporal API in TypeScript/JavaScript, or when replacing Date or date-fns. Covers tiempo's timezone-safe functions for conversion, formatting, arithmetic, comparison, sorting, business days, and intervals.
 ---
 
 # tiempo - Timezone-Safe Datetime Handling
 
-Lightweight utility library for timezone conversions built on the Temporal API.
+date-fns-style functions for the Temporal API. Coming from date-fns? See the [mapping](references/date-fns.md).
 
 ```bash
 npm install @gobrand/tiempo
 ```
+
+## Core Rules
+
+- **Pick the type that says what the value is.** `Instant`: a moment (timestamps, logs). `ZonedDateTime`: a moment in a place (UI, scheduling). `PlainDate`: a calendar date (birthdays, due dates). `PlainTime`: a clock time (opening hours).
+- **Instant inputs mean UTC.** Calendar operations on an Instant (`startOfDay`, `addDays`, `isSameDay`) use UTC, and datetime results are UTC ZonedDateTimes. For a user's calendar, convert first: `toZonedTime(instant, timezone)`.
+- **ZonedDateTime keeps its timezone; PlainDate stays a date.** Arithmetic is DST-safe.
+- **Argument order follows date-fns.** Differences take `(laterDate, earlierDate)`; intervals take `{ start, end }`.
+- **Domains don't mix.** Comparing a PlainDate with an Instant is a TypeScript error and throws a TypeError. Convert explicitly.
+- **"Today" needs a place.** `today(timezone)`, `now(timezone)`, `isToday(date, timezone)`.
+- **Store exact moments as UTC ISO strings** (`toIso(instant)`); store date-only values as `YYYY-MM-DD`.
 
 ## Best Practices
 
@@ -95,9 +105,13 @@ npm install @gobrand/tiempo
 |----------|-------------|-----------|
 | `isBefore()` | Check if one date, time, or datetime is before another | [details](references/comparison/is-before.md) |
 | `isAfter()` | Check if one date, time, or datetime is after another | [details](references/comparison/is-after.md) |
+| `isEqual()` | Check if two dates, times, or datetimes are the same | [details](references/comparison/is-equal.md) |
 | `isWithinInterval()` | Check if a datetime falls within an interval | [details](references/comparison/is-within-interval.md) |
 | `isFuture()` | Check if a datetime is in the future | [details](references/comparison/is-future.md) |
 | `isPast()` | Check if a datetime is in the past | [details](references/comparison/is-past.md) |
+| `isToday()` | Check if a value falls on today's date in a timezone | [details](references/comparison/is-today.md) |
+| `isTomorrow()` | Check if a value falls on tomorrow's date in a timezone | [details](references/comparison/is-tomorrow.md) |
+| `isYesterday()` | Check if a value falls on yesterday's date in a timezone | [details](references/comparison/is-yesterday.md) |
 | `isSameDay()` | Check if two datetimes are on the same calendar day | [details](references/comparison/is-same-day.md) |
 | `isSameWeek()` | Check if two datetimes are in the same ISO week | [details](references/comparison/is-same-week.md) |
 | `isSameMonth()` | Check if two datetimes are in the same calendar month | [details](references/comparison/is-same-month.md) |
@@ -116,6 +130,17 @@ npm install @gobrand/tiempo
 | `isPlainTimeAfter()` | Check if a PlainTime is after another PlainTime | [details](references/comparison/is-plain-time-after.md) |
 | `isPlainTimeEqual()` | Check if two PlainTimes are equal | [details](references/comparison/is-plain-time-equal.md) |
 
+## Sorting & Selection
+
+| Function | Description | Reference |
+|----------|-------------|-----------|
+| `compareAsc()` | Comparator for sorting dates and times in ascending order | [details](references/selection/compare-asc.md) |
+| `compareDesc()` | Comparator for sorting dates and times in descending order | [details](references/selection/compare-desc.md) |
+| `min()` | Get the earliest date, time, or datetime in an array | [details](references/selection/min.md) |
+| `max()` | Get the latest date, time, or datetime in an array | [details](references/selection/max.md) |
+| `clamp()` | Restrict a date, time, or datetime to an interval | [details](references/selection/clamp.md) |
+| `closestTo()` | Find the date, time, or datetime nearest to a target | [details](references/selection/closest-to.md) |
+
 ## Difference
 
 | Function | Description | Reference |
@@ -131,6 +156,15 @@ npm install @gobrand/tiempo
 | `differenceInMilliseconds()` | Calculate the difference between two datetimes in milliseconds | [details](references/difference/difference-in-milliseconds.md) |
 | `differenceInMicroseconds()` | Calculate the difference between two datetimes in microseconds | [details](references/difference/difference-in-microseconds.md) |
 | `differenceInNanoseconds()` | Calculate the difference between two datetimes in nanoseconds | [details](references/difference/difference-in-nanoseconds.md) |
+
+## Business Days
+
+| Function | Description | Reference |
+|----------|-------------|-----------|
+| `isWeekend()` | Check if a date falls on a Saturday or Sunday | [details](references/business-days/is-weekend.md) |
+| `addBusinessDays()` | Add Monday–Friday days, skipping weekends | [details](references/business-days/add-business-days.md) |
+| `subBusinessDays()` | Subtract Monday–Friday days, skipping weekends | [details](references/business-days/sub-business-days.md) |
+| `differenceInBusinessDays()` | Count Monday–Friday days between two dates | [details](references/business-days/difference-in-business-days.md) |
 
 ## Intervals
 

@@ -15,7 +15,7 @@
 - **DST-aware math** - `addDays(1)` means tomorrow, even across clock changes
 - **Nanosecond precision** - When milliseconds aren't enough
 - **Type-safe** - Full TypeScript, catches datetime errors at compile time
-- **Familiar API** - If you've used date-fns, you already know this
+- **Familiar API** - date-fns names and argument order ([mapping](https://tiempo.gobrand.app/docs/date-fns))
 
 ```typescript
 import { toZonedTime, addDays, format, toIso } from '@gobrand/tiempo';
@@ -41,6 +41,8 @@ npm install @gobrand/tiempo
 ## Docs
 
 **[tiempo.gobrand.app](https://tiempo.gobrand.app)** — Full API reference, examples, and guides.
+
+For coding agents: [llms.txt](https://tiempo.gobrand.app/llms.txt), or install the Agent Skill with `npx skills add go-brand/tiempo`.
 
 ## License
 

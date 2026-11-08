@@ -1,0 +1,60 @@
+# differenceInBusinessDays
+
+Returns the number of business days (Monday–Friday) from `earlierDate` up to `laterDate`. The earlier date counts; the later date does not. Holidays are not considered.
+
+Swapping the arguments negates the result. From a weekday, it undoes `addBusinessDays`: `differenceInBusinessDays(addBusinessDays(date, n), date) === n`.
+
+Only calendar dates matter; times of day are ignored. Instant inputs use their UTC date and ZonedDateTime inputs use their own timezone's date. Convert both to one timezone first to count from a single perspective. PlainDate inputs must be paired with PlainDate inputs.
+
+## Signature
+
+```ts
+function differenceInBusinessDays(
+  laterDate: Temporal.PlainDate,
+  earlierDate: Temporal.PlainDate
+): number;
+function differenceInBusinessDays(
+  laterDate: Temporal.Instant | Temporal.ZonedDateTime,
+  earlierDate: Temporal.Instant | Temporal.ZonedDateTime
+): number
+```
+
+## Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `laterDate` | `PlainDate` or `Instant \| ZonedDateTime` | The later date |
+| `earlierDate` | Same domain as `laterDate` | The earlier date |
+
+## Returns
+
+Business days between the dates; negative if `laterDate` is before `earlierDate`.
+
+## Examples
+
+```ts
+import { differenceInBusinessDays } from '@gobrand/tiempo';
+
+const friday = Temporal.PlainDate.from('2025-01-24');
+const nextFriday = Temporal.PlainDate.from('2025-01-31');
+
+differenceInBusinessDays(nextFriday, friday); // 5
+differenceInBusinessDays(friday, nextFriday); // -5
+differenceInBusinessDays(Temporal.PlainDate.from('2025-01-27'), friday); // 1
+```
+
+### Business days left in a ticket SLA
+
+```ts
+import { differenceInBusinessDays, toZonedTime } from '@gobrand/tiempo';
+
+const timezone = 'Europe/Berlin';
+const opened = toZonedTime('2025-01-20T08:00:00Z', timezone);
+const due = toZonedTime('2025-01-29T16:00:00Z', timezone);
+
+differenceInBusinessDays(due, opened); // 7
+```
+
+## Compared with date-fns
+
+date-fns counts backwards differently, so swapping its arguments does not always negate the result. tiempo always counts the half-open range from the earlier to the later date.

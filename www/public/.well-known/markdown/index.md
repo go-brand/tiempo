@@ -2,20 +2,20 @@
 
 ## What is tiempo?
 
-**tiempo** is a lightweight utility library for timezone conversions, formatting, and date math—built on the modern [Temporal API](https://tc39.es/proposal-temporal/docs/) for precision you can trust.
+**tiempo** is a date-fns-style library for the [Temporal API](https://tc39.es/proposal-temporal/docs/): standalone functions for timezone conversion, formatting, arithmetic, comparison, and intervals.
 
-JavaScript's `Date` was modeled after a Java class deprecated 25+ years ago. The Temporal API is its modern replacement—tiempo makes it accessible with a familiar, date-fns-style API.
+Temporal replaces JavaScript's `Date` with types that say what a value is. tiempo keeps the function names you know from date-fns and makes them work with those types.
 
 ## Key Features
 
-- **Any Timezone, Anywhere** - Date only works in UTC or device-local time. Temporal supports 400+ IANA timezones natively
-- **Nanosecond Precision** - Beyond milliseconds, for scientific computing, financial systems, and high-frequency operations
-- **DST-Safe Arithmetic** - Adding days means calendar days, not 24-hour periods. Timezone transitions follow Temporal rules
-- **Immutable by Design** - No side effects, no surprises, no debugging mysteries
-- **Distinct Types** - Separates `Instant` (timestamp), `ZonedDateTime` (timezone-aware), and `PlainDate` (calendar date)
-- **Type-Safe** - Autocomplete for 400+ timezones, Temporal input and return types checked at compile time
+- **Any IANA timezone** - Convert and do math in the user's timezone, not just UTC or the device's
+- **DST-safe arithmetic** - `addDays(zoned, 1)` keeps the wall-clock time on 23- and 25-hour days
+- **Distinct types** - `Instant` (a moment), `ZonedDateTime` (a moment in a place), `PlainDate` (a calendar date), `PlainTime` (a clock time)
+- **Mistakes fail loudly** - Comparing a date with a timestamp is a TypeScript error and a runtime `TypeError`, not a silent timezone guess
+- **Nanosecond precision** and **immutable values**, straight from Temporal
+- **Timezone autocomplete** for IANA names in TypeScript
 
-Read [API conventions](https://tiempo.gobrand.app/docs/api-conventions) for argument order, interval objects, and choosing a Temporal type.
+New here? Read [API conventions](https://tiempo.gobrand.app/docs/api-conventions). Coming from date-fns? See [the mapping](https://tiempo.gobrand.app/docs/date-fns).
 
 ## Quick Example
 
@@ -52,6 +52,9 @@ The skill is also available through [Tiempo's Agent Skill discovery URL](https:/
 ## Documentation
 
 - [Installation](https://tiempo.gobrand.app/docs/installation): Get started with tiempo in your project
+- [Coming from date-fns](https://tiempo.gobrand.app/docs/date-fns): Function mapping and the differences that matter
 - [Conversion](https://tiempo.gobrand.app/docs/conversion/to-zoned-time): Convert between UTC, timezones, and Date objects
 - [Formatting](https://tiempo.gobrand.app/docs/formatting/format): Format dates with date-fns-like tokens
-- [Arithmetic](https://tiempo.gobrand.app/docs/arithmetic/add-years): Add and subtract time units
+- [Arithmetic](https://tiempo.gobrand.app/docs/arithmetic/add-days): Add and subtract time units
+- [Sorting & Selection](https://tiempo.gobrand.app/docs/selection/compare-asc): Sort, min, max, clamp, and closest values
+- [Business Days](https://tiempo.gobrand.app/docs/business-days/add-business-days): Weekends and Monday–Friday arithmetic

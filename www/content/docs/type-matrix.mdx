@@ -93,6 +93,7 @@ The summary combines overloads. For exact input-to-output mappings, optional par
 |----------|:-------:|:-----:|:---------:|:---------:|----------|---------|
 | `isAfter` | ✅ | ✅ | ✅ | ✅ | · | `boolean` |
 | `isBefore` | ✅ | ✅ | ✅ | ✅ | · | `boolean` |
+| `isEqual` | ✅ | ✅ | ✅ | ✅ | · | `boolean` |
 | `isFuture` | ✅ | ✅ | · | · | · | `boolean` |
 | `isPast` | ✅ | ✅ | · | · | · | `boolean` |
 | `isPlainDateAfter` | · | · | ✅ | · | · | `boolean` |
@@ -112,7 +113,21 @@ The summary combines overloads. For exact input-to-output mappings, optional par
 | `isSameSecond` | ✅ | ✅ | · | · | · | `boolean` |
 | `isSameWeek` | ✅ | ✅ | · | · | · | `boolean` |
 | `isSameYear` | ✅ | ✅ | · | · | · | `boolean` |
+| `isToday` | ✅ | ✅ | ✅ | · | · | `boolean` |
+| `isTomorrow` | ✅ | ✅ | ✅ | · | · | `boolean` |
 | `isWithinInterval` | ✅ | ✅ | · | · | · | `boolean` |
+| `isYesterday` | ✅ | ✅ | ✅ | · | · | `boolean` |
+
+## Sorting & Selection
+
+| Function | Instant | Zoned | PlainDate | PlainTime | Other in | Returns |
+|----------|:-------:|:-----:|:---------:|:---------:|----------|---------|
+| `clamp` | · | · | ✅ | ✅ | · | `T \| S \| E` / `PlainDate` / `PlainTime` |
+| `closestTo` | · | · | ✅ | ✅ | · | `T \| undefined` / `PlainDate \| undefined` / `PlainTime \| undefined` |
+| `compareAsc` | ✅ | ✅ | ✅ | ✅ | · | `-1 \| 0 \| 1` |
+| `compareDesc` | ✅ | ✅ | ✅ | ✅ | · | `-1 \| 0 \| 1` |
+| `max` | · | · | ✅ | ✅ | · | `T` / `PlainDate` / `PlainTime` |
+| `min` | · | · | ✅ | ✅ | · | `T` / `PlainDate` / `PlainTime` |
 
 ## Difference
 
@@ -129,6 +144,15 @@ The summary combines overloads. For exact input-to-output mappings, optional par
 | `differenceInSeconds` | ✅ | ✅ | · | · | · | `number` |
 | `differenceInWeeks` | ✅ | ✅ | ✅ | · | · | `number` |
 | `differenceInYears` | ✅ | ✅ | ✅ | · | · | `number` |
+
+## Business Days
+
+| Function | Instant | Zoned | PlainDate | PlainTime | Other in | Returns |
+|----------|:-------:|:-----:|:---------:|:---------:|----------|---------|
+| `addBusinessDays` | ✅ | ✅ | ✅ | · | · | `PlainDate` / `ZonedDateTime` |
+| `differenceInBusinessDays` | ✅ | ✅ | ✅ | · | · | `number` |
+| `isWeekend` | ✅ | ✅ | ✅ | · | · | `boolean` |
+| `subBusinessDays` | ✅ | ✅ | ✅ | · | · | `PlainDate` / `ZonedDateTime` |
 
 ## Intervals
 
@@ -155,6 +179,13 @@ The summary combines overloads. For exact input-to-output mappings, optional par
 ## Callable signatures
 
 Each line is one public overload. Implementation-only unions are omitted. Temporal prefixes are shortened for readability.
+
+### addBusinessDays
+
+```ts
+addBusinessDays(input: PlainDate, days: number): PlainDate
+addBusinessDays(input: Instant | ZonedDateTime, days: number): ZonedDateTime
+```
 
 ### addDays
 
@@ -231,6 +262,45 @@ addYears(input: Instant | ZonedDateTime, years: number): ZonedDateTime
 
 ```ts
 browserTimezone(): IANATimezone
+```
+
+### clamp
+
+```ts
+clamp(value: T, interval: { start: S; end: E }): T | S | E
+clamp(value: PlainDate, interval: { start: PlainDate; end: PlainDate }): PlainDate
+clamp(value: PlainTime, interval: { start: PlainTime; end: PlainTime }): PlainTime
+```
+
+### closestTo
+
+```ts
+closestTo(target: Timeline, candidates: readonly T[]): T | undefined
+closestTo(target: PlainDate, candidates: readonly PlainDate[]): PlainDate | undefined
+closestTo(target: PlainTime, candidates: readonly PlainTime[]): PlainTime | undefined
+```
+
+### compareAsc
+
+```ts
+compareAsc(date1: PlainDate, date2: PlainDate): -1 | 0 | 1
+compareAsc(date1: PlainTime, date2: PlainTime): -1 | 0 | 1
+compareAsc(date1: Instant | ZonedDateTime, date2: Instant | ZonedDateTime): -1 | 0 | 1
+```
+
+### compareDesc
+
+```ts
+compareDesc(date1: PlainDate, date2: PlainDate): -1 | 0 | 1
+compareDesc(date1: PlainTime, date2: PlainTime): -1 | 0 | 1
+compareDesc(date1: Instant | ZonedDateTime, date2: Instant | ZonedDateTime): -1 | 0 | 1
+```
+
+### differenceInBusinessDays
+
+```ts
+differenceInBusinessDays(laterDate: PlainDate, earlierDate: PlainDate): number
+differenceInBusinessDays(laterDate: Instant | ZonedDateTime, earlierDate: Instant | ZonedDateTime): number
 ```
 
 ### differenceInDays
@@ -431,6 +501,14 @@ isBefore(date1: PlainTime, date2: PlainTime): boolean
 isBefore(date1: Instant | ZonedDateTime, date2: Instant | ZonedDateTime): boolean
 ```
 
+### isEqual
+
+```ts
+isEqual(date1: PlainDate, date2: PlainDate): boolean
+isEqual(date1: PlainTime, date2: PlainTime): boolean
+isEqual(date1: Instant | ZonedDateTime, date2: Instant | ZonedDateTime): boolean
+```
+
 ### isFuture
 
 ```ts
@@ -546,10 +624,50 @@ isSameWeek(date1: Instant | ZonedDateTime, date2: Instant | ZonedDateTime): bool
 isSameYear(date1: Instant | ZonedDateTime, date2: Instant | ZonedDateTime): boolean
 ```
 
+### isToday
+
+```ts
+isToday(date: Instant | ZonedDateTime | PlainDate, timezone: Timezone): boolean
+```
+
+### isTomorrow
+
+```ts
+isTomorrow(date: Instant | ZonedDateTime | PlainDate, timezone: Timezone): boolean
+```
+
+### isWeekend
+
+```ts
+isWeekend(input: Instant | ZonedDateTime | PlainDate): boolean
+```
+
 ### isWithinInterval
 
 ```ts
 isWithinInterval(date: Instant | ZonedDateTime, interval: { start: Instant | ZonedDateTime; end: Instant | ZonedDateTime; }): boolean
+```
+
+### isYesterday
+
+```ts
+isYesterday(date: Instant | ZonedDateTime | PlainDate, timezone: Timezone): boolean
+```
+
+### max
+
+```ts
+max(values: readonly T[]): T
+max(values: readonly PlainDate[]): PlainDate
+max(values: readonly PlainTime[]): PlainTime
+```
+
+### min
+
+```ts
+min(values: readonly T[]): T
+min(values: readonly PlainDate[]): PlainDate
+min(values: readonly PlainTime[]): PlainTime
 ```
 
 ### now
@@ -619,6 +737,13 @@ startOfWeek(input: PlainDate, timezone: Timezone): ZonedDateTime
 startOfYear(input: Instant | ZonedDateTime): ZonedDateTime
 startOfYear(input: PlainDate): PlainDate
 startOfYear(input: PlainDate, timezone: Timezone): ZonedDateTime
+```
+
+### subBusinessDays
+
+```ts
+subBusinessDays(input: PlainDate, days: number): PlainDate
+subBusinessDays(input: Instant | ZonedDateTime, days: number): ZonedDateTime
 ```
 
 ### subDays

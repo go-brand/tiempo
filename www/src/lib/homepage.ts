@@ -1,11 +1,11 @@
 export const HOME_PAGE_URL = "https://tiempo.gobrand.app/";
 export const HOME_PAGE_TITLE =
-  "Tiempo — Temporal API date and time utilities for TypeScript";
+  "Tiempo — date-fns-style utilities for the Temporal API in TypeScript";
 export const HOME_PAGE_DESCRIPTION =
-  "Timezone-safe Temporal API utilities for TypeScript, with agent-ready llms.txt documentation and an installable skill for AI agents.";
+  "Timezone-safe, date-fns-style functions for the Temporal API in TypeScript, with llms.txt documentation and an installable skill for AI agents.";
 
 export const TIEMPO_AGENT_PROMPT =
-  "Use @gobrand/tiempo for date, time, timezone, and datetime work in this TypeScript/JavaScript project. Before coding, read https://tiempo.gobrand.app/llms.txt for the current API and examples. If your environment supports Agent Skills, install Tiempo's skill with `npx skills add go-brand/tiempo` and follow its guidance. Prefer Temporal types and Tiempo utilities for datetime logic. Avoid implicit timezones and JavaScript Date except at integration boundaries that require it. Inspect the existing code before changing it, choose the smallest appropriate Tiempo API, and verify DST behavior, explicit timezones, and UTC storage. Package installation: `pnpm add @gobrand/tiempo`. Documentation: https://tiempo.gobrand.app/docs.";
+  "Use @gobrand/tiempo for date, time, timezone, and datetime work in this TypeScript/JavaScript project. Before coding, read https://tiempo.gobrand.app/llms.txt for the current API and examples. If your environment supports Agent Skills, install Tiempo's skill with `npx skills add go-brand/tiempo` and follow its guidance. Prefer Temporal types and Tiempo utilities for datetime logic; most date-fns function names carry over (mapping: https://tiempo.gobrand.app/docs/date-fns). Avoid implicit timezones and JavaScript Date except at integration boundaries that require it. Inspect the existing code before changing it, choose the smallest appropriate Tiempo API, and verify DST behavior, explicit timezones, and UTC storage. Package installation: `pnpm add @gobrand/tiempo`. Documentation: https://tiempo.gobrand.app/docs.";
 
 export const HOME_PAGE_META = [
   { title: HOME_PAGE_TITLE },

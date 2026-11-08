@@ -7,6 +7,7 @@
   <url><loc>https://tiempo.gobrand.app/docs/typescript</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/type-matrix</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/recipes</loc></url>
+  <url><loc>https://tiempo.gobrand.app/docs/date-fns</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/ai-resources</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/conversion/to-instant</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/conversion/to-zoned-time</loc></url>
@@ -55,9 +56,13 @@
   <url><loc>https://tiempo.gobrand.app/docs/boundaries/end-of-year</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/comparison/is-before</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/comparison/is-after</loc></url>
+  <url><loc>https://tiempo.gobrand.app/docs/comparison/is-equal</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/comparison/is-within-interval</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/comparison/is-future</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/comparison/is-past</loc></url>
+  <url><loc>https://tiempo.gobrand.app/docs/comparison/is-today</loc></url>
+  <url><loc>https://tiempo.gobrand.app/docs/comparison/is-tomorrow</loc></url>
+  <url><loc>https://tiempo.gobrand.app/docs/comparison/is-yesterday</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/comparison/is-same-day</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/comparison/is-same-week</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/comparison/is-same-month</loc></url>
@@ -75,6 +80,12 @@
   <url><loc>https://tiempo.gobrand.app/docs/comparison/is-plain-time-before</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/comparison/is-plain-time-after</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/comparison/is-plain-time-equal</loc></url>
+  <url><loc>https://tiempo.gobrand.app/docs/selection/compare-asc</loc></url>
+  <url><loc>https://tiempo.gobrand.app/docs/selection/compare-desc</loc></url>
+  <url><loc>https://tiempo.gobrand.app/docs/selection/min</loc></url>
+  <url><loc>https://tiempo.gobrand.app/docs/selection/max</loc></url>
+  <url><loc>https://tiempo.gobrand.app/docs/selection/clamp</loc></url>
+  <url><loc>https://tiempo.gobrand.app/docs/selection/closest-to</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/difference/difference-in-years</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/difference/difference-in-quarters</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/difference/difference-in-months</loc></url>
@@ -86,6 +97,10 @@
   <url><loc>https://tiempo.gobrand.app/docs/difference/difference-in-milliseconds</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/difference/difference-in-microseconds</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/difference/difference-in-nanoseconds</loc></url>
+  <url><loc>https://tiempo.gobrand.app/docs/business-days/is-weekend</loc></url>
+  <url><loc>https://tiempo.gobrand.app/docs/business-days/add-business-days</loc></url>
+  <url><loc>https://tiempo.gobrand.app/docs/business-days/sub-business-days</loc></url>
+  <url><loc>https://tiempo.gobrand.app/docs/business-days/difference-in-business-days</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/intervals/each-year-of-interval</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/intervals/each-quarter-of-interval</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/intervals/each-month-of-interval</loc></url>

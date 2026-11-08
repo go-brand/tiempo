@@ -1,0 +1,37 @@
+# subBusinessDays
+
+Subtracts business days (Monday–Friday), skipping Saturdays and Sundays. Holidays are not considered. Equivalent to `addBusinessDays(input, -days)`.
+
+Instant inputs are converted to UTC. ZonedDateTime inputs keep their timezone and time of day. PlainDate inputs stay dates.
+
+## Signature
+
+```ts
+function subBusinessDays(input: Temporal.PlainDate, days: number): Temporal.PlainDate;
+function subBusinessDays(
+  input: Temporal.Instant | Temporal.ZonedDateTime,
+  days: number
+): Temporal.ZonedDateTime
+```
+
+## Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `input` | `Instant \| ZonedDateTime \| PlainDate` | The starting value |
+| `days` | `number` | Whole business days to subtract; negative adds |
+
+## Returns
+
+A `PlainDate` for a PlainDate input, otherwise a `ZonedDateTime`. Throws a `RangeError` if `days` is not an integer.
+
+## Examples
+
+```ts
+import { subBusinessDays } from '@gobrand/tiempo';
+
+const monday = Temporal.PlainDate.from('2025-01-27');
+
+subBusinessDays(monday, 1); // 2025-01-24
+subBusinessDays(monday, 10); // 2025-01-13
+```

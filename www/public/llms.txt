@@ -1,13 +1,24 @@
 # tiempo
 
-> A lightweight datetime utility library for timezone conversions, formatting, and date math built on the Temporal API.
+> date-fns-style functions for the Temporal API: timezone conversion, formatting, DST-safe arithmetic, comparison, sorting, business days, and intervals.
 
-tiempo provides a familiar date-fns-style API while leveraging the modern Temporal API for precision you can trust. It supports 400+ IANA timezones, nanosecond precision, DST-safe arithmetic, and immutable operations.
+Install with `npm install @gobrand/tiempo` and import functions by name: `import { addDays, format } from '@gobrand/tiempo'`.
+
+## Core rules
+
+- **Pick the type that says what the value is.** `Instant`: a moment (timestamps, logs). `ZonedDateTime`: a moment in a place (UI, scheduling). `PlainDate`: a calendar date (birthdays, due dates). `PlainTime`: a clock time (opening hours).
+- **Instant inputs mean UTC.** Calendar operations on an Instant (`startOfDay`, `addDays`, `isSameDay`) use UTC, and datetime results are UTC ZonedDateTimes. For a user's calendar, convert first: `toZonedTime(instant, timezone)`.
+- **ZonedDateTime keeps its timezone; PlainDate stays a date.** Arithmetic is DST-safe.
+- **Argument order follows date-fns.** Differences take `(laterDate, earlierDate)`; intervals take `{ start, end }`.
+- **Domains don't mix.** Comparing a PlainDate with an Instant is a TypeScript error and throws a TypeError. Convert explicitly.
+- **"Today" needs a place.** `today(timezone)`, `now(timezone)`, `isToday(date, timezone)`.
+- **Store exact moments as UTC ISO strings** (`toIso(instant)`); store date-only values as `YYYY-MM-DD`.
 
 ## Docs
 
 - [Introduction](https://tiempo.gobrand.app/docs): Overview of tiempo and key features
 - [Installation](https://tiempo.gobrand.app/docs/installation): Getting started with tiempo in your project
+- [Coming from date-fns](https://tiempo.gobrand.app/docs/date-fns): Function mapping and the differences that matter
 - [API conventions](https://tiempo.gobrand.app/docs/api-conventions): Argument order, interval objects, Temporal domains and return types
 - [TypeScript](https://tiempo.gobrand.app/docs/typescript): Type-safe datetime handling with timezone autocomplete
 - [Type Matrix](https://tiempo.gobrand.app/docs/type-matrix): Input, timezone, and return mappings for every public function
@@ -72,14 +83,27 @@ tiempo provides a familiar date-fns-style API while leveraging the modern Tempor
 
 - [isBefore](https://tiempo.gobrand.app/docs/comparison/is-before): Check if one date, time, or datetime is before another
 - [isAfter](https://tiempo.gobrand.app/docs/comparison/is-after): Check if one date, time, or datetime is after another
+- [isEqual](https://tiempo.gobrand.app/docs/comparison/is-equal): Check if two dates, times, or datetimes are the same
 - [isWithinInterval](https://tiempo.gobrand.app/docs/comparison/is-within-interval): Check if a datetime falls within an interval
 - [isFuture](https://tiempo.gobrand.app/docs/comparison/is-future): Check if a datetime is in the future
 - [isPast](https://tiempo.gobrand.app/docs/comparison/is-past): Check if a datetime is in the past
+- [isToday](https://tiempo.gobrand.app/docs/comparison/is-today): Check if a value falls on today's date in a timezone
+- [isTomorrow](https://tiempo.gobrand.app/docs/comparison/is-tomorrow): Check if a value falls on tomorrow's date in a timezone
+- [isYesterday](https://tiempo.gobrand.app/docs/comparison/is-yesterday): Check if a value falls on yesterday's date in a timezone
 - [isSameDay](https://tiempo.gobrand.app/docs/comparison/is-same-day): Check if two datetimes are on the same calendar day
 - [isSameWeek](https://tiempo.gobrand.app/docs/comparison/is-same-week): Check if two datetimes are in the same ISO week
 - [isSameMonth](https://tiempo.gobrand.app/docs/comparison/is-same-month): Check if two datetimes are in the same calendar month
 - [isSameQuarter](https://tiempo.gobrand.app/docs/comparison/is-same-quarter): Check if two datetimes are in the same calendar quarter
 - [isSameYear](https://tiempo.gobrand.app/docs/comparison/is-same-year): Check if two datetimes are in the same calendar year
+
+## Sorting & Selection
+
+- [compareAsc](https://tiempo.gobrand.app/docs/selection/compare-asc): Comparator for sorting dates and times in ascending order
+- [compareDesc](https://tiempo.gobrand.app/docs/selection/compare-desc): Comparator for sorting dates and times in descending order
+- [min](https://tiempo.gobrand.app/docs/selection/min): Get the earliest date, time, or datetime in an array
+- [max](https://tiempo.gobrand.app/docs/selection/max): Get the latest date, time, or datetime in an array
+- [clamp](https://tiempo.gobrand.app/docs/selection/clamp): Restrict a date, time, or datetime to an interval
+- [closestTo](https://tiempo.gobrand.app/docs/selection/closest-to): Find the date, time, or datetime nearest to a target
 
 ## Difference
 
@@ -91,6 +115,13 @@ tiempo provides a familiar date-fns-style API while leveraging the modern Tempor
 - [differenceInHours](https://tiempo.gobrand.app/docs/difference/difference-in-hours): Calculate the difference between two dates in hours
 - [differenceInMinutes](https://tiempo.gobrand.app/docs/difference/difference-in-minutes): Calculate the difference between two dates in minutes
 - [differenceInSeconds](https://tiempo.gobrand.app/docs/difference/difference-in-seconds): Calculate the difference between two dates in seconds
+
+## Business Days
+
+- [isWeekend](https://tiempo.gobrand.app/docs/business-days/is-weekend): Check if a date falls on a Saturday or Sunday
+- [addBusinessDays](https://tiempo.gobrand.app/docs/business-days/add-business-days): Add Monday–Friday days, skipping weekends
+- [subBusinessDays](https://tiempo.gobrand.app/docs/business-days/sub-business-days): Subtract Monday–Friday days, skipping weekends
+- [differenceInBusinessDays](https://tiempo.gobrand.app/docs/business-days/difference-in-business-days): Count Monday–Friday days between two dates
 
 ## Intervals
 

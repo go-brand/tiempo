@@ -74,6 +74,9 @@ const CATEGORY_TITLES: Record<string, string> = {
   utilities: "Utilities",
 };
 
+// Top-level guides copied into the skill's references
+const SKILL_GUIDES = new Set(["date-fns"]);
+
 // Functions to group under "Optional" in llms.txt
 const OPTIONAL_FUNCTIONS = new Set([
   "add-milliseconds",
@@ -98,6 +101,17 @@ const OPTIONAL_FUNCTIONS = new Set([
   "is-plain-time-after",
   "is-plain-time-equal",
 ]);
+
+// Rules every agent needs before choosing a function. Shared by llms.txt and SKILL.md.
+const CORE_RULES = [
+  "- **Pick the type that says what the value is.** `Instant`: a moment (timestamps, logs). `ZonedDateTime`: a moment in a place (UI, scheduling). `PlainDate`: a calendar date (birthdays, due dates). `PlainTime`: a clock time (opening hours).",
+  "- **Instant inputs mean UTC.** Calendar operations on an Instant (`startOfDay`, `addDays`, `isSameDay`) use UTC, and datetime results are UTC ZonedDateTimes. For a user's calendar, convert first: `toZonedTime(instant, timezone)`.",
+  "- **ZonedDateTime keeps its timezone; PlainDate stays a date.** Arithmetic is DST-safe.",
+  "- **Argument order follows date-fns.** Differences take `(laterDate, earlierDate)`; intervals take `{ start, end }`.",
+  "- **Domains don't mix.** Comparing a PlainDate with an Instant is a TypeScript error and throws a TypeError. Convert explicitly.",
+  "- **\"Today\" needs a place.** `today(timezone)`, `now(timezone)`, `isToday(date, timezone)`.",
+  "- **Store exact moments as UTC ISO strings** (`toIso(instant)`); store date-only values as `YYYY-MM-DD`.",
+];
 
 interface DocFile {
   slug: string;
@@ -312,8 +326,14 @@ function generateSkillMarkdown(doc: DocFile): string {
 /**
  * Generate all skill reference files
  */
-function generateSkillRefs(docs: DocFile[]): void {
+function generateSkillRefs(docs: DocFile[], guides: DocFile[]): void {
   console.log("Generating skill reference files...");
+
+  for (const guide of guides) {
+    const outPath = path.join(SKILL_REFS_DIR, `${guide.slug}.md`);
+    fs.writeFileSync(outPath, generateSkillMarkdown(guide));
+    console.log(`  ✓ ${outPath}`);
+  }
 
   for (const category of CATEGORIES) {
     fs.rmSync(path.join(SKILL_REFS_DIR, category), {
@@ -355,14 +375,19 @@ function generateLlmsTxt(docs: DocFile[]): void {
   const lines: string[] = [
     "# tiempo",
     "",
-    "> A lightweight datetime utility library for timezone conversions, formatting, and date math built on the Temporal API.",
+    "> date-fns-style functions for the Temporal API: timezone conversion, formatting, DST-safe arithmetic, comparison, sorting, business days, and intervals.",
     "",
-    "tiempo provides a familiar date-fns-style API while leveraging the modern Temporal API for precision you can trust. It supports 400+ IANA timezones, nanosecond precision, DST-safe arithmetic, and immutable operations.",
+    "Install with `npm install @gobrand/tiempo` and import functions by name: `import { addDays, format } from '@gobrand/tiempo'`.",
+    "",
+    "## Core rules",
+    "",
+    ...CORE_RULES,
     "",
     "## Docs",
     "",
     `- [Introduction](${DOCS_URL}): Overview of tiempo and key features`,
     `- [Installation](${DOCS_URL}/installation): Getting started with tiempo in your project`,
+    `- [Coming from date-fns](${DOCS_URL}/date-fns): Function mapping and the differences that matter`,
     `- [API conventions](${DOCS_URL}/api-conventions): Argument order, interval objects, Temporal domains and return types`,
     `- [TypeScript](${DOCS_URL}/typescript): Type-safe datetime handling with timezone autocomplete`,
     `- [Type Matrix](${DOCS_URL}/type-matrix): Input, timezone, and return mappings for every public function`,
@@ -427,16 +452,20 @@ function generateSkillMd(docs: DocFile[]): void {
   const lines: string[] = [
     "---",
     "name: tiempo",
-    "description: Use when working with dates, times, timezones, or datetime conversions in TypeScript/JavaScript. Provides guidance on using the tiempo library for timezone-safe datetime handling with the Temporal API.",
+    "description: Use when working with dates, times, timezones, or the Temporal API in TypeScript/JavaScript, or when replacing Date or date-fns. Covers tiempo's timezone-safe functions for conversion, formatting, arithmetic, comparison, sorting, business days, and intervals.",
     "---",
     "",
     "# tiempo - Timezone-Safe Datetime Handling",
     "",
-    "Lightweight utility library for timezone conversions built on the Temporal API.",
+    "date-fns-style functions for the Temporal API. Coming from date-fns? See the [mapping](references/date-fns.md).",
     "",
     "```bash",
     "npm install @gobrand/tiempo",
     "```",
+    "",
+    "## Core Rules",
+    "",
+    ...CORE_RULES,
     "",
     "## Best Practices",
     "",
@@ -575,7 +604,9 @@ function main(): void {
   const allDocs = [...loadTopLevelDocFiles(), ...docs];
   console.log(`\nFound ${allDocs.length} doc files\n`);
 
-  generateSkillRefs(docs);
+  // Guides bundled with the skill so it works without fetching the site.
+  const skillGuides = allDocs.filter((doc) => SKILL_GUIDES.has(doc.slug));
+  generateSkillRefs(docs, skillGuides);
   console.log("");
 
   generateLlmsTxt(docs);

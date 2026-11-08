@@ -397,12 +397,13 @@ await api.tasks.update({ dueAt: toIso(rescheduled) });`;
       <section className="relative px-4 pb-8 pt-16 md:pt-24">
         <div className="max-w-4xl mx-auto">
           <h1 className="mb-6 text-4xl font-bold leading-[1.15] tracking-tight text-neutral-100 md:text-5xl lg:text-6xl">
-            Date and time code you can trust.
+            Date utilities for the Temporal era.
           </h1>
 
           <p className="mb-8 max-w-2xl text-lg font-light leading-relaxed text-neutral-400 md:text-xl">
-            Join thousands of developers who stopped struggling with timezones. Tiempo makes
-            Temporal conversions, formatting, and date math feel simple.
+            The functions you know from date-fns, built on JavaScript&apos;s Temporal API.
+            Timezone-aware, DST-safe, and typed so a calendar date is never mistaken for a
+            timestamp.
           </p>
 
           <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:flex-wrap sm:items-center">
@@ -675,8 +676,8 @@ await api.tasks.update({ dueAt: toIso(rescheduled) });`;
                   />
                 </svg>
               }
-              title="Timezone mistakes get caught early"
-              description="Autocomplete valid timezone names, including UTC, and keep invalid identifiers out of production."
+              title="Type mix-ups get caught early"
+              description="Comparing a calendar date with a timestamp is a TypeScript error, not a silent timezone guess. Timezone names autocomplete as you type."
             />
             <FeatureCard
               icon={

@@ -1,0 +1,49 @@
+# Coming from date-fns
+
+Most tiempo functions keep their date-fns names and argument order. The difference is the input: instead of `Date`, you pass a Temporal value that says what it is.
+
+| You have | Use | Example |
+|----------|-----|---------|
+| A moment in time (timestamps, logs, `createdAt`) | `Temporal.Instant` | `toInstant('2025-01-20T15:00:00Z')` |
+| A moment as seen in a place (UI, scheduling) | `Temporal.ZonedDateTime` | `toZonedTime(instant, 'Europe/Madrid')` |
+| A calendar date (birthdays, due dates) | `Temporal.PlainDate` | `toPlainDate('2025-01-20')` |
+| A wall-clock time (opening hours) | `Temporal.PlainTime` | `toPlainTime('09:00')` |
+
+```ts
+import { addDays, differenceInDays, format, toZonedTime } from '@gobrand/tiempo';
+
+const start = toZonedTime('2025-01-20T15:00:00Z', 'America/New_York');
+const end = addDays(start, 10);
+
+format(end, 'yyyy-MM-dd HH:mm'); // 2025-01-30 10:00
+differenceInDays(end, start); // 10
+```
+
+## Same name, same job
+
+These work like date-fns, with Temporal inputs: `addDays`, `addWeeks`, `addMonths`, `addQuarters`, `addYears`, `addHours`, `addMinutes`, `addSeconds`, `addMilliseconds` and their `sub*` counterparts; `startOf*`/`endOf*` for day, week, month, quarter and year; `differenceIn*` from nanoseconds to years; `each*OfInterval`; `isSame*`; `isBefore`, `isAfter`, `isEqual`, `isWithinInterval`, `isPast`, `isFuture`, `isWeekend`; `compareAsc`, `compareDesc`, `min`, `max`, `clamp`, `closestTo`; `addBusinessDays`, `subBusinessDays`, `differenceInBusinessDays`; `getQuarter`; `roundToNearestHour`/`Minute`/`Second`; `format` (same `yyyy-MM-dd` tokens).
+
+## Different on purpose
+
+| date-fns | tiempo | Why |
+|----------|--------|-----|
+| `new Date()` | `now(timezone)`, `today(timezone)`, `Temporal.Now.instant()` | "Now" as a date needs a place |
+| `parseISO(str)` | `toInstant(str)`, `toZonedTime(str, tz)`, `toPlainDate(str)` | Choose what the string means |
+| `isToday(date)` | `isToday(date, timezone)` | Today in Tokyo is not today in New York |
+| `startOfWeek(date)` (Sunday) | `startOfWeek(date)` (Monday) | ISO 8601 weeks start on Monday |
+| `getDay(date)` (0 = Sunday) | `date.dayOfWeek` (1 = Monday … 7 = Sunday) | Temporal property |
+| `differenceInCalendarDays(a, b)` | `differenceInDays(toPlainDate(a), toPlainDate(b))` | PlainDate pairs count calendar days |
+| `formatDistance(a, b)` | `intlFormatDistance(a, b)` | Built on `Intl.RelativeTimeFormat` |
+| `formatISO(date)` | `toIso(date)` | |
+| `set(date, { hours: 9 })`, `setMonth` … | `date.with({ hour: 9 })` | Temporal already does this |
+| `getDaysInMonth`, `isLeapYear` | `date.daysInMonth`, `date.inLeapYear` | Temporal properties |
+| date-fns-tz `formatInTimeZone(d, tz, fmt)` | `format(d, fmt, { timeZone: tz })` | |
+| date-fns-tz `fromZonedTime(d, tz)` | `toInstant(zoned)` | ZonedDateTime already knows its zone |
+
+## Rules that replace date-fns habits
+
+- **Instant inputs mean UTC.** `addDays(instant, 1)` and `startOfDay(instant)` work in UTC and return a ZonedDateTime in UTC. For a user's calendar, convert first: `startOfDay(toZonedTime(instant, user.timezone))`.
+- **ZonedDateTime keeps its timezone.** Arithmetic is DST-safe: adding a day keeps the wall-clock time even when the day has 23 or 25 hours.
+- **PlainDate stays a date.** `addMonths(date, 1)` returns a PlainDate with no time or timezone attached.
+- **Domains don't mix.** Comparing a PlainDate with an Instant is a TypeScript error and a runtime `TypeError`. Convert explicitly so the timezone is your choice.
+- **Values are immutable.** Every function returns a new value.

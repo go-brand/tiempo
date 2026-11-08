@@ -37,7 +37,7 @@ const instant = Temporal.Instant.from('2025-06-15T12:00:00Z');
 startOfYear(instant);
 // 2025-01-01T00:00:00Z[UTC]
 
-const zoned = Temporal.ZonedDateTime.from('2025-06-15T15:30:00-05:00[America/New_York]');
+const zoned = Temporal.ZonedDateTime.from('2025-06-15T15:30:00-04:00[America/New_York]');
 startOfYear(zoned);
 // 2025-01-01T00:00:00-05:00[America/New_York]
 
