@@ -27,10 +27,10 @@ date-fns has full quarter support; tiempo has none.
 
 ## 2. Business-day family — most real-world demand
 
-- [ ] `addBusinessDays`
-- [ ] `subBusinessDays`
-- [ ] `differenceInBusinessDays`
-- [ ] `isWeekend`
+- [x] `addBusinessDays`
+- [x] `subBusinessDays`
+- [x] `differenceInBusinessDays`
+- [x] `isWeekend`
 - [ ] `isBusinessDay`
 - [ ] `nextBusinessDay`
 - [ ] `previousBusinessDay`
@@ -41,10 +41,10 @@ date-fns has full quarter support; tiempo has none.
 
 ## 3. Selection helpers — cheap, common
 
-- [ ] `min`
-- [ ] `max`
-- [ ] `clamp`
-- [ ] `closestTo`
+- [x] `min`
+- [x] `max`
+- [x] `clamp`
+- [x] `closestTo`
 - [ ] `closestIndexTo`
 
 **Why:** "earliest/latest of these", "pin date into range". One-liners users keep rewriting.
@@ -60,10 +60,10 @@ date-fns has full quarter support; tiempo has none.
 
 ## 5. Calendar-relative predicates
 
-- [ ] `isToday`
-- [ ] `isTomorrow`
-- [ ] `isYesterday`
-- [ ] `isWeekend` (shared with #2)
+- [x] `isToday`
+- [x] `isTomorrow`
+- [x] `isYesterday`
+- [x] `isWeekend` (shared with #2)
 - [ ] `isLeapYear`
 
 **Why:** UI labels ("Today", "Tomorrow"), highlight weekends, validation.

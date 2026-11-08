@@ -1,10 +1,14 @@
 # Tiempo roadmap — a better date-fns for Temporal
 
-Updated 8 October 2026 against version `3.0.1`, commit `6219c0a`.
+Updated 8 November 2026 for version `3.1.0`.
 
 This is a prioritized recommendation backlog, revised after challenging all 43 original items. Confirmed implementation problems come from the [audited implementation review](reviews/2026-10-08-implementation-review.md). The [decision audit](reviews/2026-10-08-roadmap-decision-audit.md) records the evidence, tradeoffs, and acceptance criteria for each item. Unchecked items represent unfinished work, not approval to ship every proposed API. Breaking proposals are gated candidates for a future **v4**; fixes and additive improvements can ship earlier.
 
 The product standard: familiar standalone functions, predictable Temporal inputs and outputs, understandable timezone defaults, reliable formatting, and correct behavior at calendar boundaries. Keep direct Temporal primitives and the existing function-per-file organization. Optimize for successful real tasks and quick learning, including by AI agents. Recommendation rank is an aspiration, not a claim established by this review.
+
+## Implementation status — 8 November 2026
+
+Version 3.1.0 ships the October correctness batch below plus additive API: `isEqual` (exact-instant equality, part of **15**), selection helpers (**38**: `compareAsc`, `compareDesc`, `min`, `max`, `clamp`, `closestTo`), relative-day predicates (**39**: `isToday`, `isTomorrow`, `isYesterday` with a required timezone), and a business-day pilot (**40**: `isWeekend`, `addBusinessDays`, `subBusinessDays`, `differenceInBusinessDays`). A date-fns mapping guide covers part of **35**. New reference pages and all JSDoc examples now execute in tests, which found and fixed several broken examples (**34**).
 
 ## Implementation status — 8 October 2026
 
@@ -127,11 +131,11 @@ Scalar queries still return scalars. Explicit conversions return their named tar
 
 These are deferred product candidates, not committed implementation tasks or confirmed defects. Promote individual helpers after a concrete caller task and a coherent signature are demonstrated. Do not wait for every v4 decision if an additive helper is independently justified. The existing `TODO.md` already proposes most of these families; its demand claims have not been validated.
 
-- [ ] **38 — Selection helpers.** Start with `min`, `max`, and `clamp`; consider `closestTo` and `closestIndexTo` when useful. Define empty input, equal-value ties, compatible input domains, and whether the selected original value is returned. Preserve the chosen value's type/context rather than silently converting it.
+- [x] **38 — Selection helpers.** Start with `min`, `max`, and `clamp`; consider `closestTo` and `closestIndexTo` when useful. Define empty input, equal-value ties, compatible input domains, and whether the selected original value is returned. Preserve the chosen value's type/context rather than silently converting it.
 
-- [ ] **39 — Calendar-relative predicates and calendar-date differences.** Consider `isToday`, `isYesterday`, `isTomorrow`, and `differenceInCalendarDays`. Define the reference timezone and clock clearly: local intent needs a chosen zone, while any UTC default must match the rest of the library. Make calendar-boundary counting visibly distinct from complete-day duration calculations. Add `isLeapYear` only if the standalone form earns its place over the Temporal property.
+- [x] **39 — Calendar-relative predicates and calendar-date differences.** Consider `isToday`, `isYesterday`, `isTomorrow`, and `differenceInCalendarDays`. Define the reference timezone and clock clearly: local intent needs a chosen zone, while any UTC default must match the rest of the library. Make calendar-boundary counting visibly distinct from complete-day duration calculations. Add `isLeapYear` only if the standalone form earns its place over the Temporal property.
 
-- [ ] **40 — Pilot business-day support only against a real workflow.** Consider a small useful subset, such as `isWeekend` and `addBusinessDays`, before committing to all seven functions in the older backlog. Specify the Monday–Friday convention, endpoint rules, negative counts, and preserved local time. That convention is not a universal working calendar. Defer holiday/jurisdiction engines and the remaining helpers until justified.
+- [x] **40 — Pilot business-day support only against a real workflow.** Consider a small useful subset, such as `isWeekend` and `addBusinessDays`, before committing to all seven functions in the older backlog. Specify the Monday–Friday convention, endpoint rules, negative counts, and preserved local time. That convention is not a universal working calendar. Defer holiday/jurisdiction engines and the remaining helpers until justified.
 
 - [ ] **41 — Evaluate duration presentation before adding duration wrappers.** A localized `formatDuration` may solve more repeated work than a trivial `.until()` alias; validate that with examples and supported runtime capabilities. If interval conversion earns a helper, return `Temporal.Duration` and specify relative-calendar context and units. Defer a new localization engine or parallel duration object.
 
