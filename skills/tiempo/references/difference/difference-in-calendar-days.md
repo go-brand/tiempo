@@ -1,0 +1,48 @@
+# differenceInCalendarDays
+
+Returns the number of calendar days from `earlierDate` to `laterDate`, ignoring the time of day. 23:00 tonight to 01:00 tomorrow is one calendar day, even though less than 24 hours pass.
+
+## Signature
+
+```ts
+function differenceInCalendarDays(
+  laterDate: Temporal.PlainDate,
+  earlierDate: Temporal.PlainDate
+): number
+
+function differenceInCalendarDays(
+  laterDate: Temporal.Instant | Temporal.ZonedDateTime,
+  earlierDate: Temporal.Instant | Temporal.ZonedDateTime
+): number
+```
+
+## Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `laterDate` | `PlainDate` or `Instant \| ZonedDateTime` | The later value |
+| `earlierDate` | Same kind as `laterDate` | The earlier value |
+
+## Returns
+
+A signed whole number of calendar days; negative if `laterDate` is before `earlierDate`.
+
+## Examples
+
+### Say "due tomorrow" from late at night
+
+```ts
+import { differenceInCalendarDays, differenceInDays } from '@gobrand/tiempo';
+
+const now = Temporal.ZonedDateTime.from('2026-11-11T23:00:00+01:00[Europe/Madrid]');
+const due = Temporal.ZonedDateTime.from('2026-11-12T09:00:00+01:00[Europe/Madrid]');
+
+differenceInCalendarDays(due, now); // 1 (tomorrow)
+differenceInDays(due, now); // 0 (only 10 hours)
+```
+
+## Good to know
+
+- [differenceInDays](https://tiempo.gobrand.app/docs/difference/difference-in-days) counts complete days between two moments. Use `differenceInCalendarDays` for labels like "today", "tomorrow", or "in 3 days".
+- PlainDates compare as given. An Instant uses its UTC date and a ZonedDateTime uses the date in its own timezone; convert both to one timezone first to count from one point of view.
+- Mixing a PlainDate with an Instant or ZonedDateTime is a TypeScript error and throws a `TypeError`.

@@ -1,0 +1,68 @@
+# areIntervalsOverlapping
+
+Returns `true` when two intervals share any time. By default, intervals that only touch, where one ends exactly when the other starts, do not overlap, so back-to-back bookings are allowed.
+
+## Signature
+
+```ts
+function areIntervalsOverlapping(
+  left: { start: Temporal.Instant | Temporal.ZonedDateTime; end: Temporal.Instant | Temporal.ZonedDateTime },
+  right: { start: Temporal.Instant | Temporal.ZonedDateTime; end: Temporal.Instant | Temporal.ZonedDateTime },
+  options?: { inclusive?: boolean }
+): boolean
+
+function areIntervalsOverlapping(
+  left: { start: Temporal.PlainDate; end: Temporal.PlainDate },
+  right: { start: Temporal.PlainDate; end: Temporal.PlainDate },
+  options?: { inclusive?: boolean }
+): boolean
+```
+
+## Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `left` | `{ start, end }` | The first interval |
+| `right` | `{ start, end }` | The second interval, with ends of the same kind |
+| `options.inclusive` | `boolean` | Count intervals that only touch as overlapping (default `false`) |
+
+## Returns
+
+`true` if the intervals overlap, otherwise `false`. Throws a `RangeError` if an interval's start is after its end.
+
+## Examples
+
+### Find a meeting conflict across timezones
+
+```ts
+import { areIntervalsOverlapping } from '@gobrand/tiempo';
+
+const standup = {
+  start: Temporal.ZonedDateTime.from('2026-11-11T09:00:00+01:00[Europe/Madrid]'),
+  end: Temporal.ZonedDateTime.from('2026-11-11T09:30:00+01:00[Europe/Madrid]')
+};
+const call = {
+  start: Temporal.ZonedDateTime.from('2026-11-11T03:15:00-05:00[America/New_York]'),
+  end: Temporal.ZonedDateTime.from('2026-11-11T04:00:00-05:00[America/New_York]')
+};
+
+areIntervalsOverlapping(standup, call); // true (the call starts at 09:15 in Madrid)
+```
+
+### Allow back-to-back hotel stays
+
+```ts
+import { areIntervalsOverlapping } from '@gobrand/tiempo';
+
+const first = { start: Temporal.PlainDate.from('2026-07-01'), end: Temporal.PlainDate.from('2026-07-04') };
+const next = { start: Temporal.PlainDate.from('2026-07-04'), end: Temporal.PlainDate.from('2026-07-08') };
+
+areIntervalsOverlapping(first, next); // false (check-out and check-in on the 4th)
+areIntervalsOverlapping(first, next, { inclusive: true }); // true (both include the 4th)
+```
+
+## Good to know
+
+- Use `inclusive: true` when both ends of a range are part of it, such as all-day events from Monday through Wednesday.
+- Instants and ZonedDateTimes compare by the moment they represent, so the four endpoints can be in different timezones.
+- Mixing PlainDate and timestamp endpoints is a TypeScript error and throws a `TypeError`.

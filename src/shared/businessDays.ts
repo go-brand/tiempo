@@ -44,3 +44,46 @@ export function isoDate(
   const date = isPlainDate(input) ? input : normalizeTemporalInput(input).toPlainDate();
   return Temporal.PlainDate.from(date.toString()).withCalendar('iso8601');
 }
+
+/**
+ * @internal
+ * Adds days counting only Monday–Friday that are not holidays. Holidays are
+ * matched by ISO date; those on weekends are already skipped.
+ */
+export function addBusinessDaysSkipping<
+  T extends (Temporal.ZonedDateTime | Temporal.PlainDate) & {
+    add(duration: { days: number }): T;
+  }
+>(start: T, days: number, holidays: readonly Temporal.PlainDate[]): T {
+  let result = addWeekdays<T>(start, days);
+  const dates = weekdayHolidays(holidays);
+  if (dates.length === 0 || days === 0) return result;
+
+  // Each holiday passed over pushes the result one more business day along.
+  // Repeat until a stretch passes no holiday, which also leaves the result off one.
+  const step = days < 0 ? -1 : 1;
+  for (let from = isoDate(start); ;) {
+    const to = isoDate(result);
+    const skipped = dates.filter((date) =>
+      step > 0
+        ? Temporal.PlainDate.compare(date, from) > 0 && Temporal.PlainDate.compare(date, to) <= 0
+        : Temporal.PlainDate.compare(date, from) < 0 && Temporal.PlainDate.compare(date, to) >= 0
+    ).length;
+    if (skipped === 0) return result;
+    from = to;
+    result = addWeekdays<T>(result, step * skipped);
+  }
+}
+
+/**
+ * @internal
+ * Distinct holidays that fall Monday–Friday, as ISO PlainDates.
+ */
+export function weekdayHolidays(holidays: readonly Temporal.PlainDate[]): Temporal.PlainDate[] {
+  const unique = new Map<string, Temporal.PlainDate>();
+  for (const holiday of holidays) {
+    const date = isoDate(holiday);
+    if (!isWeekendDay(date.dayOfWeek)) unique.set(date.toString(), date);
+  }
+  return [...unique.values()];
+}

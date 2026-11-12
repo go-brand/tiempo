@@ -316,4 +316,42 @@ describe('startOfWeek', () => {
       expect(start.dayOfWeek).toBe(1);
     });
   });
+
+  describe('weekStartsOn', () => {
+    const wednesday = Temporal.PlainDate.from('2025-01-22');
+
+    it('moves back to the chosen first day', () => {
+      expect(startOfWeek(wednesday, { weekStartsOn: 7 }).toString()).toBe('2025-01-19');
+      expect(startOfWeek(wednesday, { weekStartsOn: 6 }).toString()).toBe('2025-01-18');
+      expect(startOfWeek(wednesday, { weekStartsOn: 3 }).toString()).toBe('2025-01-22');
+      expect(startOfWeek(wednesday, { weekStartsOn: 4 }).toString()).toBe('2025-01-16');
+      expect(startOfWeek(wednesday, { weekStartsOn: 1 }).toString()).toBe('2025-01-20');
+    });
+
+    it('keeps a date that is already the first day', () => {
+      const sunday = Temporal.PlainDate.from('2025-01-26');
+      expect(startOfWeek(sunday, { weekStartsOn: 7 }).toString()).toBe('2025-01-26');
+      expect(startOfWeek(sunday).toString()).toBe('2025-01-20');
+    });
+
+    it('applies to timeline values and PlainDate with a timezone', () => {
+      const zoned = Temporal.ZonedDateTime.from('2025-01-22T15:30:00-05:00[America/New_York]');
+      expect(startOfWeek(zoned, { weekStartsOn: 7 }).toString()).toBe(
+        '2025-01-19T00:00:00-05:00[America/New_York]'
+      );
+      expect(startOfWeek(Temporal.Instant.from('2025-01-22T12:00:00Z'), { weekStartsOn: 7 }).toString()).toBe(
+        '2025-01-19T00:00:00+00:00[UTC]'
+      );
+      expect(startOfWeek(wednesday, 'Europe/Madrid', { weekStartsOn: 7 }).toString()).toBe(
+        '2025-01-19T00:00:00+01:00[Europe/Madrid]'
+      );
+    });
+
+    it('rejects Sunday as 0 and other out-of-range days', () => {
+      // @ts-expect-error date-fns numbers Sunday 0; Temporal numbers it 7
+      expect(() => startOfWeek(wednesday, { weekStartsOn: 0 })).toThrow(RangeError);
+      // @ts-expect-error 8 is not a day of the week
+      expect(() => startOfWeek(wednesday, { weekStartsOn: 8 })).toThrow(RangeError);
+    });
+  });
 });

@@ -91,4 +91,55 @@ describe('addBusinessDays', () => {
       }
     }
   });
+
+  describe('holidays', () => {
+    const d = (iso: string) => Temporal.PlainDate.from(iso);
+    const christmas = [d('2025-12-25'), d('2025-12-26')];
+
+    it('skips holidays going forward and backward', () => {
+      expect(addBusinessDays(d('2025-12-24'), 1, christmas).toString()).toBe('2025-12-29');
+      expect(addBusinessDays(d('2025-12-24'), 2, christmas).toString()).toBe('2025-12-30');
+      expect(addBusinessDays(d('2025-12-29'), -1, christmas).toString()).toBe('2025-12-24');
+      expect(addBusinessDays(d('2025-12-22'), 5, christmas).toString()).toBe('2025-12-31');
+    });
+
+    it('never lands on a holiday, including after a week jump', () => {
+      // 10 business days from Monday 1 Dec lands on 15 Dec without holidays.
+      expect(addBusinessDays(d('2025-12-01'), 10).toString()).toBe('2025-12-15');
+      expect(addBusinessDays(d('2025-12-01'), 10, [d('2025-12-15')]).toString()).toBe('2025-12-16');
+      expect(addBusinessDays(d('2025-12-01'), 10, [d('2025-12-08'), d('2025-12-16')]).toString()).toBe(
+        '2025-12-17'
+      );
+    });
+
+    it('ignores weekend, duplicate, and out-of-range holidays', () => {
+      const noise = [d('2025-12-27'), d('2025-12-25'), d('2025-12-25'), d('2026-06-01'), d('2025-12-24')];
+      expect(addBusinessDays(d('2025-12-24'), 1, noise).toString()).toBe('2025-12-26');
+    });
+
+    it('matches the start of a run but does not count it', () => {
+      expect(addBusinessDays(d('2025-12-25'), 1, christmas).toString()).toBe('2025-12-29');
+      expect(addBusinessDays(d('2025-12-25'), 0, christmas).toString()).toBe('2025-12-25');
+    });
+
+    it('matches holidays against the date in the input timezone', () => {
+      const tokyo = Temporal.ZonedDateTime.from('2025-12-24T09:00:00+09:00[Asia/Tokyo]');
+      expect(addBusinessDays(tokyo, 1, christmas).toString()).toBe('2025-12-29T09:00:00+09:00[Asia/Tokyo]');
+      // 23:30 UTC on the 24th; the UTC date decides
+      const instant = Temporal.Instant.from('2025-12-24T23:30:00Z');
+      expect(addBusinessDays(instant, 1, christmas).toString()).toBe('2025-12-29T23:30:00+00:00[UTC]');
+    });
+
+    it('accepts holidays in other calendars', () => {
+      expect(addBusinessDays(d('2025-12-24'), 1, [d('2025-12-25').withCalendar('hebrew')]).toString()).toBe(
+        '2025-12-26'
+      );
+    });
+
+    it('matches a long run of holidays', () => {
+      const allOfJanuary = Array.from({ length: 31 }, (_, i) => d('2026-01-01').add({ days: i }));
+      expect(addBusinessDays(d('2025-12-31'), 1, allOfJanuary).toString()).toBe('2026-02-02');
+      expect(addBusinessDays(d('2026-02-02'), -1, allOfJanuary).toString()).toBe('2025-12-31');
+    });
+  });
 });

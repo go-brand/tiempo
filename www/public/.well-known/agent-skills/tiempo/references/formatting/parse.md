@@ -1,0 +1,99 @@
+# parse
+
+Reads text written in a known pattern, such as `20/01/2026` with `dd/MM/yyyy`. It is the inverse of [format](https://tiempo.gobrand.app/docs/formatting/format) and uses the same tokens. Temporal itself only reads ISO 8601 strings; use `parse` for everything else, like spreadsheet exports and typed-in dates.
+
+## Signature
+
+```ts
+function parse(
+  text: string,
+  pattern: string,
+  options?: { locale?: string }
+): Temporal.PlainDate
+
+function parse(
+  text: string,
+  pattern: string,
+  options: { locale?: string; timeZone: Timezone }
+): Temporal.ZonedDateTime
+```
+
+## Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `text` | `string` | The text to read. All of it must match the pattern. |
+| `pattern` | `string` | The pattern, using the [format tokens](#tokens). Text in single quotes must match as is. |
+| `options.locale` | `string` | Locale for month, weekday, and AM/PM names. Default `'en-US'`. |
+| `options.timeZone` | `Timezone` | The timezone the text's wall-clock time belongs to. Required when the pattern has a time. |
+
+## Returns
+
+- Without `timeZone`: a `Temporal.PlainDate`. The pattern may only contain date fields.
+- With `timeZone`: a `Temporal.ZonedDateTime` in that timezone. A pattern without time fields gives the start of that day.
+
+Throws a `RangeError` when the text does not match the pattern or names a date or time that does not exist, such as 30 February. Throws a `TypeError` when the pattern has time fields but no `timeZone` is given.
+
+## Examples
+
+### Read dates from a spreadsheet export
+
+```ts
+import { parse } from '@gobrand/tiempo';
+
+parse('20/01/2026', 'dd/MM/yyyy'); // 2026-01-20
+parse('1/20/2026', 'M/d/yyyy'); // 2026-01-20
+parse('January 20, 2026', 'MMMM d, yyyy'); // 2026-01-20
+```
+
+### Read a time in the user's timezone
+
+```ts
+import { parse } from '@gobrand/tiempo';
+
+parse('01/20/2026 3:45 PM', 'MM/dd/yyyy h:mm a', { timeZone: 'America/New_York' }); // 2026-01-20T15:45:00-05:00[America/New_York]
+```
+
+### Let an offset in the text decide the moment
+
+```ts
+import { parse } from '@gobrand/tiempo';
+
+parse('2026-01-20 15:45 +02:00', 'yyyy-MM-dd HH:mm XXX', { timeZone: 'UTC' }); // 2026-01-20T13:45:00+00:00[UTC]
+```
+
+### Read month names in another language
+
+```ts
+import { parse } from '@gobrand/tiempo';
+
+parse('20 de enero de 2026', "d 'de' MMMM 'de' yyyy", { locale: 'es' }); // 2026-01-20
+```
+
+## Tokens
+
+| Token | Reads | Example |
+|-------|-------|---------|
+| `yyyy` | Four-digit year | `2026` |
+| `y` | Year with 1–6 digits | `2026`, `12026` |
+| `MMMM`, `MMM` | Month name, long or short | `January`, `Jan` |
+| `MM`, `M` | Month, two digits or 1–2 digits | `01`, `1` |
+| `dd`, `d` | Day of the month | `05`, `5` |
+| `EEEE`, `EEE` | Weekday name, checked against the date | `Tuesday`, `Tue` |
+| `HH`, `H` | Hour 0–23 | `15` |
+| `hh`, `h` | Hour 1–12; needs `a` | `3` |
+| `a` | AM/PM in the locale, any case | `PM`, `pm`, `p.m.` |
+| `mm`, `m` | Minute | `45` |
+| `ss`, `s` | Second | `09` |
+| `SSS`, `SS`, `S` | Fraction of a second, exact number of digits | `125` |
+| `XXX`, `XX`, `X` | UTC offset or `Z` | `+02:00`, `+0200`, `Z` |
+| `xxx`, `xx`, `x` | UTC offset | `+02:00`, `+0200`, `+02` |
+
+Names are matched without regard to case, and the longest match wins, so `June` is not read as `Jun`.
+
+## Good to know
+
+- Two-digit years (`yy`) are rejected: the century would be a guess. Timestamps (`T`, `t`) are rejected too; use [toInstant](https://tiempo.gobrand.app/docs/conversion/to-instant) with a number.
+- Without an offset in the text, the time is read in `timeZone`. A time skipped by a DST change, such as 02:30 on the day clocks spring forward, moves forward by the gap, as in Temporal.
+- For ISO 8601 strings, use [toInstant](https://tiempo.gobrand.app/docs/conversion/to-instant), [toZonedTime](https://tiempo.gobrand.app/docs/conversion/to-zoned-time), or [toPlainDate](https://tiempo.gobrand.app/docs/conversion/to-plain-date) instead.
+- Text that `format` writes with a supported pattern reads back to the same fields.

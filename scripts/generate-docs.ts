@@ -64,7 +64,7 @@ const CATEGORIES = [
 const CATEGORY_TITLES: Record<string, string> = {
   conversion: "Conversion",
   "current-time": "Current Time",
-  formatting: "Formatting",
+  formatting: "Formatting & Parsing",
   arithmetic: "Arithmetic",
   boundaries: "Boundaries",
   rounding: "Rounding",
@@ -111,6 +111,7 @@ const CORE_RULES = [
   "- **ZonedDateTime keeps its timezone; PlainDate stays a date.** Arithmetic is DST-safe.",
   "- **Argument order follows date-fns.** Differences take `(laterDate, earlierDate)`; intervals take `{ start, end }`.",
   "- **Domains don't mix.** Comparing a PlainDate with an Instant is a TypeScript error and throws a TypeError. Convert explicitly.",
+  "- **Days of the week use Temporal's numbers.** 1 is Monday and 7 is Sunday, as in `dayOfWeek`. Weeks start on Monday unless you pass `{ weekStartsOn: 7 }`; date-fns's 0 for Sunday throws.",
   "- **\"Today\" needs a place.** `today(timezone)`, `now(timezone)`, `isToday(date, timezone)`.",
   "- **Store exact moments as UTC ISO strings** (`toIso(instant)`); store date-only values as `YYYY-MM-DD`.",
 ];

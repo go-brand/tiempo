@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { Temporal } from './shared/temporal';
 import { differenceInBusinessDays } from './differenceInBusinessDays';
+import { addBusinessDays } from './addBusinessDays';
 
 const date = (iso: string) => Temporal.PlainDate.from(iso);
 
@@ -61,5 +62,35 @@ describe('differenceInBusinessDays', () => {
     // @ts-expect-error PlainDate and Instant are different domains
     const mixed = () => differenceInBusinessDays(date('2025-01-31'), instant);
     expect(mixed).toThrow(TypeError);
+  });
+
+  describe('holidays', () => {
+    const d = (iso: string) => Temporal.PlainDate.from(iso);
+    const christmas = [d('2025-12-25'), d('2025-12-26')];
+
+    it('does not count holidays between the dates', () => {
+      expect(differenceInBusinessDays(d('2025-12-29'), d('2025-12-22'))).toBe(5);
+      expect(differenceInBusinessDays(d('2025-12-29'), d('2025-12-22'), christmas)).toBe(3);
+      expect(differenceInBusinessDays(d('2025-12-22'), d('2025-12-29'), christmas)).toBe(-3);
+    });
+
+    it('counts a holiday on the earlier date but not on the later date', () => {
+      expect(differenceInBusinessDays(d('2025-12-26'), d('2025-12-24'), christmas)).toBe(1);
+      expect(differenceInBusinessDays(d('2025-12-29'), d('2025-12-25'), christmas)).toBe(0);
+    });
+
+    it('ignores weekend and duplicate holidays', () => {
+      expect(
+        differenceInBusinessDays(d('2025-12-29'), d('2025-12-22'), [...christmas, d('2025-12-27'), d('2025-12-25')])
+      ).toBe(3);
+    });
+
+    it('undoes addBusinessDays with the same holidays', () => {
+      const holidays = [d('2025-12-25'), d('2025-12-26'), d('2026-01-01'), d('2026-01-06')];
+      for (let n = -15; n <= 15; n++) {
+        const start = d('2025-12-22');
+        expect(differenceInBusinessDays(addBusinessDays(start, n, holidays), start, holidays)).toBe(n);
+      }
+    });
   });
 });

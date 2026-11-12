@@ -33,13 +33,14 @@ Each row combines a function's overloads. For the exact input → output pairs a
 | `now` | · | · | · | · | · | `ZonedDateTime` |
 | `today` | · | · | · | · | · | `PlainDate` |
 
-## Formatting
+## Formatting & Parsing
 
 | Function | Instant | Zoned | PlainDate | PlainTime | Other in | Returns |
 |----------|:-------:|:-----:|:---------:|:---------:|----------|---------|
 | `format` | ✅ | ✅ | ✅ | · | · | `string` |
 | `formatPlainDate` | · | · | ✅ | · | · | `string` |
 | `intlFormatDistance` | ✅ | ✅ | · | · | · | `string` |
+| `parse` | · | · | · | · | `string` | `ZonedDateTime` / `PlainDate` |
 | `simpleFormat` | ✅ | ✅ | ✅ | · | · | `string` |
 
 ## Arithmetic
@@ -57,6 +58,8 @@ Each row combines a function's overloads. For the exact input → output pairs a
 | `addSeconds` | ✅ | ✅ | · | · | · | `ZonedDateTime` |
 | `addWeeks` | ✅ | ✅ | ✅ | · | · | `PlainDate` / `ZonedDateTime` |
 | `addYears` | ✅ | ✅ | ✅ | · | · | `PlainDate` / `ZonedDateTime` |
+| `nextDay` | ✅ | ✅ | ✅ | · | · | `PlainDate` / `ZonedDateTime` |
+| `previousDay` | ✅ | ✅ | ✅ | · | · | `PlainDate` / `ZonedDateTime` |
 | `subDays` | ✅ | ✅ | ✅ | · | · | `PlainDate` / `ZonedDateTime` |
 | `subHours` | ✅ | ✅ | · | · | · | `ZonedDateTime` |
 | `subMicroseconds` | ✅ | ✅ | · | · | · | `ZonedDateTime` |
@@ -96,6 +99,7 @@ Each row combines a function's overloads. For the exact input → output pairs a
 
 | Function | Instant | Zoned | PlainDate | PlainTime | Other in | Returns |
 |----------|:-------:|:-----:|:---------:|:---------:|----------|---------|
+| `areIntervalsOverlapping` | · | · | ✅ | · | · | `boolean` |
 | `isAfter` | ✅ | ✅ | ✅ | ✅ | · | `boolean` |
 | `isBefore` | ✅ | ✅ | ✅ | ✅ | · | `boolean` |
 | `isEqual` | ✅ | ✅ | ✅ | ✅ | · | `boolean` |
@@ -120,7 +124,7 @@ Each row combines a function's overloads. For the exact input → output pairs a
 | `isSameYear` | ✅ | ✅ | · | · | · | `boolean` |
 | `isToday` | ✅ | ✅ | ✅ | · | · | `boolean` |
 | `isTomorrow` | ✅ | ✅ | ✅ | · | · | `boolean` |
-| `isWithinInterval` | ✅ | ✅ | · | · | · | `boolean` |
+| `isWithinInterval` | ✅ | ✅ | ✅ | ✅ | · | `boolean` |
 | `isYesterday` | ✅ | ✅ | ✅ | · | · | `boolean` |
 
 ## Sorting & Selection
@@ -138,6 +142,11 @@ Each row combines a function's overloads. For the exact input → output pairs a
 
 | Function | Instant | Zoned | PlainDate | PlainTime | Other in | Returns |
 |----------|:-------:|:-----:|:---------:|:---------:|----------|---------|
+| `differenceInCalendarDays` | ✅ | ✅ | ✅ | · | · | `number` |
+| `differenceInCalendarMonths` | ✅ | ✅ | ✅ | · | · | `number` |
+| `differenceInCalendarQuarters` | ✅ | ✅ | ✅ | · | · | `number` |
+| `differenceInCalendarWeeks` | ✅ | ✅ | ✅ | · | · | `number` |
+| `differenceInCalendarYears` | ✅ | ✅ | ✅ | · | · | `number` |
 | `differenceInDays` | ✅ | ✅ | ✅ | · | · | `number` |
 | `differenceInHours` | ✅ | ✅ | · | · | · | `number` |
 | `differenceInMicroseconds` | ✅ | ✅ | · | · | · | `number` |
@@ -185,8 +194,8 @@ Each line is one public overload. Implementation-only unions are omitted. Tempor
 ### addBusinessDays
 
 ```ts
-addBusinessDays(input: PlainDate, days: number): PlainDate
-addBusinessDays(input: Instant | ZonedDateTime, days: number): ZonedDateTime
+addBusinessDays(input: PlainDate, days: number, holidays?: readonly PlainDate[]): PlainDate
+addBusinessDays(input: Instant | ZonedDateTime, days: number, holidays?: readonly PlainDate[]): ZonedDateTime
 ```
 
 ### addDays
@@ -260,6 +269,13 @@ addYears(input: PlainDate, years: number): PlainDate
 addYears(input: Instant | ZonedDateTime, years: number): ZonedDateTime
 ```
 
+### areIntervalsOverlapping
+
+```ts
+areIntervalsOverlapping(left: { start: PlainDate; end: PlainDate }, right: { start: PlainDate; end: PlainDate }, options?: { inclusive?: boolean }): boolean
+areIntervalsOverlapping(left: { start: Timeline; end: Timeline }, right: { start: Timeline; end: Timeline }, options?: { inclusive?: boolean }): boolean
+```
+
 ### browserTimezone
 
 ```ts
@@ -301,8 +317,43 @@ compareDesc(date1: Instant | ZonedDateTime, date2: Instant | ZonedDateTime): -1 
 ### differenceInBusinessDays
 
 ```ts
-differenceInBusinessDays(laterDate: PlainDate, earlierDate: PlainDate): number
-differenceInBusinessDays(laterDate: Instant | ZonedDateTime, earlierDate: Instant | ZonedDateTime): number
+differenceInBusinessDays(laterDate: PlainDate, earlierDate: PlainDate, holidays?: readonly PlainDate[]): number
+differenceInBusinessDays(laterDate: Instant | ZonedDateTime, earlierDate: Instant | ZonedDateTime, holidays?: readonly PlainDate[]): number
+```
+
+### differenceInCalendarDays
+
+```ts
+differenceInCalendarDays(laterDate: PlainDate, earlierDate: PlainDate): number
+differenceInCalendarDays(laterDate: Instant | ZonedDateTime, earlierDate: Instant | ZonedDateTime): number
+```
+
+### differenceInCalendarMonths
+
+```ts
+differenceInCalendarMonths(laterDate: PlainDate, earlierDate: PlainDate): number
+differenceInCalendarMonths(laterDate: Instant | ZonedDateTime, earlierDate: Instant | ZonedDateTime): number
+```
+
+### differenceInCalendarQuarters
+
+```ts
+differenceInCalendarQuarters(laterDate: PlainDate, earlierDate: PlainDate): number
+differenceInCalendarQuarters(laterDate: Instant | ZonedDateTime, earlierDate: Instant | ZonedDateTime): number
+```
+
+### differenceInCalendarWeeks
+
+```ts
+differenceInCalendarWeeks(laterDate: PlainDate, earlierDate: PlainDate, options?: WeekOptions): number
+differenceInCalendarWeeks(laterDate: Instant | ZonedDateTime, earlierDate: Instant | ZonedDateTime, options?: WeekOptions): number
+```
+
+### differenceInCalendarYears
+
+```ts
+differenceInCalendarYears(laterDate: PlainDate, earlierDate: PlainDate): number
+differenceInCalendarYears(laterDate: Instant | ZonedDateTime, earlierDate: Instant | ZonedDateTime): number
 ```
 
 ### differenceInDays
@@ -412,8 +463,8 @@ eachQuarterOfInterval(interval: { start: PlainDate; end: PlainDate; }): PlainDat
 ### eachWeekOfInterval
 
 ```ts
-eachWeekOfInterval(interval: { start: PlainDate; end: PlainDate; }): PlainDate[]
-eachWeekOfInterval(interval: { start: Instant | ZonedDateTime; end: Instant | ZonedDateTime; }): ZonedDateTime[]
+eachWeekOfInterval(interval: { start: PlainDate; end: PlainDate }, options?: WeekOptions): PlainDate[]
+eachWeekOfInterval(interval: { start: Instant | ZonedDateTime; end: Instant | ZonedDateTime; }, options?: WeekOptions): ZonedDateTime[]
 ```
 
 ### eachYearOfInterval
@@ -449,9 +500,9 @@ endOfQuarter(input: PlainDate, timezone: Timezone): ZonedDateTime
 ### endOfWeek
 
 ```ts
-endOfWeek(input: Instant | ZonedDateTime): ZonedDateTime
-endOfWeek(input: PlainDate): PlainDate
-endOfWeek(input: PlainDate, timezone: Timezone): ZonedDateTime
+endOfWeek(input: Instant | ZonedDateTime, options?: WeekOptions): ZonedDateTime
+endOfWeek(input: PlainDate, options?: WeekOptions): PlainDate
+endOfWeek(input: PlainDate, timezone: Timezone, options?: WeekOptions): ZonedDateTime
 ```
 
 ### endOfYear
@@ -617,7 +668,7 @@ isSameSecond(date1: Instant | ZonedDateTime, date2: Instant | ZonedDateTime): bo
 ### isSameWeek
 
 ```ts
-isSameWeek(date1: Instant | ZonedDateTime, date2: Instant | ZonedDateTime): boolean
+isSameWeek(date1: Instant | ZonedDateTime, date2: Instant | ZonedDateTime, options?: WeekOptions): boolean
 ```
 
 ### isSameYear
@@ -647,6 +698,8 @@ isWeekend(input: Instant | ZonedDateTime | PlainDate): boolean
 ### isWithinInterval
 
 ```ts
+isWithinInterval(date: PlainDate, interval: { start: PlainDate; end: PlainDate }): boolean
+isWithinInterval(date: PlainTime, interval: { start: PlainTime; end: PlainTime }): boolean
 isWithinInterval(date: Instant | ZonedDateTime, interval: { start: Instant | ZonedDateTime; end: Instant | ZonedDateTime; }): boolean
 ```
 
@@ -672,10 +725,31 @@ min(values: readonly PlainDate[]): PlainDate
 min(values: readonly PlainTime[]): PlainTime
 ```
 
+### nextDay
+
+```ts
+nextDay(input: PlainDate, day: DayOfWeek): PlainDate
+nextDay(input: Instant | ZonedDateTime, day: DayOfWeek): ZonedDateTime
+```
+
 ### now
 
 ```ts
 now(timezone: Timezone): ZonedDateTime
+```
+
+### parse
+
+```ts
+parse(text: string, pattern: string, options: { locale?: string; timeZone: Timezone }): ZonedDateTime
+parse(text: string, pattern: string, options?: { locale?: string; timeZone?: undefined }): PlainDate
+```
+
+### previousDay
+
+```ts
+previousDay(input: PlainDate, day: DayOfWeek): PlainDate
+previousDay(input: Instant | ZonedDateTime, day: DayOfWeek): ZonedDateTime
 ```
 
 ### roundToNearestHour
@@ -728,9 +802,9 @@ startOfQuarter(input: PlainDate, timezone: Timezone): ZonedDateTime
 ### startOfWeek
 
 ```ts
-startOfWeek(input: Instant | ZonedDateTime): ZonedDateTime
-startOfWeek(input: PlainDate): PlainDate
-startOfWeek(input: PlainDate, timezone: Timezone): ZonedDateTime
+startOfWeek(input: Instant | ZonedDateTime, options?: WeekOptions): ZonedDateTime
+startOfWeek(input: PlainDate, options?: WeekOptions): PlainDate
+startOfWeek(input: PlainDate, timezone: Timezone, options?: WeekOptions): ZonedDateTime
 ```
 
 ### startOfYear
@@ -744,8 +818,8 @@ startOfYear(input: PlainDate, timezone: Timezone): ZonedDateTime
 ### subBusinessDays
 
 ```ts
-subBusinessDays(input: PlainDate, days: number): PlainDate
-subBusinessDays(input: Instant | ZonedDateTime, days: number): ZonedDateTime
+subBusinessDays(input: PlainDate, days: number, holidays?: readonly PlainDate[]): PlainDate
+subBusinessDays(input: Instant | ZonedDateTime, days: number, holidays?: readonly PlainDate[]): ZonedDateTime
 ```
 
 ### subDays

@@ -2,14 +2,16 @@ import { type Temporal, isPlainDate } from './shared/temporal';
 import type { Timezone } from './types';
 import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
 import { plainDateToZonedDateTime } from './shared/plainDateToZonedDateTime';
+import { daysIntoWeek, type WeekOptions } from './shared/week';
 
 /**
- * Returns the first boundary of the week (Monday).
- * Uses ISO 8601 week definition: weeks start on Monday.
+ * Returns the first boundary of the week.
+ * Weeks start on Monday (ISO 8601) unless `weekStartsOn` says otherwise.
  * PlainDate inputs stay in calendar space unless a timezone is provided.
  *
- * @param input - A Temporal.Instant (UTC) or Temporal.ZonedDateTime
- * @returns ZonedDateTime at Monday 00:00:00.000000000
+ * @param input - A Temporal.Instant (UTC), Temporal.ZonedDateTime, or Temporal.PlainDate
+ * @param options - `weekStartsOn`: 1 = Monday (default) … 7 = Sunday
+ * @returns The first day of the week at 00:00, or that date for PlainDate input
  *
  * @example
  * ```ts
@@ -42,36 +44,42 @@ import { plainDateToZonedDateTime } from './shared/plainDateToZonedDateTime';
  * const start = startOfWeek(date, 'America/New_York');
  * // 2025-01-20T00:00:00-05:00[America/New_York] (previous Monday)
  * ```
+ *
+ * @example
+ * ```ts
+ * // Weeks that start on Sunday
+ * const date = Temporal.PlainDate.from('2025-01-22'); // Wednesday
+ * const start = startOfWeek(date, { weekStartsOn: 7 });
+ * // 2025-01-19 (previous Sunday)
+ * ```
  */
 export function startOfWeek(
-  input: Temporal.Instant | Temporal.ZonedDateTime
+  input: Temporal.Instant | Temporal.ZonedDateTime,
+  options?: WeekOptions
 ): Temporal.ZonedDateTime;
-export function startOfWeek(input: Temporal.PlainDate): Temporal.PlainDate;
+export function startOfWeek(input: Temporal.PlainDate, options?: WeekOptions): Temporal.PlainDate;
 export function startOfWeek(
   input: Temporal.PlainDate,
-  timezone: Timezone
+  timezone: Timezone,
+  options?: WeekOptions
 ): Temporal.ZonedDateTime;
 export function startOfWeek(
   input: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate,
-  timezone?: Timezone
+  timezoneOrOptions?: Timezone | WeekOptions,
+  options?: WeekOptions
 ): Temporal.ZonedDateTime | Temporal.PlainDate {
+  const timezone = typeof timezoneOrOptions === 'string' ? timezoneOrOptions : undefined;
+  const weekOptions = typeof timezoneOrOptions === 'string' ? options : timezoneOrOptions;
+
   if (isPlainDate(input) && timezone === undefined) {
-    return input.subtract({ days: input.dayOfWeek - 1 });
+    return input.subtract({ days: daysIntoWeek(input.dayOfWeek, weekOptions) });
   }
 
-  const zonedDateTime =
-    isPlainDate(input)
-      ? plainDateToZonedDateTime(input, timezone!)
-      : normalizeTemporalInput(input);
+  const zonedDateTime = isPlainDate(input)
+    ? plainDateToZonedDateTime(input, timezone!)
+    : normalizeTemporalInput(input);
 
-  // Get the day of week (1 = Monday, 7 = Sunday in ISO 8601)
-  const dayOfWeek = zonedDateTime.dayOfWeek;
-
-  // Calculate days to subtract to get to Monday
-  const daysToSubtract = dayOfWeek - 1;
-
-  // Go to Monday, then get start of that day
-  const monday = zonedDateTime.subtract({ days: daysToSubtract });
-
-  return monday.startOfDay();
+  return zonedDateTime
+    .subtract({ days: daysIntoWeek(zonedDateTime.dayOfWeek, weekOptions) })
+    .startOfDay();
 }

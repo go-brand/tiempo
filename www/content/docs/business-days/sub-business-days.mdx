@@ -1,17 +1,22 @@
 ---
 title: subBusinessDays
-description: Subtract Monday–Friday days, skipping weekends
+description: Subtract Monday–Friday days, skipping weekends and holidays
 ---
 
-Subtracts business days (Monday–Friday), skipping Saturdays and Sundays. Holidays are not considered. Same as `addBusinessDays(input, -days)`.
+Subtracts business days (Monday–Friday), skipping Saturdays, Sundays, and any holidays you pass. Same as `addBusinessDays(input, -days, holidays)`.
 
 ## Signature
 
 ```ts
-function subBusinessDays(input: Temporal.PlainDate, days: number): Temporal.PlainDate;
+function subBusinessDays(
+  input: Temporal.PlainDate,
+  days: number,
+  holidays?: readonly Temporal.PlainDate[]
+): Temporal.PlainDate;
 function subBusinessDays(
   input: Temporal.Instant | Temporal.ZonedDateTime,
-  days: number
+  days: number,
+  holidays?: readonly Temporal.PlainDate[]
 ): Temporal.ZonedDateTime
 ```
 
@@ -21,6 +26,7 @@ function subBusinessDays(
 |-----------|------|-------------|
 | `input` | `PlainDate`, `Instant`, or `ZonedDateTime` | The starting value |
 | `days` | `number` | Whole business days to subtract; negative adds |
+| `holidays` | `readonly PlainDate[]` | Optional dates that are not business days. Instant and ZonedDateTime inputs match them against their own date (UTC for an Instant) |
 
 ## Returns
 

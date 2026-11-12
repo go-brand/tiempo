@@ -2,21 +2,23 @@ import { Temporal, isPlainDate } from './shared/temporal';
 import { isPlainDateAfter } from './isPlainDateAfter';
 import { isPlainDateBefore } from './isPlainDateBefore';
 import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
+import { daysIntoWeek, type WeekOptions } from './shared/week';
 
 /**
  * PlainDate endpoints return date-only period starts in the start calendar.
  * Mixed date-only/timeline endpoints are rejected. Reversed endpoints return [].
  *
  * Returns an array of ZonedDateTime objects for each week within the interval.
- * Each element represents the first moment of the week (Monday at midnight).
- * Uses ISO 8601 week definition: weeks start on Monday.
+ * Each element represents the first moment of the week (midnight on its first day).
+ * Weeks start on Monday (ISO 8601) unless `weekStartsOn` says otherwise.
  * The interval is inclusive of both start and end weeks.
  *
  * For Instant inputs, UTC is used as the timezone.
  * For ZonedDateTime inputs, the timezone of the start date is preserved.
  *
  * @param interval - The interval with start and end datetimes
- * @returns Array of ZonedDateTime at start of each week (Monday) in the interval
+ * @param options - `weekStartsOn`: 1 = Monday (default) … 7 = Sunday
+ * @returns Array of ZonedDateTime at the start of each week in the interval
  *
  * @example
  * ```ts
@@ -58,26 +60,34 @@ import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
  * // ]
  * ```
  */
-export function eachWeekOfInterval(interval: {
-  start: Temporal.PlainDate;
-  end: Temporal.PlainDate;
-}): Temporal.PlainDate[];
-export function eachWeekOfInterval(interval: {
-  start: Temporal.Instant | Temporal.ZonedDateTime;
-  end: Temporal.Instant | Temporal.ZonedDateTime;
-}): Temporal.ZonedDateTime[];
-export function eachWeekOfInterval(interval: {
-  start: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate;
-  end: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate;
-}): Temporal.ZonedDateTime[] | Temporal.PlainDate[] {
+export function eachWeekOfInterval(
+  interval: { start: Temporal.PlainDate; end: Temporal.PlainDate },
+  options?: WeekOptions
+): Temporal.PlainDate[];
+export function eachWeekOfInterval(
+  interval: {
+    start: Temporal.Instant | Temporal.ZonedDateTime;
+    end: Temporal.Instant | Temporal.ZonedDateTime;
+  },
+  options?: WeekOptions
+): Temporal.ZonedDateTime[];
+export function eachWeekOfInterval(
+  interval: {
+    start: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate;
+    end: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate;
+  },
+  options?: WeekOptions
+): Temporal.ZonedDateTime[] | Temporal.PlainDate[] {
   if (isPlainDate(interval.start) || isPlainDate(interval.end)) {
     if (!isPlainDate(interval.start) || !isPlainDate(interval.end)) {
       throw new TypeError('PlainDate intervals require two PlainDate endpoints');
     }
     if (isPlainDateAfter(interval.start, interval.end)) return [];
     const end = interval.end.withCalendar(interval.start.calendarId);
-    const last = end.subtract({ days: end.dayOfWeek - 1 });
-    let current = interval.start.subtract({ days: interval.start.dayOfWeek - 1 });
+    const last = end.subtract({ days: daysIntoWeek(end.dayOfWeek, options) });
+    let current = interval.start.subtract({
+      days: daysIntoWeek(interval.start.dayOfWeek, options)
+    });
     const dates: Temporal.PlainDate[] = [];
     while (isPlainDateBefore(current, last)) {
       dates.push(current);
@@ -90,22 +100,18 @@ export function eachWeekOfInterval(interval: {
   const endZoned = normalizeTemporalInput(interval.end);
   if (startZoned.epochNanoseconds > endZoned.epochNanoseconds) return [];
 
-  const timezone = startZoned.timeZoneId;
-
-  // Get Monday of the starting week
-  // dayOfWeek: 1 = Monday, 7 = Sunday (ISO 8601)
-  const daysToSubtractStart = startZoned.dayOfWeek - 1;
-  const startMonday = startZoned.subtract({ days: daysToSubtractStart }).startOfDay();
-
-  // Get Monday of the ending week
-  const endInTimezone = endZoned.withTimeZone(timezone);
-  const daysToSubtractEnd = endInTimezone.dayOfWeek - 1;
-  const endMonday = endInTimezone.subtract({ days: daysToSubtractEnd }).startOfDay();
+  const startOfFirstWeek = startZoned
+    .subtract({ days: daysIntoWeek(startZoned.dayOfWeek, options) })
+    .startOfDay();
+  const endInTimezone = endZoned.withTimeZone(startZoned.timeZoneId);
+  const startOfLastWeek = endInTimezone
+    .subtract({ days: daysIntoWeek(endInTimezone.dayOfWeek, options) })
+    .startOfDay();
 
   const weeks: Temporal.ZonedDateTime[] = [];
-  let current = startMonday;
+  let current = startOfFirstWeek;
 
-  while (current.epochNanoseconds <= endMonday.epochNanoseconds) {
+  while (current.epochNanoseconds <= startOfLastWeek.epochNanoseconds) {
     weeks.push(current);
     current = current.add({ weeks: 1 });
   }

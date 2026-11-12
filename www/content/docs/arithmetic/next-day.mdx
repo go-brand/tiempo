@@ -1,0 +1,59 @@
+---
+title: nextDay
+description: Get the next date that falls on a given day of the week
+---
+
+Returns the next date on the given day of the week. Next Friday from a Friday is a week later.
+
+## Signature
+
+```ts
+function nextDay(input: Temporal.PlainDate, day: DayOfWeek): Temporal.PlainDate
+
+function nextDay(
+  input: Temporal.Instant | Temporal.ZonedDateTime,
+  day: DayOfWeek
+): Temporal.ZonedDateTime
+
+type DayOfWeek = 1 | 2 | 3 | 4 | 5 | 6 | 7; // 1 = Monday … 7 = Sunday
+```
+
+## Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `input` | `PlainDate`, `Instant`, or `ZonedDateTime` | The starting value |
+| `day` | `1 \| 2 \| 3 \| 4 \| 5 \| 6 \| 7` | The day of the week, numbered like Temporal's `dayOfWeek`: 1 = Monday … 7 = Sunday |
+
+## Returns
+
+A `PlainDate` for a PlainDate input. Otherwise a `ZonedDateTime` with the same wall-clock time, in the input's timezone (UTC for an Instant).
+
+## Examples
+
+### Schedule the next Monday review
+
+```ts
+import { nextDay } from '@gobrand/tiempo';
+
+const wednesday = Temporal.PlainDate.from('2026-11-11');
+
+nextDay(wednesday, 1); // 2026-11-16
+nextDay(wednesday, 3); // 2026-11-18 (a week later)
+```
+
+### Keep the time of day
+
+```ts
+import { nextDay } from '@gobrand/tiempo';
+
+const fridayEvening = Temporal.ZonedDateTime.from('2026-03-06T18:00:00-05:00[America/New_York]');
+
+nextDay(fridayEvening, 1); // 2026-03-09T18:00:00-04:00[America/New_York] (18:00 after DST starts)
+```
+
+## Good to know
+
+- The result is always after the input, never the input itself.
+- Sunday is 7, not 0 as in date-fns. Passing 0 is a TypeScript error and throws a `RangeError`.
+- The wall-clock time is kept across DST changes, like [addDays](/docs/arithmetic/add-days).

@@ -3,14 +3,16 @@ import type { Timezone } from './types';
 import { getEndOfDay } from './shared/endOfDay';
 import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
 import { plainDateToZonedDateTime } from './shared/plainDateToZonedDateTime';
+import { daysIntoWeek, type WeekOptions } from './shared/week';
 
 /**
- * Returns the last boundary of the week (Sunday).
- * Uses ISO 8601 week definition: weeks end on Sunday.
+ * Returns the last boundary of the week.
+ * Weeks start on Monday and end on Sunday (ISO 8601) unless `weekStartsOn` says otherwise.
  * PlainDate inputs stay in calendar space unless a timezone is provided.
  *
- * @param input - A Temporal.Instant (UTC) or Temporal.ZonedDateTime
- * @returns ZonedDateTime at Sunday 23:59:59.999999999
+ * @param input - A Temporal.Instant (UTC), Temporal.ZonedDateTime, or Temporal.PlainDate
+ * @param options - `weekStartsOn`: 1 = Monday (default) … 7 = Sunday
+ * @returns The last day of the week at 23:59:59.999999999, or that date for PlainDate input
  *
  * @example
  * ```ts
@@ -43,36 +45,42 @@ import { plainDateToZonedDateTime } from './shared/plainDateToZonedDateTime';
  * const end = endOfWeek(date, 'America/New_York');
  * // 2025-01-26T23:59:59.999999999-05:00[America/New_York] (next Sunday)
  * ```
+ *
+ * @example
+ * ```ts
+ * // Weeks that start on Sunday end on Saturday
+ * const date = Temporal.PlainDate.from('2025-01-22'); // Wednesday
+ * const end = endOfWeek(date, { weekStartsOn: 7 });
+ * // 2025-01-25 (next Saturday)
+ * ```
  */
 export function endOfWeek(
-  input: Temporal.Instant | Temporal.ZonedDateTime
+  input: Temporal.Instant | Temporal.ZonedDateTime,
+  options?: WeekOptions
 ): Temporal.ZonedDateTime;
-export function endOfWeek(input: Temporal.PlainDate): Temporal.PlainDate;
+export function endOfWeek(input: Temporal.PlainDate, options?: WeekOptions): Temporal.PlainDate;
 export function endOfWeek(
   input: Temporal.PlainDate,
-  timezone: Timezone
+  timezone: Timezone,
+  options?: WeekOptions
 ): Temporal.ZonedDateTime;
 export function endOfWeek(
   input: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate,
-  timezone?: Timezone
+  timezoneOrOptions?: Timezone | WeekOptions,
+  options?: WeekOptions
 ): Temporal.ZonedDateTime | Temporal.PlainDate {
+  const timezone = typeof timezoneOrOptions === 'string' ? timezoneOrOptions : undefined;
+  const weekOptions = typeof timezoneOrOptions === 'string' ? options : timezoneOrOptions;
+
   if (isPlainDate(input) && timezone === undefined) {
-    return input.add({ days: 7 - input.dayOfWeek });
+    return input.add({ days: 6 - daysIntoWeek(input.dayOfWeek, weekOptions) });
   }
 
-  const zonedDateTime =
-    isPlainDate(input)
-      ? plainDateToZonedDateTime(input, timezone!)
-      : normalizeTemporalInput(input);
+  const zonedDateTime = isPlainDate(input)
+    ? plainDateToZonedDateTime(input, timezone!)
+    : normalizeTemporalInput(input);
 
-  // Get the day of week (1 = Monday, 7 = Sunday in ISO 8601)
-  const dayOfWeek = zonedDateTime.dayOfWeek;
-
-  // Calculate days to add to get to Sunday
-  const daysToAdd = 7 - dayOfWeek;
-
-  // Go to Sunday, then get end of that day
-  const sunday = zonedDateTime.add({ days: daysToAdd });
-
-  return getEndOfDay(sunday);
+  return getEndOfDay(
+    zonedDateTime.add({ days: 6 - daysIntoWeek(zonedDateTime.dayOfWeek, weekOptions) })
+  );
 }

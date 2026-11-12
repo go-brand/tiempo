@@ -246,4 +246,71 @@ describe('isWithinInterval', () => {
       expect(isWithinInterval(date, { start, end })).toBe(false);
     });
   });
+
+  describe('with PlainDate', () => {
+    const d = (iso: string) => Temporal.PlainDate.from(iso);
+    const july = { start: d('2025-07-01'), end: d('2025-07-15') };
+
+    it('includes both endpoints', () => {
+      expect(isWithinInterval(d('2025-07-01'), july)).toBe(true);
+      expect(isWithinInterval(d('2025-07-08'), july)).toBe(true);
+      expect(isWithinInterval(d('2025-07-15'), july)).toBe(true);
+      expect(isWithinInterval(d('2025-06-30'), july)).toBe(false);
+      expect(isWithinInterval(d('2025-07-16'), july)).toBe(false);
+    });
+
+    it('contains nothing when reversed', () => {
+      expect(isWithinInterval(d('2025-07-08'), { start: july.end, end: july.start })).toBe(false);
+    });
+
+    it('compares dates across calendars', () => {
+      expect(isWithinInterval(d('2025-07-08').withCalendar('hebrew'), july)).toBe(true);
+    });
+  });
+
+  describe('with PlainTime', () => {
+    const t = (iso: string) => Temporal.PlainTime.from(iso);
+
+    it('includes both endpoints of a same-day range', () => {
+      const workday = { start: t('09:00'), end: t('17:30') };
+      expect(isWithinInterval(t('09:00'), workday)).toBe(true);
+      expect(isWithinInterval(t('17:30'), workday)).toBe(true);
+      expect(isWithinInterval(t('17:30:00.000000001'), workday)).toBe(false);
+      expect(isWithinInterval(t('08:59:59'), workday)).toBe(false);
+    });
+
+    it('wraps past midnight when start is later than end', () => {
+      const night = { start: t('22:00'), end: t('02:00') };
+      expect(isWithinInterval(t('22:00'), night)).toBe(true);
+      expect(isWithinInterval(t('23:59:59.999999999'), night)).toBe(true);
+      expect(isWithinInterval(t('00:00'), night)).toBe(true);
+      expect(isWithinInterval(t('02:00'), night)).toBe(true);
+      expect(isWithinInterval(t('02:00:01'), night)).toBe(false);
+      expect(isWithinInterval(t('21:59'), night)).toBe(false);
+      expect(isWithinInterval(t('12:00'), night)).toBe(false);
+    });
+
+    it('contains only its own time when start equals end', () => {
+      const instant = { start: t('12:00'), end: t('12:00') };
+      expect(isWithinInterval(t('12:00'), instant)).toBe(true);
+      expect(isWithinInterval(t('12:01'), instant)).toBe(false);
+    });
+  });
+
+  describe('mixed domains', () => {
+    const date = Temporal.PlainDate.from('2025-07-08');
+    const time = Temporal.PlainTime.from('12:00');
+    const instant = Temporal.Instant.from('2025-07-08T12:00:00Z');
+
+    it('rejects values that do not share a domain', () => {
+      // @ts-expect-error PlainDate and Instant are different domains
+      expect(() => isWithinInterval(date, { start: instant, end: instant })).toThrow(TypeError);
+      // @ts-expect-error PlainTime and PlainDate are different domains
+      expect(() => isWithinInterval(time, { start: date, end: date })).toThrow(TypeError);
+      // @ts-expect-error Instant and PlainTime are different domains
+      expect(() => isWithinInterval(instant, { start: time, end: time })).toThrow(TypeError);
+      // @ts-expect-error interval endpoints must share a domain
+      expect(() => isWithinInterval(date, { start: date, end: instant })).toThrow(TypeError);
+    });
+  });
 });

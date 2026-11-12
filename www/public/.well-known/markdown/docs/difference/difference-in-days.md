@@ -76,4 +76,5 @@ differenceInDays(reviewed, uploaded, { fractional: true }); // 1.5
 
 - When the two datetimes are in different timezones, days are counted in `earlierDate`'s timezone. Instants count as UTC.
 - A stay from 14 to 17 July is 3 nights but 4 dates. To list the dates, use [eachDayOfInterval](https://tiempo.gobrand.app/docs/intervals/each-day-of-interval).
+- To count date changes instead, so 23:00 tonight to 09:00 tomorrow is 1, use [differenceInCalendarDays](https://tiempo.gobrand.app/docs/difference/difference-in-calendar-days).
 - Mixing a PlainDate with an Instant or ZonedDateTime is a TypeScript error and throws a `TypeError`.

@@ -1,6 +1,6 @@
 # isWithinInterval
 
-Returns `true` when the timestamp is between `start` and `end`, both included. Values compare by exact instant, so the start, end, and checked value can be written in different timezones.
+Returns `true` when the value is between `start` and `end`, both included. Timestamps compare by exact instant, so the start, end, and checked value can be written in different timezones. PlainDates compare by date. PlainTimes compare by time of day, and a range whose start is later than its end runs past midnight.
 
 ## Signature
 
@@ -12,14 +12,22 @@ function isWithinInterval(
     end: Temporal.Instant | Temporal.ZonedDateTime;
   }
 ): boolean;
+function isWithinInterval(
+  date: Temporal.PlainDate,
+  interval: { start: Temporal.PlainDate; end: Temporal.PlainDate }
+): boolean;
+function isWithinInterval(
+  date: Temporal.PlainTime,
+  interval: { start: Temporal.PlainTime; end: Temporal.PlainTime }
+): boolean;
 ```
 
 ## Parameters
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `date` | `Instant \| ZonedDateTime` | The timestamp to check |
-| `interval` | `{ start, end }` | The window, each end an `Instant` or `ZonedDateTime` |
+| `date` | `Instant \| ZonedDateTime`, `PlainDate`, or `PlainTime` | The value to check |
+| `interval` | `{ start, end }` | The window, with ends of the same kind as `date` |
 
 ## Returns
 
@@ -56,7 +64,29 @@ isWithinInterval(Temporal.Instant.from('2026-05-12T17:15:00Z'), slot); // true (
 isWithinInterval(Temporal.Instant.from('2026-05-12T17:15:01Z'), slot); // false
 ```
 
+### Check a date against a booking
+
+```ts
+import { isWithinInterval } from '@gobrand/tiempo';
+
+const stay = { start: Temporal.PlainDate.from('2026-07-01'), end: Temporal.PlainDate.from('2026-07-08') };
+
+isWithinInterval(Temporal.PlainDate.from('2026-07-08'), stay); // true
+isWithinInterval(Temporal.PlainDate.from('2026-07-09'), stay); // false
+```
+
+### Opening hours that run past midnight
+
+```ts
+import { isWithinInterval, toPlainTime } from '@gobrand/tiempo';
+
+const open = { start: Temporal.PlainTime.from('20:00'), end: Temporal.PlainTime.from('02:00') };
+
+isWithinInterval(toPlainTime('2026-05-16T23:30:00Z', 'Europe/London'), open); // true (00:30 in London)
+isWithinInterval(toPlainTime('2026-05-17T11:00:00Z', 'Europe/London'), open); // false (12:00 in London)
+```
+
 ## Good to know
 
-- If `start` is after `end`, the result is always `false`. It does not throw.
-- Only timestamps are accepted. For PlainDates, use `!isBefore(date, start) && !isAfter(date, end)` with [isBefore](https://tiempo.gobrand.app/docs/comparison/is-before) and [isAfter](https://tiempo.gobrand.app/docs/comparison/is-after).
+- For timestamps and PlainDates, if `start` is after `end` the result is always `false`. It does not throw. For PlainTimes, that same range wraps past midnight.
+- Mixing PlainDate, PlainTime, and timestamp values is a TypeScript error and throws a `TypeError`.

@@ -1,6 +1,6 @@
 {
   "title": "Business Days",
-  "description": "Weekend checks and Monday–Friday arithmetic",
+  "description": "Weekend checks and Monday–Friday arithmetic, with optional holidays",
   "icon": "Briefcase",
   "pages": ["is-weekend", "add-business-days", "sub-business-days", "difference-in-business-days"]
 }

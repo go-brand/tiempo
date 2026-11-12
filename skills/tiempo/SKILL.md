@@ -18,6 +18,7 @@ npm install @gobrand/tiempo
 - **ZonedDateTime keeps its timezone; PlainDate stays a date.** Arithmetic is DST-safe.
 - **Argument order follows date-fns.** Differences take `(laterDate, earlierDate)`; intervals take `{ start, end }`.
 - **Domains don't mix.** Comparing a PlainDate with an Instant is a TypeScript error and throws a TypeError. Convert explicitly.
+- **Days of the week use Temporal's numbers.** 1 is Monday and 7 is Sunday, as in `dayOfWeek`. Weeks start on Monday unless you pass `{ weekStartsOn: 7 }`; date-fns's 0 for Sunday throws.
 - **"Today" needs a place.** `today(timezone)`, `now(timezone)`, `isToday(date, timezone)`.
 - **Store exact moments as UTC ISO strings** (`toIso(instant)`); store date-only values as `YYYY-MM-DD`.
 
@@ -48,12 +49,13 @@ npm install @gobrand/tiempo
 | `now()` | Get the current date and time in a timezone. | [details](references/current-time/now.md) |
 | `today()` | Get today's date in a timezone, as a PlainDate. | [details](references/current-time/today.md) |
 
-## Formatting
+## Formatting & Parsing
 
 | Function | Description | Reference |
 |----------|-------------|-----------|
 | `format()` | Format a date or time as text using date-fns-style tokens. | [details](references/formatting/format.md) |
 | `formatPlainDate()` | Format a calendar date as text using date-fns-style tokens. | [details](references/formatting/format-plain-date.md) |
+| `parse()` | Read a date or datetime written in a known pattern, using the same tokens as format | [details](references/formatting/parse.md) |
 | `simpleFormat()` | Format a date, a time, or both in a short human-friendly style. | [details](references/formatting/simple-format.md) |
 | `intlFormatDistance()` | Describe the time between two moments, like "in 3 days" or "2 hours ago". | [details](references/formatting/intl-format-distance.md) |
 
@@ -83,6 +85,8 @@ npm install @gobrand/tiempo
 | `subMilliseconds()` | Subtract a number of milliseconds from a datetime. | [details](references/arithmetic/sub-milliseconds.md) |
 | `subMicroseconds()` | Subtract a number of microseconds from a datetime. | [details](references/arithmetic/sub-microseconds.md) |
 | `subNanoseconds()` | Subtract a number of nanoseconds from a datetime. | [details](references/arithmetic/sub-nanoseconds.md) |
+| `nextDay()` | Get the next date that falls on a given day of the week | [details](references/arithmetic/next-day.md) |
+| `previousDay()` | Get the previous date that fell on a given day of the week | [details](references/arithmetic/previous-day.md) |
 
 ## Boundaries
 
@@ -90,8 +94,8 @@ npm install @gobrand/tiempo
 |----------|-------------|-----------|
 | `startOfDay()` | Get the first moment of a day, in a given timezone. | [details](references/boundaries/start-of-day.md) |
 | `endOfDay()` | Get the last nanosecond of a day, in a given timezone. | [details](references/boundaries/end-of-day.md) |
-| `startOfWeek()` | Get the Monday that starts the week of a date or datetime. | [details](references/boundaries/start-of-week.md) |
-| `endOfWeek()` | Get the Sunday that ends the week of a date or datetime. | [details](references/boundaries/end-of-week.md) |
+| `startOfWeek()` | Get the first day of the week of a date or datetime, Monday unless you choose another. | [details](references/boundaries/start-of-week.md) |
+| `endOfWeek()` | Get the last day of the week of a date or datetime, Sunday unless weeks start on another day. | [details](references/boundaries/end-of-week.md) |
 | `startOfMonth()` | Get the first day of the month for a date or datetime. | [details](references/boundaries/start-of-month.md) |
 | `endOfMonth()` | Get the last day of the month for a date or datetime. | [details](references/boundaries/end-of-month.md) |
 | `startOfQuarter()` | Get the first day of the calendar quarter for a date or datetime. | [details](references/boundaries/start-of-quarter.md) |
@@ -114,14 +118,15 @@ npm install @gobrand/tiempo
 | `isBefore()` | Check whether one date, time, or timestamp comes before another. | [details](references/comparison/is-before.md) |
 | `isAfter()` | Check whether one date, time, or timestamp comes after another. | [details](references/comparison/is-after.md) |
 | `isEqual()` | Check whether two dates, times, or timestamps are the same. | [details](references/comparison/is-equal.md) |
-| `isWithinInterval()` | Check whether a timestamp falls between a start and an end. | [details](references/comparison/is-within-interval.md) |
+| `isWithinInterval()` | Check whether a timestamp, date, or time of day falls between a start and an end. | [details](references/comparison/is-within-interval.md) |
+| `areIntervalsOverlapping()` | Check whether two time ranges or date ranges share any time | [details](references/comparison/are-intervals-overlapping.md) |
 | `isFuture()` | Check whether a timestamp is later than the current moment. | [details](references/comparison/is-future.md) |
 | `isPast()` | Check whether a timestamp is earlier than the current moment. | [details](references/comparison/is-past.md) |
 | `isToday()` | Check whether a value falls on today's date in a timezone. | [details](references/comparison/is-today.md) |
 | `isTomorrow()` | Check whether a value falls on tomorrow's date in a timezone. | [details](references/comparison/is-tomorrow.md) |
 | `isYesterday()` | Check whether a value falls on yesterday's date in a timezone. | [details](references/comparison/is-yesterday.md) |
 | `isSameDay()` | Check whether two timestamps fall on the same calendar day. | [details](references/comparison/is-same-day.md) |
-| `isSameWeek()` | Check whether two timestamps fall in the same ISO week. | [details](references/comparison/is-same-week.md) |
+| `isSameWeek()` | Check whether two timestamps fall in the same week. | [details](references/comparison/is-same-week.md) |
 | `isSameMonth()` | Check whether two timestamps fall in the same calendar month. | [details](references/comparison/is-same-month.md) |
 | `isSameQuarter()` | Check whether two dates or timestamps fall in the same calendar quarter. | [details](references/comparison/is-same-quarter.md) |
 | `isSameYear()` | Check whether two timestamps fall in the same calendar year. | [details](references/comparison/is-same-year.md) |
@@ -164,15 +169,20 @@ npm install @gobrand/tiempo
 | `differenceInMilliseconds()` | Count the milliseconds elapsed between two datetimes | [details](references/difference/difference-in-milliseconds.md) |
 | `differenceInMicroseconds()` | Count the microseconds elapsed between two datetimes | [details](references/difference/difference-in-microseconds.md) |
 | `differenceInNanoseconds()` | Get the exact nanoseconds between two datetimes as a bigint | [details](references/difference/difference-in-nanoseconds.md) |
+| `differenceInCalendarYears()` | Count the calendar years between two dates, ignoring month and day | [details](references/difference/difference-in-calendar-years.md) |
+| `differenceInCalendarQuarters()` | Count the calendar quarters between two dates | [details](references/difference/difference-in-calendar-quarters.md) |
+| `differenceInCalendarMonths()` | Count the calendar months between two dates, ignoring the day | [details](references/difference/difference-in-calendar-months.md) |
+| `differenceInCalendarWeeks()` | Count the week boundaries between two dates | [details](references/difference/difference-in-calendar-weeks.md) |
+| `differenceInCalendarDays()` | Count the calendar days between two dates, ignoring the time of day | [details](references/difference/difference-in-calendar-days.md) |
 
 ## Business Days
 
 | Function | Description | Reference |
 |----------|-------------|-----------|
 | `isWeekend()` | Check if a date falls on a Saturday or Sunday | [details](references/business-days/is-weekend.md) |
-| `addBusinessDays()` | Add Monday–Friday days, skipping weekends | [details](references/business-days/add-business-days.md) |
-| `subBusinessDays()` | Subtract Monday–Friday days, skipping weekends | [details](references/business-days/sub-business-days.md) |
-| `differenceInBusinessDays()` | Count Monday–Friday days between two dates | [details](references/business-days/difference-in-business-days.md) |
+| `addBusinessDays()` | Add Monday–Friday days, skipping weekends and holidays | [details](references/business-days/add-business-days.md) |
+| `subBusinessDays()` | Subtract Monday–Friday days, skipping weekends and holidays | [details](references/business-days/sub-business-days.md) |
+| `differenceInBusinessDays()` | Count Monday–Friday days between two dates, leaving out holidays | [details](references/business-days/difference-in-business-days.md) |
 
 ## Intervals
 
@@ -181,7 +191,7 @@ npm install @gobrand/tiempo
 | `eachYearOfInterval()` | List 1 January of each year a range touches | [details](references/intervals/each-year-of-interval.md) |
 | `eachQuarterOfInterval()` | List the first day of each quarter a range touches | [details](references/intervals/each-quarter-of-interval.md) |
 | `eachMonthOfInterval()` | List the first day of each month a range touches | [details](references/intervals/each-month-of-interval.md) |
-| `eachWeekOfInterval()` | List the Monday of each week a range touches | [details](references/intervals/each-week-of-interval.md) |
+| `eachWeekOfInterval()` | List the first day of each week a range touches | [details](references/intervals/each-week-of-interval.md) |
 | `eachDayOfInterval()` | List every day from start to end, including both | [details](references/intervals/each-day-of-interval.md) |
 | `eachHourOfInterval()` | List the start of every hour from start to end | [details](references/intervals/each-hour-of-interval.md) |
 | `eachMinuteOfInterval()` | List the start of every minute from start to end | [details](references/intervals/each-minute-of-interval.md) |

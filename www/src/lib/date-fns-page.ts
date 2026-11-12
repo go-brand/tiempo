@@ -40,5 +40,6 @@ export const DATE_FNS_RENAMES = [
   ['parseISO(str)', 'toZonedTime(str, timezone), toPlainDate(str)'],
   ['formatInTimeZone(date, tz, fmt)', 'format(date, fmt, { timeZone: tz })'],
   ['isToday(date)', 'isToday(date, timezone)'],
-  ['startOfWeek(date) // Sunday', 'startOfWeek(date) // Monday']
+  ['startOfWeek(date) // Sunday', 'startOfWeek(date, { weekStartsOn: 7 })'],
+  ['parse(str, fmt, new Date())', 'parse(str, fmt, { timeZone })']
 ] as const;

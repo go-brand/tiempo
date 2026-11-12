@@ -21,6 +21,7 @@
   <url><loc>https://tiempo.gobrand.app/docs/current-time/today</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/formatting/format</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/formatting/format-plain-date</loc></url>
+  <url><loc>https://tiempo.gobrand.app/docs/formatting/parse</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/formatting/simple-format</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/formatting/intl-format-distance</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/arithmetic/add-years</loc></url>
@@ -45,6 +46,8 @@
   <url><loc>https://tiempo.gobrand.app/docs/arithmetic/sub-milliseconds</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/arithmetic/sub-microseconds</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/arithmetic/sub-nanoseconds</loc></url>
+  <url><loc>https://tiempo.gobrand.app/docs/arithmetic/next-day</loc></url>
+  <url><loc>https://tiempo.gobrand.app/docs/arithmetic/previous-day</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/boundaries/start-of-day</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/boundaries/end-of-day</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/boundaries/start-of-week</loc></url>
@@ -62,6 +65,7 @@
   <url><loc>https://tiempo.gobrand.app/docs/comparison/is-after</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/comparison/is-equal</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/comparison/is-within-interval</loc></url>
+  <url><loc>https://tiempo.gobrand.app/docs/comparison/are-intervals-overlapping</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/comparison/is-future</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/comparison/is-past</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/comparison/is-today</loc></url>
@@ -101,6 +105,11 @@
   <url><loc>https://tiempo.gobrand.app/docs/difference/difference-in-milliseconds</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/difference/difference-in-microseconds</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/difference/difference-in-nanoseconds</loc></url>
+  <url><loc>https://tiempo.gobrand.app/docs/difference/difference-in-calendar-years</loc></url>
+  <url><loc>https://tiempo.gobrand.app/docs/difference/difference-in-calendar-quarters</loc></url>
+  <url><loc>https://tiempo.gobrand.app/docs/difference/difference-in-calendar-months</loc></url>
+  <url><loc>https://tiempo.gobrand.app/docs/difference/difference-in-calendar-weeks</loc></url>
+  <url><loc>https://tiempo.gobrand.app/docs/difference/difference-in-calendar-days</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/business-days/is-weekend</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/business-days/add-business-days</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/business-days/sub-business-days</loc></url>

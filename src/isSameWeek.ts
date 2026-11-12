@@ -1,12 +1,10 @@
 import type { Temporal } from './shared/temporal';
 import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
+import { daysIntoWeek, type WeekOptions } from './shared/week';
 
 /**
- * Returns true if both datetimes fall in the same ISO 8601 week.
- * Uses ISO week numbering where weeks start on Monday and the first week
- * of the year is the week containing January 4th.
- *
- * Compares the yearOfWeek and weekOfYear fields directly.
+ * Returns true if both datetimes fall in the same week.
+ * Weeks start on Monday (ISO 8601) unless `weekStartsOn` says otherwise.
  *
  * Instant inputs are converted to UTC. For ZonedDateTime inputs, their
  * timezone is preserved. Convert to a common timezone before calling if
@@ -14,7 +12,8 @@ import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
  *
  * @param date1 - First datetime (Instant or ZonedDateTime)
  * @param date2 - Second datetime (Instant or ZonedDateTime)
- * @returns true if both dates are in the same ISO week, false otherwise
+ * @param options - `weekStartsOn`: 1 = Monday (default) … 7 = Sunday
+ * @returns true if both dates are in the same week, false otherwise
  *
  * @example
  * ```ts
@@ -69,16 +68,26 @@ import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
  *
  * isSameWeek(dec29, jan5); // false (different ISO weeks)
  * ```
+ *
+ * @example
+ * ```ts
+ * // Weeks that start on Sunday
+ * const saturday = Temporal.ZonedDateTime.from('2025-01-25T12:00:00+00:00[UTC]');
+ * const sunday = Temporal.ZonedDateTime.from('2025-01-26T12:00:00+00:00[UTC]');
+ *
+ * isSameWeek(saturday, sunday); // true
+ * isSameWeek(saturday, sunday, { weekStartsOn: 7 }); // false
+ * ```
  */
 export function isSameWeek(
   date1: Temporal.Instant | Temporal.ZonedDateTime,
-  date2: Temporal.Instant | Temporal.ZonedDateTime
+  date2: Temporal.Instant | Temporal.ZonedDateTime,
+  options?: WeekOptions
 ): boolean {
   const zoned1 = normalizeTemporalInput(date1);
   const zoned2 = normalizeTemporalInput(date2);
+  const start1 = zoned1.toPlainDate().subtract({ days: daysIntoWeek(zoned1.dayOfWeek, options) });
+  const start2 = zoned2.toPlainDate().subtract({ days: daysIntoWeek(zoned2.dayOfWeek, options) });
 
-  return (
-    zoned1.yearOfWeek === zoned2.yearOfWeek &&
-    zoned1.weekOfYear === zoned2.weekOfYear
-  );
+  return start1.toString() === start2.withCalendar(start1.calendarId).toString();
 }

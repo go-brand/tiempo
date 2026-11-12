@@ -24,7 +24,7 @@ differenceInDays(end, start); // 10
 
 ## Same name, same job
 
-These work like date-fns, with Temporal inputs: `addDays`, `addWeeks`, `addMonths`, `addQuarters`, `addYears`, `addHours`, `addMinutes`, `addSeconds`, `addMilliseconds` and their `sub*` counterparts; `startOf*`/`endOf*` for day, week, month, quarter and year; `differenceIn*` from nanoseconds to years; `each*OfInterval`; `isSame*`; `isBefore`, `isAfter`, `isEqual`, `isWithinInterval`, `isPast`, `isFuture`, `isWeekend`; `compareAsc`, `compareDesc`, `min`, `max`, `clamp`, `closestTo`; `addBusinessDays`, `subBusinessDays`, `differenceInBusinessDays`; `getQuarter`; `roundToNearestHour`/`Minute`/`Second`; `format` (same `yyyy-MM-dd` tokens).
+These work like date-fns, with Temporal inputs: `addDays`, `addWeeks`, `addMonths`, `addQuarters`, `addYears`, `addHours`, `addMinutes`, `addSeconds`, `addMilliseconds` and their `sub*` counterparts; `startOf*`/`endOf*` for day, week, month, quarter and year; `differenceIn*` from nanoseconds to years; `differenceInCalendarDays`, `differenceInCalendarWeeks`, `differenceInCalendarMonths`, `differenceInCalendarQuarters`, `differenceInCalendarYears`; `each*OfInterval`; `isSame*`; `isBefore`, `isAfter`, `isEqual`, `isWithinInterval`, `areIntervalsOverlapping`, `isPast`, `isFuture`, `isWeekend`; `compareAsc`, `compareDesc`, `min`, `max`, `clamp`, `closestTo`; `addBusinessDays`, `subBusinessDays`, `differenceInBusinessDays`; `getQuarter`; `roundToNearestHour`/`Minute`/`Second`; `format` (same `yyyy-MM-dd` tokens).
 
 ## Different on purpose
 
@@ -34,10 +34,17 @@ These work like date-fns, with Temporal inputs: `addDays`, `addWeeks`, `addMonth
 | `parseISO(str)` | `toInstant(str)`, `toZonedTime(str, tz)`, `toPlainDate(str)` | Choose what the string means |
 | `isToday(date)` | `isToday(date, timezone)` | Today in Tokyo is not today in New York |
 | `startOfWeek(date)` (Sunday) | `startOfWeek(date)` (Monday) | ISO 8601 weeks start on Monday |
+| `startOfWeek(date, { weekStartsOn: 0 })` | `startOfWeek(date, { weekStartsOn: 7 })` | Days are numbered like Temporal's `dayOfWeek`: Sunday is 7, and 0 throws |
+| `nextDay(date, 0)`, `nextMonday(date)` … | `nextDay(date, 7)`, `nextDay(date, 1)` … | Same numbering; one function instead of fourteen |
 | `getDay(date)` (0 = Sunday) | `date.dayOfWeek` (1 = Monday … 7 = Sunday) | Temporal property |
-| `differenceInCalendarDays(a, b)` | `differenceInDays(toPlainDate(a), toPlainDate(b))` | PlainDate pairs count calendar days |
+| `getYear`, `getDate`, `getHours`, `getMinutes` … | `date.year`, `date.day`, `date.hour`, `date.minute` … | Temporal properties |
+| `getMonth(date)` (0 = January) | `date.month` (1 = January) | Temporal months start at 1, so tiempo has no `getMonth` to get wrong |
+| `parse(str, fmt, referenceDate)` | `parse(str, fmt)`, `parse(str, fmt, { timeZone })` | No reference date: the text must hold a year, month, and day, and `yy` is rejected |
+| `addBusinessDays(date, n)` plus your own holiday loop | `addBusinessDays(date, n, holidays)` | Pass the holidays that apply to you |
+| `roundToNearestMinutes(date, { nearestTo: 15 })` | `roundToNearestMinute(date, { nearestTo: 15 })` | Singular name, like `roundToNearestHour` and `roundToNearestSecond` |
 | `formatDistance(a, b)` | `intlFormatDistance(a, b)` | Built on `Intl.RelativeTimeFormat` |
 | `formatISO(date)` | `toIso(date)` | |
+| `formatISO9075(date)` | `toIso9075(date)` | |
 | `set(date, { hours: 9 })`, `setMonth` … | `date.with({ hour: 9 })` | Temporal already does this |
 | `getDaysInMonth`, `isLeapYear` | `date.daysInMonth`, `date.inLeapYear` | Temporal properties |
 | date-fns-tz `formatInTimeZone(d, tz, fmt)` | `format(d, fmt, { timeZone: tz })` | |

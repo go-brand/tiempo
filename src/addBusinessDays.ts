@@ -1,10 +1,9 @@
 import { type Temporal, isPlainDate } from './shared/temporal';
 import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
-import { addWeekdays } from './shared/businessDays';
+import { addBusinessDaysSkipping } from './shared/businessDays';
 
 /**
- * Adds business days (Monday–Friday), skipping weekends. Holidays are not
- * considered.
+ * Adds business days (Monday–Friday), skipping weekends and any holidays you pass.
  *
  * Starting on a weekend, the first business day counted is the next Monday
  * (or the previous Friday for negative values). Adding 0 returns the input's
@@ -15,6 +14,8 @@ import { addWeekdays } from './shared/businessDays';
  *
  * @param input - An Instant (UTC), ZonedDateTime, or PlainDate
  * @param days - Whole business days to add (negative to subtract)
+ * @param holidays - Dates that are not business days. For Instant and ZonedDateTime
+ *   inputs they are matched against the input's own date (UTC for Instant).
  * @returns PlainDate for a date input; otherwise ZonedDateTime
  * @throws RangeError if days is not an integer
  *
@@ -25,18 +26,33 @@ import { addWeekdays } from './shared/businessDays';
  * addBusinessDays(friday, 1); // 2025-01-27 (Monday)
  * addBusinessDays(friday, 5); // 2025-01-31 (Friday)
  * ```
+ *
+ * @example
+ * ```ts
+ * // Skip holidays too
+ * const christmasEve = Temporal.PlainDate.from('2025-12-24');
+ * const holidays = [Temporal.PlainDate.from('2025-12-25'), Temporal.PlainDate.from('2025-12-26')];
+ *
+ * addBusinessDays(christmasEve, 1, holidays).toString(); // "2025-12-29"
+ * ```
  */
-export function addBusinessDays(input: Temporal.PlainDate, days: number): Temporal.PlainDate;
+export function addBusinessDays(
+  input: Temporal.PlainDate,
+  days: number,
+  holidays?: readonly Temporal.PlainDate[]
+): Temporal.PlainDate;
 export function addBusinessDays(
   input: Temporal.Instant | Temporal.ZonedDateTime,
-  days: number
+  days: number,
+  holidays?: readonly Temporal.PlainDate[]
 ): Temporal.ZonedDateTime;
 export function addBusinessDays(
   input: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate,
-  days: number
+  days: number,
+  holidays: readonly Temporal.PlainDate[] = []
 ): Temporal.ZonedDateTime | Temporal.PlainDate {
   if (isPlainDate(input)) {
-    return addWeekdays(input, days);
+    return addBusinessDaysSkipping(input, days, holidays);
   }
-  return addWeekdays(normalizeTemporalInput(input), days);
+  return addBusinessDaysSkipping(normalizeTemporalInput(input), days, holidays);
 }

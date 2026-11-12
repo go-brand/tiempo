@@ -50,4 +50,5 @@ differenceInQuarters(Temporal.PlainDate.from('2026-05-15'), contractStart); // 1
 ## Good to know
 
 - Quarters are counted from `earlierDate`, not aligned to Q1–Q4.
+- To count Q1–Q4 boundaries instead, use [differenceInCalendarQuarters](https://tiempo.gobrand.app/docs/difference/difference-in-calendar-quarters).
 - Mixing a PlainDate with an Instant or ZonedDateTime is a TypeScript error and throws a `TypeError`.

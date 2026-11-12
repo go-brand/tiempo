@@ -1,22 +1,27 @@
 ---
 title: startOfWeek
-description: Get the Monday that starts the week of a date or datetime.
+description: Get the first day of the week of a date or datetime, Monday unless you choose another.
 ---
 
-Returns the Monday that starts the week (ISO weeks run Monday to Sunday). A `PlainDate` returns a `PlainDate`; pass a timezone to get the moment Monday begins.
+Returns the first day of the week: Monday by default (ISO weeks run Monday to Sunday), or the day you pass as `weekStartsOn`. A `PlainDate` returns a `PlainDate`; pass a timezone to get the moment that day begins.
 
 ## Signature
 
 ```ts
 function startOfWeek(
-  input: Temporal.Instant | Temporal.ZonedDateTime
+  input: Temporal.Instant | Temporal.ZonedDateTime,
+  options?: { weekStartsOn?: DayOfWeek }
 ): Temporal.ZonedDateTime
-
-function startOfWeek(input: Temporal.PlainDate): Temporal.PlainDate
 
 function startOfWeek(
   input: Temporal.PlainDate,
-  timezone: Timezone
+  options?: { weekStartsOn?: DayOfWeek }
+): Temporal.PlainDate
+
+function startOfWeek(
+  input: Temporal.PlainDate,
+  timezone: Timezone,
+  options?: { weekStartsOn?: DayOfWeek }
 ): Temporal.ZonedDateTime
 ```
 
@@ -25,12 +30,13 @@ function startOfWeek(
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `input` | `Temporal.Instant \| Temporal.ZonedDateTime \| Temporal.PlainDate` | Any date or moment in the week |
-| `timezone` | `Timezone` | Optional, `PlainDate` only: return Monday 00:00 in this timezone instead of a date |
+| `timezone` | `Timezone` | Optional, `PlainDate` only: return 00:00 on the first day in this timezone instead of a date |
+| `options.weekStartsOn` | `1 \| 2 \| 3 \| 4 \| 5 \| 6 \| 7` | First day of the week, numbered like Temporal's `dayOfWeek`: 1 = Monday (default) … 7 = Sunday |
 
 ## Returns
 
-- `PlainDate` input: the Monday as a `Temporal.PlainDate`.
-- Otherwise: a `Temporal.ZonedDateTime` at the start of Monday. `Instant` inputs are read in UTC.
+- `PlainDate` input: the first day as a `Temporal.PlainDate`.
+- Otherwise: a `Temporal.ZonedDateTime` at the start of that day. `Instant` inputs are read in UTC.
 
 ## Examples
 
@@ -55,7 +61,18 @@ startOfWeek(shift); // 2026-11-09T00:00:00-08:00[America/Los_Angeles]
 endOfWeek(shift); // 2026-11-15T23:59:59.999999999-08:00[America/Los_Angeles]
 ```
 
+### Start weeks on Sunday for a US calendar
+
+```ts
+import { startOfWeek } from '@gobrand/tiempo';
+
+const workedOn = Temporal.PlainDate.from('2026-11-11'); // Wednesday
+
+startOfWeek(workedOn, { weekStartsOn: 7 }); // 2026-11-08
+startOfWeek(workedOn, 'America/Chicago', { weekStartsOn: 7 }); // 2026-11-08T00:00:00-06:00[America/Chicago]
+```
+
 ## Good to know
 
-- The week always starts on Monday; there is no option for a Sunday start.
+- `weekStartsOn` uses Temporal's numbering, so Sunday is 7. date-fns numbers Sunday 0; passing 0 is a TypeScript error and throws a `RangeError` rather than meaning something else.
 - An `Instant` uses the UTC week. Convert with [toZonedTime](/docs/conversion/to-zoned-time) to use a user's week.

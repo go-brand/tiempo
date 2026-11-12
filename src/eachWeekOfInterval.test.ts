@@ -249,4 +249,36 @@ it('returns no boundaries when original endpoints are reversed inside one bucket
   const end = Temporal.ZonedDateTime.from('2025-01-15T12:30:15[UTC]');
   expect(eachWeekOfInterval({ start: end.add({ seconds: 1 }), end })).toEqual([]);
   expect(eachWeekOfInterval({ start: end, end })).toHaveLength(1);
+
+  describe('weekStartsOn', () => {
+    it('lists the chosen first day of each week for PlainDate intervals', () => {
+      const weeks = eachWeekOfInterval(
+        { start: Temporal.PlainDate.from('2025-01-08'), end: Temporal.PlainDate.from('2025-01-19') },
+        { weekStartsOn: 7 }
+      );
+      expect(weeks.map(String)).toEqual(['2025-01-05', '2025-01-12', '2025-01-19']);
+    });
+
+    it('lists the chosen first day of each week for timeline intervals', () => {
+      const weeks = eachWeekOfInterval(
+        {
+          start: Temporal.Instant.from('2025-01-08T10:00:00Z'),
+          end: Temporal.Instant.from('2025-01-18T10:00:00Z')
+        },
+        { weekStartsOn: 7 }
+      );
+      expect(weeks.map(String)).toEqual([
+        '2025-01-05T00:00:00+00:00[UTC]',
+        '2025-01-12T00:00:00+00:00[UTC]'
+      ]);
+    });
+
+    it('rejects Sunday as 0', () => {
+      const day = Temporal.PlainDate.from('2025-01-08');
+      // @ts-expect-error date-fns numbers Sunday 0; Temporal numbers it 7
+      expect(() => eachWeekOfInterval({ start: day, end: day }, { weekStartsOn: 0 })).toThrow(
+        RangeError
+      );
+    });
+  });
 });

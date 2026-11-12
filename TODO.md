@@ -37,7 +37,7 @@ date-fns has full quarter support; tiempo has none.
 
 **Why:** scheduling, SLAs, payroll, delivery dates. Heavy ask in every date lib.
 **Temporal fit:** `PlainDate.dayOfWeek` (1=Mon..7=Sun). DST-safe because day stepping stays in zoned space.
-**Note:** date-fns has no holiday support. Keep minimal (Rob Pike). Optional holiday-list param only if explicitly requested.
+**Note:** date-fns has no holiday support. `addBusinessDays`, `subBusinessDays`, and `differenceInBusinessDays` take an optional `holidays` list; tiempo ships no holiday calendar.
 
 ## 3. Selection helpers — cheap, common
 
@@ -73,6 +73,7 @@ date-fns has full quarter support; tiempo has none.
 
 ## Honorable mentions (lower priority / skipped)
 
-- Calendar diffs: `differenceInCalendarDays` vs duration-based `differenceInDays` — subtle distinction, lower demand.
+- [x] Calendar diffs: `differenceInCalendarDays`, `Weeks`, `Months`, `Quarters`, `Years`.
+- [x] `areIntervalsOverlapping`, `nextDay`, `previousDay`, `parse`, `weekStartsOn` on week functions.
 - `set*` helpers (`setHour`, `setDay`, ...) — Temporal `.with()` already covers this ergonomically.
 - ISO-week getters: `getISOWeek`, `getISOWeekYear` — niche.

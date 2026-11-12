@@ -1,0 +1,52 @@
+---
+title: differenceInCalendarMonths
+description: Count the calendar months between two dates, ignoring the day
+---
+
+Returns the number of calendar months from `earlierDate` to `laterDate`, ignoring the day of the month. January 31 to February 1 is one calendar month.
+
+## Signature
+
+```ts
+function differenceInCalendarMonths(
+  laterDate: Temporal.PlainDate,
+  earlierDate: Temporal.PlainDate
+): number
+
+function differenceInCalendarMonths(
+  laterDate: Temporal.Instant | Temporal.ZonedDateTime,
+  earlierDate: Temporal.Instant | Temporal.ZonedDateTime
+): number
+```
+
+## Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `laterDate` | `PlainDate` or `Instant \| ZonedDateTime` | The later value |
+| `earlierDate` | Same kind as `laterDate` | The earlier value |
+
+## Returns
+
+A signed whole number of calendar months; negative if `laterDate` is before `earlierDate`.
+
+## Examples
+
+### Bill by calendar month
+
+```ts
+import { differenceInCalendarMonths, differenceInMonths } from '@gobrand/tiempo';
+
+const signedUp = Temporal.PlainDate.from('2026-01-31');
+const today = Temporal.PlainDate.from('2026-03-01');
+
+differenceInCalendarMonths(today, signedUp); // 2 (January to March)
+differenceInMonths(today, signedUp); // 1 (one complete month)
+```
+
+## Good to know
+
+- [differenceInMonths](/docs/difference/difference-in-months) counts complete months. `differenceInCalendarMonths` counts month boundaries, which is what monthly buckets and billing periods need.
+- PlainDates compare as given. An Instant uses its UTC date and a ZonedDateTime uses the date in its own timezone; convert both to one timezone first to count from one point of view.
+- Months are counted in the earlier date's calendar, so a Hebrew leap year has 13.
+- Mixing a PlainDate with an Instant or ZonedDateTime is a TypeScript error and throws a `TypeError`.

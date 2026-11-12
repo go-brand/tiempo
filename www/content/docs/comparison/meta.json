@@ -1,12 +1,13 @@
 {
   "title": "Comparison",
-  "description": "Compare dates and check temporal relationships",
+  "description": "Compare dates, check intervals, and test temporal relationships",
   "icon": "Scale",
   "pages": [
     "is-before",
     "is-after",
     "is-equal",
     "is-within-interval",
+    "are-intervals-overlapping",
     "is-future",
     "is-past",
     "is-today",

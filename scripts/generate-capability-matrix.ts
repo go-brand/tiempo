@@ -40,7 +40,7 @@ const CATEGORIES = [
 const CATEGORY_TITLES: Record<string, string> = {
   conversion: "Conversion",
   "current-time": "Current Time",
-  formatting: "Formatting",
+  formatting: "Formatting & Parsing",
   arithmetic: "Arithmetic",
   boundaries: "Boundaries",
   rounding: "Rounding",

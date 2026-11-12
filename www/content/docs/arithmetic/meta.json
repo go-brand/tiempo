@@ -1,6 +1,6 @@
 {
   "title": "Arithmetic",
-  "description": "Add and subtract time units with DST-safe precision",
+  "description": "Add and subtract time units with DST-safe precision, or move to a day of the week",
   "icon": "Calculator",
   "pages": [
     "add-years",
@@ -24,6 +24,8 @@
     "sub-seconds",
     "sub-milliseconds",
     "sub-microseconds",
-    "sub-nanoseconds"
+    "sub-nanoseconds",
+    "next-day",
+    "previous-day"
   ]
 }

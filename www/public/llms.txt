@@ -11,6 +11,7 @@ Install with `npm install @gobrand/tiempo` and import functions by name: `import
 - **ZonedDateTime keeps its timezone; PlainDate stays a date.** Arithmetic is DST-safe.
 - **Argument order follows date-fns.** Differences take `(laterDate, earlierDate)`; intervals take `{ start, end }`.
 - **Domains don't mix.** Comparing a PlainDate with an Instant is a TypeScript error and throws a TypeError. Convert explicitly.
+- **Days of the week use Temporal's numbers.** 1 is Monday and 7 is Sunday, as in `dayOfWeek`. Weeks start on Monday unless you pass `{ weekStartsOn: 7 }`; date-fns's 0 for Sunday throws.
 - **"Today" needs a place.** `today(timezone)`, `now(timezone)`, `isToday(date, timezone)`.
 - **Store exact moments as UTC ISO strings** (`toIso(instant)`); store date-only values as `YYYY-MM-DD`.
 
@@ -40,10 +41,11 @@ Install with `npm install @gobrand/tiempo` and import functions by name: `import
 - [now](https://tiempo.gobrand.app/docs/current-time/now): Get the current date and time in a timezone.
 - [today](https://tiempo.gobrand.app/docs/current-time/today): Get today's date in a timezone, as a PlainDate.
 
-## Formatting
+## Formatting & Parsing
 
 - [format](https://tiempo.gobrand.app/docs/formatting/format): Format a date or time as text using date-fns-style tokens.
 - [formatPlainDate](https://tiempo.gobrand.app/docs/formatting/format-plain-date): Format a calendar date as text using date-fns-style tokens.
+- [parse](https://tiempo.gobrand.app/docs/formatting/parse): Read a date or datetime written in a known pattern, using the same tokens as format
 - [simpleFormat](https://tiempo.gobrand.app/docs/formatting/simple-format): Format a date, a time, or both in a short human-friendly style.
 - [intlFormatDistance](https://tiempo.gobrand.app/docs/formatting/intl-format-distance): Describe the time between two moments, like "in 3 days" or "2 hours ago".
 
@@ -65,13 +67,15 @@ Install with `npm install @gobrand/tiempo` and import functions by name: `import
 - [subHours](https://tiempo.gobrand.app/docs/arithmetic/sub-hours): Subtract a number of hours of elapsed time from a datetime.
 - [subMinutes](https://tiempo.gobrand.app/docs/arithmetic/sub-minutes): Subtract a number of minutes from a datetime.
 - [subSeconds](https://tiempo.gobrand.app/docs/arithmetic/sub-seconds): Subtract a number of seconds from a datetime.
+- [nextDay](https://tiempo.gobrand.app/docs/arithmetic/next-day): Get the next date that falls on a given day of the week
+- [previousDay](https://tiempo.gobrand.app/docs/arithmetic/previous-day): Get the previous date that fell on a given day of the week
 
 ## Boundaries
 
 - [startOfDay](https://tiempo.gobrand.app/docs/boundaries/start-of-day): Get the first moment of a day, in a given timezone.
 - [endOfDay](https://tiempo.gobrand.app/docs/boundaries/end-of-day): Get the last nanosecond of a day, in a given timezone.
-- [startOfWeek](https://tiempo.gobrand.app/docs/boundaries/start-of-week): Get the Monday that starts the week of a date or datetime.
-- [endOfWeek](https://tiempo.gobrand.app/docs/boundaries/end-of-week): Get the Sunday that ends the week of a date or datetime.
+- [startOfWeek](https://tiempo.gobrand.app/docs/boundaries/start-of-week): Get the first day of the week of a date or datetime, Monday unless you choose another.
+- [endOfWeek](https://tiempo.gobrand.app/docs/boundaries/end-of-week): Get the last day of the week of a date or datetime, Sunday unless weeks start on another day.
 - [startOfMonth](https://tiempo.gobrand.app/docs/boundaries/start-of-month): Get the first day of the month for a date or datetime.
 - [endOfMonth](https://tiempo.gobrand.app/docs/boundaries/end-of-month): Get the last day of the month for a date or datetime.
 - [startOfQuarter](https://tiempo.gobrand.app/docs/boundaries/start-of-quarter): Get the first day of the calendar quarter for a date or datetime.
@@ -90,14 +94,15 @@ Install with `npm install @gobrand/tiempo` and import functions by name: `import
 - [isBefore](https://tiempo.gobrand.app/docs/comparison/is-before): Check whether one date, time, or timestamp comes before another.
 - [isAfter](https://tiempo.gobrand.app/docs/comparison/is-after): Check whether one date, time, or timestamp comes after another.
 - [isEqual](https://tiempo.gobrand.app/docs/comparison/is-equal): Check whether two dates, times, or timestamps are the same.
-- [isWithinInterval](https://tiempo.gobrand.app/docs/comparison/is-within-interval): Check whether a timestamp falls between a start and an end.
+- [isWithinInterval](https://tiempo.gobrand.app/docs/comparison/is-within-interval): Check whether a timestamp, date, or time of day falls between a start and an end.
+- [areIntervalsOverlapping](https://tiempo.gobrand.app/docs/comparison/are-intervals-overlapping): Check whether two time ranges or date ranges share any time
 - [isFuture](https://tiempo.gobrand.app/docs/comparison/is-future): Check whether a timestamp is later than the current moment.
 - [isPast](https://tiempo.gobrand.app/docs/comparison/is-past): Check whether a timestamp is earlier than the current moment.
 - [isToday](https://tiempo.gobrand.app/docs/comparison/is-today): Check whether a value falls on today's date in a timezone.
 - [isTomorrow](https://tiempo.gobrand.app/docs/comparison/is-tomorrow): Check whether a value falls on tomorrow's date in a timezone.
 - [isYesterday](https://tiempo.gobrand.app/docs/comparison/is-yesterday): Check whether a value falls on yesterday's date in a timezone.
 - [isSameDay](https://tiempo.gobrand.app/docs/comparison/is-same-day): Check whether two timestamps fall on the same calendar day.
-- [isSameWeek](https://tiempo.gobrand.app/docs/comparison/is-same-week): Check whether two timestamps fall in the same ISO week.
+- [isSameWeek](https://tiempo.gobrand.app/docs/comparison/is-same-week): Check whether two timestamps fall in the same week.
 - [isSameMonth](https://tiempo.gobrand.app/docs/comparison/is-same-month): Check whether two timestamps fall in the same calendar month.
 - [isSameQuarter](https://tiempo.gobrand.app/docs/comparison/is-same-quarter): Check whether two dates or timestamps fall in the same calendar quarter.
 - [isSameYear](https://tiempo.gobrand.app/docs/comparison/is-same-year): Check whether two timestamps fall in the same calendar year.
@@ -121,20 +126,25 @@ Install with `npm install @gobrand/tiempo` and import functions by name: `import
 - [differenceInHours](https://tiempo.gobrand.app/docs/difference/difference-in-hours): Count the hours elapsed between two datetimes
 - [differenceInMinutes](https://tiempo.gobrand.app/docs/difference/difference-in-minutes): Count the minutes elapsed between two datetimes
 - [differenceInSeconds](https://tiempo.gobrand.app/docs/difference/difference-in-seconds): Count the seconds elapsed between two datetimes
+- [differenceInCalendarYears](https://tiempo.gobrand.app/docs/difference/difference-in-calendar-years): Count the calendar years between two dates, ignoring month and day
+- [differenceInCalendarQuarters](https://tiempo.gobrand.app/docs/difference/difference-in-calendar-quarters): Count the calendar quarters between two dates
+- [differenceInCalendarMonths](https://tiempo.gobrand.app/docs/difference/difference-in-calendar-months): Count the calendar months between two dates, ignoring the day
+- [differenceInCalendarWeeks](https://tiempo.gobrand.app/docs/difference/difference-in-calendar-weeks): Count the week boundaries between two dates
+- [differenceInCalendarDays](https://tiempo.gobrand.app/docs/difference/difference-in-calendar-days): Count the calendar days between two dates, ignoring the time of day
 
 ## Business Days
 
 - [isWeekend](https://tiempo.gobrand.app/docs/business-days/is-weekend): Check if a date falls on a Saturday or Sunday
-- [addBusinessDays](https://tiempo.gobrand.app/docs/business-days/add-business-days): Add Monday–Friday days, skipping weekends
-- [subBusinessDays](https://tiempo.gobrand.app/docs/business-days/sub-business-days): Subtract Monday–Friday days, skipping weekends
-- [differenceInBusinessDays](https://tiempo.gobrand.app/docs/business-days/difference-in-business-days): Count Monday–Friday days between two dates
+- [addBusinessDays](https://tiempo.gobrand.app/docs/business-days/add-business-days): Add Monday–Friday days, skipping weekends and holidays
+- [subBusinessDays](https://tiempo.gobrand.app/docs/business-days/sub-business-days): Subtract Monday–Friday days, skipping weekends and holidays
+- [differenceInBusinessDays](https://tiempo.gobrand.app/docs/business-days/difference-in-business-days): Count Monday–Friday days between two dates, leaving out holidays
 
 ## Intervals
 
 - [eachYearOfInterval](https://tiempo.gobrand.app/docs/intervals/each-year-of-interval): List 1 January of each year a range touches
 - [eachQuarterOfInterval](https://tiempo.gobrand.app/docs/intervals/each-quarter-of-interval): List the first day of each quarter a range touches
 - [eachMonthOfInterval](https://tiempo.gobrand.app/docs/intervals/each-month-of-interval): List the first day of each month a range touches
-- [eachWeekOfInterval](https://tiempo.gobrand.app/docs/intervals/each-week-of-interval): List the Monday of each week a range touches
+- [eachWeekOfInterval](https://tiempo.gobrand.app/docs/intervals/each-week-of-interval): List the first day of each week a range touches
 - [eachDayOfInterval](https://tiempo.gobrand.app/docs/intervals/each-day-of-interval): List every day from start to end, including both
 - [eachHourOfInterval](https://tiempo.gobrand.app/docs/intervals/each-hour-of-interval): List the start of every hour from start to end
 - [eachMinuteOfInterval](https://tiempo.gobrand.app/docs/intervals/each-minute-of-interval): List the start of every minute from start to end

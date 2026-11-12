@@ -1,17 +1,19 @@
 # differenceInBusinessDays
 
-Counts business days (Monday–Friday) from `earlierDate` up to `laterDate`. The earlier date counts; the later date does not. Holidays are not considered.
+Counts business days (Monday–Friday) from `earlierDate` up to `laterDate`. The earlier date counts; the later date does not. Holidays you pass are not counted.
 
 ## Signature
 
 ```ts
 function differenceInBusinessDays(
   laterDate: Temporal.PlainDate,
-  earlierDate: Temporal.PlainDate
+  earlierDate: Temporal.PlainDate,
+  holidays?: readonly Temporal.PlainDate[]
 ): number;
 function differenceInBusinessDays(
   laterDate: Temporal.Instant | Temporal.ZonedDateTime,
-  earlierDate: Temporal.Instant | Temporal.ZonedDateTime
+  earlierDate: Temporal.Instant | Temporal.ZonedDateTime,
+  holidays?: readonly Temporal.PlainDate[]
 ): number
 ```
 
@@ -21,6 +23,7 @@ function differenceInBusinessDays(
 |-----------|------|-------------|
 | `laterDate` | `PlainDate` or `Instant \| ZonedDateTime` | The later date |
 | `earlierDate` | Same kind as `laterDate` | The earlier date |
+| `holidays` | `readonly PlainDate[]` | Optional dates that are not business days, matched against each value's own date |
 
 ## Returns
 
@@ -53,8 +56,21 @@ const due = toZonedTime('2026-01-28T16:00:00Z', timezone);
 differenceInBusinessDays(due, opened); // 7
 ```
 
+### Leave out public holidays
+
+```ts
+import { differenceInBusinessDays } from '@gobrand/tiempo';
+
+const holidays = [Temporal.PlainDate.from('2026-12-25'), Temporal.PlainDate.from('2026-12-28')];
+const start = Temporal.PlainDate.from('2026-12-21');
+const end = Temporal.PlainDate.from('2027-01-04');
+
+differenceInBusinessDays(end, start); // 10
+differenceInBusinessDays(end, start, holidays); // 8
+```
+
 ## Good to know
 
-- Swapping the arguments always negates the result (unlike date-fns). From a weekday it undoes `addBusinessDays`: `differenceInBusinessDays(addBusinessDays(date, n), date) === n`.
+- Swapping the arguments always negates the result (unlike date-fns). From a business day it undoes `addBusinessDays` with the same holidays: `differenceInBusinessDays(addBusinessDays(date, n, holidays), date, holidays) === n`.
 - Only dates matter; times of day are ignored. Instant inputs use their UTC date and ZonedDateTime inputs use the date in their own timezone. Convert both to one timezone first to count from a single point of view.
 - Mixing a PlainDate with an Instant or ZonedDateTime is a TypeScript error and throws a `TypeError`.

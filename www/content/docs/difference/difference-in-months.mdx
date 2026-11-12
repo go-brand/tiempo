@@ -75,4 +75,5 @@ differenceInMonths(end, start, { fractional: true }); // 1.5 (14 of February's 2
 ## Good to know
 
 - Fractions are measured from `earlierDate`, so swapping the arguments need not give exactly the opposite fraction.
+- To count month changes instead, so January 31 to February 1 is 1, use [differenceInCalendarMonths](/docs/difference/difference-in-calendar-months).
 - Mixing a PlainDate with an Instant or ZonedDateTime is a TypeScript error and throws a `TypeError`.

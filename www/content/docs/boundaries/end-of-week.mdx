@@ -1,22 +1,27 @@
 ---
 title: endOfWeek
-description: Get the Sunday that ends the week of a date or datetime.
+description: Get the last day of the week of a date or datetime, Sunday unless weeks start on another day.
 ---
 
-Returns the Sunday that ends the week, the counterpart of [startOfWeek](/docs/boundaries/start-of-week). A `PlainDate` returns a `PlainDate`; pass a timezone to get the last moment of Sunday.
+Returns the last day of the week, the counterpart of [startOfWeek](/docs/boundaries/start-of-week): Sunday by default, or the day before `weekStartsOn`. A `PlainDate` returns a `PlainDate`; pass a timezone to get the last moment of that day.
 
 ## Signature
 
 ```ts
 function endOfWeek(
-  input: Temporal.Instant | Temporal.ZonedDateTime
+  input: Temporal.Instant | Temporal.ZonedDateTime,
+  options?: { weekStartsOn?: DayOfWeek }
 ): Temporal.ZonedDateTime
-
-function endOfWeek(input: Temporal.PlainDate): Temporal.PlainDate
 
 function endOfWeek(
   input: Temporal.PlainDate,
-  timezone: Timezone
+  options?: { weekStartsOn?: DayOfWeek }
+): Temporal.PlainDate
+
+function endOfWeek(
+  input: Temporal.PlainDate,
+  timezone: Timezone,
+  options?: { weekStartsOn?: DayOfWeek }
 ): Temporal.ZonedDateTime
 ```
 
@@ -25,12 +30,13 @@ function endOfWeek(
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `input` | `Temporal.Instant \| Temporal.ZonedDateTime \| Temporal.PlainDate` | Any date or moment in the week |
-| `timezone` | `Timezone` | Optional, `PlainDate` only: return Sunday 23:59:59.999999999 in this timezone instead of a date |
+| `timezone` | `Timezone` | Optional, `PlainDate` only: return 23:59:59.999999999 on the last day in this timezone instead of a date |
+| `options.weekStartsOn` | `1 \| 2 \| 3 \| 4 \| 5 \| 6 \| 7` | First day of the week, numbered like Temporal's `dayOfWeek`: 1 = Monday (default) … 7 = Sunday |
 
 ## Returns
 
-- `PlainDate` input: the Sunday as a `Temporal.PlainDate`.
-- Otherwise: a `Temporal.ZonedDateTime` one nanosecond before the following Monday begins. `Instant` inputs are read in UTC.
+- `PlainDate` input: the last day as a `Temporal.PlainDate`.
+- Otherwise: a `Temporal.ZonedDateTime` one nanosecond before the next week begins. `Instant` inputs are read in UTC.
 
 ## Examples
 
@@ -43,4 +49,14 @@ const workedOn = Temporal.PlainDate.from('2026-11-11'); // Wednesday
 
 endOfWeek(workedOn); // 2026-11-15
 endOfWeek(workedOn, 'Europe/Berlin'); // 2026-11-15T23:59:59.999999999+01:00[Europe/Berlin]
+```
+
+### End weeks on Saturday when they start on Sunday
+
+```ts
+import { endOfWeek } from '@gobrand/tiempo';
+
+const workedOn = Temporal.PlainDate.from('2026-11-11'); // Wednesday
+
+endOfWeek(workedOn, { weekStartsOn: 7 }); // 2026-11-14
 ```

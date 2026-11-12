@@ -1,6 +1,6 @@
 {
   "title": "Difference",
-  "description": "Calculate the difference between two dates in various units",
+  "description": "Count the time between two dates in whole or calendar units",
   "icon": "Minus",
   "pages": [
     "difference-in-years",
@@ -13,6 +13,11 @@
     "difference-in-seconds",
     "difference-in-milliseconds",
     "difference-in-microseconds",
-    "difference-in-nanoseconds"
+    "difference-in-nanoseconds",
+    "difference-in-calendar-years",
+    "difference-in-calendar-quarters",
+    "difference-in-calendar-months",
+    "difference-in-calendar-weeks",
+    "difference-in-calendar-days"
   ]
 }

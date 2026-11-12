@@ -1,19 +1,22 @@
 # eachWeekOfInterval
 
-Returns the Monday of every week from the week containing `start` to the week containing `end`.
+Returns the first day of every week from the week containing `start` to the week containing `end`. Weeks start on Monday unless you pass `weekStartsOn`.
 
 ## Signature
 
 ```ts
-function eachWeekOfInterval(interval: {
-  start: Temporal.PlainDate;
-  end: Temporal.PlainDate;
-}): Temporal.PlainDate[]
+function eachWeekOfInterval(
+  interval: { start: Temporal.PlainDate; end: Temporal.PlainDate },
+  options?: { weekStartsOn?: DayOfWeek }
+): Temporal.PlainDate[]
 
-function eachWeekOfInterval(interval: {
-  start: Temporal.Instant | Temporal.ZonedDateTime;
-  end: Temporal.Instant | Temporal.ZonedDateTime;
-}): Temporal.ZonedDateTime[]
+function eachWeekOfInterval(
+  interval: {
+    start: Temporal.Instant | Temporal.ZonedDateTime;
+    end: Temporal.Instant | Temporal.ZonedDateTime;
+  },
+  options?: { weekStartsOn?: DayOfWeek }
+): Temporal.ZonedDateTime[]
 ```
 
 ## Parameters
@@ -22,10 +25,11 @@ function eachWeekOfInterval(interval: {
 |-----------|------|-------------|
 | `interval.start` | `PlainDate` or `Instant \| ZonedDateTime` | Start of the range |
 | `interval.end` | Same kind as `start` | End of the range, included |
+| `options.weekStartsOn` | `1 \| 2 \| 3 \| 4 \| 5 \| 6 \| 7` | First day of the week: 1 = Monday (default) … 7 = Sunday |
 
 ## Returns
 
-PlainDate endpoints give a `PlainDate[]`. Instant or ZonedDateTime endpoints give a `ZonedDateTime[]` at the start of each Monday, in the timezone of `start` (UTC for an Instant). A reversed range gives `[]`.
+PlainDate endpoints give a `PlainDate[]`. Instant or ZonedDateTime endpoints give a `ZonedDateTime[]` at the start of each week's first day, in the timezone of `start` (UTC for an Instant). A reversed range gives `[]`.
 
 ## Examples
 
@@ -42,7 +46,20 @@ const weeks = eachWeekOfInterval({
 weeks.map(String); // ['2026-03-02', '2026-03-09', '2026-03-16', '2026-03-23']
 ```
 
+### Sunday rows for a US calendar
+
+```ts
+import { eachWeekOfInterval } from '@gobrand/tiempo';
+
+const weeks = eachWeekOfInterval(
+  { start: Temporal.PlainDate.from('2026-03-04'), end: Temporal.PlainDate.from('2026-03-25') },
+  { weekStartsOn: 7 }
+);
+
+weeks.map(String); // ['2026-03-01', '2026-03-08', '2026-03-15', '2026-03-22']
+```
+
 ## Good to know
 
-- Weeks always start on Monday. There is no option to change this.
+- `weekStartsOn` uses Temporal's numbering, so Sunday is 7, not 0 as in date-fns.
 - Mixing a PlainDate with an Instant or ZonedDateTime is a TypeScript error and throws a `TypeError`.

@@ -353,4 +353,33 @@ describe('skipped midnight regression', () => {
     const value = Temporal.ZonedDateTime.from('2025-09-07T12:00[America/Santiago]');
     expect(endOfWeek(value).toString()).toBe('2025-09-07T23:59:59.999999999-03:00[America/Santiago]');
   });
+
+  describe('weekStartsOn', () => {
+    it('ends the day before the chosen first day', () => {
+      const wednesday = Temporal.PlainDate.from('2025-01-22');
+      expect(endOfWeek(wednesday, { weekStartsOn: 7 }).toString()).toBe('2025-01-25');
+      expect(endOfWeek(wednesday, { weekStartsOn: 6 }).toString()).toBe('2025-01-24');
+      expect(endOfWeek(wednesday, { weekStartsOn: 4 }).toString()).toBe('2025-01-22');
+      expect(endOfWeek(Temporal.PlainDate.from('2025-01-25'), { weekStartsOn: 7 }).toString()).toBe(
+        '2025-01-25'
+      );
+    });
+
+    it('applies to timeline values and PlainDate with a timezone', () => {
+      const zoned = Temporal.ZonedDateTime.from('2025-01-22T15:30:00-05:00[America/New_York]');
+      expect(endOfWeek(zoned, { weekStartsOn: 7 }).toString()).toBe(
+        '2025-01-25T23:59:59.999999999-05:00[America/New_York]'
+      );
+      expect(
+        endOfWeek(Temporal.PlainDate.from('2025-01-22'), 'UTC', { weekStartsOn: 7 }).toString()
+      ).toBe('2025-01-25T23:59:59.999999999+00:00[UTC]');
+    });
+
+    it('rejects Sunday as 0', () => {
+      // @ts-expect-error date-fns numbers Sunday 0; Temporal numbers it 7
+      expect(() => endOfWeek(Temporal.PlainDate.from('2025-01-22'), { weekStartsOn: 0 })).toThrow(
+        RangeError
+      );
+    });
+  });
 });

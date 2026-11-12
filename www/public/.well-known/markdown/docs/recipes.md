@@ -61,19 +61,42 @@ next.toString(); // 2026-05-21T09:00:00+02:00[Europe/Madrid]
 
 ## Check opening hours
 
+Opening hours are wall-clock times, so check the time in the venue's timezone. A range that ends earlier than it starts runs past midnight.
+
 ```ts
-import { isPlainTimeBefore } from '@gobrand/tiempo';
+import { isWithinInterval, toPlainTime } from '@gobrand/tiempo';
 
-const opens = Temporal.PlainTime.from('09:00');
-const closes = Temporal.PlainTime.from('17:30');
+const hours = { start: Temporal.PlainTime.from('18:00'), end: Temporal.PlainTime.from('02:00') };
 
-function isOpen(current: Temporal.ZonedDateTime): boolean {
-  const time = current.withTimeZone('America/New_York').toPlainTime();
-  return !isPlainTimeBefore(time, opens) && isPlainTimeBefore(time, closes);
+function isOpen(current: Temporal.Instant | Temporal.ZonedDateTime): boolean {
+  return isWithinInterval(toPlainTime(current, 'America/New_York'), hours);
 }
 
-isOpen(Temporal.ZonedDateTime.from('2026-05-20T15:00:00+00:00[UTC]')); // true (11:00 in New York)
-isOpen(Temporal.ZonedDateTime.from('2026-05-20T22:00:00+00:00[UTC]')); // false (18:00 in New York)
+isOpen(Temporal.Instant.from('2026-05-20T15:00:00Z')); // false (11:00 in New York)
+isOpen(Temporal.Instant.from('2026-05-21T04:30:00Z')); // true (00:30 in New York)
+```
+
+## Build a month grid for a date picker
+
+Every week row is complete, so the grid starts before the 1st and ends after the last day.
+
+```ts
+import { eachDayOfInterval, endOfMonth, endOfWeek, startOfMonth, startOfWeek } from '@gobrand/tiempo';
+
+function monthGrid(month: Temporal.PlainYearMonth): Temporal.PlainDate[][] {
+  const first = month.toPlainDate({ day: 1 });
+  const days = eachDayOfInterval({
+    start: startOfWeek(startOfMonth(first), { weekStartsOn: 7 }),
+    end: endOfWeek(endOfMonth(first), { weekStartsOn: 7 })
+  });
+  return Array.from({ length: days.length / 7 }, (_, row) => days.slice(row * 7, row * 7 + 7));
+}
+
+const grid = monthGrid(Temporal.PlainYearMonth.from('2026-11'));
+
+grid.length; // 5
+grid[0][0].toString(); // "2026-11-01"
+grid[4][6].toString(); // "2026-12-05"
 ```
 
 ## Group events by the user's calendar day

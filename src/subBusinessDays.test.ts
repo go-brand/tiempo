@@ -16,4 +16,13 @@ describe('subBusinessDays', () => {
 
     expect(subBusinessDays(instant, 1).toString()).toBe('2025-01-24T08:00:00+00:00[UTC]');
   });
+
+  describe('holidays', () => {
+    it('skips holidays going backward', () => {
+      const d = (iso: string) => Temporal.PlainDate.from(iso);
+      const christmas = [d('2025-12-25'), d('2025-12-26')];
+      expect(subBusinessDays(d('2025-12-29'), 1, christmas).toString()).toBe('2025-12-24');
+      expect(subBusinessDays(d('2025-12-24'), -1, christmas).toString()).toBe('2025-12-29');
+    });
+  });
 });
