@@ -14,7 +14,7 @@ git push -u origin main
 ## Step 2: Verify GitHub Actions
 
 Once pushed, GitHub Actions will automatically:
-- Run tests on Node 20.x and 22.x
+- Run tests on Node 22.x, 24.x, and 26.x
 - Type check the code
 - Build the package
 
