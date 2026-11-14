@@ -5,12 +5,8 @@ import { isSameSecond } from './isSameSecond';
 describe('isSameSecond', () => {
   describe('with ZonedDateTime', () => {
     it('returns true for same second, different milliseconds', () => {
-      const time1 = Temporal.ZonedDateTime.from(
-        '2025-01-20T14:30:45.000-05:00[America/New_York]'
-      );
-      const time2 = Temporal.ZonedDateTime.from(
-        '2025-01-20T14:30:45.999-05:00[America/New_York]'
-      );
+      const time1 = Temporal.ZonedDateTime.from('2025-01-20T14:30:45.000-05:00[America/New_York]');
+      const time2 = Temporal.ZonedDateTime.from('2025-01-20T14:30:45.999-05:00[America/New_York]');
 
       expect(isSameSecond(time1, time2)).toBe(true);
     });
@@ -38,46 +34,30 @@ describe('isSameSecond', () => {
     });
 
     it('returns false for different seconds', () => {
-      const sec45 = Temporal.ZonedDateTime.from(
-        '2025-01-20T14:30:45-05:00[America/New_York]'
-      );
-      const sec46 = Temporal.ZonedDateTime.from(
-        '2025-01-20T14:30:46-05:00[America/New_York]'
-      );
+      const sec45 = Temporal.ZonedDateTime.from('2025-01-20T14:30:45-05:00[America/New_York]');
+      const sec46 = Temporal.ZonedDateTime.from('2025-01-20T14:30:46-05:00[America/New_York]');
 
       expect(isSameSecond(sec45, sec46)).toBe(false);
     });
 
     it('returns true for exact same instant', () => {
-      const date1 = Temporal.ZonedDateTime.from(
-        '2025-01-20T14:30:45.123-05:00[America/New_York]'
-      );
-      const date2 = Temporal.ZonedDateTime.from(
-        '2025-01-20T14:30:45.123-05:00[America/New_York]'
-      );
+      const date1 = Temporal.ZonedDateTime.from('2025-01-20T14:30:45.123-05:00[America/New_York]');
+      const date2 = Temporal.ZonedDateTime.from('2025-01-20T14:30:45.123-05:00[America/New_York]');
 
       expect(isSameSecond(date1, date2)).toBe(true);
     });
 
     it('returns true for start and end of same second', () => {
-      const start = Temporal.ZonedDateTime.from(
-        '2025-01-20T14:30:45.000Z[UTC]'
-      );
-      const end = Temporal.ZonedDateTime.from(
-        '2025-01-20T14:30:45.999999999Z[UTC]'
-      );
+      const start = Temporal.ZonedDateTime.from('2025-01-20T14:30:45.000Z[UTC]');
+      const end = Temporal.ZonedDateTime.from('2025-01-20T14:30:45.999999999Z[UTC]');
 
       expect(isSameSecond(start, end)).toBe(true);
     });
 
     it('compares seconds in their respective timezones', () => {
       // Same instant, different local seconds
-      const ny = Temporal.ZonedDateTime.from(
-        '2025-01-20T14:30:45.123-05:00[America/New_York]'
-      );
-      const tokyo = Temporal.ZonedDateTime.from(
-        '2025-01-21T04:30:45.987+09:00[Asia/Tokyo]'
-      );
+      const ny = Temporal.ZonedDateTime.from('2025-01-20T14:30:45.123-05:00[America/New_York]');
+      const tokyo = Temporal.ZonedDateTime.from('2025-01-21T04:30:45.987+09:00[Asia/Tokyo]');
 
       // Same instant (both are 19:30:45 UTC)
       // But different local seconds from each person's perspective
@@ -91,12 +71,8 @@ describe('isSameSecond', () => {
     });
 
     it('returns true when same second in same timezone', () => {
-      const time1 = Temporal.ZonedDateTime.from(
-        '2025-01-20T14:30:45.100+09:00[Asia/Tokyo]'
-      );
-      const time2 = Temporal.ZonedDateTime.from(
-        '2025-01-20T14:30:45.900+09:00[Asia/Tokyo]'
-      );
+      const time1 = Temporal.ZonedDateTime.from('2025-01-20T14:30:45.100+09:00[Asia/Tokyo]');
+      const time2 = Temporal.ZonedDateTime.from('2025-01-20T14:30:45.900+09:00[Asia/Tokyo]');
 
       expect(isSameSecond(time1, time2)).toBe(true);
     });
@@ -135,9 +111,7 @@ describe('isSameSecond', () => {
   describe('with mixed types', () => {
     it('compares Instant (UTC) with ZonedDateTime', () => {
       const instant = Temporal.Instant.from('2025-01-20T14:30:45.123Z');
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-01-20T14:30:45.999Z[UTC]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-01-20T14:30:45.999Z[UTC]');
 
       // instant: 14:30:45.123 UTC
       // zoned: 14:30:45.999 UTC
@@ -146,9 +120,7 @@ describe('isSameSecond', () => {
     });
 
     it('compares ZonedDateTime with Instant across second boundary', () => {
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-01-20T14:30:45.999-05:00[America/New_York]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-01-20T14:30:45.999-05:00[America/New_York]');
       const instant = Temporal.Instant.from('2025-01-20T19:30:46.001Z');
 
       // zoned: 14:30:45 NY = 19:30:45 UTC
@@ -158,9 +130,7 @@ describe('isSameSecond', () => {
     });
 
     it('handles timezone differences correctly', () => {
-      const nyTime = Temporal.ZonedDateTime.from(
-        '2025-01-20T14:30:45.000-05:00[America/New_York]'
-      );
+      const nyTime = Temporal.ZonedDateTime.from('2025-01-20T14:30:45.000-05:00[America/New_York]');
       const utcInstant = Temporal.Instant.from('2025-01-20T14:30:45.999Z');
 
       // nyTime: 14:30:45 in NY timezone
@@ -172,45 +142,29 @@ describe('isSameSecond', () => {
 
   describe('edge cases', () => {
     it('handles midnight second', () => {
-      const midnight = Temporal.ZonedDateTime.from(
-        '2025-01-20T00:00:00.000Z[UTC]'
-      );
-      const almostNextSec = Temporal.ZonedDateTime.from(
-        '2025-01-20T00:00:00.999Z[UTC]'
-      );
+      const midnight = Temporal.ZonedDateTime.from('2025-01-20T00:00:00.000Z[UTC]');
+      const almostNextSec = Temporal.ZonedDateTime.from('2025-01-20T00:00:00.999Z[UTC]');
 
       expect(isSameSecond(midnight, almostNextSec)).toBe(true);
     });
 
     it('handles 23:59:59 second', () => {
-      const lastSec = Temporal.ZonedDateTime.from(
-        '2025-01-20T23:59:59.000Z[UTC]'
-      );
-      const almostMidnight = Temporal.ZonedDateTime.from(
-        '2025-01-20T23:59:59.999Z[UTC]'
-      );
+      const lastSec = Temporal.ZonedDateTime.from('2025-01-20T23:59:59.000Z[UTC]');
+      const almostMidnight = Temporal.ZonedDateTime.from('2025-01-20T23:59:59.999Z[UTC]');
 
       expect(isSameSecond(lastSec, almostMidnight)).toBe(true);
     });
 
     it('returns false across midnight boundary', () => {
-      const beforeMidnight = Temporal.ZonedDateTime.from(
-        '2025-01-20T23:59:59.999Z[UTC]'
-      );
-      const afterMidnight = Temporal.ZonedDateTime.from(
-        '2025-01-21T00:00:00.000Z[UTC]'
-      );
+      const beforeMidnight = Temporal.ZonedDateTime.from('2025-01-20T23:59:59.999Z[UTC]');
+      const afterMidnight = Temporal.ZonedDateTime.from('2025-01-21T00:00:00.000Z[UTC]');
 
       expect(isSameSecond(beforeMidnight, afterMidnight)).toBe(false);
     });
 
     it('handles second boundaries', () => {
-      const endOfSecond = Temporal.ZonedDateTime.from(
-        '2025-01-20T14:30:45.999999999Z[UTC]'
-      );
-      const startOfNextSecond = Temporal.ZonedDateTime.from(
-        '2025-01-20T14:30:46.000000000Z[UTC]'
-      );
+      const endOfSecond = Temporal.ZonedDateTime.from('2025-01-20T14:30:45.999999999Z[UTC]');
+      const startOfNextSecond = Temporal.ZonedDateTime.from('2025-01-20T14:30:46.000000000Z[UTC]');
 
       expect(isSameSecond(endOfSecond, startOfNextSecond)).toBe(false);
     });
@@ -243,23 +197,15 @@ describe('isSameSecond', () => {
     });
 
     it('handles dates far in the past', () => {
-      const past1 = Temporal.ZonedDateTime.from(
-        '1970-01-01T10:30:45.100Z[UTC]'
-      );
-      const past2 = Temporal.ZonedDateTime.from(
-        '1970-01-01T10:30:45.900Z[UTC]'
-      );
+      const past1 = Temporal.ZonedDateTime.from('1970-01-01T10:30:45.100Z[UTC]');
+      const past2 = Temporal.ZonedDateTime.from('1970-01-01T10:30:45.900Z[UTC]');
 
       expect(isSameSecond(past1, past2)).toBe(true);
     });
 
     it('handles dates far in the future', () => {
-      const future1 = Temporal.ZonedDateTime.from(
-        '2100-12-31T23:59:59.000Z[UTC]'
-      );
-      const future2 = Temporal.ZonedDateTime.from(
-        '2100-12-31T23:59:59.999Z[UTC]'
-      );
+      const future1 = Temporal.ZonedDateTime.from('2100-12-31T23:59:59.000Z[UTC]');
+      const future2 = Temporal.ZonedDateTime.from('2100-12-31T23:59:59.999Z[UTC]');
 
       expect(isSameSecond(future1, future2)).toBe(true);
     });
@@ -267,34 +213,22 @@ describe('isSameSecond', () => {
     it('handles leap second boundaries (theoretical)', () => {
       // While leap seconds are handled differently in different systems,
       // we test that sub-second precision is properly ignored
-      const time1 = Temporal.ZonedDateTime.from(
-        '2025-06-30T23:59:59.000Z[UTC]'
-      );
-      const time2 = Temporal.ZonedDateTime.from(
-        '2025-06-30T23:59:59.999Z[UTC]'
-      );
+      const time1 = Temporal.ZonedDateTime.from('2025-06-30T23:59:59.000Z[UTC]');
+      const time2 = Temporal.ZonedDateTime.from('2025-06-30T23:59:59.999Z[UTC]');
 
       expect(isSameSecond(time1, time2)).toBe(true);
     });
 
     it('handles zero milliseconds explicitly', () => {
-      const time1 = Temporal.ZonedDateTime.from(
-        '2025-01-20T14:30:45.000Z[UTC]'
-      );
-      const time2 = Temporal.ZonedDateTime.from(
-        '2025-01-20T14:30:45.001Z[UTC]'
-      );
+      const time1 = Temporal.ZonedDateTime.from('2025-01-20T14:30:45.000Z[UTC]');
+      const time2 = Temporal.ZonedDateTime.from('2025-01-20T14:30:45.001Z[UTC]');
 
       expect(isSameSecond(time1, time2)).toBe(true);
     });
 
     it('handles maximum sub-second precision', () => {
-      const time1 = Temporal.ZonedDateTime.from(
-        '2025-01-20T14:30:45.000000000Z[UTC]'
-      );
-      const time2 = Temporal.ZonedDateTime.from(
-        '2025-01-20T14:30:45.999999999Z[UTC]'
-      );
+      const time1 = Temporal.ZonedDateTime.from('2025-01-20T14:30:45.000000000Z[UTC]');
+      const time2 = Temporal.ZonedDateTime.from('2025-01-20T14:30:45.999999999Z[UTC]');
 
       expect(isSameSecond(time1, time2)).toBe(true);
     });
@@ -302,23 +236,15 @@ describe('isSameSecond', () => {
 
   describe('same timezone, different seconds', () => {
     it('returns false for consecutive seconds', () => {
-      const sec1 = Temporal.ZonedDateTime.from(
-        '2025-01-20T14:30:45-05:00[America/New_York]'
-      );
-      const sec2 = Temporal.ZonedDateTime.from(
-        '2025-01-20T14:30:46-05:00[America/New_York]'
-      );
+      const sec1 = Temporal.ZonedDateTime.from('2025-01-20T14:30:45-05:00[America/New_York]');
+      const sec2 = Temporal.ZonedDateTime.from('2025-01-20T14:30:46-05:00[America/New_York]');
 
       expect(isSameSecond(sec1, sec2)).toBe(false);
     });
 
     it('returns false for seconds far apart', () => {
-      const early = Temporal.ZonedDateTime.from(
-        '2025-01-20T14:30:00-05:00[America/New_York]'
-      );
-      const late = Temporal.ZonedDateTime.from(
-        '2025-01-20T14:30:59-05:00[America/New_York]'
-      );
+      const early = Temporal.ZonedDateTime.from('2025-01-20T14:30:00-05:00[America/New_York]');
+      const late = Temporal.ZonedDateTime.from('2025-01-20T14:30:59-05:00[America/New_York]');
 
       expect(isSameSecond(early, late)).toBe(false);
     });

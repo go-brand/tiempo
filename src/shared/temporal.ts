@@ -1,4 +1,4 @@
-import { Temporal as PolyfillTemporal } from "@js-temporal/polyfill";
+import { Temporal as PolyfillTemporal } from '@js-temporal/polyfill';
 
 /**
  * @internal
@@ -24,9 +24,9 @@ import { Temporal as PolyfillTemporal } from "@js-temporal/polyfill";
  * Import `Temporal` from here so the implementation choice stays in one place.
  */
 const useNative =
-  typeof process !== "undefined" &&
-  process.env?.TIEMPO_TEMPORAL === "native" &&
-  "Temporal" in globalThis;
+  typeof process !== 'undefined' &&
+  process.env?.TIEMPO_TEMPORAL === 'native' &&
+  'Temporal' in globalThis;
 
 export const Temporal = useNative
   ? (globalThis as unknown as { Temporal: typeof PolyfillTemporal }).Temporal
@@ -60,23 +60,23 @@ export namespace Temporal {
  * implementation produced the object.
  */
 function brand(value: unknown): string | undefined {
-  return typeof value === "object" && value !== null
+  return typeof value === 'object' && value !== null
     ? (value as { [Symbol.toStringTag]?: string })[Symbol.toStringTag]
     : undefined;
 }
 
 export function isInstant(value: unknown): value is Temporal.Instant {
-  return brand(value) === "Temporal.Instant";
+  return brand(value) === 'Temporal.Instant';
 }
 
 export function isZonedDateTime(value: unknown): value is Temporal.ZonedDateTime {
-  return brand(value) === "Temporal.ZonedDateTime";
+  return brand(value) === 'Temporal.ZonedDateTime';
 }
 
 export function isPlainDate(value: unknown): value is Temporal.PlainDate {
-  return brand(value) === "Temporal.PlainDate";
+  return brand(value) === 'Temporal.PlainDate';
 }
 
 export function isPlainTime(value: unknown): value is Temporal.PlainTime {
-  return brand(value) === "Temporal.PlainTime";
+  return brand(value) === 'Temporal.PlainTime';
 }

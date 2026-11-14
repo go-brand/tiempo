@@ -1,35 +1,42 @@
 {
   "name": "@gobrand/tiempo",
   "version": "3.2.0",
-  "packageManager": "pnpm@10.33.4",
-  "description": "Lightweight timezone-safe date and time utilities built on the Temporal API",
   "private": false,
-  "publishConfig": {
-    "access": "public"
-  },
-  "type": "module",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "files": [
-    "dist",
-    "README.md",
-    "LICENSE"
+  "description": "Lightweight timezone-safe date and time utilities built on the Temporal API",
+  "keywords": [
+    "datetime",
+    "temporal",
+    "time-conversion",
+    "timezone",
+    "utc",
+    "zoned-datetime"
   ],
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
-    }
+  "homepage": "https://tiempo.gobrand.app",
+  "bugs": {
+    "url": "https://github.com/go-brand/tiempo/issues"
   },
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/go-brand/tiempo.git"
   },
-  "bugs": {
-    "url": "https://github.com/go-brand/tiempo/issues"
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
   },
-  "homepage": "https://tiempo.gobrand.app",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "generate:timezones": "tsx scripts/generate-timezone-types.ts",
     "generate:matrix": "tsx scripts/generate-capability-matrix.ts",
@@ -38,6 +45,8 @@
     "clean": "git clean -xdf .cache .turbo dist node_modules tsconfig.tsbuildinfo",
     "smoke:package": "tsc -p smoke/tsconfig.json && tsx smoke/consumer.ts",
     "test": "vitest",
+    "format": "oxfmt",
+    "format:check": "oxfmt --check",
     "typecheck": "tsc --noEmit",
     "release": "bash scripts/release.sh",
     "smoke:tarball": "node scripts/smoke-tarball.mjs"
@@ -47,18 +56,12 @@
   },
   "devDependencies": {
     "@types/node": "^22.10.5",
+    "esbuild": "^0.27.2",
+    "oxfmt": "0.78.0",
     "tsup": "^8.5.0",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
-    "vitest": "^3.2.4",
-    "esbuild": "^0.27.2"
+    "vitest": "^3.2.4"
   },
-  "keywords": [
-    "temporal",
-    "timezone",
-    "utc",
-    "datetime",
-    "zoned-datetime",
-    "time-conversion"
-  ]
+  "packageManager": "pnpm@10.33.4"
 }

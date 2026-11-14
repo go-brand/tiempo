@@ -67,7 +67,8 @@ export function eachHourOfInterval(interval: {
   const hours: Temporal.ZonedDateTime[] = [];
   while (current.epochNanoseconds <= endZoned.epochNanoseconds) {
     hours.push(current);
-    const nextLocalHour = current.toPlainDateTime()
+    const nextLocalHour = current
+      .toPlainDateTime()
       .round({ smallestUnit: 'hour', roundingMode: 'floor' })
       .add({ hours: 1 });
     let next = nextLocalHour.toZonedDateTime(current.timeZoneId);
@@ -77,9 +78,10 @@ export function eachHourOfInterval(interval: {
     // Offset transitions can start a partial or repeated hour before the next
     // local :00. Afterwards, compute a local boundary again to avoid drift.
     const nextTransition = current.getTimeZoneTransition('next');
-    current = nextTransition && nextTransition.epochNanoseconds < next.epochNanoseconds
-      ? nextTransition
-      : next;
+    current =
+      nextTransition && nextTransition.epochNanoseconds < next.epochNanoseconds
+        ? nextTransition
+        : next;
   }
 
   return hours;

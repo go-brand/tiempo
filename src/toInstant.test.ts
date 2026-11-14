@@ -9,9 +9,7 @@ describe('toInstant', () => {
     const iso = '2025-01-20T20:00:00Z';
     const epochMilliseconds = 1737403200000;
     const date = new Date(iso);
-    const zoned = Temporal.ZonedDateTime.from(
-      '2025-01-20T15:00:00-05:00[America/New_York]'
-    );
+    const zoned = Temporal.ZonedDateTime.from('2025-01-20T15:00:00-05:00[America/New_York]');
 
     expect(toInstant(iso).toString()).toBe(iso);
     expect(toInstant(epochMilliseconds).toString()).toBe(iso);
@@ -23,9 +21,7 @@ describe('toInstant', () => {
     expect(toInstant('2025-01-20T20:00:00.123456789Z').toString()).toBe(
       '2025-01-20T20:00:00.123456789Z'
     );
-    expect(toInstant(1737403200123).toString()).toBe(
-      '2025-01-20T20:00:00.123Z'
-    );
+    expect(toInstant(1737403200123).toString()).toBe('2025-01-20T20:00:00.123Z');
     expect(toInstant(new Date('2025-01-20T20:00:00.123Z')).toString()).toBe(
       '2025-01-20T20:00:00.123Z'
     );
@@ -41,16 +37,10 @@ describe('toInstant', () => {
 
   it('preserves the exact moment across timezone conversions', () => {
     const original = '2025-06-15T14:30:00Z';
-    const timezones = [
-      'America/New_York',
-      'Asia/Tokyo',
-      'Europe/London',
-    ] as const;
+    const timezones = ['America/New_York', 'Asia/Tokyo', 'Europe/London'] as const;
 
     for (const timezone of timezones) {
-      expect(toInstant(toZonedTime(original, timezone)).toString()).toBe(
-        original
-      );
+      expect(toInstant(toZonedTime(original, timezone)).toString()).toBe(original);
     }
   });
 

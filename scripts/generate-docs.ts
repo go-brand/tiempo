@@ -13,107 +13,104 @@
  * Set SYNC_GLOBAL_SKILL=1 to also sync to ~/.claude/skills/tiempo
  */
 
-import * as fs from "node:fs";
-import * as path from "node:path";
-import * as os from "node:os";
-import { createHash } from "node:crypto";
-import { pathToFileURL } from "node:url";
+import * as fs from 'node:fs';
+import * as path from 'node:path';
+import * as os from 'node:os';
+import { createHash } from 'node:crypto';
+import { pathToFileURL } from 'node:url';
 
-const DOCS_DIR = "www/content/docs";
-const SKILL_REFS_DIR = "skills/tiempo/references";
-const LLMS_TXT_PATH = "www/public/llms.txt";
-const SKILL_MD_PATH = "skills/tiempo/SKILL.md";
-const PUBLIC_DIR = "www/public";
-const PUBLIC_AGENT_SKILLS_DIR = path.join(
-  PUBLIC_DIR,
-  ".well-known/agent-skills",
-);
-const PUBLIC_MARKDOWN_DIR = path.join(PUBLIC_DIR, ".well-known/markdown");
+const DOCS_DIR = 'www/content/docs';
+const SKILL_REFS_DIR = 'skills/tiempo/references';
+const LLMS_TXT_PATH = 'www/public/llms.txt';
+const SKILL_MD_PATH = 'skills/tiempo/SKILL.md';
+const PUBLIC_DIR = 'www/public';
+const PUBLIC_AGENT_SKILLS_DIR = path.join(PUBLIC_DIR, '.well-known/agent-skills');
+const PUBLIC_MARKDOWN_DIR = path.join(PUBLIC_DIR, '.well-known/markdown');
 
-export const SITE_URL = "https://tiempo.gobrand.app";
+export const SITE_URL = 'https://tiempo.gobrand.app';
 export const DOCS_URL = `${SITE_URL}/docs`;
 
 // Global skill directory (synced alongside repo skills)
-const GLOBAL_SKILL_DIR = path.join(os.homedir(), ".claude/skills/tiempo");
-const GLOBAL_SKILL_REFS_DIR = path.join(GLOBAL_SKILL_DIR, "references");
-const GLOBAL_SKILL_MD_PATH = path.join(GLOBAL_SKILL_DIR, "SKILL.md");
+const GLOBAL_SKILL_DIR = path.join(os.homedir(), '.claude/skills/tiempo');
+const GLOBAL_SKILL_REFS_DIR = path.join(GLOBAL_SKILL_DIR, 'references');
+const GLOBAL_SKILL_MD_PATH = path.join(GLOBAL_SKILL_DIR, 'SKILL.md');
 
 // Writing into the user's home directory (~/.claude/skills/tiempo) only
 // happens when explicitly opted in, so `pnpm build` / CI never mutate global
 // state. Run `SYNC_GLOBAL_SKILL=1 pnpm generate:docs` to sync.
 const SYNC_GLOBAL_SKILL =
-  process.env.SYNC_GLOBAL_SKILL === "1" || process.env.SYNC_GLOBAL_SKILL === "true";
+  process.env.SYNC_GLOBAL_SKILL === '1' || process.env.SYNC_GLOBAL_SKILL === 'true';
 
 // Categories to process (in order for llms.txt)
 const CATEGORIES = [
-  "conversion",
-  "current-time",
-  "formatting",
-  "arithmetic",
-  "boundaries",
-  "rounding",
-  "comparison",
-  "selection",
-  "difference",
-  "business-days",
-  "intervals",
-  "utilities",
+  'conversion',
+  'current-time',
+  'formatting',
+  'arithmetic',
+  'boundaries',
+  'rounding',
+  'comparison',
+  'selection',
+  'difference',
+  'business-days',
+  'intervals',
+  'utilities'
 ] as const;
 
 // Category metadata for llms.txt
 const CATEGORY_TITLES: Record<string, string> = {
-  conversion: "Conversion",
-  "current-time": "Current Time",
-  formatting: "Formatting & Parsing",
-  arithmetic: "Arithmetic",
-  boundaries: "Boundaries",
-  rounding: "Rounding",
-  comparison: "Comparison",
-  selection: "Sorting & Selection",
-  difference: "Difference",
-  "business-days": "Business Days",
-  intervals: "Intervals",
-  utilities: "Utilities",
+  conversion: 'Conversion',
+  'current-time': 'Current Time',
+  formatting: 'Formatting & Parsing',
+  arithmetic: 'Arithmetic',
+  boundaries: 'Boundaries',
+  rounding: 'Rounding',
+  comparison: 'Comparison',
+  selection: 'Sorting & Selection',
+  difference: 'Difference',
+  'business-days': 'Business Days',
+  intervals: 'Intervals',
+  utilities: 'Utilities'
 };
 
 // Top-level guides copied into the skill's references
-const SKILL_GUIDES = new Set(["date-fns"]);
+const SKILL_GUIDES = new Set(['date-fns']);
 
 // Functions to group under "Optional" in llms.txt
 const OPTIONAL_FUNCTIONS = new Set([
-  "add-milliseconds",
-  "add-microseconds",
-  "add-nanoseconds",
-  "sub-milliseconds",
-  "sub-microseconds",
-  "sub-nanoseconds",
-  "difference-in-milliseconds",
-  "difference-in-microseconds",
-  "difference-in-nanoseconds",
-  "is-same-hour",
-  "is-same-minute",
-  "is-same-second",
-  "is-same-millisecond",
-  "is-same-microsecond",
-  "is-same-nanosecond",
-  "is-plain-date-before",
-  "is-plain-date-after",
-  "is-plain-date-equal",
-  "is-plain-time-before",
-  "is-plain-time-after",
-  "is-plain-time-equal",
+  'add-milliseconds',
+  'add-microseconds',
+  'add-nanoseconds',
+  'sub-milliseconds',
+  'sub-microseconds',
+  'sub-nanoseconds',
+  'difference-in-milliseconds',
+  'difference-in-microseconds',
+  'difference-in-nanoseconds',
+  'is-same-hour',
+  'is-same-minute',
+  'is-same-second',
+  'is-same-millisecond',
+  'is-same-microsecond',
+  'is-same-nanosecond',
+  'is-plain-date-before',
+  'is-plain-date-after',
+  'is-plain-date-equal',
+  'is-plain-time-before',
+  'is-plain-time-after',
+  'is-plain-time-equal'
 ]);
 
 // Rules every agent needs before choosing a function. Shared by llms.txt and SKILL.md.
 const CORE_RULES = [
-  "- **Pick the type that says what the value is.** `Instant`: a moment (timestamps, logs). `ZonedDateTime`: a moment in a place (UI, scheduling). `PlainDate`: a calendar date (birthdays, due dates). `PlainTime`: a clock time (opening hours).",
+  '- **Pick the type that says what the value is.** `Instant`: a moment (timestamps, logs). `ZonedDateTime`: a moment in a place (UI, scheduling). `PlainDate`: a calendar date (birthdays, due dates). `PlainTime`: a clock time (opening hours).',
   "- **Instant inputs mean UTC.** Calendar operations on an Instant (`startOfDay`, `addDays`, `isSameDay`) use UTC, and datetime results are UTC ZonedDateTimes. For a user's calendar, convert first: `toZonedTime(instant, timezone)`.",
-  "- **ZonedDateTime keeps its timezone; PlainDate stays a date.** Arithmetic is DST-safe.",
-  "- **Argument order follows date-fns.** Differences take `(laterDate, earlierDate)`; intervals take `{ start, end }`.",
+  '- **ZonedDateTime keeps its timezone; PlainDate stays a date.** Arithmetic is DST-safe.',
+  '- **Argument order follows date-fns.** Differences take `(laterDate, earlierDate)`; intervals take `{ start, end }`.',
   "- **Domains don't mix.** Comparing a PlainDate with an Instant is a TypeScript error and throws a TypeError. Convert explicitly.",
   "- **Days of the week use Temporal's numbers.** 1 is Monday and 7 is Sunday, as in `dayOfWeek`. Weeks start on Monday unless you pass `{ weekStartsOn: 7 }`; date-fns's 0 for Sunday throws.",
-  "- **\"Today\" needs a place.** `today(timezone)`, `now(timezone)`, `isToday(date, timezone)`.",
-  "- **Store exact moments as UTC ISO strings** (`toIso(instant)`); store date-only values as `YYYY-MM-DD`.",
+  '- **"Today" needs a place.** `today(timezone)`, `now(timezone)`, `isToday(date, timezone)`.',
+  '- **Store exact moments as UTC ISO strings** (`toIso(instant)`); store date-only values as `YYYY-MM-DD`.'
 ];
 
 interface DocFile {
@@ -146,9 +143,9 @@ function parseMdx(content: string): {
   }
 
   const frontmatter: Record<string, string> = {};
-  const frontmatterLines = frontmatterMatch[1].split("\n");
+  const frontmatterLines = frontmatterMatch[1].split('\n');
   for (const line of frontmatterLines) {
-    const colonIndex = line.indexOf(":");
+    const colonIndex = line.indexOf(':');
     if (colonIndex > 0) {
       const key = line.slice(0, colonIndex).trim();
       const value = line.slice(colonIndex + 1).trim();
@@ -170,10 +167,10 @@ function loadDocFiles(): DocFile[] {
     if (!fs.existsSync(categoryDir)) continue;
 
     // Load meta.json to get page order
-    const metaPath = path.join(categoryDir, "meta.json");
+    const metaPath = path.join(categoryDir, 'meta.json');
     if (!fs.existsSync(metaPath)) continue;
 
-    const meta: MetaJson = JSON.parse(fs.readFileSync(metaPath, "utf-8"));
+    const meta: MetaJson = JSON.parse(fs.readFileSync(metaPath, 'utf-8'));
 
     for (const slug of meta.pages) {
       const filePath = path.join(categoryDir, `${slug}.mdx`);
@@ -182,17 +179,17 @@ function loadDocFiles(): DocFile[] {
         continue;
       }
 
-      const content = fs.readFileSync(filePath, "utf-8");
+      const content = fs.readFileSync(filePath, 'utf-8');
       const { frontmatter, body } = parseMdx(content);
 
       docs.push({
         slug,
         category,
         title: frontmatter.title || slug,
-        description: frontmatter.description || "",
+        description: frontmatter.description || '',
         body,
         filePath,
-        pathname: `/docs/${category}/${slug}`,
+        pathname: `/docs/${category}/${slug}`
       });
     }
   }
@@ -201,24 +198,24 @@ function loadDocFiles(): DocFile[] {
 }
 
 function loadTopLevelDocFiles(): DocFile[] {
-  const metaPath = path.join(DOCS_DIR, "meta.json");
-  const meta: MetaJson = JSON.parse(fs.readFileSync(metaPath, "utf-8"));
+  const metaPath = path.join(DOCS_DIR, 'meta.json');
+  const meta: MetaJson = JSON.parse(fs.readFileSync(metaPath, 'utf-8'));
   const docs: DocFile[] = [];
 
   for (const slug of meta.pages) {
     const filePath = path.join(DOCS_DIR, `${slug}.mdx`);
     if (!fs.existsSync(filePath)) continue;
 
-    const content = fs.readFileSync(filePath, "utf-8");
+    const content = fs.readFileSync(filePath, 'utf-8');
     const { frontmatter, body } = parseMdx(content);
     docs.push({
       slug,
-      category: "",
+      category: '',
       title: frontmatter.title || slug,
-      description: frontmatter.description || "",
+      description: frontmatter.description || '',
       body,
       filePath,
-      pathname: slug === "index" ? "/docs" : `/docs/${slug}`,
+      pathname: slug === 'index' ? '/docs' : `/docs/${slug}`
     });
   }
 
@@ -227,82 +224,72 @@ function loadTopLevelDocFiles(): DocFile[] {
 
 export function buildRobotsTxt(): string {
   return [
-    "User-agent: *",
-    "Allow: /",
-    "Content-Signal: ai-train=no, search=yes, ai-input=yes",
-    "",
+    'User-agent: *',
+    'Allow: /',
+    'Content-Signal: ai-train=no, search=yes, ai-input=yes',
+    '',
     `Sitemap: ${SITE_URL}/sitemap.xml`,
-    "",
-  ].join("\n");
+    ''
+  ].join('\n');
 }
 
 export function buildSitemapXml(pathnames: string[]): string {
   const urls = pathnames
     .map((pathname) => `  <url><loc>${SITE_URL}${pathname}</loc></url>`)
-    .join("\n");
+    .join('\n');
 
   return [
     '<?xml version="1.0" encoding="UTF-8"?>',
     '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
     urls,
-    "</urlset>",
-    "",
-  ].join("\n");
+    '</urlset>',
+    ''
+  ].join('\n');
 }
 
 export function markdownAssetPath(pathname: string): string {
-  const docsPath =
-    pathname === "/"
-      ? "/index"
-      : pathname === "/docs"
-        ? "/docs/index"
-        : pathname;
+  const docsPath = pathname === '/' ? '/index' : pathname === '/docs' ? '/docs/index' : pathname;
   return `/.well-known/markdown${docsPath}.md`;
 }
 
 export function buildAgentSkillsIndex(skillDigest: string) {
   return {
-    $schema: "https://schemas.agentskills.io/discovery/0.2.0/schema.json" as const,
+    $schema: 'https://schemas.agentskills.io/discovery/0.2.0/schema.json' as const,
     skills: [
       {
-        name: "tiempo" as const,
-        type: "skill-md" as const,
+        name: 'tiempo' as const,
+        type: 'skill-md' as const,
         description:
-          "Use tiempo for timezone-safe date and time handling with the Temporal API in TypeScript and JavaScript.",
-        url: "/.well-known/agent-skills/tiempo/SKILL.md" as const,
-        digest: `sha256:${skillDigest}`,
-      },
-    ],
+          'Use tiempo for timezone-safe date and time handling with the Temporal API in TypeScript and JavaScript.',
+        url: '/.well-known/agent-skills/tiempo/SKILL.md' as const,
+        digest: `sha256:${skillDigest}`
+      }
+    ]
   };
 }
 
-export function buildMarkdownDocument({
-  title,
-  body,
-}: Pick<DocFile, "title" | "body">): string {
+export function buildMarkdownDocument({ title, body }: Pick<DocFile, 'title' | 'body'>): string {
   let insideCodeFence = false;
   const lines: string[] = [];
 
-  for (const line of body.split("\n")) {
-    if (line.trimStart().startsWith("```")) {
+  for (const line of body.split('\n')) {
+    if (line.trimStart().startsWith('```')) {
       insideCodeFence = !insideCodeFence;
       lines.push(line);
       continue;
     }
 
-    if (!insideCodeFence && line.startsWith("import ")) continue;
-    if (!insideCodeFence && ["<Cards>", "</Cards>"].includes(line.trim())) {
+    if (!insideCodeFence && line.startsWith('import ')) continue;
+    if (!insideCodeFence && ['<Cards>', '</Cards>'].includes(line.trim())) {
       continue;
     }
 
     if (!insideCodeFence) {
       const card = line.match(
-        /^\s*<Card title="([^"]+)" href="([^"]+)" description="([^"]+)" \/>\s*$/,
+        /^\s*<Card title="([^"]+)" href="([^"]+)" description="([^"]+)" \/>\s*$/
       );
       if (card) {
-        const href = card[2].startsWith("/")
-          ? `${SITE_URL}${card[2]}`
-          : card[2];
+        const href = card[2].startsWith('/') ? `${SITE_URL}${card[2]}` : card[2];
         lines.push(`- [${card[1]}](${href}): ${card[3]}`);
         continue;
       }
@@ -312,7 +299,7 @@ export function buildMarkdownDocument({
   }
 
   const markdown = lines
-    .join("\n")
+    .join('\n')
     .trim()
     .replace(/\]\((\/[^)]+)\)/g, `](${SITE_URL}$1)`);
 
@@ -330,7 +317,7 @@ function generateSkillMarkdown(doc: DocFile): string {
  * Generate all skill reference files
  */
 function generateSkillRefs(docs: DocFile[], guides: DocFile[]): void {
-  console.log("Generating skill reference files...");
+  console.log('Generating skill reference files...');
 
   for (const guide of guides) {
     const outPath = path.join(SKILL_REFS_DIR, `${guide.slug}.md`);
@@ -341,7 +328,7 @@ function generateSkillRefs(docs: DocFile[], guides: DocFile[]): void {
   for (const category of CATEGORIES) {
     fs.rmSync(path.join(SKILL_REFS_DIR, category), {
       recursive: true,
-      force: true,
+      force: true
     });
   }
 
@@ -373,21 +360,21 @@ function generateSkillRefs(docs: DocFile[], guides: DocFile[]): void {
  * Generate llms.txt
  */
 function generateLlmsTxt(docs: DocFile[]): void {
-  console.log("Generating llms.txt...");
+  console.log('Generating llms.txt...');
 
   const lines: string[] = [
-    "# tiempo",
-    "",
-    "> date-fns-style functions for the Temporal API: timezone conversion, formatting, DST-safe arithmetic, comparison, sorting, business days, and intervals.",
-    "",
+    '# tiempo',
+    '',
+    '> date-fns-style functions for the Temporal API: timezone conversion, formatting, DST-safe arithmetic, comparison, sorting, business days, and intervals.',
+    '',
     "Install with `npm install @gobrand/tiempo` and import functions by name: `import { addDays, format } from '@gobrand/tiempo'`.",
-    "",
-    "## Core rules",
-    "",
+    '',
+    '## Core rules',
+    '',
     ...CORE_RULES,
-    "",
-    "## Docs",
-    "",
+    '',
+    '## Docs',
+    '',
     `- [Introduction](${DOCS_URL}): Overview of tiempo and key features`,
     `- [Installation](${DOCS_URL}/installation): Getting started with tiempo in your project`,
     `- [Coming from date-fns](${DOCS_URL}/date-fns): Function mapping and the differences that matter`,
@@ -396,7 +383,7 @@ function generateLlmsTxt(docs: DocFile[]): void {
     `- [Type Matrix](${DOCS_URL}/type-matrix): Input, timezone, and return mappings for every public function`,
     `- [Recipes](${DOCS_URL}/recipes): Common timezone-safe datetime workflows`,
     `- [AI Resources](${DOCS_URL}/ai-resources): Machine-readable documentation and Agent Skill discovery`,
-    "",
+    ''
   ];
 
   // Group docs by category
@@ -419,30 +406,30 @@ function generateLlmsTxt(docs: DocFile[]): void {
     if (!categoryDocs || categoryDocs.length === 0) continue;
 
     lines.push(`## ${CATEGORY_TITLES[category] || category}`);
-    lines.push("");
+    lines.push('');
 
     for (const doc of categoryDocs) {
       const url = `${DOCS_URL}/${doc.category}/${doc.slug}`;
       lines.push(`- [${doc.title}](${url}): ${doc.description}`);
     }
 
-    lines.push("");
+    lines.push('');
   }
 
   // Add optional section
   if (optionalDocs.length > 0) {
-    lines.push("## Optional");
-    lines.push("");
+    lines.push('## Optional');
+    lines.push('');
 
     for (const doc of optionalDocs) {
       const url = `${DOCS_URL}/${doc.category}/${doc.slug}`;
       lines.push(`- [${doc.title}](${url}): ${doc.description}`);
     }
 
-    lines.push("");
+    lines.push('');
   }
 
-  fs.writeFileSync(LLMS_TXT_PATH, lines.join("\n"));
+  fs.writeFileSync(LLMS_TXT_PATH, lines.join('\n'));
   console.log(`  ✓ ${LLMS_TXT_PATH}`);
 }
 
@@ -450,34 +437,34 @@ function generateLlmsTxt(docs: DocFile[]): void {
  * Generate SKILL.md index
  */
 function generateSkillMd(docs: DocFile[]): void {
-  console.log("Generating SKILL.md...");
+  console.log('Generating SKILL.md...');
 
   const lines: string[] = [
-    "---",
-    "name: tiempo",
+    '---',
+    'name: tiempo',
     "description: Use when working with dates, times, timezones, or the Temporal API in TypeScript/JavaScript, or when replacing Date or date-fns. Covers tiempo's timezone-safe functions for conversion, formatting, arithmetic, comparison, sorting, business days, and intervals.",
-    "---",
-    "",
-    "# tiempo - Timezone-Safe Datetime Handling",
-    "",
-    "date-fns-style functions for the Temporal API. Coming from date-fns? See the [mapping](references/date-fns.md).",
-    "",
-    "```bash",
-    "npm install @gobrand/tiempo",
-    "```",
-    "",
-    "## Core Rules",
-    "",
+    '---',
+    '',
+    '# tiempo - Timezone-Safe Datetime Handling',
+    '',
+    'date-fns-style functions for the Temporal API. Coming from date-fns? See the [mapping](references/date-fns.md).',
+    '',
+    '```bash',
+    'npm install @gobrand/tiempo',
+    '```',
+    '',
+    '## Core Rules',
+    '',
     ...CORE_RULES,
-    "",
-    "## Best Practices",
-    "",
-    "- **Choose the timezone for local intent** - Instant conveniences default to UTC; convert explicitly for local calendar work. [details](references/best-practices/explicit-timezone.md)",
+    '',
+    '## Best Practices',
+    '',
+    '- **Choose the timezone for local intent** - Instant conveniences default to UTC; convert explicitly for local calendar work. [details](references/best-practices/explicit-timezone.md)',
     "- **Don't use JavaScript Date** - Use tiempo instead of Date for timezone work. [details](references/best-practices/no-js-date.md)",
-    "- **Store timestamps in UTC** - Preserve date-only values and future local scheduling intent separately. [details](references/best-practices/utc-storage.md)",
-    "",
-    "---",
-    "",
+    '- **Store timestamps in UTC** - Preserve date-only values and future local scheduling intent separately. [details](references/best-practices/utc-storage.md)',
+    '',
+    '---',
+    ''
   ];
 
   // Group by category
@@ -495,34 +482,34 @@ function generateSkillMd(docs: DocFile[]): void {
 
     const title = CATEGORY_TITLES[category] || category;
     lines.push(`## ${title}`);
-    lines.push("");
-    lines.push("| Function | Description | Reference |");
-    lines.push("|----------|-------------|-----------|");
+    lines.push('');
+    lines.push('| Function | Description | Reference |');
+    lines.push('|----------|-------------|-----------|');
 
     for (const doc of categoryDocs) {
       const refPath = `references/${category}/${doc.slug}.md`;
       lines.push(`| \`${doc.title}()\` | ${doc.description} | [details](${refPath}) |`);
     }
 
-    lines.push("");
+    lines.push('');
   }
 
   // Add types section
-  lines.push("## Types");
-  lines.push("");
-  lines.push("```ts");
+  lines.push('## Types');
+  lines.push('');
+  lines.push('```ts');
   lines.push("import type { Timezone, IANATimezone } from '@gobrand/tiempo';");
-  lines.push("");
+  lines.push('');
   lines.push('// Timezone: suggested IANA names and UTC; arbitrary strings are also accepted');
   lines.push("const tz: Timezone = 'America/New_York';  // Autocomplete for 400+ timezones");
-  lines.push("");
+  lines.push('');
   lines.push('// IANATimezone: suggested identifiers plus arbitrary strings (including "UTC")');
-  lines.push("// These types provide autocomplete, not runtime timezone validation.");
+  lines.push('// These types provide autocomplete, not runtime timezone validation.');
   lines.push("const iana: IANATimezone = 'Europe/London';");
-  lines.push("```");
-  lines.push("");
+  lines.push('```');
+  lines.push('');
 
-  const content = lines.join("\n");
+  const content = lines.join('\n');
 
   // Write to repo
   fs.writeFileSync(SKILL_MD_PATH, content);
@@ -537,13 +524,12 @@ function generateSkillMd(docs: DocFile[]): void {
 }
 
 function generateMarkdownAssets(docs: DocFile[]): void {
-  console.log("Generating negotiated Markdown assets...");
+  console.log('Generating negotiated Markdown assets...');
   fs.rmSync(PUBLIC_MARKDOWN_DIR, { recursive: true, force: true });
 
   for (const doc of docs) {
     const markdown = buildMarkdownDocument(doc);
-    const pathnames =
-      doc.pathname === "/docs" ? [doc.pathname, "/"] : [doc.pathname];
+    const pathnames = doc.pathname === '/docs' ? [doc.pathname, '/'] : [doc.pathname];
 
     for (const pathname of pathnames) {
       const outputPath = path.join(PUBLIC_DIR, markdownAssetPath(pathname));
@@ -556,53 +542,48 @@ function generateMarkdownAssets(docs: DocFile[]): void {
 }
 
 function generateAgentSkillAssets(): void {
-  console.log("Generating Agent Skill discovery...");
-  const publicSkillDir = path.join(PUBLIC_AGENT_SKILLS_DIR, "tiempo");
+  console.log('Generating Agent Skill discovery...');
+  const publicSkillDir = path.join(PUBLIC_AGENT_SKILLS_DIR, 'tiempo');
   fs.rmSync(PUBLIC_AGENT_SKILLS_DIR, { recursive: true, force: true });
   fs.mkdirSync(publicSkillDir, { recursive: true });
 
-  const publicSkillPath = path.join(publicSkillDir, "SKILL.md");
+  const publicSkillPath = path.join(publicSkillDir, 'SKILL.md');
   fs.copyFileSync(SKILL_MD_PATH, publicSkillPath);
-  fs.cpSync(SKILL_REFS_DIR, path.join(publicSkillDir, "references"), {
-    recursive: true,
+  fs.cpSync(SKILL_REFS_DIR, path.join(publicSkillDir, 'references'), {
+    recursive: true
   });
 
-  const digest = createHash("sha256")
-    .update(fs.readFileSync(publicSkillPath))
-    .digest("hex");
+  const digest = createHash('sha256').update(fs.readFileSync(publicSkillPath)).digest('hex');
   fs.writeFileSync(
-    path.join(PUBLIC_AGENT_SKILLS_DIR, "index.json"),
-    `${JSON.stringify(buildAgentSkillsIndex(digest), null, 2)}\n`,
+    path.join(PUBLIC_AGENT_SKILLS_DIR, 'index.json'),
+    `${JSON.stringify(buildAgentSkillsIndex(digest), null, 2)}\n`
   );
   console.log(`  ✓ ${PUBLIC_AGENT_SKILLS_DIR}`);
 }
 
 function generateDiscoveryFiles(docs: DocFile[]): void {
-  console.log("Generating crawler discovery files...");
+  console.log('Generating crawler discovery files...');
   const sitemapPaths = [
-    "/",
-    "/date-fns",
+    '/',
+    '/date-fns',
     ...docs.map((doc) => doc.pathname),
-    "/llms.txt",
-    "/.well-known/agent-skills/index.json",
+    '/llms.txt',
+    '/.well-known/agent-skills/index.json'
   ];
 
-  fs.writeFileSync(path.join(PUBLIC_DIR, "robots.txt"), buildRobotsTxt());
-  fs.writeFileSync(
-    path.join(PUBLIC_DIR, "sitemap.xml"),
-    buildSitemapXml(sitemapPaths),
-  );
-  console.log(`  ✓ ${path.join(PUBLIC_DIR, "robots.txt")}`);
-  console.log(`  ✓ ${path.join(PUBLIC_DIR, "sitemap.xml")}`);
+  fs.writeFileSync(path.join(PUBLIC_DIR, 'robots.txt'), buildRobotsTxt());
+  fs.writeFileSync(path.join(PUBLIC_DIR, 'sitemap.xml'), buildSitemapXml(sitemapPaths));
+  console.log(`  ✓ ${path.join(PUBLIC_DIR, 'robots.txt')}`);
+  console.log(`  ✓ ${path.join(PUBLIC_DIR, 'sitemap.xml')}`);
 }
 
 /**
  * Main
  */
 function main(): void {
-  console.log("📚 Documentation Generator\n");
-  console.log("Source: MDX files in www/content/docs/");
-  console.log("─".repeat(50));
+  console.log('📚 Documentation Generator\n');
+  console.log('Source: MDX files in www/content/docs/');
+  console.log('─'.repeat(50));
 
   const docs = loadDocFiles();
   const allDocs = [...loadTopLevelDocFiles(), ...docs];
@@ -611,30 +592,28 @@ function main(): void {
   // Guides bundled with the skill so it works without fetching the site.
   const skillGuides = allDocs.filter((doc) => SKILL_GUIDES.has(doc.slug));
   generateSkillRefs(docs, skillGuides);
-  console.log("");
+  console.log('');
 
   generateLlmsTxt(docs);
-  console.log("");
+  console.log('');
 
   generateSkillMd(docs);
-  console.log("");
+  console.log('');
 
   generateMarkdownAssets(allDocs);
-  console.log("");
+  console.log('');
 
   generateAgentSkillAssets();
-  console.log("");
+  console.log('');
 
   generateDiscoveryFiles(allDocs);
-  console.log("");
+  console.log('');
 
-  console.log("─".repeat(50));
-  console.log("✅ Done!");
+  console.log('─'.repeat(50));
+  console.log('✅ Done!');
 }
 
-const entryPath = process.argv[1]
-  ? pathToFileURL(path.resolve(process.argv[1])).href
-  : "";
+const entryPath = process.argv[1] ? pathToFileURL(path.resolve(process.argv[1])).href : '';
 
 if (import.meta.url === entryPath) {
   main();

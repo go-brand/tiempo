@@ -36,11 +36,9 @@ describe('isFuture', () => {
 
     it('works with different timezones', () => {
       const futureInTokyo = Temporal.Now.zonedDateTimeISO('Asia/Tokyo').add({
-        hours: 1,
+        hours: 1
       });
-      const futureInNY = Temporal.Now.zonedDateTimeISO(
-        'America/New_York'
-      ).add({ hours: 1 });
+      const futureInNY = Temporal.Now.zonedDateTimeISO('America/New_York').add({ hours: 1 });
 
       expect(isFuture(futureInTokyo)).toBe(true);
       expect(isFuture(futureInNY)).toBe(true);
@@ -69,9 +67,7 @@ describe('isFuture', () => {
 
   describe('edge cases', () => {
     it('handles dates far in the future', () => {
-      const farFuture = Temporal.ZonedDateTime.from(
-        '2100-01-01T00:00:00Z[UTC]'
-      );
+      const farFuture = Temporal.ZonedDateTime.from('2100-01-01T00:00:00Z[UTC]');
 
       expect(isFuture(farFuture)).toBe(true);
     });
@@ -85,9 +81,7 @@ describe('isFuture', () => {
     it('handles DST transitions', () => {
       const now = Temporal.Now.zonedDateTimeISO('America/New_York');
       // March 9, 2025: DST begins in New York
-      const afterDst = Temporal.ZonedDateTime.from(
-        '2025-03-09T03:30:00-04:00[America/New_York]'
-      );
+      const afterDst = Temporal.ZonedDateTime.from('2025-03-09T03:30:00-04:00[America/New_York]');
 
       // Only check if the date is in the future relative to now
       if (now.epochMilliseconds < afterDst.epochMilliseconds) {

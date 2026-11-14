@@ -49,9 +49,7 @@ describe('startOfDay', () => {
 
   describe('from Temporal.ZonedDateTime', () => {
     it('returns start of day in same timezone', () => {
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-01-20T15:30:00-05:00[America/New_York]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-01-20T15:30:00-05:00[America/New_York]');
       const start = startOfDay(zoned);
 
       expect(start.year).toBe(2025);
@@ -67,15 +65,9 @@ describe('startOfDay', () => {
     });
 
     it('works with any time during the day', () => {
-      const morning = Temporal.ZonedDateTime.from(
-        '2025-01-20T08:00:00-05:00[America/New_York]'
-      );
-      const afternoon = Temporal.ZonedDateTime.from(
-        '2025-01-20T16:30:45-05:00[America/New_York]'
-      );
-      const evening = Temporal.ZonedDateTime.from(
-        '2025-01-20T23:00:00-05:00[America/New_York]'
-      );
+      const morning = Temporal.ZonedDateTime.from('2025-01-20T08:00:00-05:00[America/New_York]');
+      const afternoon = Temporal.ZonedDateTime.from('2025-01-20T16:30:45-05:00[America/New_York]');
+      const evening = Temporal.ZonedDateTime.from('2025-01-20T23:00:00-05:00[America/New_York]');
 
       const startMorning = startOfDay(morning);
       const startAfternoon = startOfDay(afternoon);
@@ -87,12 +79,8 @@ describe('startOfDay', () => {
     });
 
     it('handles different timezones', () => {
-      const tokyo = Temporal.ZonedDateTime.from(
-        '2025-01-20T15:00:00+09:00[Asia/Tokyo]'
-      );
-      const ny = Temporal.ZonedDateTime.from(
-        '2025-01-20T15:00:00-05:00[America/New_York]'
-      );
+      const tokyo = Temporal.ZonedDateTime.from('2025-01-20T15:00:00+09:00[Asia/Tokyo]');
+      const ny = Temporal.ZonedDateTime.from('2025-01-20T15:00:00-05:00[America/New_York]');
 
       const startTokyo = startOfDay(tokyo);
       const startNY = startOfDay(ny);
@@ -106,9 +94,7 @@ describe('startOfDay', () => {
       expect(startNY.hour).toBe(0);
 
       // Different timezones = different instants
-      expect(startTokyo.toInstant().toString()).not.toBe(
-        startNY.toInstant().toString()
-      );
+      expect(startTokyo.toInstant().toString()).not.toBe(startNY.toInstant().toString());
     });
 
     it('converts to different timezone explicitly', () => {
@@ -127,9 +113,7 @@ describe('startOfDay', () => {
     it('handles spring forward DST transition (midnight does not exist)', () => {
       // March 9, 2025: DST begins in New York (2 AM -> 3 AM)
       // Midnight exists, but 2 AM does not
-      const beforeDst = Temporal.ZonedDateTime.from(
-        '2025-03-09T01:00:00-05:00[America/New_York]'
-      );
+      const beforeDst = Temporal.ZonedDateTime.from('2025-03-09T01:00:00-05:00[America/New_York]');
       const start = startOfDay(beforeDst);
 
       expect(start.day).toBe(9);
@@ -140,9 +124,7 @@ describe('startOfDay', () => {
 
     it('handles fall back DST transition', () => {
       // November 2, 2025: DST ends in New York (2 AM -> 1 AM)
-      const duringDst = Temporal.ZonedDateTime.from(
-        '2025-11-02T01:00:00-04:00[America/New_York]'
-      );
+      const duringDst = Temporal.ZonedDateTime.from('2025-11-02T01:00:00-04:00[America/New_York]');
       const start = startOfDay(duringDst);
 
       expect(start.day).toBe(2);
@@ -178,14 +160,10 @@ describe('startOfDay', () => {
       // Same calendar date, but different instants
       expect(startTokyo.day).toBe(20);
       expect(startNY.day).toBe(20);
-      expect(startTokyo.toInstant().toString()).not.toBe(
-        startNY.toInstant().toString()
-      );
+      expect(startTokyo.toInstant().toString()).not.toBe(startNY.toInstant().toString());
 
       // Tokyo midnight happens before NY midnight
-      expect(
-        Temporal.Instant.compare(startTokyo.toInstant(), startNY.toInstant())
-      ).toBe(-1);
+      expect(Temporal.Instant.compare(startTokyo.toInstant(), startNY.toInstant())).toBe(-1);
     });
 
     it('works with UTC timezone', () => {

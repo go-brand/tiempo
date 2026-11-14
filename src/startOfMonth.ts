@@ -45,10 +45,7 @@ export function startOfMonth(
   input: Temporal.Instant | Temporal.ZonedDateTime
 ): Temporal.ZonedDateTime;
 export function startOfMonth(input: Temporal.PlainDate): Temporal.PlainDate;
-export function startOfMonth(
-  input: Temporal.PlainDate,
-  timezone: Timezone
-): Temporal.ZonedDateTime;
+export function startOfMonth(input: Temporal.PlainDate, timezone: Timezone): Temporal.ZonedDateTime;
 export function startOfMonth(
   input: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate,
   timezone?: Timezone

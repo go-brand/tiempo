@@ -43,34 +43,22 @@ describe('differenceInSeconds', () => {
 
   describe('with ZonedDateTime', () => {
     it('returns the number of seconds between two zoned datetimes', () => {
-      const later = Temporal.ZonedDateTime.from(
-        '2025-01-20T15:01:00-05:00[America/New_York]'
-      );
-      const earlier = Temporal.ZonedDateTime.from(
-        '2025-01-20T15:00:00-05:00[America/New_York]'
-      );
+      const later = Temporal.ZonedDateTime.from('2025-01-20T15:01:00-05:00[America/New_York]');
+      const earlier = Temporal.ZonedDateTime.from('2025-01-20T15:00:00-05:00[America/New_York]');
 
       expect(differenceInSeconds(later, earlier)).toBe(60);
     });
 
     it('returns negative value when laterDate is before earlierDate', () => {
-      const later = Temporal.ZonedDateTime.from(
-        '2025-01-20T15:00:00-05:00[America/New_York]'
-      );
-      const earlier = Temporal.ZonedDateTime.from(
-        '2025-01-20T15:01:00-05:00[America/New_York]'
-      );
+      const later = Temporal.ZonedDateTime.from('2025-01-20T15:00:00-05:00[America/New_York]');
+      const earlier = Temporal.ZonedDateTime.from('2025-01-20T15:01:00-05:00[America/New_York]');
 
       expect(differenceInSeconds(later, earlier)).toBe(-60);
     });
 
     it('compares by instant, not calendar datetime', () => {
-      const tokyo = Temporal.ZonedDateTime.from(
-        '2025-01-21T00:00:00+09:00[Asia/Tokyo]'
-      );
-      const ny = Temporal.ZonedDateTime.from(
-        '2025-01-20T10:00:00-05:00[America/New_York]'
-      );
+      const tokyo = Temporal.ZonedDateTime.from('2025-01-21T00:00:00+09:00[Asia/Tokyo]');
+      const ny = Temporal.ZonedDateTime.from('2025-01-20T10:00:00-05:00[America/New_York]');
 
       // Both represent the same instant
       expect(differenceInSeconds(tokyo, ny)).toBe(0);
@@ -78,12 +66,8 @@ describe('differenceInSeconds', () => {
 
     it('handles DST transitions', () => {
       // March 9, 2025: DST begins in New York (2 AM -> 3 AM)
-      const beforeDst = Temporal.ZonedDateTime.from(
-        '2025-03-09T01:30:00-05:00[America/New_York]'
-      );
-      const afterDst = Temporal.ZonedDateTime.from(
-        '2025-03-09T03:30:00-04:00[America/New_York]'
-      );
+      const beforeDst = Temporal.ZonedDateTime.from('2025-03-09T01:30:00-05:00[America/New_York]');
+      const afterDst = Temporal.ZonedDateTime.from('2025-03-09T03:30:00-04:00[America/New_York]');
 
       // 1 hour of wall-clock time, 1 hour of actual time = 3600 seconds
       expect(differenceInSeconds(afterDst, beforeDst)).toBe(3600);
@@ -93,18 +77,14 @@ describe('differenceInSeconds', () => {
   describe('with mixed types', () => {
     it('compares Instant with ZonedDateTime', () => {
       const instant = Temporal.Instant.from('2025-01-20T15:00:00Z');
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-01-20T10:00:00-05:00[America/New_York]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-01-20T10:00:00-05:00[America/New_York]');
 
       // NY 10:00 is 15:00 UTC - same instant
       expect(differenceInSeconds(instant, zoned)).toBe(0);
     });
 
     it('compares ZonedDateTime with Instant', () => {
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-01-20T15:00:00-05:00[America/New_York]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-01-20T15:00:00-05:00[America/New_York]');
       const instant = Temporal.Instant.from('2025-01-20T15:00:00Z');
 
       // NY 15:00 is 20:00 UTC
@@ -115,19 +95,14 @@ describe('differenceInSeconds', () => {
 
   describe('real-world scenarios', () => {
     it('calculates countdown timer', () => {
-      const event = Temporal.ZonedDateTime.from(
-        '2025-01-20T18:00:00-05:00[America/New_York]'
-      );
-      const now = Temporal.ZonedDateTime.from(
-        '2025-01-20T17:45:00-05:00[America/New_York]'
-      );
+      const event = Temporal.ZonedDateTime.from('2025-01-20T18:00:00-05:00[America/New_York]');
+      const now = Temporal.ZonedDateTime.from('2025-01-20T17:45:00-05:00[America/New_York]');
 
       // 15 minutes = 900 seconds
       expect(differenceInSeconds(event, now)).toBe(900);
     });
   });
 });
-
 
 describe('submillisecond precision', () => {
   it('subtracts before truncating a whole unit in either direction', () => {

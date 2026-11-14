@@ -8,7 +8,7 @@ import {
   toIso,
   toPlainDate,
   toPlainTime,
-  toZonedTime,
+  toZonedTime
 } from './index';
 
 describe('public API developer experience', () => {
@@ -42,8 +42,6 @@ describe('public API developer experience', () => {
 
     expectTypeOf(shifted).toEqualTypeOf<Temporal.ZonedDateTime>();
     expect(shifted.timeZoneId).toBe('UTC');
-    expect(format(shifted, 'yyyy-MM-dd HH:mm', { timeZone: 'UTC' })).toBe(
-      '2025-01-20 21:00'
-    );
+    expect(format(shifted, 'yyyy-MM-dd HH:mm', { timeZone: 'UTC' })).toBe('2025-01-20 21:00');
   });
 });

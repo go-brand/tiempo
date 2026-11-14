@@ -23,9 +23,7 @@ describe('subWeeks', () => {
   });
 
   it('preserves timezone when subtracting weeks', () => {
-    const zoned = Temporal.ZonedDateTime.from(
-      '2025-02-03T15:30:00-05:00[America/New_York]'
-    );
+    const zoned = Temporal.ZonedDateTime.from('2025-02-03T15:30:00-05:00[America/New_York]');
     const result = subWeeks(zoned, 2);
 
     expect(result.year).toBe(2025);
@@ -56,9 +54,7 @@ describe('subWeeks', () => {
 
   it('handles DST transition when subtracting weeks', () => {
     // After DST transition
-    const zoned = Temporal.ZonedDateTime.from(
-      '2025-03-10T14:00:00-04:00[America/New_York]'
-    );
+    const zoned = Temporal.ZonedDateTime.from('2025-03-10T14:00:00-04:00[America/New_York]');
     const result = subWeeks(zoned, 1);
 
     // Before DST transition

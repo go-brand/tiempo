@@ -35,9 +35,7 @@ describe('toDate', () => {
 
   describe('from Temporal.ZonedDateTime', () => {
     it('converts ZonedDateTime to Date object (preserves instant)', () => {
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-01-20T15:00:00-05:00[America/New_York]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-01-20T15:00:00-05:00[America/New_York]');
       const date = toDate(zoned);
 
       expect(date).toBeInstanceOf(Date);
@@ -46,12 +44,8 @@ describe('toDate', () => {
     });
 
     it('handles different timezones correctly', () => {
-      const tokyo = Temporal.ZonedDateTime.from(
-        '2025-01-21T05:00:00+09:00[Asia/Tokyo]'
-      );
-      const newYork = Temporal.ZonedDateTime.from(
-        '2025-01-20T15:00:00-05:00[America/New_York]'
-      );
+      const tokyo = Temporal.ZonedDateTime.from('2025-01-21T05:00:00+09:00[Asia/Tokyo]');
+      const newYork = Temporal.ZonedDateTime.from('2025-01-20T15:00:00-05:00[America/New_York]');
 
       const date1 = toDate(tokyo);
       const date2 = toDate(newYork);
@@ -140,9 +134,7 @@ describe('toDate', () => {
       // 5. Verify round-trip preserves the instant
       const instant1 = toInstant(fromDb);
       const instant2 = toInstant(rescheduled);
-      expect(instant2.epochMilliseconds - instant1.epochMilliseconds).toBe(
-        2 * 60 * 60 * 1000
-      ); // 2 hours difference
+      expect(instant2.epochMilliseconds - instant1.epochMilliseconds).toBe(2 * 60 * 60 * 1000); // 2 hours difference
     });
   });
 });

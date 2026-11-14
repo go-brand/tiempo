@@ -1,6 +1,6 @@
-import { type Temporal, isPlainDate } from "./shared/temporal";
-import { normalizeTemporalInput } from "./shared/normalizeTemporalInput";
-import { quarterOfMonth } from "./shared/quarter";
+import { type Temporal, isPlainDate } from './shared/temporal';
+import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
+import { quarterOfMonth } from './shared/quarter';
 
 /**
  * Returns true if both inputs fall in the same calendar quarter and year.
@@ -32,12 +32,12 @@ import { quarterOfMonth } from "./shared/quarter";
  */
 export function isSameQuarter(
   date1: Temporal.Instant | Temporal.ZonedDateTime,
-  date2: Temporal.Instant | Temporal.ZonedDateTime,
+  date2: Temporal.Instant | Temporal.ZonedDateTime
 ): boolean;
 export function isSameQuarter(date1: Temporal.PlainDate, date2: Temporal.PlainDate): boolean;
 export function isSameQuarter(
   date1: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate,
-  date2: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate,
+  date2: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate
 ): boolean {
   const a = isPlainDate(date1) ? date1 : normalizeTemporalInput(date1);
   const b = isPlainDate(date2) ? date2 : normalizeTemporalInput(date2);

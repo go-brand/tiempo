@@ -53,7 +53,7 @@ describe('endOfWeek', () => {
         { date: '2025-01-23' },
         { date: '2025-01-24' },
         { date: '2025-01-25' },
-        { date: '2025-01-26' },
+        { date: '2025-01-26' }
       ];
 
       for (const { date } of days) {
@@ -89,9 +89,7 @@ describe('endOfWeek', () => {
   describe('from Temporal.ZonedDateTime', () => {
     it('returns end of week in same timezone', () => {
       // Wednesday Jan 22, 2025
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-01-22T15:30:00-05:00[America/New_York]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-01-22T15:30:00-05:00[America/New_York]');
       const end = endOfWeek(zoned);
 
       expect(end.year).toBe(2025);
@@ -109,9 +107,7 @@ describe('endOfWeek', () => {
 
     it('returns same day if already Sunday', () => {
       // Sunday Jan 26, 2025
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-01-26T15:30:00-05:00[America/New_York]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-01-26T15:30:00-05:00[America/New_York]');
       const end = endOfWeek(zoned);
 
       expect(end.day).toBe(26);
@@ -122,12 +118,8 @@ describe('endOfWeek', () => {
 
     it('handles different timezones', () => {
       // Wednesday in Tokyo and NY
-      const tokyo = Temporal.ZonedDateTime.from(
-        '2025-01-22T15:00:00+09:00[Asia/Tokyo]'
-      );
-      const ny = Temporal.ZonedDateTime.from(
-        '2025-01-22T15:00:00-05:00[America/New_York]'
-      );
+      const tokyo = Temporal.ZonedDateTime.from('2025-01-22T15:00:00+09:00[Asia/Tokyo]');
+      const ny = Temporal.ZonedDateTime.from('2025-01-22T15:00:00-05:00[America/New_York]');
 
       const endTokyo = endOfWeek(tokyo);
       const endNY = endOfWeek(ny);
@@ -144,9 +136,7 @@ describe('endOfWeek', () => {
       expect(endNY.hour).toBe(23);
 
       // Different timezones = different instants
-      expect(endTokyo.toInstant().toString()).not.toBe(
-        endNY.toInstant().toString()
-      );
+      expect(endTokyo.toInstant().toString()).not.toBe(endNY.toInstant().toString());
     });
 
     it('converts to different timezone explicitly', () => {
@@ -214,9 +204,7 @@ describe('endOfWeek', () => {
     it('handles DST transition within the week', () => {
       // March 9, 2025: DST begins in New York (2 AM -> 3 AM)
       // Thursday March 6, 2025
-      const thursday = Temporal.ZonedDateTime.from(
-        '2025-03-06T15:00:00-05:00[America/New_York]'
-      );
+      const thursday = Temporal.ZonedDateTime.from('2025-03-06T15:00:00-05:00[America/New_York]');
       const end = endOfWeek(thursday);
 
       // Should be Sunday March 9 (DST transition day)
@@ -230,9 +218,7 @@ describe('endOfWeek', () => {
     it('handles fall DST transition', () => {
       // November 2, 2025: DST ends in New York (2 AM -> 1 AM)
       // Thursday October 30, 2025
-      const thursday = Temporal.ZonedDateTime.from(
-        '2025-10-30T15:00:00-04:00[America/New_York]'
-      );
+      const thursday = Temporal.ZonedDateTime.from('2025-10-30T15:00:00-04:00[America/New_York]');
       const end = endOfWeek(thursday);
 
       // Should be Sunday November 2 (DST transition day)
@@ -281,9 +267,7 @@ describe('endOfWeek', () => {
       expect(endNY.dayOfWeek).toBe(7);
 
       // But different instants
-      expect(endTokyo.toInstant().toString()).not.toBe(
-        endNY.toInstant().toString()
-      );
+      expect(endTokyo.toInstant().toString()).not.toBe(endNY.toInstant().toString());
     });
 
     it('handles week crossing month boundary', () => {
@@ -347,11 +331,12 @@ describe('endOfWeek', () => {
   });
 });
 
-
 describe('skipped midnight regression', () => {
   it('ends on the correct calendar day after a midnight gap', () => {
     const value = Temporal.ZonedDateTime.from('2025-09-07T12:00[America/Santiago]');
-    expect(endOfWeek(value).toString()).toBe('2025-09-07T23:59:59.999999999-03:00[America/Santiago]');
+    expect(endOfWeek(value).toString()).toBe(
+      '2025-09-07T23:59:59.999999999-03:00[America/Santiago]'
+    );
   });
 
   describe('weekStartsOn', () => {

@@ -1,5 +1,5 @@
-import { type Temporal, isPlainDate } from "./shared/temporal";
-import { normalizeTemporalInput } from "./shared/normalizeTemporalInput";
+import { type Temporal, isPlainDate } from './shared/temporal';
+import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
 
 /**
  * Adds the specified number of quarters (3-month blocks) to a datetime or date.
@@ -28,12 +28,12 @@ import { normalizeTemporalInput } from "./shared/normalizeTemporalInput";
  */
 export function addQuarters(
   input: Temporal.Instant | Temporal.ZonedDateTime,
-  quarters: number,
+  quarters: number
 ): Temporal.ZonedDateTime;
 export function addQuarters(input: Temporal.PlainDate, quarters: number): Temporal.PlainDate;
 export function addQuarters(
   input: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate,
-  quarters: number,
+  quarters: number
 ): Temporal.ZonedDateTime | Temporal.PlainDate {
   if (isPlainDate(input)) {
     return input.add({ months: quarters * 3 });

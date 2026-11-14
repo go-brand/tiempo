@@ -5,9 +5,7 @@ import { isSameMillisecond } from './isSameMillisecond';
 describe('isSameMillisecond', () => {
   it('returns true for same millisecond in same timezone', () => {
     const time1 = Temporal.ZonedDateTime.from('2025-01-20T14:30:45.123Z[UTC]');
-    const time2 = Temporal.ZonedDateTime.from(
-      '2025-01-20T14:30:45.123999Z[UTC]'
-    );
+    const time2 = Temporal.ZonedDateTime.from('2025-01-20T14:30:45.123999Z[UTC]');
 
     expect(isSameMillisecond(time1, time2)).toBe(true);
   });
@@ -20,29 +18,19 @@ describe('isSameMillisecond', () => {
   });
 
   it('returns false for different milliseconds across timezones', () => {
-    const ny = Temporal.ZonedDateTime.from(
-      '2025-01-20T14:30:45.123-05:00[America/New_York]'
-    );
-    const tokyo = Temporal.ZonedDateTime.from(
-      '2025-01-21T04:30:45.987+09:00[Asia/Tokyo]'
-    );
+    const ny = Temporal.ZonedDateTime.from('2025-01-20T14:30:45.123-05:00[America/New_York]');
+    const tokyo = Temporal.ZonedDateTime.from('2025-01-21T04:30:45.987+09:00[Asia/Tokyo]');
 
     // Same instant, different local milliseconds
     expect(isSameMillisecond(ny, tokyo)).toBe(false);
   });
 
   it('returns true when comparing same instant in different timezones after conversion', () => {
-    const ny = Temporal.ZonedDateTime.from(
-      '2025-01-20T14:30:45.123-05:00[America/New_York]'
-    );
-    const tokyo = Temporal.ZonedDateTime.from(
-      '2025-01-21T04:30:45.123+09:00[Asia/Tokyo]'
-    );
+    const ny = Temporal.ZonedDateTime.from('2025-01-20T14:30:45.123-05:00[America/New_York]');
+    const tokyo = Temporal.ZonedDateTime.from('2025-01-21T04:30:45.123+09:00[Asia/Tokyo]');
 
     // Convert to UTC to compare
-    expect(isSameMillisecond(ny.withTimeZone('UTC'), tokyo.withTimeZone('UTC'))).toBe(
-      true
-    );
+    expect(isSameMillisecond(ny.withTimeZone('UTC'), tokyo.withTimeZone('UTC'))).toBe(true);
 
     // Convert to NY timezone
     expect(isSameMillisecond(ny, tokyo.withTimeZone('America/New_York'))).toBe(true);

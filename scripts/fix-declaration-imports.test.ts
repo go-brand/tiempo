@@ -6,14 +6,14 @@ describe('rewriteDeclarationImports', () => {
     const declaration = [
       'import type { Timezone } from "./types";',
       'export { toInstant } from "./toInstant";',
-      'type Lazy = import("./shared/temporal").Temporal;',
+      'type Lazy = import("./shared/temporal").Temporal;'
     ].join('\n');
 
     expect(rewriteDeclarationImports(declaration)).toBe(
       [
         'import type { Timezone } from "./types.js";',
         'export { toInstant } from "./toInstant.js";',
-        'type Lazy = import("./shared/temporal.js").Temporal;',
+        'type Lazy = import("./shared/temporal.js").Temporal;'
       ].join('\n')
     );
   });
@@ -22,7 +22,7 @@ describe('rewriteDeclarationImports', () => {
     const declaration = [
       'import type { Temporal } from "@js-temporal/polyfill";',
       'export { toInstant } from "./toInstant.js";',
-      'import data from "./data.json";',
+      'import data from "./data.json";'
     ].join('\n');
 
     expect(rewriteDeclarationImports(declaration)).toBe(declaration);

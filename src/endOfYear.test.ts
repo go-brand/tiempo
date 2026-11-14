@@ -80,9 +80,7 @@ describe('endOfYear', () => {
   describe('from Temporal.ZonedDateTime', () => {
     it('returns end of year in same timezone', () => {
       // June 15, 2025 (EDT)
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-06-15T15:30:00-04:00[America/New_York]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-06-15T15:30:00-04:00[America/New_York]');
       const end = endOfYear(zoned);
 
       expect(end.year).toBe(2025);
@@ -99,9 +97,7 @@ describe('endOfYear', () => {
 
     it('returns same day if already December 31st', () => {
       // Dec 31, 2025
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-12-31T15:30:00-05:00[America/New_York]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-12-31T15:30:00-05:00[America/New_York]');
       const end = endOfYear(zoned);
 
       expect(end.month).toBe(12);
@@ -111,12 +107,8 @@ describe('endOfYear', () => {
 
     it('handles different timezones', () => {
       // June 15 in Tokyo and NY (EDT)
-      const tokyo = Temporal.ZonedDateTime.from(
-        '2025-06-15T15:00:00+09:00[Asia/Tokyo]'
-      );
-      const ny = Temporal.ZonedDateTime.from(
-        '2025-06-15T15:00:00-04:00[America/New_York]'
-      );
+      const tokyo = Temporal.ZonedDateTime.from('2025-06-15T15:00:00+09:00[Asia/Tokyo]');
+      const ny = Temporal.ZonedDateTime.from('2025-06-15T15:00:00-04:00[America/New_York]');
 
       const endTokyo = endOfYear(tokyo);
       const endNY = endOfYear(ny);
@@ -133,9 +125,7 @@ describe('endOfYear', () => {
       expect(endNY.hour).toBe(23);
 
       // Different timezones = different instants
-      expect(endTokyo.toInstant().toString()).not.toBe(
-        endNY.toInstant().toString()
-      );
+      expect(endTokyo.toInstant().toString()).not.toBe(endNY.toInstant().toString());
     });
 
     it('converts to different timezone explicitly', () => {
@@ -193,9 +183,7 @@ describe('endOfYear', () => {
   describe('DST transitions', () => {
     it('handles year containing DST transitions', () => {
       // Winter 2025 in New York (after DST ended)
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-01-15T15:00:00-05:00[America/New_York]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-01-15T15:00:00-05:00[America/New_York]');
       const end = endOfYear(zoned);
 
       expect(end.year).toBe(2025);
@@ -206,9 +194,7 @@ describe('endOfYear', () => {
 
     it('handles December 31st DST offset', () => {
       // Dec 31 in New York (EST, not EDT)
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-06-15T12:00:00-04:00[America/New_York]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-06-15T12:00:00-04:00[America/New_York]');
       const end = endOfYear(zoned);
 
       expect(end.month).toBe(12);
@@ -253,9 +239,7 @@ describe('endOfYear', () => {
       expect(endNY.day).toBe(31);
 
       // But different instants
-      expect(endTokyo.toInstant().toString()).not.toBe(
-        endNY.toInstant().toString()
-      );
+      expect(endTokyo.toInstant().toString()).not.toBe(endNY.toInstant().toString());
     });
 
     it('handles leap year', () => {

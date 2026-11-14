@@ -24,9 +24,7 @@ describe('subMonths', () => {
   });
 
   it('preserves timezone when subtracting months', () => {
-    const zoned = Temporal.ZonedDateTime.from(
-      '2025-06-15T15:30:00-04:00[America/New_York]'
-    );
+    const zoned = Temporal.ZonedDateTime.from('2025-06-15T15:30:00-04:00[America/New_York]');
     const result = subMonths(zoned, 4);
 
     expect(result.year).toBe(2025);
@@ -66,9 +64,7 @@ describe('subMonths', () => {
 
   it('handles DST transition when subtracting months', () => {
     // December (EST)
-    const zoned = Temporal.ZonedDateTime.from(
-      '2025-12-15T14:00:00-05:00[America/New_York]'
-    );
+    const zoned = Temporal.ZonedDateTime.from('2025-12-15T14:00:00-05:00[America/New_York]');
     const result = subMonths(zoned, 3);
 
     // September (EDT)

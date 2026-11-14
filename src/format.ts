@@ -276,18 +276,29 @@ function formatToken(token: string, zonedDateTime: Temporal.ZonedDateTime, local
 
 function formatPart(
   zonedDateTime: Temporal.ZonedDateTime,
-  part: 'era' | 'year' | 'month' | 'weekday' | 'day' | 'hour' | 'minute' | 'second' | 'timeZoneName',
+  part:
+    | 'era'
+    | 'year'
+    | 'month'
+    | 'weekday'
+    | 'day'
+    | 'hour'
+    | 'minute'
+    | 'second'
+    | 'timeZoneName',
   style: 'narrow' | 'short' | 'long' | 'numeric' | '2-digit',
   locale: string
 ): string {
   const options: Intl.DateTimeFormatOptions = {
     [part]: style,
     timeZone: zonedDateTime.timeZoneId,
-    calendar: zonedDateTime.calendarId === 'iso8601' ? undefined : zonedDateTime.calendarId,
+    calendar: zonedDateTime.calendarId === 'iso8601' ? undefined : zonedDateTime.calendarId
   };
-  return new Intl.DateTimeFormat(locale, options)
-    .formatToParts(zonedDateTime.epochMilliseconds)
-    .find(value => value.type === part)?.value ?? '';
+  return (
+    new Intl.DateTimeFormat(locale, options)
+      .formatToParts(zonedDateTime.epochMilliseconds)
+      .find((value) => value.type === part)?.value ?? ''
+  );
 }
 
 function getOrdinalSuffix(num: number): string {
@@ -317,7 +328,7 @@ function getDayPeriod(zonedDateTime: Temporal.ZonedDateTime, locale: string): st
   const parts = new Intl.DateTimeFormat(locale, {
     hour: 'numeric',
     hour12: true,
-    timeZone: zonedDateTime.timeZoneId,
+    timeZone: zonedDateTime.timeZoneId
   }).formatToParts(zonedDateTime.epochMilliseconds);
   return parts.find((p) => p.type === 'dayPeriod')?.value ?? '';
 }

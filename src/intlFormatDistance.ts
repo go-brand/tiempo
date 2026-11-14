@@ -164,7 +164,7 @@ export function intlFormatDistance(
   const formatter = new Intl.RelativeTimeFormat(options?.locale, {
     localeMatcher: options?.localeMatcher,
     numeric: options?.numeric ?? 'auto',
-    style: options?.style,
+    style: options?.style
   });
 
   return formatter.format(value, unit);

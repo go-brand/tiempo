@@ -54,7 +54,9 @@ export function toPlainDate(
   // Date requires timezone
   if (input instanceof Date) {
     if (timezone === undefined) {
-      throw new Error('Timezone is required unless input is a ZonedDateTime, PlainDateLike, or plain date string');
+      throw new Error(
+        'Timezone is required unless input is a ZonedDateTime, PlainDateLike, or plain date string'
+      );
     }
     return Temporal.Instant.from(input.toISOString()).toZonedDateTimeISO(timezone).toPlainDate();
   }
@@ -62,7 +64,9 @@ export function toPlainDate(
   // Instant requires timezone
   if (isInstant(input)) {
     if (timezone === undefined) {
-      throw new Error('Timezone is required unless input is a ZonedDateTime, PlainDateLike, or plain date string');
+      throw new Error(
+        'Timezone is required unless input is a ZonedDateTime, PlainDateLike, or plain date string'
+      );
     }
     return input.toZonedDateTimeISO(timezone).toPlainDate();
   }
@@ -70,7 +74,9 @@ export function toPlainDate(
   // ZonedDateTime with timezone override
   if (isZonedDateTime(input)) {
     if (timezone === undefined) {
-      throw new Error('Timezone is required unless input is a ZonedDateTime, PlainDateLike, or plain date string');
+      throw new Error(
+        'Timezone is required unless input is a ZonedDateTime, PlainDateLike, or plain date string'
+      );
     }
     return input.toInstant().toZonedDateTimeISO(timezone).toPlainDate();
   }
@@ -83,7 +89,9 @@ export function toPlainDate(
     if (PLAIN_DATE_PATTERN.test(input)) {
       return Temporal.PlainDate.from(input);
     }
-    throw new Error('Timezone is required unless input is a ZonedDateTime, PlainDateLike, or plain date string');
+    throw new Error(
+      'Timezone is required unless input is a ZonedDateTime, PlainDateLike, or plain date string'
+    );
   }
 
   // Foreign PlainDate objects expose calendarId, while property bags use calendar.

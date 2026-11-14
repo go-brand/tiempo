@@ -18,9 +18,6 @@ import { Temporal } from './shared/temporal';
  * isPlainTimeEqual(nineAM_a, fivePM); // false
  * ```
  */
-export function isPlainTimeEqual(
-  time1: Temporal.PlainTime,
-  time2: Temporal.PlainTime
-): boolean {
+export function isPlainTimeEqual(time1: Temporal.PlainTime, time2: Temporal.PlainTime): boolean {
   return Temporal.PlainTime.compare(time1, time2) === 0;
 }

@@ -1,7 +1,7 @@
-import { type Temporal, isPlainDate } from "./shared/temporal";
-import type { Timezone } from "./types";
-import { normalizeWithPlainDate } from "./shared/normalizeWithPlainDate";
-import { quarterStartMonth } from "./shared/quarter";
+import { type Temporal, isPlainDate } from './shared/temporal';
+import type { Timezone } from './types';
+import { normalizeWithPlainDate } from './shared/normalizeWithPlainDate';
+import { quarterStartMonth } from './shared/quarter';
 
 /**
  * Returns a ZonedDateTime representing the first moment of the quarter
@@ -37,16 +37,16 @@ import { quarterStartMonth } from "./shared/quarter";
  * ```
  */
 export function startOfQuarter(
-  input: Temporal.Instant | Temporal.ZonedDateTime,
+  input: Temporal.Instant | Temporal.ZonedDateTime
 ): Temporal.ZonedDateTime;
 export function startOfQuarter(input: Temporal.PlainDate): Temporal.PlainDate;
 export function startOfQuarter(
   input: Temporal.PlainDate,
-  timezone: Timezone,
+  timezone: Timezone
 ): Temporal.ZonedDateTime;
 export function startOfQuarter(
   input: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate,
-  timezone?: Timezone,
+  timezone?: Timezone
 ): Temporal.ZonedDateTime | Temporal.PlainDate {
   // PlainDate with no timezone stays in calendar space → first day of quarter.
   if (isPlainDate(input) && timezone === undefined) {
@@ -55,7 +55,7 @@ export function startOfQuarter(
   const zonedDateTime = normalizeWithPlainDate(input, timezone!);
   const firstDay = zonedDateTime.with({
     month: quarterStartMonth(zonedDateTime.month),
-    day: 1,
+    day: 1
   });
   return firstDay.startOfDay();
 }

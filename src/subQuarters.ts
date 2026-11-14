@@ -1,5 +1,5 @@
-import { type Temporal, isPlainDate } from "./shared/temporal";
-import { addQuarters } from "./addQuarters";
+import { type Temporal, isPlainDate } from './shared/temporal';
+import { addQuarters } from './addQuarters';
 
 /**
  * Subtracts the specified number of quarters (3-month blocks) from a datetime or date.
@@ -26,12 +26,12 @@ import { addQuarters } from "./addQuarters";
  */
 export function subQuarters(
   input: Temporal.Instant | Temporal.ZonedDateTime,
-  quarters: number,
+  quarters: number
 ): Temporal.ZonedDateTime;
 export function subQuarters(input: Temporal.PlainDate, quarters: number): Temporal.PlainDate;
 export function subQuarters(
   input: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate,
-  quarters: number,
+  quarters: number
 ): Temporal.ZonedDateTime | Temporal.PlainDate {
   // Branch so each call resolves to the matching addQuarters overload.
   return isPlainDate(input) ? addQuarters(input, -quarters) : addQuarters(input, -quarters);

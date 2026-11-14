@@ -35,9 +35,7 @@ import { nowZoned } from './shared/nowZoned';
  * isPast(pastInTokyo); // true
  * ```
  */
-export function isPast(
-  date: Temporal.Instant | Temporal.ZonedDateTime
-): boolean {
+export function isPast(date: Temporal.Instant | Temporal.ZonedDateTime): boolean {
   const zoned = normalizeTemporalInput(date);
 
   return isBefore(zoned, nowZoned());

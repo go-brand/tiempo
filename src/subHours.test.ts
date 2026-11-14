@@ -23,9 +23,7 @@ describe('subHours', () => {
   });
 
   it('preserves timezone when subtracting hours', () => {
-    const zoned = Temporal.ZonedDateTime.from(
-      '2025-01-20T15:30:00-05:00[America/New_York]'
-    );
+    const zoned = Temporal.ZonedDateTime.from('2025-01-20T15:30:00-05:00[America/New_York]');
     const result = subHours(zoned, 8);
 
     expect(result.hour).toBe(7);
@@ -53,9 +51,7 @@ describe('subHours', () => {
 
   it('handles DST transition when subtracting hours', () => {
     // After fall DST transition
-    const zoned = Temporal.ZonedDateTime.from(
-      '2025-11-03T01:00:00-05:00[America/New_York]'
-    );
+    const zoned = Temporal.ZonedDateTime.from('2025-11-03T01:00:00-05:00[America/New_York]');
     const result = subHours(zoned, 2);
 
     expect(result.day).toBe(2);

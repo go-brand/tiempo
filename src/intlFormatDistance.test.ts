@@ -280,24 +280,16 @@ describe('intlFormatDistance', () => {
 
   describe('with ZonedDateTime inputs', () => {
     it('works with both ZonedDateTime in same timezone', () => {
-      const earlier = Temporal.ZonedDateTime.from(
-        '2024-01-01T10:00:00-05:00[America/New_York]'
-      );
-      const later = Temporal.ZonedDateTime.from(
-        '2024-01-01T11:00:00-05:00[America/New_York]'
-      );
+      const earlier = Temporal.ZonedDateTime.from('2024-01-01T10:00:00-05:00[America/New_York]');
+      const later = Temporal.ZonedDateTime.from('2024-01-01T11:00:00-05:00[America/New_York]');
 
       const result = intlFormatDistance(later, earlier);
       expect(result).toBe('in 1 hour');
     });
 
     it('works with ZonedDateTime in different timezones', () => {
-      const earlier = Temporal.ZonedDateTime.from(
-        '2024-01-01T10:00:00-05:00[America/New_York]'
-      );
-      const later = Temporal.ZonedDateTime.from(
-        '2024-01-01T17:00:00+01:00[Europe/Paris]'
-      );
+      const earlier = Temporal.ZonedDateTime.from('2024-01-01T10:00:00-05:00[America/New_York]');
+      const later = Temporal.ZonedDateTime.from('2024-01-01T17:00:00+01:00[Europe/Paris]');
 
       const result = intlFormatDistance(later, earlier);
       expect(result).toBe('in 1 hour');
@@ -305,9 +297,7 @@ describe('intlFormatDistance', () => {
 
     it('works with mixed Instant and ZonedDateTime', () => {
       const earlier = Temporal.Instant.from('2024-01-01T10:00:00Z');
-      const later = Temporal.ZonedDateTime.from(
-        '2024-01-01T11:00:00+00:00[UTC]'
-      );
+      const later = Temporal.ZonedDateTime.from('2024-01-01T11:00:00+00:00[UTC]');
 
       const result = intlFormatDistance(later, earlier);
       expect(result).toBe('in 1 hour');
@@ -377,9 +367,17 @@ describe('intlFormatDistance', () => {
       const later = Temporal.Instant.from('2024-01-08T14:30:00Z');
 
       // Test all units to ensure no decimals
-      const units: Intl.RelativeTimeFormatUnit[] = ['second', 'minute', 'hour', 'day', 'week', 'month', 'year'];
-      
-      units.forEach(unit => {
+      const units: Intl.RelativeTimeFormatUnit[] = [
+        'second',
+        'minute',
+        'hour',
+        'day',
+        'week',
+        'month',
+        'year'
+      ];
+
+      units.forEach((unit) => {
         const result = intlFormatDistance(later, earlier, { unit, numeric: 'always' });
         // Should not contain decimal point
         expect(result).not.toMatch(/\d+\.\d+/);

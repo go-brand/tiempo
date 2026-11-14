@@ -6,9 +6,7 @@ import { toZonedTime } from './toZonedTime';
 describe('toIso', () => {
   describe('from Temporal.ZonedDateTime', () => {
     it('converts ZonedDateTime to UTC ISO string', () => {
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-01-20T15:00:00-05:00[America/New_York]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-01-20T15:00:00-05:00[America/New_York]');
       expect(toIso(zoned)).toBe('2025-01-20T20:00:00Z');
     });
 
@@ -34,9 +32,7 @@ describe('toIso', () => {
     });
 
     it('handles midnight boundary', () => {
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-01-20T00:00:00+09:00[Asia/Tokyo]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-01-20T00:00:00+09:00[Asia/Tokyo]');
       // Midnight Tokyo = 15:00 UTC previous day
       expect(toIso(zoned)).toBe('2025-01-19T15:00:00Z');
     });
@@ -44,28 +40,16 @@ describe('toIso', () => {
 
   describe('offset mode', () => {
     it('returns local time with offset suffix', () => {
-      const negative = Temporal.ZonedDateTime.from(
-        '2025-01-20T15:00:00-05:00[America/New_York]'
-      );
-      const positive = Temporal.ZonedDateTime.from(
-        '2025-01-20T21:00:00+01:00[Europe/Paris]'
-      );
+      const negative = Temporal.ZonedDateTime.from('2025-01-20T15:00:00-05:00[America/New_York]');
+      const positive = Temporal.ZonedDateTime.from('2025-01-20T21:00:00+01:00[Europe/Paris]');
 
-      expect(toIso(negative, { mode: 'offset' })).toBe(
-        '2025-01-20T15:00:00-05:00'
-      );
-      expect(toIso(positive, { mode: 'offset' })).toBe(
-        '2025-01-20T21:00:00+01:00'
-      );
+      expect(toIso(negative, { mode: 'offset' })).toBe('2025-01-20T15:00:00-05:00');
+      expect(toIso(positive, { mode: 'offset' })).toBe('2025-01-20T21:00:00+01:00');
     });
 
     it('preserves milliseconds', () => {
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-01-20T15:00:00.123-05:00[America/New_York]'
-      );
-      expect(toIso(zoned, { mode: 'offset' })).toBe(
-        '2025-01-20T15:00:00.123-05:00'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-01-20T15:00:00.123-05:00[America/New_York]');
+      expect(toIso(zoned, { mode: 'offset' })).toBe('2025-01-20T15:00:00.123-05:00');
     });
   });
 

@@ -115,9 +115,7 @@ describe('addHours', () => {
 
   describe('from Temporal.ZonedDateTime', () => {
     it('adds hours and preserves America/New_York timezone', () => {
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-01-20T15:30:00-05:00[America/New_York]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-01-20T15:30:00-05:00[America/New_York]');
       const result = addHours(zoned, 8);
 
       expect(result.year).toBe(2025);
@@ -129,9 +127,7 @@ describe('addHours', () => {
     });
 
     it('adds hours and preserves Asia/Tokyo timezone', () => {
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-01-20T09:00:00+09:00[Asia/Tokyo]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-01-20T09:00:00+09:00[Asia/Tokyo]');
       const result = addHours(zoned, 12);
 
       expect(result.year).toBe(2025);
@@ -142,9 +138,7 @@ describe('addHours', () => {
     });
 
     it('adds negative hours and preserves timezone', () => {
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-01-20T10:00:00-05:00[America/New_York]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-01-20T10:00:00-05:00[America/New_York]');
       const result = addHours(zoned, -3);
 
       expect(result.year).toBe(2025);
@@ -156,9 +150,7 @@ describe('addHours', () => {
 
     it('handles adding hours through spring DST transition (March 9, 2025)', () => {
       // Before DST: 1:00 AM EST
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-03-09T01:00:00-05:00[America/New_York]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-03-09T01:00:00-05:00[America/New_York]');
       const result = addHours(zoned, 2);
 
       // After DST: 4:00 AM EDT (clock skips 2 AM -> 3 AM)
@@ -172,9 +164,7 @@ describe('addHours', () => {
 
     it('handles adding hours through fall DST transition (November 2, 2025)', () => {
       // Before DST: 1:00 AM EDT
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-11-02T01:00:00-04:00[America/New_York]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-11-02T01:00:00-04:00[America/New_York]');
       const result = addHours(zoned, 2);
 
       // After DST: 2:00 AM EST (1 AM happens twice)
@@ -187,9 +177,7 @@ describe('addHours', () => {
     });
 
     it('handles adding hours across midnight with DST', () => {
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-03-08T23:00:00-05:00[America/New_York]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-03-08T23:00:00-05:00[America/New_York]');
       const result = addHours(zoned, 4);
 
       // Crosses into March 9 and DST transition
@@ -203,9 +191,7 @@ describe('addHours', () => {
 
   describe('real-world scenarios', () => {
     it('calculates meeting times across timezones', () => {
-      const meeting = Temporal.ZonedDateTime.from(
-        '2025-01-20T09:00:00-08:00[America/Los_Angeles]'
-      );
+      const meeting = Temporal.ZonedDateTime.from('2025-01-20T09:00:00-08:00[America/Los_Angeles]');
 
       // 3-hour meeting
       const meetingEnd = addHours(meeting, 3);
@@ -216,9 +202,7 @@ describe('addHours', () => {
     });
 
     it('tracks flight durations', () => {
-      const departure = Temporal.ZonedDateTime.from(
-        '2025-03-15T14:00:00-04:00[America/New_York]'
-      );
+      const departure = Temporal.ZonedDateTime.from('2025-03-15T14:00:00-04:00[America/New_York]');
       const flightDuration = 6; // 6-hour flight
       const arrival = addHours(departure, flightDuration);
 
@@ -299,9 +283,7 @@ describe('addHours', () => {
 
     it('handles DST spring forward missing hour', () => {
       // At 2 AM, clocks spring forward to 3 AM
-      const beforeDST = Temporal.ZonedDateTime.from(
-        '2025-03-09T01:30:00-05:00[America/New_York]'
-      );
+      const beforeDST = Temporal.ZonedDateTime.from('2025-03-09T01:30:00-05:00[America/New_York]');
       const result = addHours(beforeDST, 1);
 
       expect(result.hour).toBe(3); // 2:30 AM doesn't exist

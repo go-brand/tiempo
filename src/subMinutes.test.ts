@@ -21,9 +21,7 @@ describe('subMinutes', () => {
   });
 
   it('preserves timezone when subtracting minutes', () => {
-    const zoned = Temporal.ZonedDateTime.from(
-      '2025-01-20T15:30:00-05:00[America/New_York]'
-    );
+    const zoned = Temporal.ZonedDateTime.from('2025-01-20T15:30:00-05:00[America/New_York]');
     const result = subMinutes(zoned, 45);
 
     expect(result.hour).toBe(14);
@@ -48,9 +46,7 @@ describe('subMinutes', () => {
   });
 
   it('handles DST transition when subtracting minutes', () => {
-    const zoned = Temporal.ZonedDateTime.from(
-      '2025-03-09T03:05:00-04:00[America/New_York]'
-    );
+    const zoned = Temporal.ZonedDateTime.from('2025-03-09T03:05:00-04:00[America/New_York]');
     const result = subMinutes(zoned, 10);
 
     expect(result.hour).toBe(1);

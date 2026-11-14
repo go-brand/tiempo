@@ -6,12 +6,12 @@ it('loads a browser bundle and converts a timestamp without Node globals', async
   const result = await build({
     stdin: {
       contents: `import { toInstant } from './src/index.ts'; globalThis.result = toInstant('2025-01-01T00:00Z').toString();`,
-      resolveDir: process.cwd(),
+      resolveDir: process.cwd()
     },
     bundle: true,
     write: false,
     platform: 'browser',
-    format: 'iife',
+    format: 'iife'
   });
   for (const context of [{ result: '' }, { result: '', process: { env: {} } }]) {
     runInNewContext(result.outputFiles[0]!.text, context);

@@ -56,7 +56,9 @@ export function toPlainTime(
   // Date requires timezone
   if (input instanceof Date) {
     if (timezone === undefined) {
-      throw new Error('Timezone is required unless input is a ZonedDateTime, PlainTimeLike, or plain time string');
+      throw new Error(
+        'Timezone is required unless input is a ZonedDateTime, PlainTimeLike, or plain time string'
+      );
     }
     return Temporal.Instant.from(input.toISOString()).toZonedDateTimeISO(timezone).toPlainTime();
   }
@@ -64,7 +66,9 @@ export function toPlainTime(
   // Instant requires timezone
   if (isInstant(input)) {
     if (timezone === undefined) {
-      throw new Error('Timezone is required unless input is a ZonedDateTime, PlainTimeLike, or plain time string');
+      throw new Error(
+        'Timezone is required unless input is a ZonedDateTime, PlainTimeLike, or plain time string'
+      );
     }
     return input.toZonedDateTimeISO(timezone).toPlainTime();
   }
@@ -72,7 +76,9 @@ export function toPlainTime(
   // ZonedDateTime with timezone override
   if (isZonedDateTime(input)) {
     if (timezone === undefined) {
-      throw new Error('Timezone is required unless input is a ZonedDateTime, PlainTimeLike, or plain time string');
+      throw new Error(
+        'Timezone is required unless input is a ZonedDateTime, PlainTimeLike, or plain time string'
+      );
     }
     return input.toInstant().toZonedDateTimeISO(timezone).toPlainTime();
   }
@@ -85,7 +91,9 @@ export function toPlainTime(
     if (PLAIN_TIME_PATTERN.test(input)) {
       return Temporal.PlainTime.from(input);
     }
-    throw new Error('Timezone is required unless input is a ZonedDateTime, PlainTimeLike, or plain time string');
+    throw new Error(
+      'Timezone is required unless input is a ZonedDateTime, PlainTimeLike, or plain time string'
+    );
   }
 
   // PlainTimeLike object - pass directly to Temporal.PlainTime.from()

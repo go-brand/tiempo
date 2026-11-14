@@ -2,8 +2,7 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
-const relativeDeclarationImport =
-  /((?:\bfrom\s+|\bimport\s*\()\s*)(["'])(\.\.?\/[^"']+)\2/g;
+const relativeDeclarationImport = /((?:\bfrom\s+|\bimport\s*\()\s*)(["'])(\.\.?\/[^"']+)\2/g;
 
 function withJavaScriptExtension(specifier: string): string {
   return path.posix.extname(specifier) === '' ? `${specifier}.js` : specifier;

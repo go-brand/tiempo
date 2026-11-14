@@ -63,9 +63,5 @@ export function isSameDay(
   const zoned1 = normalizeTemporalInput(date1);
   const zoned2 = normalizeTemporalInput(date2);
 
-  return (
-    zoned1.year === zoned2.year &&
-    zoned1.month === zoned2.month &&
-    zoned1.day === zoned2.day
-  );
+  return zoned1.year === zoned2.year && zoned1.month === zoned2.month && zoned1.day === zoned2.day;
 }

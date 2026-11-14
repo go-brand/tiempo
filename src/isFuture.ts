@@ -35,9 +35,7 @@ import { nowZoned } from './shared/nowZoned';
  * isFuture(futureInTokyo); // true
  * ```
  */
-export function isFuture(
-  date: Temporal.Instant | Temporal.ZonedDateTime
-): boolean {
+export function isFuture(date: Temporal.Instant | Temporal.ZonedDateTime): boolean {
   const zoned = normalizeTemporalInput(date);
 
   return isAfter(zoned, nowZoned());

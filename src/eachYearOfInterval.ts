@@ -100,11 +100,16 @@ export function eachYearOfInterval(interval: {
   const years: Temporal.ZonedDateTime[] = [];
 
   for (let year = startYear; year <= endYear; year++) {
-    const firstOfYear = Temporal.PlainDate.from({ year, month: 1, day: 1, calendar: startZoned.calendarId });
+    const firstOfYear = Temporal.PlainDate.from({
+      year,
+      month: 1,
+      day: 1,
+      calendar: startZoned.calendarId
+    });
     years.push(
       firstOfYear.toZonedDateTime({
         timeZone: timezone,
-        plainTime: new Temporal.PlainTime(),
+        plainTime: new Temporal.PlainTime()
       })
     );
   }

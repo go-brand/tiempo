@@ -4,8 +4,15 @@ import { expect, it } from 'vitest';
 import { analyze } from './generate-capability-matrix';
 
 function row(name: string) {
-  const file = ts.createSourceFile(`${name}.ts`, readFileSync(`src/${name}.ts`, 'utf8'), ts.ScriptTarget.Latest, true);
-  const declarations = file.statements.filter(ts.isFunctionDeclaration).filter(d => d.name?.text === name);
+  const file = ts.createSourceFile(
+    `${name}.ts`,
+    readFileSync(`src/${name}.ts`, 'utf8'),
+    ts.ScriptTarget.Latest,
+    true
+  );
+  const declarations = file.statements
+    .filter(ts.isFunctionDeclaration)
+    .filter((d) => d.name?.text === name);
   return analyze(name, declarations, file);
 }
 
@@ -20,5 +27,7 @@ it('preserves individual overloads including timezone and return mapping', () =>
   const signatures = row('startOfMonth').signatures;
   expect(signatures).toContain('startOfMonth(input: PlainDate): PlainDate');
   expect(signatures).toContain('startOfMonth(input: PlainDate, timezone: Timezone): ZonedDateTime');
-  expect(signatures).not.toContain('startOfMonth(input: Instant | ZonedDateTime | PlainDate, timezone?: Timezone): PlainDate | ZonedDateTime');
+  expect(signatures).not.toContain(
+    'startOfMonth(input: Instant | ZonedDateTime | PlainDate, timezone?: Timezone): PlainDate | ZonedDateTime'
+  );
 });

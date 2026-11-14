@@ -35,10 +35,7 @@ import { normalizeWithPlainDate } from './shared/normalizeWithPlainDate';
 export function startOfDay(
   input: Temporal.Instant | Temporal.ZonedDateTime
 ): Temporal.ZonedDateTime;
-export function startOfDay(
-  input: Temporal.PlainDate,
-  timezone: Timezone
-): Temporal.ZonedDateTime;
+export function startOfDay(input: Temporal.PlainDate, timezone: Timezone): Temporal.ZonedDateTime;
 export function startOfDay(
   input: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate,
   timezone?: Timezone

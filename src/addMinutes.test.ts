@@ -123,9 +123,7 @@ describe('addMinutes', () => {
 
   describe('from Temporal.ZonedDateTime', () => {
     it('adds minutes and preserves America/New_York timezone', () => {
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-01-20T15:30:00-05:00[America/New_York]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-01-20T15:30:00-05:00[America/New_York]');
       const result = addMinutes(zoned, 90);
 
       expect(result.year).toBe(2025);
@@ -137,9 +135,7 @@ describe('addMinutes', () => {
     });
 
     it('adds minutes and preserves Asia/Tokyo timezone', () => {
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-01-20T09:00:00+09:00[Asia/Tokyo]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-01-20T09:00:00+09:00[Asia/Tokyo]');
       const result = addMinutes(zoned, 45);
 
       expect(result.year).toBe(2025);
@@ -151,9 +147,7 @@ describe('addMinutes', () => {
     });
 
     it('adds negative minutes and preserves timezone', () => {
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-01-20T10:30:00-05:00[America/New_York]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-01-20T10:30:00-05:00[America/New_York]');
       const result = addMinutes(zoned, -45);
 
       expect(result.year).toBe(2025);
@@ -166,9 +160,7 @@ describe('addMinutes', () => {
 
     it('handles adding minutes through spring DST transition', () => {
       // 1:55 AM EST, adding 10 minutes crosses into DST
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-03-09T01:55:00-05:00[America/New_York]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-03-09T01:55:00-05:00[America/New_York]');
       const result = addMinutes(zoned, 10);
 
       expect(result.year).toBe(2025);
@@ -182,9 +174,7 @@ describe('addMinutes', () => {
 
     it('handles adding minutes through fall DST transition', () => {
       // 1:55 AM EDT, DST ends at 2 AM
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-11-02T01:55:00-04:00[America/New_York]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-11-02T01:55:00-04:00[America/New_York]');
       const result = addMinutes(zoned, 10);
 
       expect(result.year).toBe(2025);
@@ -237,9 +227,7 @@ describe('addMinutes', () => {
     });
 
     it('calculates transit time', () => {
-      const departure = Temporal.ZonedDateTime.from(
-        '2025-01-20T08:30:00-05:00[America/New_York]'
-      );
+      const departure = Temporal.ZonedDateTime.from('2025-01-20T08:30:00-05:00[America/New_York]');
       const arrival = addMinutes(departure, 37); // 37-minute commute
 
       expect(arrival.hour).toBe(9);

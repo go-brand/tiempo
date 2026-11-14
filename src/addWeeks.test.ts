@@ -100,9 +100,7 @@ describe('addWeeks', () => {
 
   describe('from Temporal.ZonedDateTime', () => {
     it('adds weeks and preserves America/New_York timezone', () => {
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-01-20T15:30:00-05:00[America/New_York]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-01-20T15:30:00-05:00[America/New_York]');
       const result = addWeeks(zoned, 2);
 
       expect(result.year).toBe(2025);
@@ -114,9 +112,7 @@ describe('addWeeks', () => {
     });
 
     it('adds weeks and preserves Asia/Tokyo timezone', () => {
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-01-20T09:00:00+09:00[Asia/Tokyo]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-01-20T09:00:00+09:00[Asia/Tokyo]');
       const result = addWeeks(zoned, 3);
 
       expect(result.year).toBe(2025);
@@ -127,9 +123,7 @@ describe('addWeeks', () => {
     });
 
     it('adds negative weeks and preserves timezone', () => {
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-02-10T10:00:00-05:00[America/New_York]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-02-10T10:00:00-05:00[America/New_York]');
       const result = addWeeks(zoned, -2);
 
       expect(result.year).toBe(2025);
@@ -141,9 +135,7 @@ describe('addWeeks', () => {
 
     it('handles adding weeks across spring DST transition (March 9, 2025)', () => {
       // Week before DST transition
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-03-03T14:00:00-05:00[America/New_York]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-03-03T14:00:00-05:00[America/New_York]');
       const result = addWeeks(zoned, 1);
 
       // After DST transition (spring forward to -04:00)
@@ -157,9 +149,7 @@ describe('addWeeks', () => {
 
     it('handles adding weeks across fall DST transition (November 2, 2025)', () => {
       // Week before DST transition
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-10-27T14:00:00-04:00[America/New_York]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-10-27T14:00:00-04:00[America/New_York]');
       const result = addWeeks(zoned, 1);
 
       // After DST transition (fall back to -05:00)
@@ -186,9 +176,7 @@ describe('addWeeks', () => {
     });
 
     it('schedules bi-weekly meetings', () => {
-      const meeting1 = Temporal.ZonedDateTime.from(
-        '2025-01-06T10:00:00-05:00[America/New_York]'
-      );
+      const meeting1 = Temporal.ZonedDateTime.from('2025-01-06T10:00:00-05:00[America/New_York]');
 
       const meetings = [1, 2, 3, 4, 5, 6].map((n) => addWeeks(meeting1, n * 2));
 

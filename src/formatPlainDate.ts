@@ -135,7 +135,7 @@ function consumeToken(formatStr: string, start: number, char: string): string | 
     'EEEE',
     'EEE',
     'EE',
-    'E',
+    'E'
   ];
 
   // Try to match from longest to shortest
@@ -235,12 +235,14 @@ function formatPart(
   const options: Intl.DateTimeFormatOptions = {
     [part]: style,
     timeZone: 'UTC',
-    calendar: date.calendarId === 'iso8601' ? undefined : date.calendarId,
+    calendar: date.calendarId === 'iso8601' ? undefined : date.calendarId
   };
 
-  return new Intl.DateTimeFormat(locale, options)
-    .formatToParts(date.toZonedDateTime('UTC').epochMilliseconds)
-    .find(value => value.type === part)?.value ?? '';
+  return (
+    new Intl.DateTimeFormat(locale, options)
+      .formatToParts(date.toZonedDateTime('UTC').epochMilliseconds)
+      .find((value) => value.type === part)?.value ?? ''
+  );
 }
 
 function getOrdinalSuffix(num: number): string {

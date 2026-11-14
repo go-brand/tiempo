@@ -1,8 +1,8 @@
 import { isPlainDateAfter } from './isPlainDateAfter';
-import { Temporal } from "./shared/temporal";
-import { isPlainDate } from "./shared/temporal";
-import { normalizeTemporalInput } from "./shared/normalizeTemporalInput";
-import { quarterStartMonth } from "./shared/quarter";
+import { Temporal } from './shared/temporal';
+import { isPlainDate } from './shared/temporal';
+import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
+import { quarterStartMonth } from './shared/quarter';
 
 /**
  * Uses the start endpoint's calendar and timezone, including for the end bound.
@@ -57,23 +57,30 @@ export function eachQuarterOfInterval(interval: {
       throw new TypeError('PlainDate intervals require two PlainDate endpoints');
     }
     if (isPlainDateAfter(interval.start, interval.end)) return [];
-    return eachQuarterStart(interval.start, interval.end.withCalendar(interval.start.calendarId), (ym) => ym.toPlainDate({ day: 1 }));
+    return eachQuarterStart(
+      interval.start,
+      interval.end.withCalendar(interval.start.calendarId),
+      (ym) => ym.toPlainDate({ day: 1 })
+    );
   }
 
   const startZoned = normalizeTemporalInput(
-    interval.start as Temporal.Instant | Temporal.ZonedDateTime,
+    interval.start as Temporal.Instant | Temporal.ZonedDateTime
   );
   const endZoned = normalizeTemporalInput(
-    interval.end as Temporal.Instant | Temporal.ZonedDateTime,
+    interval.end as Temporal.Instant | Temporal.ZonedDateTime
   );
   if (startZoned.epochNanoseconds > endZoned.epochNanoseconds) return [];
   const timezone = startZoned.timeZoneId;
 
-  return eachQuarterStart(startZoned, endZoned.withTimeZone(timezone).withCalendar(startZoned.calendarId), (ym) =>
-    ym.toPlainDate({ day: 1 }).toZonedDateTime({
-      timeZone: timezone,
-      plainTime: new Temporal.PlainTime(),
-    }),
+  return eachQuarterStart(
+    startZoned,
+    endZoned.withTimeZone(timezone).withCalendar(startZoned.calendarId),
+    (ym) =>
+      ym.toPlainDate({ day: 1 }).toZonedDateTime({
+        timeZone: timezone,
+        plainTime: new Temporal.PlainTime()
+      })
   );
 }
 
@@ -84,17 +91,17 @@ export function eachQuarterOfInterval(interval: {
 function eachQuarterStart<T>(
   start: { year: number; month: number; calendarId: string },
   end: { year: number; month: number; calendarId: string },
-  make: (ym: Temporal.PlainYearMonth) => T,
+  make: (ym: Temporal.PlainYearMonth) => T
 ): T[] {
   const startYearMonth = Temporal.PlainYearMonth.from({
     year: start.year,
     month: quarterStartMonth(start.month),
-    calendar: start.calendarId,
+    calendar: start.calendarId
   });
   const endYearMonth = Temporal.PlainYearMonth.from({
     year: end.year,
     month: quarterStartMonth(end.month),
-    calendar: start.calendarId,
+    calendar: start.calendarId
   });
 
   const out: T[] = [];

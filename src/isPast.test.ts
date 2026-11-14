@@ -30,11 +30,9 @@ describe('isPast', () => {
 
     it('works with different timezones', () => {
       const pastInTokyo = Temporal.Now.zonedDateTimeISO('Asia/Tokyo').subtract({
-        hours: 1,
+        hours: 1
       });
-      const pastInNY = Temporal.Now.zonedDateTimeISO(
-        'America/New_York'
-      ).subtract({ hours: 1 });
+      const pastInNY = Temporal.Now.zonedDateTimeISO('America/New_York').subtract({ hours: 1 });
 
       expect(isPast(pastInTokyo)).toBe(true);
       expect(isPast(pastInNY)).toBe(true);
@@ -57,17 +55,13 @@ describe('isPast', () => {
 
   describe('edge cases', () => {
     it('handles dates far in the past', () => {
-      const farPast = Temporal.ZonedDateTime.from(
-        '1970-01-01T00:00:00Z[UTC]'
-      );
+      const farPast = Temporal.ZonedDateTime.from('1970-01-01T00:00:00Z[UTC]');
 
       expect(isPast(farPast)).toBe(true);
     });
 
     it('handles dates far in the future', () => {
-      const farFuture = Temporal.ZonedDateTime.from(
-        '2100-01-01T00:00:00Z[UTC]'
-      );
+      const farFuture = Temporal.ZonedDateTime.from('2100-01-01T00:00:00Z[UTC]');
 
       expect(isPast(farFuture)).toBe(false);
     });
@@ -75,9 +69,7 @@ describe('isPast', () => {
     it('handles DST transitions', () => {
       const now = Temporal.Now.zonedDateTimeISO('America/New_York');
       // March 9, 2025: DST begins in New York
-      const beforeDst = Temporal.ZonedDateTime.from(
-        '2025-03-09T01:30:00-05:00[America/New_York]'
-      );
+      const beforeDst = Temporal.ZonedDateTime.from('2025-03-09T01:30:00-05:00[America/New_York]');
 
       // Only check if the date is in the past relative to now
       if (now.epochMilliseconds > beforeDst.epochMilliseconds) {
