@@ -9,48 +9,45 @@
  * Usage: pnpm generate:matrix
  */
 
-import * as ts from "typescript";
-import * as fs from "node:fs";
-import * as path from "node:path";
-import { fileURLToPath } from "node:url";
-import {
-  capabilityCell,
-  capabilityMatrixIntro,
-} from "./capability-matrix-semantics";
+import * as ts from 'typescript';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { capabilityCell, capabilityMatrixIntro } from './capability-matrix-semantics';
 
-const OUT_PATH = "www/content/docs/type-matrix.mdx";
-const DOCS_DIR = "www/content/docs";
+const OUT_PATH = 'www/content/docs/type-matrix.mdx';
+const DOCS_DIR = 'www/content/docs';
 
 // Category order mirrors the rest of the docs.
 const CATEGORIES = [
-  "conversion",
-  "current-time",
-  "formatting",
-  "arithmetic",
-  "boundaries",
-  "rounding",
-  "comparison",
-  "selection",
-  "difference",
-  "business-days",
-  "intervals",
-  "utilities",
+  'conversion',
+  'current-time',
+  'formatting',
+  'arithmetic',
+  'boundaries',
+  'rounding',
+  'comparison',
+  'selection',
+  'difference',
+  'business-days',
+  'intervals',
+  'utilities'
 ] as const;
 
 const CATEGORY_TITLES: Record<string, string> = {
-  conversion: "Conversion",
-  "current-time": "Current Time",
-  formatting: "Formatting & Parsing",
-  arithmetic: "Arithmetic",
-  boundaries: "Boundaries",
-  rounding: "Rounding",
-  comparison: "Comparison",
-  selection: "Sorting & Selection",
-  difference: "Difference",
-  "business-days": "Business Days",
-  intervals: "Intervals",
-  utilities: "Utilities",
-  other: "Other",
+  conversion: 'Conversion',
+  'current-time': 'Current Time',
+  formatting: 'Formatting & Parsing',
+  arithmetic: 'Arithmetic',
+  boundaries: 'Boundaries',
+  rounding: 'Rounding',
+  comparison: 'Comparison',
+  selection: 'Sorting & Selection',
+  difference: 'Difference',
+  'business-days': 'Business Days',
+  intervals: 'Intervals',
+  utilities: 'Utilities',
+  other: 'Other'
 };
 
 interface Row {
@@ -65,7 +62,7 @@ interface Row {
 }
 
 function camelToKebab(name: string): string {
-  return name.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase();
+  return name.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
 }
 
 /** Map each documented function slug to its category folder. */
@@ -75,7 +72,7 @@ function buildCategoryIndex(): Map<string, string> {
     const dir = path.join(DOCS_DIR, category);
     if (!fs.existsSync(dir)) continue;
     for (const file of fs.readdirSync(dir)) {
-      if (file.endsWith(".mdx")) index.set(file.replace(/\.mdx$/, ""), category);
+      if (file.endsWith('.mdx')) index.set(file.replace(/\.mdx$/, ''), category);
     }
   }
   return index;
@@ -83,8 +80,8 @@ function buildCategoryIndex(): Map<string, string> {
 
 function clean(typeText: string): string {
   return typeText
-    .replace(/\bTemporal\./g, "")
-    .replace(/\s+/g, " ")
+    .replace(/\bTemporal\./g, '')
+    .replace(/\s+/g, ' ')
     .trim();
 }
 
@@ -108,15 +105,15 @@ export function analyze(name: string, decls: ts.FunctionDeclaration[], sf: ts.So
     if (sig.type) returnSet.add(clean(sig.type.getText(sf)));
   }
 
-  const params = paramText.join(" | ");
+  const params = paramText.join(' | ');
   const otherIn: string[] = [];
-  if (has(params, /\bstring\b/)) otherIn.push("string");
-  if (has(params, /\bnumber\b/)) otherIn.push("number");
-  if (has(params, /\bDate\b/)) otherIn.push("Date");
-  if (has(params, /\bPlainDateLike\b/)) otherIn.push("PlainDateLike");
-  if (has(params, /\bPlainTimeLike\b/)) otherIn.push("PlainTimeLike");
-  if (has(params, /\bPlainDateTime\b/)) otherIn.push("PlainDateTime");
-  if (has(params, /\bDuration\b/)) otherIn.push("Duration");
+  if (has(params, /\bstring\b/)) otherIn.push('string');
+  if (has(params, /\bnumber\b/)) otherIn.push('number');
+  if (has(params, /\bDate\b/)) otherIn.push('Date');
+  if (has(params, /\bPlainDateLike\b/)) otherIn.push('PlainDateLike');
+  if (has(params, /\bPlainTimeLike\b/)) otherIn.push('PlainTimeLike');
+  if (has(params, /\bPlainDateTime\b/)) otherIn.push('PlainDateTime');
+  if (has(params, /\bDuration\b/)) otherIn.push('Duration');
 
   return {
     name,
@@ -126,28 +123,28 @@ export function analyze(name: string, decls: ts.FunctionDeclaration[], sf: ts.So
     acceptsPlainTime: has(params, /\bPlainTime\b/) || has(params, /\bPlainTimeLike\b/),
     otherIn,
     returns: [...returnSet],
-    signatures: signatures.map(sig => {
-      const parameters = sig.parameters.map(p => {
-        const optional = p.questionToken || p.initializer ? "?" : "";
+    signatures: signatures.map((sig) => {
+      const parameters = sig.parameters.map((p) => {
+        const optional = p.questionToken || p.initializer ? '?' : '';
         return `${p.name.getText(sf)}${optional}: ${clean(p.type!.getText(sf))}`;
       });
-      return `${name}(${parameters.join(", ")}): ${clean(sig.type!.getText(sf))}`;
-    }),
+      return `${name}(${parameters.join(', ')}): ${clean(sig.type!.getText(sf))}`;
+    })
   };
 }
 
 function collectRows(): Row[] {
-  const configPath = path.resolve("tsconfig.json");
+  const configPath = path.resolve('tsconfig.json');
   const config = ts.readConfigFile(configPath, ts.sys.readFile).config;
   const parsed = ts.parseJsonConfigFileContent(config, ts.sys, path.dirname(configPath));
 
   const program = ts.createProgram(parsed.fileNames, parsed.options);
   const checker = program.getTypeChecker();
-  const indexFile = program.getSourceFile(path.resolve("src/index.ts"));
-  if (!indexFile) throw new Error("src/index.ts not found in program");
+  const indexFile = program.getSourceFile(path.resolve('src/index.ts'));
+  if (!indexFile) throw new Error('src/index.ts not found in program');
 
   const moduleSymbol = checker.getSymbolAtLocation(indexFile);
-  if (!moduleSymbol) throw new Error("Could not resolve src/index.ts module symbol");
+  if (!moduleSymbol) throw new Error('Could not resolve src/index.ts module symbol');
 
   const rows: Row[] = [];
   for (const exp of checker.getExportsOfModule(moduleSymbol)) {
@@ -167,59 +164,64 @@ function render(rows: Row[]): string {
   const categoryOf = buildCategoryIndex();
   const grouped = new Map<string, Row[]>();
   for (const row of rows) {
-    const category = categoryOf.get(camelToKebab(row.name)) ?? "other";
+    const category = categoryOf.get(camelToKebab(row.name)) ?? 'other';
     (grouped.get(category) ?? grouped.set(category, []).get(category)!).push(row);
   }
 
-  const order = [...CATEGORIES, "other"];
+  const order = [...CATEGORIES, 'other'];
 
   const lines: string[] = [
-    "---",
-    "title: Type Matrix",
-    "description: Which Temporal types every function accepts and returns",
-    "---",
-    "",
+    '---',
+    'title: Type Matrix',
+    'description: Which Temporal types every function accepts and returns',
+    '---',
+    '',
     capabilityMatrixIntro,
-    "",
-    "> **How to read this.** ✅ means the function accepts that Temporal type. **Other in** lists other accepted inputs such as `string`, `number` or `Date`. **Returns** is the return type. `·` means the type is not accepted. A short note in a cell explains a deliberate choice.",
-    "",
+    '',
+    '> **How to read this.** ✅ means the function accepts that Temporal type. **Other in** lists other accepted inputs such as `string`, `number` or `Date`. **Returns** is the return type. `·` means the type is not accepted. A short note in a cell explains a deliberate choice.',
+    '',
     "Each row combines a function's overloads. For the exact input → output pairs and required timezones, see [Callable signatures](#callable-signatures).",
-    "",
-    "## Rules of thumb",
-    "",
-    "- A `to<Type>` function returns `<Type>`.",
-    "- `ZonedDateTime` inputs keep their timezone.",
-    "- `PlainDate` inputs stay dates. Functions that need a moment ask for an explicit timezone.",
-    "- `Instant` inputs are read in UTC and datetime results come back as UTC `ZonedDateTime`s.",
-    "- Formatting, comparison and difference functions return strings, booleans or numbers.",
-    "",
+    '',
+    '## Rules of thumb',
+    '',
+    '- A `to<Type>` function returns `<Type>`.',
+    '- `ZonedDateTime` inputs keep their timezone.',
+    '- `PlainDate` inputs stay dates. Functions that need a moment ask for an explicit timezone.',
+    '- `Instant` inputs are read in UTC and datetime results come back as UTC `ZonedDateTime`s.',
+    '- Formatting, comparison and difference functions return strings, booleans or numbers.',
+    ''
   ];
 
   for (const category of order) {
     const group = grouped.get(category);
     if (!group || group.length === 0) continue;
-    lines.push(`## ${CATEGORY_TITLES[category] ?? category}`, "");
+    lines.push(`## ${CATEGORY_TITLES[category] ?? category}`, '');
     lines.push(
-      "| Function | Instant | Zoned | PlainDate | PlainTime | Other in | Returns |",
-      "|----------|:-------:|:-----:|:---------:|:---------:|----------|---------|",
+      '| Function | Instant | Zoned | PlainDate | PlainTime | Other in | Returns |',
+      '|----------|:-------:|:-----:|:---------:|:---------:|----------|---------|'
     );
     // Literal pipes (e.g. `1 | 2 | 3 | 4`) must be escaped inside table cells.
-    const cell = (t: string) => `\`${t.replace(/\|/g, "\\|")}\``;
+    const cell = (t: string) => `\`${t.replace(/\|/g, '\\|')}\``;
     for (const r of group.sort((a, b) => a.name.localeCompare(b.name))) {
-      const otherIn = r.otherIn.length ? r.otherIn.map(cell).join(", ") : "·";
-      const returns = r.returns.map(cell).join(" / ");
+      const otherIn = r.otherIn.length ? r.otherIn.map(cell).join(', ') : '·';
+      const returns = r.returns.map(cell).join(' / ');
       lines.push(
-        `| \`${r.name}\` | ${capabilityCell(r.name, "Instant", r.acceptsInstant)} | ${capabilityCell(r.name, "ZonedDateTime", r.acceptsZoned)} | ${capabilityCell(r.name, "PlainDate", r.acceptsPlainDate)} | ${capabilityCell(r.name, "PlainTime", r.acceptsPlainTime)} | ${otherIn} | ${returns} |`,
+        `| \`${r.name}\` | ${capabilityCell(r.name, 'Instant', r.acceptsInstant)} | ${capabilityCell(r.name, 'ZonedDateTime', r.acceptsZoned)} | ${capabilityCell(r.name, 'PlainDate', r.acceptsPlainDate)} | ${capabilityCell(r.name, 'PlainTime', r.acceptsPlainTime)} | ${otherIn} | ${returns} |`
       );
     }
-    lines.push("");
+    lines.push('');
   }
 
-  lines.push("## Callable signatures", "", "Each line is one public overload. Implementation-only unions are omitted. Temporal prefixes are shortened for readability.", "");
+  lines.push(
+    '## Callable signatures',
+    '',
+    'Each line is one public overload. Implementation-only unions are omitted. Temporal prefixes are shortened for readability.',
+    ''
+  );
   for (const row of rows) {
-    lines.push(`### ${row.name}`, "", "```ts", ...row.signatures, "```", "");
+    lines.push(`### ${row.name}`, '', '```ts', ...row.signatures, '```', '');
   }
-  return lines.join("\n");
+  return lines.join('\n');
 }
 
 function main() {

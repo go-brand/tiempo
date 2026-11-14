@@ -22,7 +22,7 @@ describe('toPlainTime', () => {
         second: 45,
         millisecond: 123,
         microsecond: 456,
-        nanosecond: 789,
+        nanosecond: 789
       });
 
       expect(time.hour).toBe(14);
@@ -143,9 +143,7 @@ describe('toPlainTime', () => {
     });
 
     it('preserves full time precision', () => {
-      const zdt = Temporal.ZonedDateTime.from(
-        '2025-01-20T14:30:45.123456789[America/New_York]'
-      );
+      const zdt = Temporal.ZonedDateTime.from('2025-01-20T14:30:45.123456789[America/New_York]');
       const time = toPlainTime(zdt);
 
       expect(time.hour).toBe(14);
@@ -235,9 +233,7 @@ describe('toPlainTime', () => {
 
   describe('from ZonedDateTime with timezone (converts first)', () => {
     it('converts ZonedDateTime to different timezone then extracts time', () => {
-      const nyTime = Temporal.ZonedDateTime.from(
-        '2025-01-20T15:00:00-05:00[America/New_York]'
-      );
+      const nyTime = Temporal.ZonedDateTime.from('2025-01-20T15:00:00-05:00[America/New_York]');
       const tokyoTime = toPlainTime(nyTime, 'Asia/Tokyo');
 
       expect(tokyoTime.hour).toBe(5); // 5 AM next day in Tokyo
@@ -257,14 +253,18 @@ describe('toPlainTime', () => {
       expect(() => {
         // @ts-expect-error - testing runtime error for missing timezone
         toPlainTime(new Date());
-      }).toThrow('Timezone is required unless input is a ZonedDateTime, PlainTimeLike, or plain time string');
+      }).toThrow(
+        'Timezone is required unless input is a ZonedDateTime, PlainTimeLike, or plain time string'
+      );
     });
 
     it('throws when timezone is missing for Instant', () => {
       expect(() => {
         // @ts-expect-error - testing runtime error for missing timezone
         toPlainTime(Temporal.Instant.from('2025-01-20T15:30:00Z'));
-      }).toThrow('Timezone is required unless input is a ZonedDateTime, PlainTimeLike, or plain time string');
+      }).toThrow(
+        'Timezone is required unless input is a ZonedDateTime, PlainTimeLike, or plain time string'
+      );
     });
   });
 
@@ -335,8 +335,7 @@ describe('toPlainTime', () => {
 
       // 20:00 UTC → 15:00 in New York (store open)
       const midDay = toPlainTime('2025-01-20T20:00:00Z', 'America/New_York');
-      const isOpen =
-        !isPlainTimeBefore(midDay, openTime) && isPlainTimeBefore(midDay, closeTime);
+      const isOpen = !isPlainTimeBefore(midDay, openTime) && isPlainTimeBefore(midDay, closeTime);
       expect(isOpen).toBe(true);
 
       // 23:00 UTC → 18:00 in New York (store closed)

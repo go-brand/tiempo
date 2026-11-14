@@ -33,13 +33,8 @@ import { normalizeWithPlainDate } from './shared/normalizeWithPlainDate';
  * // 2025-01-20T23:59:59.999999999-05:00[America/New_York]
  * ```
  */
-export function endOfDay(
-  input: Temporal.Instant | Temporal.ZonedDateTime
-): Temporal.ZonedDateTime;
-export function endOfDay(
-  input: Temporal.PlainDate,
-  timezone: Timezone
-): Temporal.ZonedDateTime;
+export function endOfDay(input: Temporal.Instant | Temporal.ZonedDateTime): Temporal.ZonedDateTime;
+export function endOfDay(input: Temporal.PlainDate, timezone: Timezone): Temporal.ZonedDateTime;
 export function endOfDay(
   input: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate,
   timezone?: Timezone

@@ -84,9 +84,7 @@ describe('tiempo integration', () => {
 
   describe('cross-function consistency', () => {
     it('ensures toInstant and toIso produce consistent results', () => {
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-01-20T15:00:00-05:00[America/New_York]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-01-20T15:00:00-05:00[America/New_York]');
 
       const viaToInstant = toInstant(zoned).toString();
       const viaToIso = toIso(zoned);

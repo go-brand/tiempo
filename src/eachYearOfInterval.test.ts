@@ -129,7 +129,7 @@ describe('eachYearOfInterval', () => {
 
     it('handles leap years correctly', () => {
       const start = Temporal.ZonedDateTime.from('2024-02-29T12:00:00Z[UTC]'); // Leap day
-      const end = Temporal.ZonedDateTime.from('2028-02-29T12:00:00Z[UTC]');   // Next leap day
+      const end = Temporal.ZonedDateTime.from('2028-02-29T12:00:00Z[UTC]'); // Next leap day
 
       const result = eachYearOfInterval({ start, end });
 
@@ -226,7 +226,6 @@ describe('eachYearOfInterval', () => {
     });
   });
 });
-
 
 it('returns no boundaries when original endpoints are reversed inside one bucket', () => {
   const end = Temporal.ZonedDateTime.from('2025-01-15T12:30:15[UTC]');

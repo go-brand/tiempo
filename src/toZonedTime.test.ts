@@ -32,17 +32,11 @@ describe('toZonedTime', () => {
 
     it('handles daylight saving time transitions', () => {
       // Summer time (EDT: UTC-4)
-      const summer = toZonedTime(
-        '2025-07-20T20:00:00.000Z',
-        'America/New_York'
-      );
+      const summer = toZonedTime('2025-07-20T20:00:00.000Z', 'America/New_York');
       expect(summer.hour).toBe(16); // 4 PM in EDT
 
       // Winter time (EST: UTC-5)
-      const winter = toZonedTime(
-        '2025-01-20T20:00:00.000Z',
-        'America/New_York'
-      );
+      const winter = toZonedTime('2025-01-20T20:00:00.000Z', 'America/New_York');
       expect(winter.hour).toBe(15); // 3 PM in EST
     });
   });
@@ -70,9 +64,7 @@ describe('toZonedTime', () => {
 
   describe('from Temporal.ZonedDateTime', () => {
     it('converts ZonedDateTime to different timezone', () => {
-      const nyTime = Temporal.ZonedDateTime.from(
-        '2025-01-20T15:00:00-05:00[America/New_York]'
-      );
+      const nyTime = Temporal.ZonedDateTime.from('2025-01-20T15:00:00-05:00[America/New_York]');
       const tokyoTime = toZonedTime(nyTime, 'Asia/Tokyo');
 
       expect(tokyoTime).toBeInstanceOf(Temporal.ZonedDateTime);
@@ -82,19 +74,13 @@ describe('toZonedTime', () => {
     });
 
     it('preserves the same instant when converting timezones', () => {
-      const original = Temporal.ZonedDateTime.from(
-        '2025-01-20T15:00:00-05:00[America/New_York]'
-      );
+      const original = Temporal.ZonedDateTime.from('2025-01-20T15:00:00-05:00[America/New_York]');
       const tokyo = toZonedTime(original, 'Asia/Tokyo');
       const london = toZonedTime(original, 'Europe/London');
 
       // All represent the same instant
-      expect(original.toInstant().toString()).toBe(
-        tokyo.toInstant().toString()
-      );
-      expect(original.toInstant().toString()).toBe(
-        london.toInstant().toString()
-      );
+      expect(original.toInstant().toString()).toBe(tokyo.toInstant().toString());
+      expect(original.toInstant().toString()).toBe(london.toInstant().toString());
     });
   });
 

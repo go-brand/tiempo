@@ -32,7 +32,7 @@ export interface RoundToNearestHourOptions {
 const MODE_TO_ROUNDING_MODE = {
   round: 'halfExpand',
   ceil: 'ceil',
-  floor: 'floor',
+  floor: 'floor'
 } as const;
 
 /**
@@ -93,6 +93,6 @@ export function roundToNearestHour(
   return zonedDateTime.round({
     smallestUnit: 'hour',
     roundingMode: MODE_TO_ROUNDING_MODE[mode],
-    roundingIncrement: nearestTo,
+    roundingIncrement: nearestTo
   });
 }

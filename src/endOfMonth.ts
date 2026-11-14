@@ -46,10 +46,7 @@ export function endOfMonth(
   input: Temporal.Instant | Temporal.ZonedDateTime
 ): Temporal.ZonedDateTime;
 export function endOfMonth(input: Temporal.PlainDate): Temporal.PlainDate;
-export function endOfMonth(
-  input: Temporal.PlainDate,
-  timezone: Timezone
-): Temporal.ZonedDateTime;
+export function endOfMonth(input: Temporal.PlainDate, timezone: Timezone): Temporal.ZonedDateTime;
 export function endOfMonth(
   input: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate,
   timezone?: Timezone

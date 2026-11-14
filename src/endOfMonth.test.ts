@@ -71,7 +71,7 @@ describe('endOfMonth', () => {
         { month: 9, lastDay: 30 },
         { month: 10, lastDay: 31 },
         { month: 11, lastDay: 30 },
-        { month: 12, lastDay: 31 },
+        { month: 12, lastDay: 31 }
       ];
 
       for (const { month, lastDay } of months) {
@@ -91,9 +91,7 @@ describe('endOfMonth', () => {
   describe('from Temporal.ZonedDateTime', () => {
     it('returns end of month in same timezone', () => {
       // Jan 15, 2025
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-01-15T15:30:00-05:00[America/New_York]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-01-15T15:30:00-05:00[America/New_York]');
       const end = endOfMonth(zoned);
 
       expect(end.year).toBe(2025);
@@ -110,9 +108,7 @@ describe('endOfMonth', () => {
 
     it('returns same day if already last of month', () => {
       // Jan 31, 2025
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-01-31T15:30:00-05:00[America/New_York]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-01-31T15:30:00-05:00[America/New_York]');
       const end = endOfMonth(zoned);
 
       expect(end.day).toBe(31);
@@ -121,12 +117,8 @@ describe('endOfMonth', () => {
 
     it('handles different timezones', () => {
       // Jan 15 in Tokyo and NY
-      const tokyo = Temporal.ZonedDateTime.from(
-        '2025-01-15T15:00:00+09:00[Asia/Tokyo]'
-      );
-      const ny = Temporal.ZonedDateTime.from(
-        '2025-01-15T15:00:00-05:00[America/New_York]'
-      );
+      const tokyo = Temporal.ZonedDateTime.from('2025-01-15T15:00:00+09:00[Asia/Tokyo]');
+      const ny = Temporal.ZonedDateTime.from('2025-01-15T15:00:00-05:00[America/New_York]');
 
       const endTokyo = endOfMonth(tokyo);
       const endNY = endOfMonth(ny);
@@ -141,9 +133,7 @@ describe('endOfMonth', () => {
       expect(endNY.hour).toBe(23);
 
       // Different timezones = different instants
-      expect(endTokyo.toInstant().toString()).not.toBe(
-        endNY.toInstant().toString()
-      );
+      expect(endTokyo.toInstant().toString()).not.toBe(endNY.toInstant().toString());
     });
 
     it('converts to different timezone explicitly', () => {
@@ -196,9 +186,7 @@ describe('endOfMonth', () => {
   describe('DST transitions', () => {
     it('handles DST transition on last day of month', () => {
       // March 2025 in New York (DST begins March 9)
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-03-15T15:00:00-04:00[America/New_York]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-03-15T15:00:00-04:00[America/New_York]');
       const end = endOfMonth(zoned);
 
       expect(end.day).toBe(31);
@@ -208,9 +196,7 @@ describe('endOfMonth', () => {
 
     it('handles fall DST transition month', () => {
       // November 2025: DST ends Nov 2 in New York
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-11-15T15:00:00-05:00[America/New_York]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-11-15T15:00:00-05:00[America/New_York]');
       const end = endOfMonth(zoned);
 
       expect(end.day).toBe(30);
@@ -252,9 +238,7 @@ describe('endOfMonth', () => {
       expect(endNY.day).toBe(31);
 
       // But different instants
-      expect(endTokyo.toInstant().toString()).not.toBe(
-        endNY.toInstant().toString()
-      );
+      expect(endTokyo.toInstant().toString()).not.toBe(endNY.toInstant().toString());
     });
 
     it('handles leap year February', () => {

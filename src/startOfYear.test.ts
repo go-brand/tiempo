@@ -76,9 +76,7 @@ describe('startOfYear', () => {
   describe('from Temporal.ZonedDateTime', () => {
     it('returns start of year in same timezone', () => {
       // June 15, 2025 (EDT)
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-06-15T15:30:00-04:00[America/New_York]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-06-15T15:30:00-04:00[America/New_York]');
       const start = startOfYear(zoned);
 
       expect(start.year).toBe(2025);
@@ -95,9 +93,7 @@ describe('startOfYear', () => {
 
     it('returns same day if already January 1st', () => {
       // Jan 1, 2025
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-01-01T15:30:00-05:00[America/New_York]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-01-01T15:30:00-05:00[America/New_York]');
       const start = startOfYear(zoned);
 
       expect(start.month).toBe(1);
@@ -107,12 +103,8 @@ describe('startOfYear', () => {
 
     it('handles different timezones', () => {
       // June 15 in Tokyo and NY (EDT)
-      const tokyo = Temporal.ZonedDateTime.from(
-        '2025-06-15T15:00:00+09:00[Asia/Tokyo]'
-      );
-      const ny = Temporal.ZonedDateTime.from(
-        '2025-06-15T15:00:00-04:00[America/New_York]'
-      );
+      const tokyo = Temporal.ZonedDateTime.from('2025-06-15T15:00:00+09:00[Asia/Tokyo]');
+      const ny = Temporal.ZonedDateTime.from('2025-06-15T15:00:00-04:00[America/New_York]');
 
       const startTokyo = startOfYear(tokyo);
       const startNY = startOfYear(ny);
@@ -129,9 +121,7 @@ describe('startOfYear', () => {
       expect(startNY.hour).toBe(0);
 
       // Different timezones = different instants
-      expect(startTokyo.toInstant().toString()).not.toBe(
-        startNY.toInstant().toString()
-      );
+      expect(startTokyo.toInstant().toString()).not.toBe(startNY.toInstant().toString());
     });
 
     it('converts to different timezone explicitly', () => {
@@ -189,9 +179,7 @@ describe('startOfYear', () => {
   describe('DST transitions', () => {
     it('handles year containing DST transitions', () => {
       // Summer 2025 in New York (after DST transition)
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-07-15T15:00:00-04:00[America/New_York]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-07-15T15:00:00-04:00[America/New_York]');
       const start = startOfYear(zoned);
 
       expect(start.year).toBe(2025);
@@ -202,9 +190,7 @@ describe('startOfYear', () => {
 
     it('handles January 1st DST offset', () => {
       // Jan 1 in New York (EST, not EDT)
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-01-01T12:00:00-05:00[America/New_York]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-01-01T12:00:00-05:00[America/New_York]');
       const start = startOfYear(zoned);
 
       expect(start.month).toBe(1);
@@ -248,9 +234,7 @@ describe('startOfYear', () => {
       expect(startNY.day).toBe(1);
 
       // But different instants
-      expect(startTokyo.toInstant().toString()).not.toBe(
-        startNY.toInstant().toString()
-      );
+      expect(startTokyo.toInstant().toString()).not.toBe(startNY.toInstant().toString());
     });
 
     it('handles leap year', () => {

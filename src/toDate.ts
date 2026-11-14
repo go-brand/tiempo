@@ -24,9 +24,7 @@ import { type Temporal, isInstant } from './shared/temporal';
  * }
  * ```
  */
-export function toDate(
-  input: Temporal.Instant | Temporal.ZonedDateTime
-): Date {
+export function toDate(input: Temporal.Instant | Temporal.ZonedDateTime): Date {
   if (isInstant(input)) {
     return new Date(input.toString());
   }

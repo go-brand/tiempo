@@ -1,14 +1,31 @@
 import type { Temporal } from '@js-temporal/polyfill';
 import {
-  format, isBefore, isAfter, toPlainTime,
-  differenceInDays, differenceInWeeks, differenceInMonths, differenceInQuarters, differenceInYears,
-  eachDayOfInterval, eachWeekOfInterval, eachMonthOfInterval, eachYearOfInterval, eachQuarterOfInterval,
-  addDays, subDays, addWeeks, subWeeks,
-  addMonths, subMonths, addYears, subYears,
+  format,
+  isBefore,
+  isAfter,
+  toPlainTime,
+  differenceInDays,
+  differenceInWeeks,
+  differenceInMonths,
+  differenceInQuarters,
+  differenceInYears,
+  eachDayOfInterval,
+  eachWeekOfInterval,
+  eachMonthOfInterval,
+  eachYearOfInterval,
+  eachQuarterOfInterval,
+  addDays,
+  subDays,
+  addWeeks,
+  subWeeks,
+  addMonths,
+  subMonths,
+  addYears,
+  subYears,
   startOfMonth,
   toInstant,
   toPlainDate,
-  toZonedTime,
+  toZonedTime
 } from '../dist/index.js';
 
 const instant = toInstant('2025-01-20T20:00:00Z');
@@ -43,21 +60,39 @@ calendarBoundary.hour;
 
 // The installed declarations must keep date-only and timeline returns distinct.
 const dateResults: Temporal.PlainDate[] = [
-  addDays(date, 1), subDays(date, 1), addWeeks(date, 1), subWeeks(date, 1),
-  addMonths(date, 1), subMonths(date, 1), addYears(date, 1), subYears(date, 1),
+  addDays(date, 1),
+  subDays(date, 1),
+  addWeeks(date, 1),
+  subWeeks(date, 1),
+  addMonths(date, 1),
+  subMonths(date, 1),
+  addYears(date, 1),
+  subYears(date, 1)
 ];
 const expectedDates = [
-  '2025-01-21', '2025-01-19', '2025-01-27', '2025-01-13',
-  '2025-02-20', '2024-12-20', '2026-01-20', '2024-01-20',
+  '2025-01-21',
+  '2025-01-19',
+  '2025-01-27',
+  '2025-01-13',
+  '2025-02-20',
+  '2024-12-20',
+  '2026-01-20',
+  '2024-01-20'
 ];
 if (dateResults.some((value, index) => value.toString() !== expectedDates[index])) {
   throw new Error('PlainDate arithmetic changed date values');
 }
 const timelineResults: Temporal.ZonedDateTime[] = [
-  addDays(instant, 1), subDays(zoned, 1), addWeeks(instant, 1), subWeeks(zoned, 1),
-  addMonths(instant, 1), subMonths(zoned, 1), addYears(instant, 1), subYears(zoned, 1),
+  addDays(instant, 1),
+  subDays(zoned, 1),
+  addWeeks(instant, 1),
+  subWeeks(zoned, 1),
+  addMonths(instant, 1),
+  subMonths(zoned, 1),
+  addYears(instant, 1),
+  subYears(zoned, 1)
 ];
-if (timelineResults.some(value => value.timeZoneId !== 'UTC')) {
+if (timelineResults.some((value) => value.timeZoneId !== 'UTC')) {
   throw new Error('Calendar arithmetic changed timeline return context');
 }
 const existingArgs: Parameters<typeof addDays> = [instant, 1];
@@ -74,8 +109,12 @@ if (format(date, 'yyyy-MM-dd') !== '2025-01-20') {
 const nextDate = addDays(date, 1);
 const morning = toPlainTime('09:00');
 const evening = toPlainTime('17:00');
-if (!isBefore(date, nextDate) || !isAfter(nextDate, date)
-  || !isBefore(morning, evening) || !isAfter(evening, morning)) {
+if (
+  !isBefore(date, nextDate) ||
+  !isAfter(nextDate, date) ||
+  !isBefore(morning, evening) ||
+  !isAfter(evening, morning)
+) {
   throw new Error('Plain comparison overloads failed');
 }
 function rejectedPlainCalls() {
@@ -91,20 +130,31 @@ void rejectedPlainCalls;
 console.log('✓ built-package consumer smoke passed');
 
 // Exercise native caller objects against the installed, polyfill-backed package.
-const nativeTemporal = (globalThis as unknown as { Temporal?: typeof import('@js-temporal/polyfill').Temporal }).Temporal;
+const nativeTemporal = (
+  globalThis as unknown as { Temporal?: typeof import('@js-temporal/polyfill').Temporal }
+).Temporal;
 if (nativeTemporal) {
   const nativeStart = nativeTemporal.ZonedDateTime.from('2025-03-08T12:00[America/New_York]');
   const packageEnd = toZonedTime('2025-03-10T16:00Z', 'America/New_York');
-  if (differenceInDays(packageEnd, nativeStart) !== 2 || differenceInDays(nativeStart, packageEnd) !== -2) {
+  if (
+    differenceInDays(packageEnd, nativeStart) !== 2 ||
+    differenceInDays(nativeStart, packageEnd) !== -2
+  ) {
     throw new Error('Installed calendar differences failed across native/polyfill inputs');
   }
   const nativeYearStart = nativeTemporal.Instant.from('2025-01-01T00:00Z');
   const packageYearEnd = toInstant('2026-01-01T00:00Z');
   for (const [difference, expected] of [
-    [differenceInDays, 365], [differenceInWeeks, 52], [differenceInMonths, 12],
-    [differenceInQuarters, 4], [differenceInYears, 1],
+    [differenceInDays, 365],
+    [differenceInWeeks, 52],
+    [differenceInMonths, 12],
+    [differenceInQuarters, 4],
+    [differenceInYears, 1]
   ] as const) {
-    if (difference(packageYearEnd, nativeYearStart) !== expected || difference(nativeYearStart, packageYearEnd) !== -expected) {
+    if (
+      difference(packageYearEnd, nativeYearStart) !== expected ||
+      difference(nativeYearStart, packageYearEnd) !== -expected
+    ) {
       throw new Error('Installed calendar difference changed mixed-input results');
     }
   }
@@ -131,11 +181,20 @@ if (nativeTemporal) {
 
 const dateRangeStart = toPlainDate('2026-10-10');
 const dateRangeEnd = toPlainDate('2026-10-12');
-const dateRange: Temporal.PlainDate[] = eachDayOfInterval({ start: dateRangeStart, end: dateRangeEnd });
-if (differenceInDays(dateRangeEnd, dateRangeStart) !== 2 || dateRange.map(day => day.toString()).join(',') !== '2026-10-10,2026-10-11,2026-10-12') {
+const dateRange: Temporal.PlainDate[] = eachDayOfInterval({
+  start: dateRangeStart,
+  end: dateRangeEnd
+});
+if (
+  differenceInDays(dateRangeEnd, dateRangeStart) !== 2 ||
+  dateRange.map((day) => day.toString()).join(',') !== '2026-10-10,2026-10-11,2026-10-12'
+) {
   throw new Error('Installed PlainDate day operations failed');
 }
-if (nativeTemporal && differenceInDays(nativeTemporal.PlainDate.from('2026-10-12'), dateRangeStart) !== 2) {
+if (
+  nativeTemporal &&
+  differenceInDays(nativeTemporal.PlainDate.from('2026-10-12'), dateRangeStart) !== 2
+) {
   throw new Error('Installed PlainDate day difference failed for a native caller');
 }
 function rejectedDateDayInputs() {
@@ -148,7 +207,11 @@ void rejectedDateDayInputs;
 
 const calendarStart = toPlainDate('2025-01-01');
 const calendarEnd = toPlainDate('2027-01-01');
-for (const [difference, expected] of [[differenceInWeeks, 104], [differenceInMonths, 24], [differenceInYears, 2]] as const) {
+for (const [difference, expected] of [
+  [differenceInWeeks, 104],
+  [differenceInMonths, 24],
+  [differenceInYears, 2]
+] as const) {
   if (difference(calendarEnd, calendarStart) !== expected) {
     throw new Error('Installed PlainDate calendar difference failed');
   }
@@ -156,14 +219,17 @@ for (const [difference, expected] of [[differenceInWeeks, 104], [differenceInMon
 const calendarIntervals: Temporal.PlainDate[][] = [
   eachWeekOfInterval({ start: calendarStart, end: toPlainDate('2025-01-08') }),
   eachMonthOfInterval({ start: calendarStart, end: calendarEnd }),
-  eachYearOfInterval({ start: calendarStart, end: calendarEnd }),
+  eachYearOfInterval({ start: calendarStart, end: calendarEnd })
 ];
-if (calendarIntervals.map(values => values.length).join(',') !== '2,25,3') {
+if (calendarIntervals.map((values) => values.length).join(',') !== '2,25,3') {
   throw new Error('Installed PlainDate calendar intervals failed');
 }
 if (nativeTemporal) {
   const nativeEnd = nativeTemporal.PlainDate.from('2027-01-01');
-  if (differenceInYears(nativeEnd, calendarStart) !== 2 || eachMonthOfInterval({ start: calendarStart, end: nativeEnd }).length !== 25) {
+  if (
+    differenceInYears(nativeEnd, calendarStart) !== 2 ||
+    eachMonthOfInterval({ start: calendarStart, end: nativeEnd }).length !== 25
+  ) {
     throw new Error('Installed calendar family interoperability failed');
   }
 }

@@ -44,10 +44,7 @@ export function toIso9075(
  * toIso9075(zoned, { representation: 'time' }); // "20:00:00"
  * ```
  */
-export function toIso9075(
-  input: Temporal.ZonedDateTime,
-  options?: ToIso9075Options
-): string;
+export function toIso9075(input: Temporal.ZonedDateTime, options?: ToIso9075Options): string;
 
 export function toIso9075(
   input: Temporal.Instant | Temporal.ZonedDateTime,

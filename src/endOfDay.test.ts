@@ -53,9 +53,7 @@ describe('endOfDay', () => {
 
   describe('from Temporal.ZonedDateTime', () => {
     it('returns end of day in same timezone', () => {
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-01-20T15:30:00-05:00[America/New_York]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-01-20T15:30:00-05:00[America/New_York]');
       const end = endOfDay(zoned);
 
       expect(end.year).toBe(2025);
@@ -71,15 +69,9 @@ describe('endOfDay', () => {
     });
 
     it('works with any time during the day', () => {
-      const morning = Temporal.ZonedDateTime.from(
-        '2025-01-20T08:00:00-05:00[America/New_York]'
-      );
-      const afternoon = Temporal.ZonedDateTime.from(
-        '2025-01-20T16:30:45-05:00[America/New_York]'
-      );
-      const evening = Temporal.ZonedDateTime.from(
-        '2025-01-20T23:00:00-05:00[America/New_York]'
-      );
+      const morning = Temporal.ZonedDateTime.from('2025-01-20T08:00:00-05:00[America/New_York]');
+      const afternoon = Temporal.ZonedDateTime.from('2025-01-20T16:30:45-05:00[America/New_York]');
+      const evening = Temporal.ZonedDateTime.from('2025-01-20T23:00:00-05:00[America/New_York]');
 
       const endMorning = endOfDay(morning);
       const endAfternoon = endOfDay(afternoon);
@@ -91,12 +83,8 @@ describe('endOfDay', () => {
     });
 
     it('handles different timezones', () => {
-      const tokyo = Temporal.ZonedDateTime.from(
-        '2025-01-20T15:00:00+09:00[Asia/Tokyo]'
-      );
-      const ny = Temporal.ZonedDateTime.from(
-        '2025-01-20T15:00:00-05:00[America/New_York]'
-      );
+      const tokyo = Temporal.ZonedDateTime.from('2025-01-20T15:00:00+09:00[Asia/Tokyo]');
+      const ny = Temporal.ZonedDateTime.from('2025-01-20T15:00:00-05:00[America/New_York]');
 
       const endTokyo = endOfDay(tokyo);
       const endNY = endOfDay(ny);
@@ -110,9 +98,7 @@ describe('endOfDay', () => {
       expect(endNY.hour).toBe(23);
 
       // Different timezones = different instants
-      expect(endTokyo.toInstant().toString()).not.toBe(
-        endNY.toInstant().toString()
-      );
+      expect(endTokyo.toInstant().toString()).not.toBe(endNY.toInstant().toString());
     });
 
     it('converts to different timezone explicitly', () => {
@@ -130,9 +116,7 @@ describe('endOfDay', () => {
   describe('DST transitions', () => {
     it('handles spring forward DST transition', () => {
       // March 9, 2025: DST begins in New York (2 AM -> 3 AM)
-      const beforeDst = Temporal.ZonedDateTime.from(
-        '2025-03-09T01:00:00-05:00[America/New_York]'
-      );
+      const beforeDst = Temporal.ZonedDateTime.from('2025-03-09T01:00:00-05:00[America/New_York]');
       const end = endOfDay(beforeDst);
 
       expect(end.day).toBe(9);
@@ -143,9 +127,7 @@ describe('endOfDay', () => {
 
     it('handles fall back DST transition', () => {
       // November 2, 2025: DST ends in New York (2 AM -> 1 AM)
-      const duringDst = Temporal.ZonedDateTime.from(
-        '2025-11-02T01:00:00-04:00[America/New_York]'
-      );
+      const duringDst = Temporal.ZonedDateTime.from('2025-11-02T01:00:00-04:00[America/New_York]');
       const end = endOfDay(duringDst);
 
       expect(end.day).toBe(2);
@@ -181,14 +163,10 @@ describe('endOfDay', () => {
       // Same calendar date, but different instants
       expect(endTokyo.day).toBe(20);
       expect(endNY.day).toBe(20);
-      expect(endTokyo.toInstant().toString()).not.toBe(
-        endNY.toInstant().toString()
-      );
+      expect(endTokyo.toInstant().toString()).not.toBe(endNY.toInstant().toString());
 
       // Tokyo end of day happens before NY end of day
-      expect(
-        Temporal.Instant.compare(endTokyo.toInstant(), endNY.toInstant())
-      ).toBe(-1);
+      expect(Temporal.Instant.compare(endTokyo.toInstant(), endNY.toInstant())).toBe(-1);
     });
 
     it('works with UTC timezone', () => {
@@ -258,10 +236,11 @@ describe('endOfDay', () => {
   });
 });
 
-
 describe('skipped midnight regression', () => {
   it('ends on the correct calendar day after a midnight gap', () => {
     const value = Temporal.ZonedDateTime.from('2025-09-07T12:00[America/Santiago]');
-    expect(endOfDay(value).toString()).toBe('2025-09-07T23:59:59.999999999-03:00[America/Santiago]');
+    expect(endOfDay(value).toString()).toBe(
+      '2025-09-07T23:59:59.999999999-03:00[America/Santiago]'
+    );
   });
 });

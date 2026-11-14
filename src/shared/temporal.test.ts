@@ -1,11 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { Temporal as Poly } from '@js-temporal/polyfill';
-import {
-  Temporal,
-  isInstant,
-  isZonedDateTime,
-  isPlainDate,
-} from './temporal';
+import { Temporal, isInstant, isZonedDateTime, isPlainDate } from './temporal';
 
 describe('temporal accessor', () => {
   it('resolves a usable Temporal implementation', () => {

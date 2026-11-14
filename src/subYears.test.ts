@@ -23,9 +23,7 @@ describe('subYears', () => {
   });
 
   it('preserves timezone when subtracting years', () => {
-    const zoned = Temporal.ZonedDateTime.from(
-      '2028-01-20T15:30:00-05:00[America/New_York]'
-    );
+    const zoned = Temporal.ZonedDateTime.from('2028-01-20T15:30:00-05:00[America/New_York]');
     const result = subYears(zoned, 3);
 
     expect(result.year).toBe(2025);
@@ -65,9 +63,7 @@ describe('subYears', () => {
 
   it('handles DST offset differences when subtracting years', () => {
     // July (EDT)
-    const zoned = Temporal.ZonedDateTime.from(
-      '2025-07-15T14:00:00-04:00[America/New_York]'
-    );
+    const zoned = Temporal.ZonedDateTime.from('2025-07-15T14:00:00-04:00[America/New_York]');
     const result = subYears(zoned, 3);
 
     // July 2022 (still EDT)

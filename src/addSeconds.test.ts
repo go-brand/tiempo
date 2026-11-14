@@ -131,9 +131,7 @@ describe('addSeconds', () => {
 
   describe('from Temporal.ZonedDateTime', () => {
     it('adds seconds and preserves America/New_York timezone', () => {
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-01-20T15:30:00-05:00[America/New_York]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-01-20T15:30:00-05:00[America/New_York]');
       const result = addSeconds(zoned, 90);
 
       expect(result.year).toBe(2025);
@@ -146,9 +144,7 @@ describe('addSeconds', () => {
     });
 
     it('adds seconds and preserves Asia/Tokyo timezone', () => {
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-01-20T09:00:00+09:00[Asia/Tokyo]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-01-20T09:00:00+09:00[Asia/Tokyo]');
       const result = addSeconds(zoned, 45);
 
       expect(result.year).toBe(2025);
@@ -161,9 +157,7 @@ describe('addSeconds', () => {
     });
 
     it('adds negative seconds and preserves timezone', () => {
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-01-20T10:00:30-05:00[America/New_York]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-01-20T10:00:30-05:00[America/New_York]');
       const result = addSeconds(zoned, -45);
 
       expect(result.year).toBe(2025);
@@ -177,9 +171,7 @@ describe('addSeconds', () => {
 
     it('handles adding seconds through DST transition', () => {
       // Seconds before DST
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-03-09T01:59:55-05:00[America/New_York]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-03-09T01:59:55-05:00[America/New_York]');
       const result = addSeconds(zoned, 10);
 
       expect(result.year).toBe(2025);
@@ -219,9 +211,7 @@ describe('addSeconds', () => {
     });
 
     it('calculates race split times', () => {
-      const raceStart = Temporal.ZonedDateTime.from(
-        '2025-01-20T08:00:00-05:00[America/New_York]'
-      );
+      const raceStart = Temporal.ZonedDateTime.from('2025-01-20T08:00:00-05:00[America/New_York]');
       const km1 = addSeconds(raceStart, 245); // 4:05
       const km5 = addSeconds(raceStart, 1225); // 20:25
       const km10 = addSeconds(raceStart, 2450); // 40:50

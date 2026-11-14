@@ -91,9 +91,7 @@ describe('addYears', () => {
 
   describe('from Temporal.ZonedDateTime', () => {
     it('adds years and preserves America/New_York timezone', () => {
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-01-20T15:30:00-05:00[America/New_York]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-01-20T15:30:00-05:00[America/New_York]');
       const result = addYears(zoned, 3);
 
       expect(result.year).toBe(2028);
@@ -105,9 +103,7 @@ describe('addYears', () => {
     });
 
     it('adds years and preserves Asia/Tokyo timezone', () => {
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-01-20T09:00:00+09:00[Asia/Tokyo]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-01-20T09:00:00+09:00[Asia/Tokyo]');
       const result = addYears(zoned, 7);
 
       expect(result.year).toBe(2032);
@@ -118,9 +114,7 @@ describe('addYears', () => {
     });
 
     it('adds negative years and preserves timezone', () => {
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-06-15T10:00:00-04:00[America/New_York]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-06-15T10:00:00-04:00[America/New_York]');
       const result = addYears(zoned, -5);
 
       expect(result.year).toBe(2020);
@@ -132,9 +126,7 @@ describe('addYears', () => {
 
     it('handles adding years with DST offset differences', () => {
       // January (EST -05:00)
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-01-15T14:00:00-05:00[America/New_York]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-01-15T14:00:00-05:00[America/New_York]');
       const result = addYears(zoned, 2);
 
       // January 2027 (still EST -05:00)
@@ -148,9 +140,7 @@ describe('addYears', () => {
 
     it('handles subtracting years with DST offset differences', () => {
       // July (EDT -04:00)
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-07-15T14:00:00-04:00[America/New_York]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-07-15T14:00:00-04:00[America/New_York]');
       const result = addYears(zoned, -3);
 
       // July 2022 (still EDT -04:00)
@@ -277,9 +267,7 @@ describe('addYears', () => {
         '2020-06-15T14:00:00-04:00[America/New_York]'
       );
 
-      const anniversaries = [1, 5, 10, 25, 50].map((years) =>
-        addYears(weddingDate, years)
-      );
+      const anniversaries = [1, 5, 10, 25, 50].map((years) => addYears(weddingDate, years));
 
       anniversaries.forEach((anniversary, index) => {
         expect(anniversary.month).toBe(6);

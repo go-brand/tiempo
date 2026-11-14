@@ -90,9 +90,7 @@ describe('addMilliseconds', () => {
 
   describe('from Temporal.ZonedDateTime', () => {
     it('adds milliseconds and preserves timezone', () => {
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-01-20T15:30:00.000-05:00[America/New_York]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-01-20T15:30:00.000-05:00[America/New_York]');
       const result = addMilliseconds(zoned, 750);
 
       expect(result.millisecond).toBe(750);
@@ -100,9 +98,7 @@ describe('addMilliseconds', () => {
     });
 
     it('handles milliseconds through DST transition', () => {
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-03-09T01:59:59.500-05:00[America/New_York]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-03-09T01:59:59.500-05:00[America/New_York]');
       const result = addMilliseconds(zoned, 600);
 
       expect(result.hour).toBe(3);

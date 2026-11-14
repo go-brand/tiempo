@@ -214,14 +214,18 @@ describe('toPlainDate', () => {
       expect(() => {
         // @ts-expect-error - testing runtime error for missing timezone
         toPlainDate(new Date());
-      }).toThrow('Timezone is required unless input is a ZonedDateTime, PlainDateLike, or plain date string');
+      }).toThrow(
+        'Timezone is required unless input is a ZonedDateTime, PlainDateLike, or plain date string'
+      );
     });
 
     it('throws when timezone is missing for Instant', () => {
       expect(() => {
         // @ts-expect-error - testing runtime error for missing timezone
         toPlainDate(Temporal.Instant.from('2025-01-20T15:30:00Z'));
-      }).toThrow('Timezone is required unless input is a ZonedDateTime, PlainDateLike, or plain date string');
+      }).toThrow(
+        'Timezone is required unless input is a ZonedDateTime, PlainDateLike, or plain date string'
+      );
     });
   });
 

@@ -20,9 +20,7 @@ describe('subMilliseconds', () => {
   });
 
   it('preserves timezone when subtracting milliseconds', () => {
-    const zoned = Temporal.ZonedDateTime.from(
-      '2025-01-20T15:30:00.750-05:00[America/New_York]'
-    );
+    const zoned = Temporal.ZonedDateTime.from('2025-01-20T15:30:00.750-05:00[America/New_York]');
     const result = subMilliseconds(zoned, 250);
 
     expect(result.millisecond).toBe(500);

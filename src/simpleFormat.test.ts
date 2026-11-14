@@ -149,14 +149,18 @@ describe('simpleFormat', () => {
 
     it('time only', () => {
       // 20:30 UTC = 15:30 New York
-      expect(simpleFormat(currentYearInstant, { time: 'compact', timeZone: 'America/New_York' })).toBe(
-        '3:30pm'
-      );
+      expect(
+        simpleFormat(currentYearInstant, { time: 'compact', timeZone: 'America/New_York' })
+      ).toBe('3:30pm');
     });
 
     it('date and time', () => {
       expect(
-        simpleFormat(currentYearInstant, { date: 'auto', time: '12h', timeZone: 'America/New_York' })
+        simpleFormat(currentYearInstant, {
+          date: 'auto',
+          time: '12h',
+          timeZone: 'America/New_York'
+        })
       ).toBe('Dec 23, 3:30 PM');
     });
 
