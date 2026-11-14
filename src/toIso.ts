@@ -31,10 +31,7 @@ export function toIso(input: Temporal.Instant): string;
  * toIso(zoned, { mode: 'offset' }); // "2025-01-20T15:00:00-05:00"
  * ```
  */
-export function toIso(
-  input: Temporal.ZonedDateTime,
-  options?: ToIsoOptions
-): string;
+export function toIso(input: Temporal.ZonedDateTime, options?: ToIsoOptions): string;
 
 export function toIso(
   input: Temporal.Instant | Temporal.ZonedDateTime,

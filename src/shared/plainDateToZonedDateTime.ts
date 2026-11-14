@@ -12,6 +12,6 @@ export function plainDateToZonedDateTime(
 ): Temporal.ZonedDateTime {
   return date.toZonedDateTime({
     timeZone: timezone,
-    plainTime: Temporal.PlainTime.from('00:00'),
+    plainTime: Temporal.PlainTime.from('00:00')
   });
 }

@@ -61,12 +61,8 @@ describe('differenceInMicroseconds', () => {
     });
 
     it('compares by instant, not calendar datetime', () => {
-      const tokyo = Temporal.ZonedDateTime.from(
-        '2025-01-21T00:00:00+09:00[Asia/Tokyo]'
-      );
-      const ny = Temporal.ZonedDateTime.from(
-        '2025-01-20T10:00:00-05:00[America/New_York]'
-      );
+      const tokyo = Temporal.ZonedDateTime.from('2025-01-21T00:00:00+09:00[Asia/Tokyo]');
+      const ny = Temporal.ZonedDateTime.from('2025-01-20T10:00:00-05:00[America/New_York]');
 
       // Both represent the same instant
       expect(differenceInMicroseconds(tokyo, ny)).toBe(0);
@@ -76,9 +72,7 @@ describe('differenceInMicroseconds', () => {
   describe('with mixed types', () => {
     it('compares Instant with ZonedDateTime', () => {
       const instant = Temporal.Instant.from('2025-01-20T15:00:00.001000Z');
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-01-20T15:00:00.000000Z[UTC]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-01-20T15:00:00.000000Z[UTC]');
 
       expect(differenceInMicroseconds(instant, zoned)).toBe(1000);
     });

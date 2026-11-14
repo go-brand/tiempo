@@ -1,6 +1,6 @@
-import { type Temporal, isPlainDate } from "./shared/temporal";
-import { normalizeTemporalInput } from "./shared/normalizeTemporalInput";
-import { quarterOfMonth } from "./shared/quarter";
+import { type Temporal, isPlainDate } from './shared/temporal';
+import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
+import { quarterOfMonth } from './shared/quarter';
 
 /**
  * Returns the quarter (1-4) that a datetime or date falls in.
@@ -21,7 +21,7 @@ import { quarterOfMonth } from "./shared/quarter";
  * ```
  */
 export function getQuarter(
-  input: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate,
+  input: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate
 ): 1 | 2 | 3 | 4 {
   const month = isPlainDate(input) ? input.month : normalizeTemporalInput(input).month;
   return quarterOfMonth(month);

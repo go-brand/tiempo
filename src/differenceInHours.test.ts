@@ -43,34 +43,22 @@ describe('differenceInHours', () => {
 
   describe('with ZonedDateTime', () => {
     it('returns the number of hours between two zoned datetimes', () => {
-      const later = Temporal.ZonedDateTime.from(
-        '2025-01-21T00:00:00-05:00[America/New_York]'
-      );
-      const earlier = Temporal.ZonedDateTime.from(
-        '2025-01-20T15:00:00-05:00[America/New_York]'
-      );
+      const later = Temporal.ZonedDateTime.from('2025-01-21T00:00:00-05:00[America/New_York]');
+      const earlier = Temporal.ZonedDateTime.from('2025-01-20T15:00:00-05:00[America/New_York]');
 
       expect(differenceInHours(later, earlier)).toBe(9);
     });
 
     it('returns negative value when laterDate is before earlierDate', () => {
-      const later = Temporal.ZonedDateTime.from(
-        '2025-01-20T15:00:00-05:00[America/New_York]'
-      );
-      const earlier = Temporal.ZonedDateTime.from(
-        '2025-01-21T00:00:00-05:00[America/New_York]'
-      );
+      const later = Temporal.ZonedDateTime.from('2025-01-20T15:00:00-05:00[America/New_York]');
+      const earlier = Temporal.ZonedDateTime.from('2025-01-21T00:00:00-05:00[America/New_York]');
 
       expect(differenceInHours(later, earlier)).toBe(-9);
     });
 
     it('compares by instant, not calendar datetime', () => {
-      const tokyo = Temporal.ZonedDateTime.from(
-        '2025-01-21T00:00:00+09:00[Asia/Tokyo]'
-      );
-      const ny = Temporal.ZonedDateTime.from(
-        '2025-01-20T10:00:00-05:00[America/New_York]'
-      );
+      const tokyo = Temporal.ZonedDateTime.from('2025-01-21T00:00:00+09:00[Asia/Tokyo]');
+      const ny = Temporal.ZonedDateTime.from('2025-01-20T10:00:00-05:00[America/New_York]');
 
       // Both represent the same instant
       expect(differenceInHours(tokyo, ny)).toBe(0);
@@ -78,12 +66,8 @@ describe('differenceInHours', () => {
 
     it('handles DST transitions', () => {
       // March 9, 2025: DST begins in New York (2 AM -> 3 AM)
-      const beforeDst = Temporal.ZonedDateTime.from(
-        '2025-03-09T01:00:00-05:00[America/New_York]'
-      );
-      const afterDst = Temporal.ZonedDateTime.from(
-        '2025-03-09T04:00:00-04:00[America/New_York]'
-      );
+      const beforeDst = Temporal.ZonedDateTime.from('2025-03-09T01:00:00-05:00[America/New_York]');
+      const afterDst = Temporal.ZonedDateTime.from('2025-03-09T04:00:00-04:00[America/New_York]');
 
       // 3 hours of wall-clock time, but only 2 hours of actual time
       expect(differenceInHours(afterDst, beforeDst)).toBe(2);
@@ -106,18 +90,14 @@ describe('differenceInHours', () => {
   describe('with mixed types', () => {
     it('compares Instant with ZonedDateTime', () => {
       const instant = Temporal.Instant.from('2025-01-20T15:00:00Z');
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-01-20T10:00:00-05:00[America/New_York]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-01-20T10:00:00-05:00[America/New_York]');
 
       // NY 10:00 is 15:00 UTC - same instant
       expect(differenceInHours(instant, zoned)).toBe(0);
     });
 
     it('compares ZonedDateTime with Instant', () => {
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-01-21T00:00:00-05:00[America/New_York]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-01-21T00:00:00-05:00[America/New_York]');
       const instant = Temporal.Instant.from('2025-01-20T15:00:00Z');
 
       // NY midnight is 05:00 UTC next day
@@ -128,30 +108,21 @@ describe('differenceInHours', () => {
 
   describe('real-world scenarios', () => {
     it('calculates work day duration', () => {
-      const endOfDay = Temporal.ZonedDateTime.from(
-        '2025-01-20T17:00:00-05:00[America/New_York]'
-      );
-      const startOfDay = Temporal.ZonedDateTime.from(
-        '2025-01-20T09:00:00-05:00[America/New_York]'
-      );
+      const endOfDay = Temporal.ZonedDateTime.from('2025-01-20T17:00:00-05:00[America/New_York]');
+      const startOfDay = Temporal.ZonedDateTime.from('2025-01-20T09:00:00-05:00[America/New_York]');
 
       expect(differenceInHours(endOfDay, startOfDay)).toBe(8);
     });
 
     it('calculates time until deadline', () => {
-      const deadline = Temporal.ZonedDateTime.from(
-        '2025-01-22T23:59:59-05:00[America/New_York]'
-      );
-      const now = Temporal.ZonedDateTime.from(
-        '2025-01-20T15:00:00-05:00[America/New_York]'
-      );
+      const deadline = Temporal.ZonedDateTime.from('2025-01-22T23:59:59-05:00[America/New_York]');
+      const now = Temporal.ZonedDateTime.from('2025-01-20T15:00:00-05:00[America/New_York]');
 
       // Approximately 57 hours
       expect(differenceInHours(deadline, now)).toBe(56);
     });
   });
 });
-
 
 describe('submillisecond precision', () => {
   it('subtracts before truncating a whole unit in either direction', () => {

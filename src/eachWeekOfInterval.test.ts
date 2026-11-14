@@ -19,7 +19,7 @@ describe('eachWeekOfInterval', () => {
 
     it('returns Mondays at midnight (ISO 8601)', () => {
       const start = Temporal.ZonedDateTime.from('2025-01-08T15:30:45Z[UTC]'); // Wednesday
-      const end = Temporal.ZonedDateTime.from('2025-01-20T08:15:00Z[UTC]');   // Monday
+      const end = Temporal.ZonedDateTime.from('2025-01-20T08:15:00Z[UTC]'); // Monday
 
       const result = eachWeekOfInterval({ start, end });
 
@@ -244,7 +244,6 @@ describe('eachWeekOfInterval', () => {
   });
 });
 
-
 it('returns no boundaries when original endpoints are reversed inside one bucket', () => {
   const end = Temporal.ZonedDateTime.from('2025-01-15T12:30:15[UTC]');
   expect(eachWeekOfInterval({ start: end.add({ seconds: 1 }), end })).toEqual([]);
@@ -253,7 +252,10 @@ it('returns no boundaries when original endpoints are reversed inside one bucket
   describe('weekStartsOn', () => {
     it('lists the chosen first day of each week for PlainDate intervals', () => {
       const weeks = eachWeekOfInterval(
-        { start: Temporal.PlainDate.from('2025-01-08'), end: Temporal.PlainDate.from('2025-01-19') },
+        {
+          start: Temporal.PlainDate.from('2025-01-08'),
+          end: Temporal.PlainDate.from('2025-01-19')
+        },
         { weekStartsOn: 7 }
       );
       expect(weeks.map(String)).toEqual(['2025-01-05', '2025-01-12', '2025-01-19']);

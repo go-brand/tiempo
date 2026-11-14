@@ -87,7 +87,7 @@ export function eachMonthOfInterval(interval: {
   const startYearMonth = Temporal.PlainYearMonth.from({
     year: startZoned.year,
     month: startZoned.month,
-    calendar: startZoned.calendarId,
+    calendar: startZoned.calendarId
   });
 
   // Get end month in the same timezone
@@ -95,7 +95,7 @@ export function eachMonthOfInterval(interval: {
   const endYearMonth = Temporal.PlainYearMonth.from({
     year: endInTimezone.year,
     month: endInTimezone.month,
-    calendar: startZoned.calendarId,
+    calendar: startZoned.calendarId
   });
 
   const months: Temporal.ZonedDateTime[] = [];
@@ -106,7 +106,7 @@ export function eachMonthOfInterval(interval: {
     months.push(
       firstOfMonth.toZonedDateTime({
         timeZone: timezone,
-        plainTime: new Temporal.PlainTime(),
+        plainTime: new Temporal.PlainTime()
       })
     );
     current = current.add({ months: 1 });

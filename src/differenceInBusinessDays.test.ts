@@ -81,7 +81,11 @@ describe('differenceInBusinessDays', () => {
 
     it('ignores weekend and duplicate holidays', () => {
       expect(
-        differenceInBusinessDays(d('2025-12-29'), d('2025-12-22'), [...christmas, d('2025-12-27'), d('2025-12-25')])
+        differenceInBusinessDays(d('2025-12-29'), d('2025-12-22'), [
+          ...christmas,
+          d('2025-12-27'),
+          d('2025-12-25')
+        ])
       ).toBe(3);
     });
 
@@ -89,7 +93,9 @@ describe('differenceInBusinessDays', () => {
       const holidays = [d('2025-12-25'), d('2025-12-26'), d('2026-01-01'), d('2026-01-06')];
       for (let n = -15; n <= 15; n++) {
         const start = d('2025-12-22');
-        expect(differenceInBusinessDays(addBusinessDays(start, n, holidays), start, holidays)).toBe(n);
+        expect(differenceInBusinessDays(addBusinessDays(start, n, holidays), start, holidays)).toBe(
+          n
+        );
       }
     });
   });

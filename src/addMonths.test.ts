@@ -82,9 +82,7 @@ describe('addMonths', () => {
 
   describe('from Temporal.ZonedDateTime', () => {
     it('adds months and preserves America/New_York timezone', () => {
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-01-20T15:30:00-05:00[America/New_York]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-01-20T15:30:00-05:00[America/New_York]');
       const result = addMonths(zoned, 6);
 
       expect(result.year).toBe(2025);
@@ -96,9 +94,7 @@ describe('addMonths', () => {
     });
 
     it('adds months and preserves Asia/Tokyo timezone', () => {
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-01-20T09:00:00+09:00[Asia/Tokyo]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-01-20T09:00:00+09:00[Asia/Tokyo]');
       const result = addMonths(zoned, 4);
 
       expect(result.year).toBe(2025);
@@ -109,9 +105,7 @@ describe('addMonths', () => {
     });
 
     it('adds negative months and preserves timezone', () => {
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-06-15T10:00:00-04:00[America/New_York]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-06-15T10:00:00-04:00[America/New_York]');
       const result = addMonths(zoned, -4);
 
       expect(result.year).toBe(2025);
@@ -123,9 +117,7 @@ describe('addMonths', () => {
 
     it('handles adding months across spring DST transition', () => {
       // January (EST -05:00)
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-01-15T14:00:00-05:00[America/New_York]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-01-15T14:00:00-05:00[America/New_York]');
       const result = addMonths(zoned, 3);
 
       // April (EDT -04:00)
@@ -139,9 +131,7 @@ describe('addMonths', () => {
 
     it('handles adding months across fall DST transition', () => {
       // September (EDT -04:00)
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-09-15T14:00:00-04:00[America/New_York]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-09-15T14:00:00-04:00[America/New_York]');
       const result = addMonths(zoned, 3);
 
       // December (EST -05:00)
@@ -264,9 +254,7 @@ describe('addMonths', () => {
         '2025-01-15T10:00:00-05:00[America/New_York]'
       );
 
-      const meetings = [1, 2, 3, 4, 5, 6].map((n) =>
-        addMonths(firstMeeting, n)
-      );
+      const meetings = [1, 2, 3, 4, 5, 6].map((n) => addMonths(firstMeeting, n));
 
       // Verify all meetings maintain day and time
       meetings.forEach((meeting) => {

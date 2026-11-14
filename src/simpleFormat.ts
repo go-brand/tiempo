@@ -90,7 +90,10 @@ export function simpleFormat(
     }
   } else {
     // PlainDate - convert to ZonedDateTime at midnight UTC for formatting
-    zdt = input.toZonedDateTime({ timeZone: timeZone ?? 'UTC', plainTime: new Temporal.PlainTime() });
+    zdt = input.toZonedDateTime({
+      timeZone: timeZone ?? 'UTC',
+      plainTime: new Temporal.PlainTime()
+    });
   }
 
   const parts: string[] = [];
@@ -104,7 +107,7 @@ export function simpleFormat(
     const dateOptions: Intl.DateTimeFormatOptions = {
       day: 'numeric',
       month: 'short',
-      year: showYear ? 'numeric' : undefined,
+      year: showYear ? 'numeric' : undefined
     };
 
     parts.push(zdt.toLocaleString(locale, dateOptions));
@@ -118,7 +121,7 @@ export function simpleFormat(
       const timeOptions: Intl.DateTimeFormatOptions = {
         hour: 'numeric',
         minute: '2-digit',
-        hour12: timeFormat === '12h',
+        hour12: timeFormat === '12h'
       };
       parts.push(zdt.toLocaleString(locale, timeOptions));
     }

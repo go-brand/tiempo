@@ -51,7 +51,7 @@ describe('startOfWeek', () => {
         { date: '2025-01-23', name: 'Thursday', dow: 4 },
         { date: '2025-01-24', name: 'Friday', dow: 5 },
         { date: '2025-01-25', name: 'Saturday', dow: 6 },
-        { date: '2025-01-26', name: 'Sunday', dow: 7 },
+        { date: '2025-01-26', name: 'Sunday', dow: 7 }
       ];
 
       for (const { date, name, dow } of days) {
@@ -85,9 +85,7 @@ describe('startOfWeek', () => {
   describe('from Temporal.ZonedDateTime', () => {
     it('returns start of week in same timezone', () => {
       // Wednesday Jan 22, 2025
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-01-22T15:30:00-05:00[America/New_York]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-01-22T15:30:00-05:00[America/New_York]');
       const start = startOfWeek(zoned);
 
       expect(start.year).toBe(2025);
@@ -105,9 +103,7 @@ describe('startOfWeek', () => {
 
     it('returns same day if already Monday', () => {
       // Monday Jan 20, 2025
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-01-20T15:30:00-05:00[America/New_York]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-01-20T15:30:00-05:00[America/New_York]');
       const start = startOfWeek(zoned);
 
       expect(start.day).toBe(20);
@@ -117,12 +113,8 @@ describe('startOfWeek', () => {
 
     it('handles different timezones', () => {
       // Wednesday in Tokyo and NY
-      const tokyo = Temporal.ZonedDateTime.from(
-        '2025-01-22T15:00:00+09:00[Asia/Tokyo]'
-      );
-      const ny = Temporal.ZonedDateTime.from(
-        '2025-01-22T15:00:00-05:00[America/New_York]'
-      );
+      const tokyo = Temporal.ZonedDateTime.from('2025-01-22T15:00:00+09:00[Asia/Tokyo]');
+      const ny = Temporal.ZonedDateTime.from('2025-01-22T15:00:00-05:00[America/New_York]');
 
       const startTokyo = startOfWeek(tokyo);
       const startNY = startOfWeek(ny);
@@ -139,9 +131,7 @@ describe('startOfWeek', () => {
       expect(startNY.hour).toBe(0);
 
       // Different timezones = different instants
-      expect(startTokyo.toInstant().toString()).not.toBe(
-        startNY.toInstant().toString()
-      );
+      expect(startTokyo.toInstant().toString()).not.toBe(startNY.toInstant().toString());
     });
 
     it('converts to different timezone explicitly', () => {
@@ -197,9 +187,7 @@ describe('startOfWeek', () => {
     it('handles DST transition within the week', () => {
       // March 9, 2025: DST begins in New York (2 AM -> 3 AM)
       // Sunday March 9, 2025 (DST transition day)
-      const sunday = Temporal.ZonedDateTime.from(
-        '2025-03-09T15:00:00-04:00[America/New_York]'
-      );
+      const sunday = Temporal.ZonedDateTime.from('2025-03-09T15:00:00-04:00[America/New_York]');
       const start = startOfWeek(sunday);
 
       // Should be Monday March 3
@@ -212,9 +200,7 @@ describe('startOfWeek', () => {
     it('handles fall DST transition', () => {
       // November 2, 2025: DST ends in New York (2 AM -> 1 AM)
       // Sunday November 2, 2025
-      const sunday = Temporal.ZonedDateTime.from(
-        '2025-11-02T15:00:00-05:00[America/New_York]'
-      );
+      const sunday = Temporal.ZonedDateTime.from('2025-11-02T15:00:00-05:00[America/New_York]');
       const start = startOfWeek(sunday);
 
       // Should be Monday October 27
@@ -261,9 +247,7 @@ describe('startOfWeek', () => {
       expect(startNY.dayOfWeek).toBe(1);
 
       // But different instants
-      expect(startTokyo.toInstant().toString()).not.toBe(
-        startNY.toInstant().toString()
-      );
+      expect(startTokyo.toInstant().toString()).not.toBe(startNY.toInstant().toString());
     });
 
     it('handles week crossing month boundary', () => {
@@ -339,9 +323,9 @@ describe('startOfWeek', () => {
       expect(startOfWeek(zoned, { weekStartsOn: 7 }).toString()).toBe(
         '2025-01-19T00:00:00-05:00[America/New_York]'
       );
-      expect(startOfWeek(Temporal.Instant.from('2025-01-22T12:00:00Z'), { weekStartsOn: 7 }).toString()).toBe(
-        '2025-01-19T00:00:00+00:00[UTC]'
-      );
+      expect(
+        startOfWeek(Temporal.Instant.from('2025-01-22T12:00:00Z'), { weekStartsOn: 7 }).toString()
+      ).toBe('2025-01-19T00:00:00+00:00[UTC]');
       expect(startOfWeek(wednesday, 'Europe/Madrid', { weekStartsOn: 7 }).toString()).toBe(
         '2025-01-19T00:00:00+01:00[Europe/Madrid]'
       );

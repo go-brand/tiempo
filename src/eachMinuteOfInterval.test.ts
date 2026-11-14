@@ -214,7 +214,6 @@ describe('eachMinuteOfInterval', () => {
   });
 });
 
-
 it('returns no boundaries when original endpoints are reversed inside one bucket', () => {
   const end = Temporal.ZonedDateTime.from('2025-01-15T12:30:15[UTC]');
   expect(eachMinuteOfInterval({ start: end.add({ seconds: 1 }), end })).toEqual([]);

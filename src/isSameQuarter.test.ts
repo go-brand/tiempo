@@ -1,57 +1,57 @@
-import { describe, expect, it } from "vitest";
-import { Temporal } from "./shared/temporal";
-import { isSameQuarter } from "./isSameQuarter";
+import { describe, expect, it } from 'vitest';
+import { Temporal } from './shared/temporal';
+import { isSameQuarter } from './isSameQuarter';
 
-describe("isSameQuarter", () => {
-  it("returns true for two dates in the same quarter and year", () => {
-    const jan = Temporal.ZonedDateTime.from("2025-01-15T08:00:00Z[UTC]");
-    const mar = Temporal.ZonedDateTime.from("2025-03-31T23:59:59Z[UTC]");
+describe('isSameQuarter', () => {
+  it('returns true for two dates in the same quarter and year', () => {
+    const jan = Temporal.ZonedDateTime.from('2025-01-15T08:00:00Z[UTC]');
+    const mar = Temporal.ZonedDateTime.from('2025-03-31T23:59:59Z[UTC]');
 
     expect(isSameQuarter(jan, mar)).toBe(true);
   });
 
-  it("returns false across a quarter boundary", () => {
-    const mar = Temporal.ZonedDateTime.from("2025-03-31T23:59:59Z[UTC]");
-    const apr = Temporal.ZonedDateTime.from("2025-04-01T00:00:00Z[UTC]");
+  it('returns false across a quarter boundary', () => {
+    const mar = Temporal.ZonedDateTime.from('2025-03-31T23:59:59Z[UTC]');
+    const apr = Temporal.ZonedDateTime.from('2025-04-01T00:00:00Z[UTC]');
 
     expect(isSameQuarter(mar, apr)).toBe(false);
   });
 
-  it("returns false for the same quarter number in different years", () => {
-    const q1of2024 = Temporal.ZonedDateTime.from("2024-02-15T00:00:00Z[UTC]");
-    const q1of2025 = Temporal.ZonedDateTime.from("2025-02-15T00:00:00Z[UTC]");
+  it('returns false for the same quarter number in different years', () => {
+    const q1of2024 = Temporal.ZonedDateTime.from('2024-02-15T00:00:00Z[UTC]');
+    const q1of2025 = Temporal.ZonedDateTime.from('2025-02-15T00:00:00Z[UTC]');
 
     expect(isSameQuarter(q1of2024, q1of2025)).toBe(false);
   });
 
-  it("works with Instant inputs (compared in UTC)", () => {
-    const a = Temporal.Instant.from("2025-07-01T00:00:00Z");
-    const b = Temporal.Instant.from("2025-09-30T23:59:59Z");
+  it('works with Instant inputs (compared in UTC)', () => {
+    const a = Temporal.Instant.from('2025-07-01T00:00:00Z');
+    const b = Temporal.Instant.from('2025-09-30T23:59:59Z');
 
     expect(isSameQuarter(a, b)).toBe(true);
   });
 
-  it("compares each zoned datetime in its own timezone", () => {
+  it('compares each zoned datetime in its own timezone', () => {
     // Same instant, but Q1 in NY and Q2 in Tokyo around the Mar/Apr boundary
-    const ny = Temporal.ZonedDateTime.from("2025-03-31T23:00:00-04:00[America/New_York]");
-    const tokyo = ny.withTimeZone("Asia/Tokyo"); // 2025-04-01 12:00 in Tokyo
+    const ny = Temporal.ZonedDateTime.from('2025-03-31T23:00:00-04:00[America/New_York]');
+    const tokyo = ny.withTimeZone('Asia/Tokyo'); // 2025-04-01 12:00 in Tokyo
 
     expect(isSameQuarter(ny, tokyo)).toBe(false);
   });
 
-  describe("from Temporal.PlainDate (no timezone)", () => {
+  describe('from Temporal.PlainDate (no timezone)', () => {
     const pd = (s: string) => Temporal.PlainDate.from(s);
 
-    it("returns true for dates in the same quarter and year", () => {
-      expect(isSameQuarter(pd("2025-04-05"), pd("2025-06-28"))).toBe(true);
+    it('returns true for dates in the same quarter and year', () => {
+      expect(isSameQuarter(pd('2025-04-05'), pd('2025-06-28'))).toBe(true);
     });
 
-    it("returns false across a quarter boundary", () => {
-      expect(isSameQuarter(pd("2025-03-31"), pd("2025-04-01"))).toBe(false);
+    it('returns false across a quarter boundary', () => {
+      expect(isSameQuarter(pd('2025-03-31'), pd('2025-04-01'))).toBe(false);
     });
 
-    it("returns false for the same quarter number in different years", () => {
-      expect(isSameQuarter(pd("2024-02-15"), pd("2025-02-15"))).toBe(false);
+    it('returns false for the same quarter number in different years', () => {
+      expect(isSameQuarter(pd('2024-02-15'), pd('2025-02-15'))).toBe(false);
     });
   });
 });

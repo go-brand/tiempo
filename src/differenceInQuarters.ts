@@ -1,6 +1,6 @@
-import { type Temporal, isPlainDate } from "./shared/temporal";
-import { differenceInMonths } from "./differenceInMonths";
-import type { DifferenceOptions } from "./shared/differenceOptions";
+import { type Temporal, isPlainDate } from './shared/temporal';
+import { differenceInMonths } from './differenceInMonths';
+import type { DifferenceOptions } from './shared/differenceOptions';
 
 /**
  * Returns the number of quarters (3-month blocks) between two datetimes or dates.
@@ -33,30 +33,30 @@ import type { DifferenceOptions } from "./shared/differenceOptions";
 export function differenceInQuarters(
   laterDate: Temporal.Instant | Temporal.ZonedDateTime,
   earlierDate: Temporal.Instant | Temporal.ZonedDateTime,
-  options?: DifferenceOptions,
+  options?: DifferenceOptions
 ): number;
 export function differenceInQuarters(
   laterDate: Temporal.PlainDate,
   earlierDate: Temporal.PlainDate,
-  options?: DifferenceOptions,
+  options?: DifferenceOptions
 ): number;
 export function differenceInQuarters(
   laterDate: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate,
   earlierDate: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate,
-  options?: DifferenceOptions,
+  options?: DifferenceOptions
 ): number {
   // A quarter is three months, so work in elapsed months and divide by 3.
   // Serialize the other date to preserve its calendar across implementations.
   const months =
     isPlainDate(laterDate) && isPlainDate(earlierDate)
       ? earlierDate.until(laterDate.toString()).total({
-          unit: "months",
-          relativeTo: earlierDate,
+          unit: 'months',
+          relativeTo: earlierDate
         })
       : differenceInMonths(
           laterDate as Temporal.Instant | Temporal.ZonedDateTime,
           earlierDate as Temporal.Instant | Temporal.ZonedDateTime,
-          { fractional: true },
+          { fractional: true }
         );
 
   const quarters = months / 3;

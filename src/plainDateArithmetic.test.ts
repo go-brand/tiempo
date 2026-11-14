@@ -2,8 +2,16 @@ import { Temporal as Polyfill } from '@js-temporal/polyfill';
 import { describe, expect, expectTypeOf, it } from 'vitest';
 import { Temporal } from './shared/temporal';
 import {
-  addDays, subDays, addWeeks, subWeeks, addMonths, subMonths,
-  addQuarters, subQuarters, addYears, subYears,
+  addDays,
+  subDays,
+  addWeeks,
+  subWeeks,
+  addMonths,
+  subMonths,
+  addQuarters,
+  subQuarters,
+  addYears,
+  subYears
 } from './index';
 
 const cases = [
@@ -16,7 +24,7 @@ const cases = [
   ['addQuarters', addQuarters, '2024-04-30', '2023-10-31'],
   ['subQuarters', subQuarters, '2023-10-31', '2024-04-30'],
   ['addYears', addYears, '2025-01-31', '2023-01-31'],
-  ['subYears', subYears, '2023-01-31', '2025-01-31'],
+  ['subYears', subYears, '2023-01-31', '2025-01-31']
 ] as const;
 
 for (const [name, operation, positive, negative] of cases) {
@@ -82,7 +90,6 @@ function rejectedInputs() {
 }
 void rejectedInputs;
 
-
 const Native = (globalThis as unknown as { Temporal?: typeof Polyfill }).Temporal;
 it.skipIf(!Native)('accepts native PlainDate callers with either library runtime selection', () => {
   const date = Native!.PlainDate.from('2024-01-31');
@@ -92,8 +99,19 @@ it.skipIf(!Native)('accepts native PlainDate callers with either library runtime
 });
 
 it('preserves existing timeline signatures when callers use Parameters and ReturnType', () => {
-  for (const operation of [addDays, subDays, addWeeks, subWeeks, addMonths, subMonths, addYears, subYears]) {
-    expectTypeOf<Parameters<typeof operation>[0]>().toEqualTypeOf<Temporal.Instant | Temporal.ZonedDateTime>();
+  for (const operation of [
+    addDays,
+    subDays,
+    addWeeks,
+    subWeeks,
+    addMonths,
+    subMonths,
+    addYears,
+    subYears
+  ]) {
+    expectTypeOf<Parameters<typeof operation>[0]>().toEqualTypeOf<
+      Temporal.Instant | Temporal.ZonedDateTime
+    >();
     expectTypeOf<ReturnType<typeof operation>>().toEqualTypeOf<Temporal.ZonedDateTime>();
   }
 });

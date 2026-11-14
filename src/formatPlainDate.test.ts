@@ -189,13 +189,16 @@ describe('formatPlainDate', () => {
   });
 });
 
-
 describe('isolated era parts', () => {
   it.each(['en-US', 'es-ES', 'ja-JP'])('extracts only the era in %s', (locale) => {
     const value = Temporal.PlainDate.from('2025-01-20');
     const expected = new Intl.DateTimeFormat(locale, {
-      timeZone: 'UTC', calendar: value.calendarId === 'iso8601' ? undefined : value.calendarId, era: 'short',
-    }).formatToParts(value.toZonedDateTime('UTC').epochMilliseconds).find(p => p.type === 'era')!.value;
+      timeZone: 'UTC',
+      calendar: value.calendarId === 'iso8601' ? undefined : value.calendarId,
+      era: 'short'
+    })
+      .formatToParts(value.toZonedDateTime('UTC').epochMilliseconds)
+      .find((p) => p.type === 'era')!.value;
     expect(formatPlainDate(value, 'G', { locale })).toBe(expected);
   });
 });

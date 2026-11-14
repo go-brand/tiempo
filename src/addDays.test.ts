@@ -100,9 +100,7 @@ describe('addDays', () => {
 
   describe('from Temporal.ZonedDateTime', () => {
     it('adds days and preserves America/New_York timezone', () => {
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-01-20T15:30:00-05:00[America/New_York]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-01-20T15:30:00-05:00[America/New_York]');
       const result = addDays(zoned, 10);
 
       expect(result.year).toBe(2025);
@@ -114,9 +112,7 @@ describe('addDays', () => {
     });
 
     it('adds days and preserves Asia/Tokyo timezone', () => {
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-01-20T09:00:00+09:00[Asia/Tokyo]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-01-20T09:00:00+09:00[Asia/Tokyo]');
       const result = addDays(zoned, 7);
 
       expect(result.year).toBe(2025);
@@ -127,9 +123,7 @@ describe('addDays', () => {
     });
 
     it('adds negative days and preserves timezone', () => {
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-02-10T10:00:00-05:00[America/New_York]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-02-10T10:00:00-05:00[America/New_York]');
       const result = addDays(zoned, -15);
 
       expect(result.year).toBe(2025);
@@ -141,9 +135,7 @@ describe('addDays', () => {
 
     it('handles adding days across spring DST transition (March 9, 2025)', () => {
       // Day before DST transition
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-03-08T14:00:00-05:00[America/New_York]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-03-08T14:00:00-05:00[America/New_York]');
       const result = addDays(zoned, 2);
 
       // After DST transition (spring forward to -04:00)
@@ -157,9 +149,7 @@ describe('addDays', () => {
 
     it('handles adding days across fall DST transition (November 2, 2025)', () => {
       // Day before DST transition
-      const zoned = Temporal.ZonedDateTime.from(
-        '2025-11-01T14:00:00-04:00[America/New_York]'
-      );
+      const zoned = Temporal.ZonedDateTime.from('2025-11-01T14:00:00-04:00[America/New_York]');
       const result = addDays(zoned, 2);
 
       // After DST transition (fall back to -05:00)

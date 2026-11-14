@@ -2,13 +2,20 @@ import { describe, expect, expectTypeOf, it } from 'vitest';
 import { Temporal as Polyfill } from '@js-temporal/polyfill';
 import { Temporal } from './shared/temporal';
 import {
-  format, formatPlainDate, isBefore, isAfter,
-  isPlainDateBefore, isPlainDateAfter, isPlainDateEqual,
-  isPlainTimeBefore, isPlainTimeAfter, type FormatOptions,
+  format,
+  formatPlainDate,
+  isBefore,
+  isAfter,
+  isPlainDateBefore,
+  isPlainDateAfter,
+  isPlainDateEqual,
+  isPlainTimeBefore,
+  isPlainTimeAfter,
+  type FormatOptions
 } from './index';
 
 describe('formatting a PlainDate through format', () => {
-  it.each(['en-US', 'es-ES', 'ja-JP'])('matches date-only formatting with locale %s', locale => {
+  it.each(['en-US', 'es-ES', 'ja-JP'])('matches date-only formatting with locale %s', (locale) => {
     const date = Temporal.PlainDate.from('2024-01-31');
     expect(format(date, 'yyyy-MM-dd')).toBe('2024-01-31');
     expect(format(date, 'HH:mm')).toBe('HH:mm');
@@ -36,7 +43,7 @@ describe('formatting a PlainDate through format', () => {
 
 for (const [name, compare, dateCompare, timeCompare] of [
   ['isBefore', isBefore, isPlainDateBefore, isPlainTimeBefore],
-  ['isAfter', isAfter, isPlainDateAfter, isPlainTimeAfter],
+  ['isAfter', isAfter, isPlainDateAfter, isPlainTimeAfter]
 ] as const) {
   describe(`${name} domain-specific overloads`, () => {
     it('orders dates without inventing a timezone', () => {
@@ -64,7 +71,9 @@ for (const [name, compare, dateCompare, timeCompare] of [
       const same = instant.toZonedDateTimeISO('Asia/Tokyo');
       expect(compare(instant, same)).toBe(false);
       expect(compare(instant, same.add({ nanoseconds: 1 }))).toBe(name === 'isBefore');
-      expectTypeOf<Parameters<typeof compare>[0]>().toEqualTypeOf<Temporal.Instant | Temporal.ZonedDateTime>();
+      expectTypeOf<Parameters<typeof compare>[0]>().toEqualTypeOf<
+        Temporal.Instant | Temporal.ZonedDateTime
+      >();
     });
 
     it('rejects mixed plain and timeline domains rather than comparing undefined fields', () => {
@@ -86,20 +95,23 @@ for (const [name, compare, dateCompare, timeCompare] of [
 }
 
 const Native = (globalThis as unknown as { Temporal?: typeof Polyfill }).Temporal;
-it.skipIf(!Native)('compares native/polyfill dates across calendars without reinterpreting their fields', () => {
-  const hebrew = Native!.PlainDate.from('2024-02-10[u-ca=hebrew]');
-  const same = Polyfill.PlainDate.from('2024-02-10');
-  const later = Polyfill.PlainDate.from('2024-02-11');
-  expect(isBefore(hebrew, later)).toBe(true);
-  expect(isAfter(later, hebrew)).toBe(true);
-  expect(isBefore(hebrew, same)).toBe(false);
-  expect(isAfter(hebrew, same)).toBe(false);
-  expect(isPlainDateBefore(hebrew, later)).toBe(true);
-  expect(isPlainDateAfter(later, hebrew)).toBe(true);
-  expect(isPlainDateEqual(hebrew, same)).toBe(true);
-  expect(isPlainDateEqual(same, hebrew)).toBe(true);
-  expect(format(hebrew, 'yyyy-MM-dd')).toBe('5784-06-01');
-});
+it.skipIf(!Native)(
+  'compares native/polyfill dates across calendars without reinterpreting their fields',
+  () => {
+    const hebrew = Native!.PlainDate.from('2024-02-10[u-ca=hebrew]');
+    const same = Polyfill.PlainDate.from('2024-02-10');
+    const later = Polyfill.PlainDate.from('2024-02-11');
+    expect(isBefore(hebrew, later)).toBe(true);
+    expect(isAfter(later, hebrew)).toBe(true);
+    expect(isBefore(hebrew, same)).toBe(false);
+    expect(isAfter(hebrew, same)).toBe(false);
+    expect(isPlainDateBefore(hebrew, later)).toBe(true);
+    expect(isPlainDateAfter(later, hebrew)).toBe(true);
+    expect(isPlainDateEqual(hebrew, same)).toBe(true);
+    expect(isPlainDateEqual(same, hebrew)).toBe(true);
+    expect(format(hebrew, 'yyyy-MM-dd')).toBe('5784-06-01');
+  }
+);
 
 it.skipIf(!Native)('compares native/polyfill PlainTimes in both directions', () => {
   const early = Native!.PlainTime.from('09:00:00.000000001');

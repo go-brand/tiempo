@@ -42,14 +42,9 @@ import { normalizeWithPlainDate } from './shared/normalizeWithPlainDate';
  * // 2025-12-31T23:59:59.999999999-05:00[America/New_York]
  * ```
  */
-export function endOfYear(
-  input: Temporal.Instant | Temporal.ZonedDateTime
-): Temporal.ZonedDateTime;
+export function endOfYear(input: Temporal.Instant | Temporal.ZonedDateTime): Temporal.ZonedDateTime;
 export function endOfYear(input: Temporal.PlainDate): Temporal.PlainDate;
-export function endOfYear(
-  input: Temporal.PlainDate,
-  timezone: Timezone
-): Temporal.ZonedDateTime;
+export function endOfYear(input: Temporal.PlainDate, timezone: Timezone): Temporal.ZonedDateTime;
 export function endOfYear(
   input: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate,
   timezone?: Timezone
