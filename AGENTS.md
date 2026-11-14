@@ -39,4 +39,4 @@ Every function follows these, so agents and people can predict it:
 - Rob Pike's principles: simple, clear, direct. No speculative abstractions or configuration objects; parameters are explicit.
 - Signatures say what they take and return. Trust Temporal primitives; don't guard impossible states.
 - Code and docs should read plainly. No marketing claims in docs; state what is guaranteed and tested.
-- Formatting follows `.oxfmtrc.json` (single quotes, no trailing commas).
+- Formatting follows `.oxfmtrc.json` (single quotes, no trailing commas). Run `pnpm format`; CI runs `pnpm format:check`. The website, skills, docs, and generated files are not formatted.

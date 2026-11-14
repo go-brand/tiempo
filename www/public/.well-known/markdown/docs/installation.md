@@ -6,7 +6,7 @@
 @gobrand/tiempo
 ```
 
-tiempo runs on Node.js 20+ and in modern browsers. TypeScript is optional; if you use it, 5.0 or later gives you full type inference and timezone autocomplete.
+tiempo runs on Node.js 22+ and in modern browsers. TypeScript is optional; if you use it, 5.0 or later gives you full type inference and timezone autocomplete.
 
 ## Where `Temporal` comes from
 
