@@ -1,4 +1,4 @@
-import { defineConfig, defineDocs, frontmatterSchema } from 'fumadocs-mdx/config';
+import { defineCollections, defineConfig, defineDocs, frontmatterSchema } from 'fumadocs-mdx/config';
 import { z } from 'zod';
 
 export const docs = defineDocs({
@@ -19,15 +19,16 @@ export const guides = defineDocs({
   },
 });
 
-export const blog = defineDocs({
+// Posts have no sidebar, so the blog is a plain doc collection without meta files,
+// as in Fumadocs' collection docs.
+export const blog = defineCollections({
+  type: 'doc',
   dir: 'content/blog',
-  docs: {
-    schema: frontmatterSchema.extend({
-      published: day,
-      updated: day.optional(),
-      author: z.string(),
-    }),
-  },
+  schema: frontmatterSchema.extend({
+    published: day,
+    updated: day.optional(),
+    author: z.string(),
+  }),
 });
 
 export default defineConfig();
