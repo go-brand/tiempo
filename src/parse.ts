@@ -2,6 +2,7 @@ import { Temporal } from './shared/temporal';
 import { consumeToken } from './shared/formatTokens';
 import type { Timezone } from './types';
 
+/** Options for `parse`. */
 export interface ParseOptions {
   /** Locale for month, weekday, and AM/PM names. @default 'en-US' */
   locale?: string;
@@ -68,6 +69,7 @@ export function parse(
   pattern: string,
   options: { locale?: string; timeZone: Timezone }
 ): Temporal.ZonedDateTime;
+/** Parses date-only text into a PlainDate when no `timeZone` is given. */
 export function parse(
   text: string,
   pattern: string,

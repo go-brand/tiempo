@@ -21,6 +21,10 @@ import { addDays } from './addDays';
  * ```
  */
 export function subDays(input: Temporal.PlainDate, days: number): Temporal.PlainDate;
+/**
+ * Subtracts days from an Instant or ZonedDateTime. An Instant is read in UTC; a ZonedDateTime keeps
+ * its timezone.
+ */
 export function subDays(
   input: Temporal.Instant | Temporal.ZonedDateTime,
   days: number

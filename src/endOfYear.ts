@@ -43,7 +43,9 @@ import { normalizeWithPlainDate } from './shared/normalizeWithPlainDate';
  * ```
  */
 export function endOfYear(input: Temporal.Instant | Temporal.ZonedDateTime): Temporal.ZonedDateTime;
+/** Returns the last day of the year containing a PlainDate, as a PlainDate. */
 export function endOfYear(input: Temporal.PlainDate): Temporal.PlainDate;
+/** Returns the last nanosecond of the year containing a PlainDate, in the given timezone. */
 export function endOfYear(input: Temporal.PlainDate, timezone: Timezone): Temporal.ZonedDateTime;
 export function endOfYear(
   input: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate,

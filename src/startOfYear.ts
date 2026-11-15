@@ -44,7 +44,9 @@ import { normalizeWithPlainDate } from './shared/normalizeWithPlainDate';
 export function startOfYear(
   input: Temporal.Instant | Temporal.ZonedDateTime
 ): Temporal.ZonedDateTime;
+/** Returns the first day of the year containing a PlainDate, as a PlainDate. */
 export function startOfYear(input: Temporal.PlainDate): Temporal.PlainDate;
+/** Returns the first moment of the year containing a PlainDate, in the given timezone. */
 export function startOfYear(input: Temporal.PlainDate, timezone: Timezone): Temporal.ZonedDateTime;
 export function startOfYear(
   input: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate,

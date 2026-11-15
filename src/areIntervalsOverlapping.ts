@@ -45,6 +45,10 @@ export function areIntervalsOverlapping(
   right: { start: Temporal.PlainDate; end: Temporal.PlainDate },
   options?: { inclusive?: boolean }
 ): boolean;
+/**
+ * Returns true if two intervals of Instants or ZonedDateTimes share any time, comparing exact
+ * instants.
+ */
 export function areIntervalsOverlapping(
   left: { start: Timeline; end: Timeline },
   right: { start: Timeline; end: Timeline },

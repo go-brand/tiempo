@@ -39,10 +39,15 @@ const PLAIN_TIME_PATTERN = /^\d{2}:\d{2}(:\d{2}(\.\d+)?)?$/;
  * ```
  */
 export function toPlainTime(input: Temporal.ZonedDateTime): Temporal.PlainTime;
+/**
+ * Reads an ISO string, Date, Instant, or ZonedDateTime in the given timezone and returns its
+ * wall-clock time.
+ */
 export function toPlainTime(
   input: string | Date | Temporal.Instant | Temporal.ZonedDateTime,
   timezone: Timezone
 ): Temporal.PlainTime;
+/** Creates a PlainTime from a PlainTimeLike object or a plain time string such as `14:30`. */
 export function toPlainTime(input: Temporal.PlainTimeLike | string): Temporal.PlainTime;
 export function toPlainTime(
   input: string | Date | Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainTimeLike,

@@ -21,7 +21,9 @@ import { compare, type Comparable, type Timeline } from './shared/compare';
  * ```
  */
 export function max<T extends Timeline>(values: readonly T[]): T;
+/** Returns the latest PlainDate in a non-empty array, as given. */
 export function max(values: readonly Temporal.PlainDate[]): Temporal.PlainDate;
+/** Returns the latest PlainTime in a non-empty array, as given. */
 export function max(values: readonly Temporal.PlainTime[]): Temporal.PlainTime;
 export function max(values: readonly Comparable[]): Comparable {
   if (values.length === 0) {

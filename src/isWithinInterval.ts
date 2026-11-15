@@ -100,10 +100,18 @@ export function isWithinInterval(
   date: Temporal.PlainDate,
   interval: { start: Temporal.PlainDate; end: Temporal.PlainDate }
 ): boolean;
+/**
+ * Returns true if a PlainTime is within the interval, inclusive. An interval whose start is later
+ * than its end wraps past midnight.
+ */
 export function isWithinInterval(
   date: Temporal.PlainTime,
   interval: { start: Temporal.PlainTime; end: Temporal.PlainTime }
 ): boolean;
+/**
+ * Returns true if an Instant or ZonedDateTime is within the interval, inclusive, comparing exact
+ * instants.
+ */
 export function isWithinInterval(
   date: Temporal.Instant | Temporal.ZonedDateTime,
   interval: {

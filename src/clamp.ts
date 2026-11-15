@@ -26,10 +26,12 @@ export function clamp<T extends Timeline, S extends Timeline, E extends Timeline
   value: T,
   interval: { start: S; end: E }
 ): T | S | E;
+/** Restricts a PlainDate to an inclusive PlainDate interval. */
 export function clamp(
   value: Temporal.PlainDate,
   interval: { start: Temporal.PlainDate; end: Temporal.PlainDate }
 ): Temporal.PlainDate;
+/** Restricts a PlainTime to an inclusive PlainTime interval. */
 export function clamp(
   value: Temporal.PlainTime,
   interval: { start: Temporal.PlainTime; end: Temporal.PlainTime }

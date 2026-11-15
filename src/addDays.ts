@@ -38,6 +38,10 @@ import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
  * ```
  */
 export function addDays(input: Temporal.PlainDate, days: number): Temporal.PlainDate;
+/**
+ * Adds days to an Instant or ZonedDateTime. An Instant is read in UTC; a ZonedDateTime keeps its
+ * timezone.
+ */
 export function addDays(
   input: Temporal.Instant | Temporal.ZonedDateTime,
   days: number

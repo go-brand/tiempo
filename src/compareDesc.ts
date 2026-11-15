@@ -25,7 +25,9 @@ import { compare, type Comparable } from './shared/compare';
  * ```
  */
 export function compareDesc(date1: Temporal.PlainDate, date2: Temporal.PlainDate): -1 | 0 | 1;
+/** Compares two PlainTimes by wall-clock time for descending order: -1, 0, or 1. */
 export function compareDesc(date1: Temporal.PlainTime, date2: Temporal.PlainTime): -1 | 0 | 1;
+/** Compares two Instants or ZonedDateTimes by exact instant for descending order: -1, 0, or 1. */
 export function compareDesc(
   date1: Temporal.Instant | Temporal.ZonedDateTime,
   date2: Temporal.Instant | Temporal.ZonedDateTime

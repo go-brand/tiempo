@@ -1,8 +1,11 @@
 import { type Temporal, isInstant } from './shared/temporal';
 
+/** Which time `toIso9075` writes: `'utc'` converts to UTC first, `'local'` keeps the wall-clock time. */
 export type Iso9075Mode = 'utc' | 'local';
+/** Which parts `toIso9075` writes: date and time, the date only, or the time only. */
 export type Iso9075Representation = 'complete' | 'date' | 'time';
 
+/** Options for `toIso9075`. */
 export interface ToIso9075Options {
   /**
    * Which time to output.

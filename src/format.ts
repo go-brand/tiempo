@@ -4,8 +4,11 @@ import type { Timezone } from './types';
 import { formatPlainDate, type FormatPlainDateOptions } from './formatPlainDate';
 import { consumeToken } from './shared/formatTokens';
 
+/** Options for `format` with an Instant or ZonedDateTime. */
 export interface FormatOptions {
+  /** Locale for month and weekday names. @default 'en-US' */
   locale?: string;
+  /** Timezone to format in. An Instant defaults to UTC and a ZonedDateTime to its own timezone. */
   timeZone?: Timezone;
 }
 
@@ -37,6 +40,10 @@ export function format(
   formatStr: string,
   options?: FormatPlainDateOptions & { timeZone?: never }
 ): string;
+/**
+ * Formats an Instant or ZonedDateTime. An Instant is formatted in UTC and a ZonedDateTime in its
+ * own timezone, unless `options.timeZone` is given.
+ */
 export function format(
   input: Temporal.Instant | Temporal.ZonedDateTime,
   formatStr: string,

@@ -44,6 +44,7 @@ export function eachQuarterOfInterval(interval: {
   start: Temporal.Instant | Temporal.ZonedDateTime;
   end: Temporal.Instant | Temporal.ZonedDateTime;
 }): Temporal.ZonedDateTime[];
+/** Returns the first day of each quarter in a PlainDate interval, as PlainDates. */
 export function eachQuarterOfInterval(interval: {
   start: Temporal.PlainDate;
   end: Temporal.PlainDate;

@@ -27,6 +27,10 @@ export function subBusinessDays(
   days: number,
   holidays?: readonly Temporal.PlainDate[]
 ): Temporal.PlainDate;
+/**
+ * Subtracts business days (Monday to Friday, skipping holidays) from an Instant or ZonedDateTime.
+ * An Instant is read in UTC; a ZonedDateTime keeps its timezone.
+ */
 export function subBusinessDays(
   input: Temporal.Instant | Temporal.ZonedDateTime,
   days: number,

@@ -62,6 +62,10 @@ export function eachYearOfInterval(interval: {
   start: Temporal.PlainDate;
   end: Temporal.PlainDate;
 }): Temporal.PlainDate[];
+/**
+ * Returns the start of each year in an Instant or ZonedDateTime interval, as ZonedDateTimes in the
+ * timezone of the start. An Instant start is read in UTC.
+ */
 export function eachYearOfInterval(interval: {
   start: Temporal.Instant | Temporal.ZonedDateTime;
   end: Temporal.Instant | Temporal.ZonedDateTime;

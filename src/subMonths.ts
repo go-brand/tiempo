@@ -21,6 +21,10 @@ import { addMonths } from './addMonths';
  * ```
  */
 export function subMonths(input: Temporal.PlainDate, months: number): Temporal.PlainDate;
+/**
+ * Subtracts months from an Instant or ZonedDateTime. An Instant is read in UTC; a ZonedDateTime
+ * keeps its timezone.
+ */
 export function subMonths(
   input: Temporal.Instant | Temporal.ZonedDateTime,
   months: number

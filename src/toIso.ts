@@ -1,7 +1,9 @@
 import { type Temporal, isInstant } from './shared/temporal';
 
+/** How `toIso` writes the time: `'utc'` with a `Z` suffix, or `'offset'` as local time with its offset. */
 export type IsoMode = 'utc' | 'offset';
 
+/** Options for `toIso` with a ZonedDateTime. */
 export interface ToIsoOptions {
   /**
    * Output mode for time zone designator.

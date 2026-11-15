@@ -40,7 +40,9 @@ import { compare, type Comparable } from './shared/compare';
  * ```
  */
 export function isBefore(date1: Temporal.PlainDate, date2: Temporal.PlainDate): boolean;
+/** Returns true if the first PlainTime is earlier in the day than the second. */
 export function isBefore(date1: Temporal.PlainTime, date2: Temporal.PlainTime): boolean;
+/** Returns true if the first Instant or ZonedDateTime is an earlier moment than the second. */
 export function isBefore(
   date1: Temporal.Instant | Temporal.ZonedDateTime,
   date2: Temporal.Instant | Temporal.ZonedDateTime

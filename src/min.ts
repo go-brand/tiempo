@@ -23,7 +23,9 @@ import { compare, type Comparable, type Timeline } from './shared/compare';
  * ```
  */
 export function min<T extends Timeline>(values: readonly T[]): T;
+/** Returns the earliest PlainDate in a non-empty array, as given. */
 export function min(values: readonly Temporal.PlainDate[]): Temporal.PlainDate;
+/** Returns the earliest PlainTime in a non-empty array, as given. */
 export function min(values: readonly Temporal.PlainTime[]): Temporal.PlainTime;
 export function min(values: readonly Comparable[]): Comparable {
   if (values.length === 0) {

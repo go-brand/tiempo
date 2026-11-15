@@ -40,7 +40,9 @@ import { quarterStartMonth } from './shared/quarter';
 export function endOfQuarter(
   input: Temporal.Instant | Temporal.ZonedDateTime
 ): Temporal.ZonedDateTime;
+/** Returns the last day of the quarter containing a PlainDate, as a PlainDate. */
 export function endOfQuarter(input: Temporal.PlainDate): Temporal.PlainDate;
+/** Returns the last nanosecond of the quarter containing a PlainDate, in the given timezone. */
 export function endOfQuarter(input: Temporal.PlainDate, timezone: Timezone): Temporal.ZonedDateTime;
 export function endOfQuarter(
   input: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate,

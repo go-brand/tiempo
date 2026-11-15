@@ -37,10 +37,15 @@ const PLAIN_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
  * ```
  */
 export function toPlainDate(input: Temporal.ZonedDateTime): Temporal.PlainDate;
+/**
+ * Reads an ISO string, Date, Instant, or ZonedDateTime in the given timezone and returns its
+ * calendar date.
+ */
 export function toPlainDate(
   input: string | Date | Temporal.Instant | Temporal.ZonedDateTime,
   timezone: Timezone
 ): Temporal.PlainDate;
+/** Creates a PlainDate from a PlainDateLike object or a plain date string such as `2025-01-20`. */
 export function toPlainDate(input: Temporal.PlainDateLike | string): Temporal.PlainDate;
 export function toPlainDate(
   input: string | Date | Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDateLike,

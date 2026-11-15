@@ -57,7 +57,9 @@ export function startOfWeek(
   input: Temporal.Instant | Temporal.ZonedDateTime,
   options?: WeekOptions
 ): Temporal.ZonedDateTime;
+/** Returns the first day of the week containing a PlainDate, as a PlainDate. */
 export function startOfWeek(input: Temporal.PlainDate, options?: WeekOptions): Temporal.PlainDate;
+/** Returns the first moment of the week containing a PlainDate, in the given timezone. */
 export function startOfWeek(
   input: Temporal.PlainDate,
   timezone: Timezone,

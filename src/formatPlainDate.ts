@@ -1,6 +1,8 @@
 import { Temporal } from './shared/temporal';
 
+/** Options for `formatPlainDate`, and for `format` with a PlainDate. */
 export interface FormatPlainDateOptions {
+  /** Locale for month and weekday names. @default 'en-US' */
   locale?: string;
 }
 

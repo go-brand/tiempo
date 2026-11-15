@@ -21,6 +21,10 @@ import { addYears } from './addYears';
  * ```
  */
 export function subYears(input: Temporal.PlainDate, years: number): Temporal.PlainDate;
+/**
+ * Subtracts years from an Instant or ZonedDateTime. An Instant is read in UTC; a ZonedDateTime
+ * keeps its timezone.
+ */
 export function subYears(
   input: Temporal.Instant | Temporal.ZonedDateTime,
   years: number
