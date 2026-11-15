@@ -83,7 +83,8 @@ jobs:
       - name: Publish to npm
         run: npm publish --access public --provenance
 
-      # JSR publishes the TypeScript source with the same OIDC token; the
-      # package must be linked to this repository in its jsr.io settings.
+      # JSR publishes the TypeScript source with the same OIDC token. The jsr CLI
+      # comes from the lockfile, not npx, so this job never runs an unpinned tool.
+      # The package must be linked to this repository in its jsr.io settings.
       - name: Publish to JSR
-        run: npx jsr publish
+        run: pnpm exec jsr publish
