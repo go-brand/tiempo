@@ -21,6 +21,10 @@ interface DateAndTimeOptions extends BaseOptions {
   time: '12h' | '24h' | 'compact';
 }
 
+/**
+ * Options for `simpleFormat`: pass `date`, `time`, or both. `timeZone` is required for an Instant;
+ * `locale` defaults to 'en-US'.
+ */
 export type SimpleFormatOptions = DateOnlyOptions | TimeOnlyOptions | DateAndTimeOptions;
 
 /**

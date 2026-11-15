@@ -34,6 +34,7 @@ import { normalizeWithPlainDate } from './shared/normalizeWithPlainDate';
  * ```
  */
 export function endOfDay(input: Temporal.Instant | Temporal.ZonedDateTime): Temporal.ZonedDateTime;
+/** Returns the last nanosecond of a PlainDate in the given timezone. */
 export function endOfDay(input: Temporal.PlainDate, timezone: Timezone): Temporal.ZonedDateTime;
 export function endOfDay(
   input: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate,

@@ -38,6 +38,10 @@ import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
  * ```
  */
 export function addYears(input: Temporal.PlainDate, years: number): Temporal.PlainDate;
+/**
+ * Adds years to an Instant or ZonedDateTime. An Instant is read in UTC; a ZonedDateTime keeps its
+ * timezone.
+ */
 export function addYears(
   input: Temporal.Instant | Temporal.ZonedDateTime,
   years: number

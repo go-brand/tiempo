@@ -24,6 +24,10 @@ import { assertDayOfWeek, type DayOfWeek } from './shared/week';
  * ```
  */
 export function previousDay(input: Temporal.PlainDate, day: DayOfWeek): Temporal.PlainDate;
+/**
+ * Returns the previous given day of the week before an Instant or ZonedDateTime, keeping its
+ * wall-clock time. An Instant is read in UTC; a ZonedDateTime keeps its timezone.
+ */
 export function previousDay(
   input: Temporal.Instant | Temporal.ZonedDateTime,
   day: DayOfWeek

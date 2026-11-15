@@ -29,10 +29,18 @@ export function closestTo<T extends Timeline>(
   target: Timeline,
   candidates: readonly T[]
 ): T | undefined;
+/**
+ * Returns the PlainDate nearest to the target in whole days, or undefined when there are no
+ * candidates.
+ */
 export function closestTo(
   target: Temporal.PlainDate,
   candidates: readonly Temporal.PlainDate[]
 ): Temporal.PlainDate | undefined;
+/**
+ * Returns the PlainTime nearest to the target within one day, or undefined when there are no
+ * candidates.
+ */
 export function closestTo(
   target: Temporal.PlainTime,
   candidates: readonly Temporal.PlainTime[]

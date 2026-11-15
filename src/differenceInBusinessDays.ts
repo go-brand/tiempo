@@ -30,6 +30,10 @@ export function differenceInBusinessDays(
   earlierDate: Temporal.PlainDate,
   holidays?: readonly Temporal.PlainDate[]
 ): number;
+/**
+ * Returns the number of business days between two Instants or ZonedDateTimes, by calendar date. An
+ * Instant uses its UTC date; a ZonedDateTime uses the date in its own timezone.
+ */
 export function differenceInBusinessDays(
   laterDate: Temporal.Instant | Temporal.ZonedDateTime,
   earlierDate: Temporal.Instant | Temporal.ZonedDateTime,

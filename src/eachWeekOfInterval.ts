@@ -64,6 +64,10 @@ export function eachWeekOfInterval(
   interval: { start: Temporal.PlainDate; end: Temporal.PlainDate },
   options?: WeekOptions
 ): Temporal.PlainDate[];
+/**
+ * Returns the start of each week in an Instant or ZonedDateTime interval, as ZonedDateTimes in the
+ * timezone of the start. An Instant start is read in UTC.
+ */
 export function eachWeekOfInterval(
   interval: {
     start: Temporal.Instant | Temporal.ZonedDateTime;

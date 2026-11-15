@@ -35,6 +35,10 @@ export function differenceInQuarters(
   earlierDate: Temporal.Instant | Temporal.ZonedDateTime,
   options?: DifferenceOptions
 ): number;
+/**
+ * Returns the number of quarters between two PlainDates, truncated toward zero unless `fractional`
+ * is set.
+ */
 export function differenceInQuarters(
   laterDate: Temporal.PlainDate,
   earlierDate: Temporal.PlainDate,

@@ -31,6 +31,10 @@ export function differenceInCalendarWeeks(
   earlierDate: Temporal.PlainDate,
   options?: WeekOptions
 ): number;
+/**
+ * Returns the number of week boundaries crossed between two Instants or ZonedDateTimes, ignoring
+ * the time of day. An Instant uses its UTC date; a ZonedDateTime uses the date in its own timezone.
+ */
 export function differenceInCalendarWeeks(
   laterDate: Temporal.Instant | Temporal.ZonedDateTime,
   earlierDate: Temporal.Instant | Temporal.ZonedDateTime,

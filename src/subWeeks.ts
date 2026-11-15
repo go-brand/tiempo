@@ -21,6 +21,10 @@ import { addWeeks } from './addWeeks';
  * ```
  */
 export function subWeeks(input: Temporal.PlainDate, weeks: number): Temporal.PlainDate;
+/**
+ * Subtracts weeks from an Instant or ZonedDateTime. An Instant is read in UTC; a ZonedDateTime
+ * keeps its timezone.
+ */
 export function subWeeks(
   input: Temporal.Instant | Temporal.ZonedDateTime,
   weeks: number

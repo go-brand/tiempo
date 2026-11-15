@@ -24,7 +24,12 @@ import { compare, type Comparable } from './shared/compare';
  * ```
  */
 export function isEqual(date1: Temporal.PlainDate, date2: Temporal.PlainDate): boolean;
+/** Returns true if two PlainTimes have the same wall-clock time. */
 export function isEqual(date1: Temporal.PlainTime, date2: Temporal.PlainTime): boolean;
+/**
+ * Returns true if two Instants or ZonedDateTimes are the same exact instant, even in different
+ * timezones.
+ */
 export function isEqual(
   date1: Temporal.Instant | Temporal.ZonedDateTime,
   date2: Temporal.Instant | Temporal.ZonedDateTime

@@ -44,7 +44,9 @@ import { normalizeWithPlainDate } from './shared/normalizeWithPlainDate';
 export function startOfMonth(
   input: Temporal.Instant | Temporal.ZonedDateTime
 ): Temporal.ZonedDateTime;
+/** Returns the first day of the month containing a PlainDate, as a PlainDate. */
 export function startOfMonth(input: Temporal.PlainDate): Temporal.PlainDate;
+/** Returns the first moment of the month containing a PlainDate, in the given timezone. */
 export function startOfMonth(input: Temporal.PlainDate, timezone: Timezone): Temporal.ZonedDateTime;
 export function startOfMonth(
   input: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate,

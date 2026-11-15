@@ -39,7 +39,9 @@ import { quarterStartMonth } from './shared/quarter';
 export function startOfQuarter(
   input: Temporal.Instant | Temporal.ZonedDateTime
 ): Temporal.ZonedDateTime;
+/** Returns the first day of the quarter containing a PlainDate, as a PlainDate. */
 export function startOfQuarter(input: Temporal.PlainDate): Temporal.PlainDate;
+/** Returns the first moment of the quarter containing a PlainDate, in the given timezone. */
 export function startOfQuarter(
   input: Temporal.PlainDate,
   timezone: Timezone

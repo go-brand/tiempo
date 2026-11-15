@@ -38,6 +38,10 @@ import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
  * ```
  */
 export function addWeeks(input: Temporal.PlainDate, weeks: number): Temporal.PlainDate;
+/**
+ * Adds weeks to an Instant or ZonedDateTime. An Instant is read in UTC; a ZonedDateTime keeps its
+ * timezone.
+ */
 export function addWeeks(
   input: Temporal.Instant | Temporal.ZonedDateTime,
   weeks: number

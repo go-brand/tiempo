@@ -30,6 +30,7 @@ export function addQuarters(
   input: Temporal.Instant | Temporal.ZonedDateTime,
   quarters: number
 ): Temporal.ZonedDateTime;
+/** Adds quarters to a PlainDate, returning a PlainDate. */
 export function addQuarters(input: Temporal.PlainDate, quarters: number): Temporal.PlainDate;
 export function addQuarters(
   input: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate,

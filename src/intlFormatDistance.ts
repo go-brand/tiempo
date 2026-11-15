@@ -8,6 +8,7 @@ import { differenceInWeeks } from './differenceInWeeks.js';
 import { differenceInYears } from './differenceInYears.js';
 import { normalizeTemporalInput } from './shared/normalizeTemporalInput.js';
 
+/** Options for `intlFormatDistance`. */
 export interface IntlFormatDistanceOptions {
   /**
    * The unit to force formatting in. If not specified, the unit will be automatically selected.

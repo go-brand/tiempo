@@ -41,6 +41,10 @@ export function addBusinessDays(
   days: number,
   holidays?: readonly Temporal.PlainDate[]
 ): Temporal.PlainDate;
+/**
+ * Adds business days (Monday to Friday, skipping holidays) to an Instant or ZonedDateTime. An
+ * Instant is read in UTC; a ZonedDateTime keeps its timezone.
+ */
 export function addBusinessDays(
   input: Temporal.Instant | Temporal.ZonedDateTime,
   days: number,

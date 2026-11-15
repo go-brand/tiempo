@@ -28,6 +28,7 @@ export function subQuarters(
   input: Temporal.Instant | Temporal.ZonedDateTime,
   quarters: number
 ): Temporal.ZonedDateTime;
+/** Subtracts quarters from a PlainDate, returning a PlainDate. */
 export function subQuarters(input: Temporal.PlainDate, quarters: number): Temporal.PlainDate;
 export function subQuarters(
   input: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate,

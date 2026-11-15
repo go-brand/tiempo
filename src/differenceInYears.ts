@@ -52,6 +52,10 @@ export function differenceInYears(
   earlierDate: Temporal.PlainDate,
   options?: DifferenceOptions
 ): number;
+/**
+ * Returns the number of years between two Instants or ZonedDateTimes, truncated toward zero unless
+ * `fractional` is set. An Instant is read in UTC; a ZonedDateTime keeps its timezone.
+ */
 export function differenceInYears(
   laterDate: Temporal.Instant | Temporal.ZonedDateTime,
   earlierDate: Temporal.Instant | Temporal.ZonedDateTime,

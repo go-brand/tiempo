@@ -34,6 +34,7 @@ export function isSameQuarter(
   date1: Temporal.Instant | Temporal.ZonedDateTime,
   date2: Temporal.Instant | Temporal.ZonedDateTime
 ): boolean;
+/** Returns true if two PlainDates fall in the same calendar quarter and year. */
 export function isSameQuarter(date1: Temporal.PlainDate, date2: Temporal.PlainDate): boolean;
 export function isSameQuarter(
   date1: Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDate,

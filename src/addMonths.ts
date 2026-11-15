@@ -38,6 +38,10 @@ import { normalizeTemporalInput } from './shared/normalizeTemporalInput';
  * ```
  */
 export function addMonths(input: Temporal.PlainDate, months: number): Temporal.PlainDate;
+/**
+ * Adds months to an Instant or ZonedDateTime. An Instant is read in UTC; a ZonedDateTime keeps its
+ * timezone.
+ */
 export function addMonths(
   input: Temporal.Instant | Temporal.ZonedDateTime,
   months: number

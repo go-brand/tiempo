@@ -52,6 +52,10 @@ export function differenceInMonths(
   earlierDate: Temporal.PlainDate,
   options?: DifferenceOptions
 ): number;
+/**
+ * Returns the number of months between two Instants or ZonedDateTimes, truncated toward zero unless
+ * `fractional` is set. An Instant is read in UTC; a ZonedDateTime keeps its timezone.
+ */
 export function differenceInMonths(
   laterDate: Temporal.Instant | Temporal.ZonedDateTime,
   earlierDate: Temporal.Instant | Temporal.ZonedDateTime,
