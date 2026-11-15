@@ -46,3 +46,7 @@ const standup = Temporal.ZonedDateTime.from('2026-03-02T09:30:00-08:00[America/L
 
 addWeeks(standup, 1); // 2026-03-09T09:30:00-07:00[America/Los_Angeles]
 ```
+
+## Good to know
+
+- Guide: [Add days across daylight saving time](https://tiempo.gobrand.app/docs/guides/dst-safe-date-math)

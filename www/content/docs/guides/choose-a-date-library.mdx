@@ -1,0 +1,65 @@
+---
+title: Choose a JavaScript date library
+description: date-fns, Day.js, Luxon, Moment.js, and the Temporal API compared on timezones, immutability, plain dates, and API style
+---
+
+JavaScript has several date libraries, and the language now has its own date and time API, Temporal. This page compares them on the things that cause bugs: timezones, mutation, and values that are dates rather than moments.
+
+## At a glance
+
+| | Underlying value | Timezones | Immutable | Plain dates | API style |
+|---|---|---|---|---|---|
+| `Date` | milliseconds since 1970 | the machine's timezone and UTC only | no | no | methods |
+| Moment.js | wraps `Date` | `moment-timezone` add-on | no | no | chained methods |
+| Day.js | wraps `Date` | `utc` and `timezone` plugins | yes | no | chained methods |
+| Luxon | its own `DateTime` | built in, through `Intl` | yes | no | chained methods |
+| date-fns | `Date` | `@date-fns/tz` (v4+) | functions don't mutate | no | functions |
+| Temporal | built-in types | built in | yes | `PlainDate`, `PlainTime` | methods |
+| tiempo | Temporal types | built in | yes | `PlainDate`, `PlainTime` | date-fns-style functions |
+
+"Plain dates" means a type for a calendar date with no time and no timezone, such as a birthday. Without one, a date is stored as midnight in some timezone, and it can show as the previous day elsewhere.
+
+## Moment.js
+
+Moment.js has been in maintenance mode since 2020; its maintainers recommend other libraries for new projects. Its objects are mutable, so `m.add(1, 'day')` changes `m` and every other reference to it.
+
+## Day.js
+
+Day.js keeps Moment's API in a much smaller package, with immutable objects. Timezones need the `utc` and `timezone` plugins. It is the shortest path off Moment.
+
+## Luxon
+
+Luxon has an immutable `DateTime` that carries its timezone, and it reads timezone rules from the runtime's `Intl` data. Its design is close to Temporal's `ZonedDateTime`, without separate types for plain dates and times.
+
+## date-fns
+
+date-fns is a set of functions that take and return `Date`s, so you import only what you use. Version 4 added timezone support through the `@date-fns/tz` package. Values are still `Date`s, so a calendar date is still a moment at midnight.
+
+## Temporal
+
+Temporal is the standard replacement for `Date`. It has separate types for an exact moment (`Instant`), a moment in a timezone (`ZonedDateTime`), a date (`PlainDate`), and a clock time (`PlainTime`), with nanosecond precision and every IANA timezone. It is built into Node.js 26 and recent browsers, and [`@js-temporal/polyfill`](https://github.com/js-temporal/temporal-polyfill) provides it elsewhere.
+
+Temporal's own API is methods on those types. tiempo adds the date-fns functions on top, so code reads the same as date-fns code while keeping Temporal's types:
+
+```ts
+import { toZonedTime, addDays, startOfMonth, format } from '@gobrand/tiempo';
+
+const signup = toZonedTime('2026-03-31T22:00:00Z', 'Europe/Madrid');
+
+format(signup, 'yyyy-MM-dd HH:mm'); // "2026-04-01 00:00"
+format(addDays(signup, 1), 'yyyy-MM-dd HH:mm'); // "2026-04-02 00:00"
+startOfMonth(Temporal.PlainDate.from('2026-04-15')).toString(); // "2026-04-01"
+```
+
+## Which one to use
+
+- **Starting a new project:** Temporal, directly or through tiempo. It is the API the language is moving to, and its types make timezone and date-only bugs hard to write.
+- **Using date-fns today:** tiempo keeps most function names and argument orders. See [Coming from date-fns](/docs/date-fns). If you only need timezones and want to keep `Date`, `@date-fns/tz` is the smaller change.
+- **Using Moment.js today:** Day.js is the smallest change. Temporal is the larger change that removes mutation and adds plain dates; see [Replace JavaScript Date with Temporal](/docs/guides/replace-date-with-temporal).
+- **Need timezones and don't want a polyfill on older runtimes:** Luxon uses the runtime's `Intl` data and no polyfill.
+
+## Related
+
+- [Replace JavaScript Date with Temporal](/docs/guides/replace-date-with-temporal)
+- [Coming from date-fns](/docs/date-fns)
+- [Installation](/docs/installation): native Temporal and the polyfill

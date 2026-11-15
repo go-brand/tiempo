@@ -52,3 +52,4 @@ addMonths(billingRun, 1); // 2026-04-15T09:00:00+02:00[Europe/Madrid]
 ## Good to know
 
 - Count each renewal from the original date. Chaining loses the 31st: one month after February 28 is March 28.
+- Guide: [Add days across daylight saving time](https://tiempo.gobrand.app/docs/guides/dst-safe-date-math)

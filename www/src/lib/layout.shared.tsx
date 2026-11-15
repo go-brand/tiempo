@@ -21,6 +21,10 @@ export function baseOptions(): BaseLayoutProps {
         text: 'Documentation',
         url: '/docs',
       },
+      {
+        text: 'Guides',
+        url: '/docs/guides',
+      },
     ],
     // Disable theme toggle since we're forcing dark theme only
     themeSwitch: {

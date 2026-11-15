@@ -45,3 +45,4 @@ differenceInHours(replyBy, openedAt); // 4
 ## Good to know
 
 - For today's date without a time, use [today](https://tiempo.gobrand.app/docs/current-time/today).
+- Guide: [Start and end of day in a timezone](https://tiempo.gobrand.app/docs/guides/start-and-end-of-day)

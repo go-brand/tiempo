@@ -59,3 +59,4 @@ toZonedTime(1773480600000, 'UTC'); // 2026-03-14T09:30:00+00:00[UTC]
 
 - A string without `Z` or an offset, such as `'2026-06-02T09:30:00'`, throws a `RangeError`.
 - Numbers are milliseconds, not seconds.
+- Guide: [Convert UTC to a user's timezone](https://tiempo.gobrand.app/docs/guides/convert-utc-to-timezone)

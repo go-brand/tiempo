@@ -2,7 +2,9 @@
   "title": "Guides",
   "description": "Solve common date and time problems in JavaScript with Temporal",
   "pages": [
+    "index",
     "replace-date-with-temporal",
+    "choose-a-date-library",
     "convert-utc-to-timezone",
     "dst-safe-date-math",
     "start-and-end-of-day",

@@ -41,3 +41,7 @@ const launch = Temporal.PlainDate.from('2026-01-26'); // a Monday
 subBusinessDays(launch, 1); // 2026-01-23
 subBusinessDays(launch, 10); // 2026-01-12
 ```
+
+## Good to know
+
+- Guide: [Count business days with holidays](https://tiempo.gobrand.app/docs/guides/business-days-with-holidays)

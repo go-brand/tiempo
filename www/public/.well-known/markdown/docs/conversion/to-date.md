@@ -45,3 +45,4 @@ toZonedTime(stored, 'America/New_York'); // 2026-04-01T09:00:00-04:00[America/Ne
 ## Good to know
 
 - A `Date` has no timezone and stores whole milliseconds, so the timezone and any digits past milliseconds are dropped.
+- Guide: [Replace JavaScript Date with Temporal](https://tiempo.gobrand.app/docs/guides/replace-date-with-temporal)

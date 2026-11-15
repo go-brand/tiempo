@@ -10,7 +10,9 @@
   <url><loc>https://tiempo.gobrand.app/docs/recipes</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/date-fns</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/ai-resources</loc></url>
+  <url><loc>https://tiempo.gobrand.app/docs/guides</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/guides/replace-date-with-temporal</loc></url>
+  <url><loc>https://tiempo.gobrand.app/docs/guides/choose-a-date-library</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/guides/convert-utc-to-timezone</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/guides/dst-safe-date-math</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/guides/start-and-end-of-day</loc></url>

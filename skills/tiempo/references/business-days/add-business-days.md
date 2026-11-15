@@ -69,3 +69,4 @@ addBusinessDays(christmasEve, 1); // 2026-12-25
 
 - Starting on a weekend, the first business day counted is the next Monday (or the previous Friday for negative values). Adding 0 returns the same date, even on a weekend or a holiday.
 - Holidays that fall on a weekend, and repeated holidays, change nothing. tiempo has no holiday calendar of its own; pass the dates that apply to you.
+- Guide: [Count business days with holidays](https://tiempo.gobrand.app/docs/guides/business-days-with-holidays)
