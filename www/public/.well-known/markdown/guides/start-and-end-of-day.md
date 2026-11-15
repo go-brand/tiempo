@@ -75,4 +75,4 @@ const from = startOfDay(today('America/Los_Angeles'), 'America/Los_Angeles');
 
 - [startOfDay](https://tiempo.gobrand.app/docs/boundaries/start-of-day), [endOfDay](https://tiempo.gobrand.app/docs/boundaries/end-of-day), [today](https://tiempo.gobrand.app/docs/current-time/today)
 - [startOfWeek](https://tiempo.gobrand.app/docs/boundaries/start-of-week) and [startOfMonth](https://tiempo.gobrand.app/docs/boundaries/start-of-month) work the same way
-- [Add days across daylight saving time](https://tiempo.gobrand.app/docs/guides/dst-safe-date-math)
+- [Add days across daylight saving time](https://tiempo.gobrand.app/guides/dst-safe-date-math)

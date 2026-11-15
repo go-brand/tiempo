@@ -4,6 +4,7 @@ import {
   buildAgentSkillsIndex,
   buildMarkdownDocument,
   buildRobotsTxt,
+  buildRssXml,
   buildSitemapXml,
   markdownAssetPath,
   SITE_URL
@@ -28,10 +29,31 @@ describe('agent site generation', () => {
   });
 
   test('builds canonical sitemap entries', () => {
-    const xml = buildSitemapXml(['/docs', '/docs/conversion/to-instant']);
+    const xml = buildSitemapXml([
+      { pathname: '/docs' },
+      { pathname: '/guides/dst-safe-date-math', lastmod: '2026-11-15' }
+    ]);
 
-    expect(xml).toContain('<loc>https://tiempo.gobrand.app/docs</loc>');
-    expect(xml).toContain('<loc>https://tiempo.gobrand.app/docs/conversion/to-instant</loc>');
+    expect(xml).toContain('<url><loc>https://tiempo.gobrand.app/docs</loc></url>');
+    expect(xml).toContain(
+      '<url><loc>https://tiempo.gobrand.app/guides/dst-safe-date-math</loc><lastmod>2026-11-15</lastmod></url>'
+    );
+  });
+
+  test('builds an RSS feed with escaped text and RFC 822 dates', () => {
+    const xml = buildRssXml([
+      {
+        title: 'Dates & times',
+        description: 'Use <Temporal>',
+        pathname: '/blog/dates',
+        published: '2026-11-15'
+      }
+    ]);
+
+    expect(xml).toContain('<title>Dates &amp; times</title>');
+    expect(xml).toContain('<description>Use &lt;Temporal&gt;</description>');
+    expect(xml).toContain('<guid>https://tiempo.gobrand.app/blog/dates</guid>');
+    expect(xml).toContain('<pubDate>Sun, 15 Nov 2026 00:00:00 GMT</pubDate>');
   });
 
   test('maps the homepage and docs URLs to hidden markdown assets', () => {

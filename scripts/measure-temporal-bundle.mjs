@@ -9,7 +9,7 @@ const nativeOnly = {
   setup(builder) {
     builder.onLoad({ filter: /\/src\/shared\/temporal\.ts$/ }, ({ path }) => {
       const source = readFileSync(path, 'utf8');
-      const importLine = 'import { Temporal as PolyfillTemporal } from "@js-temporal/polyfill";';
+      const importLine = "import { Temporal as PolyfillTemporal } from '@js-temporal/polyfill';";
       if (!source.includes(importLine))
         throw new Error('Temporal runtime import changed; update this experiment');
       return {

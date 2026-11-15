@@ -20,6 +20,8 @@ import { createHash } from 'node:crypto';
 import { pathToFileURL } from 'node:url';
 
 const DOCS_DIR = 'www/content/docs';
+const GUIDES_DIR = 'www/content/guides';
+const BLOG_DIR = 'www/content/blog';
 const SKILL_REFS_DIR = 'skills/tiempo/references';
 const LLMS_TXT_PATH = 'www/public/llms.txt';
 const SKILL_MD_PATH = 'skills/tiempo/SKILL.md';
@@ -121,6 +123,9 @@ interface DocFile {
   body: string;
   filePath: string;
   pathname: string;
+  published?: string;
+  updated?: string;
+  author?: string;
 }
 
 interface MetaJson {
@@ -149,7 +154,7 @@ function parseMdx(content: string): {
     if (colonIndex > 0) {
       const key = line.slice(0, colonIndex).trim();
       const value = line.slice(colonIndex + 1).trim();
-      frontmatter[key] = value;
+      frontmatter[key] = value.replace(/^(['"])(.*)\1$/, '$2');
     }
   }
 
@@ -157,38 +162,65 @@ function parseMdx(content: string): {
 }
 
 /**
- * Load the MDX pages of one docs folder, in meta.json order
+ * Load MDX pages from a directory in the given order; `index` is the folder's own URL.
  */
-function loadFolder(category: string): DocFile[] {
-  const categoryDir = path.join(DOCS_DIR, category);
-  const metaPath = path.join(categoryDir, 'meta.json');
-  if (!fs.existsSync(metaPath)) return [];
-
-  const meta: MetaJson = JSON.parse(fs.readFileSync(metaPath, 'utf-8'));
+function loadPages(dir: string, baseUrl: string, slugs: string[]): DocFile[] {
   const docs: DocFile[] = [];
 
-  for (const slug of meta.pages) {
-    const filePath = path.join(categoryDir, `${slug}.mdx`);
+  for (const slug of slugs) {
+    const filePath = path.join(dir, `${slug}.mdx`);
     if (!fs.existsSync(filePath)) {
-      console.warn(`Warning: ${filePath} not found (listed in meta.json)`);
+      console.warn(`Warning: ${filePath} not found`);
       continue;
     }
 
-    const content = fs.readFileSync(filePath, 'utf-8');
-    const { frontmatter, body } = parseMdx(content);
-
+    const { frontmatter, body } = parseMdx(fs.readFileSync(filePath, 'utf-8'));
     docs.push({
       slug,
-      category,
+      category: path.basename(dir),
       title: frontmatter.title || slug,
       description: frontmatter.description || '',
       body,
       filePath,
-      pathname: slug === 'index' ? `/docs/${category}` : `/docs/${category}/${slug}`
+      pathname: slug === 'index' ? baseUrl : `${baseUrl}/${slug}`,
+      published: frontmatter.published,
+      updated: frontmatter.updated,
+      author: frontmatter.author
     });
   }
 
   return docs;
+}
+
+function metaPages(dir: string): string[] {
+  const metaPath = path.join(dir, 'meta.json');
+  if (!fs.existsSync(metaPath)) return [];
+  return (JSON.parse(fs.readFileSync(metaPath, 'utf-8')) as MetaJson).pages;
+}
+
+/**
+ * Load the MDX pages of one docs folder, in meta.json order
+ */
+function loadFolder(category: string): DocFile[] {
+  const dir = path.join(DOCS_DIR, category);
+  return loadPages(dir, `/docs/${category}`, metaPages(dir));
+}
+
+function loadGuides(): DocFile[] {
+  return loadPages(GUIDES_DIR, '/guides', metaPages(GUIDES_DIR));
+}
+
+/**
+ * Blog posts, newest first
+ */
+function loadPosts(): DocFile[] {
+  const slugs = fs
+    .readdirSync(BLOG_DIR)
+    .filter((name) => name.endsWith('.mdx'))
+    .map((name) => name.slice(0, -'.mdx'.length));
+  return loadPages(BLOG_DIR, '/blog', slugs).sort((a, b) =>
+    (b.published ?? '').localeCompare(a.published ?? '')
+  );
 }
 
 /**
@@ -234,9 +266,18 @@ export function buildRobotsTxt(): string {
   ].join('\n');
 }
 
-export function buildSitemapXml(pathnames: string[]): string {
-  const urls = pathnames
-    .map((pathname) => `  <url><loc>${SITE_URL}${pathname}</loc></url>`)
+export interface SitemapEntry {
+  pathname: string;
+  lastmod?: string;
+}
+
+export function buildSitemapXml(entries: SitemapEntry[]): string {
+  const urls = entries
+    .map(({ pathname, lastmod }) =>
+      lastmod
+        ? `  <url><loc>${SITE_URL}${pathname}</loc><lastmod>${lastmod}</lastmod></url>`
+        : `  <url><loc>${SITE_URL}${pathname}</loc></url>`
+    )
     .join('\n');
 
   return [
@@ -244,6 +285,51 @@ export function buildSitemapXml(pathnames: string[]): string {
     '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
     urls,
     '</urlset>',
+    ''
+  ].join('\n');
+}
+
+function escapeXml(text: string): string {
+  return text
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;');
+}
+
+// RSS 2.0 wants RFC 822 dates; posts are dated by day, so use midnight UTC.
+function rfc822(day: string): string {
+  return new Date(`${day}T00:00:00Z`).toUTCString();
+}
+
+export function buildRssXml(
+  posts: Pick<DocFile, 'title' | 'description' | 'pathname' | 'published'>[]
+): string {
+  const items = posts.map((post) => {
+    const url = `${SITE_URL}${post.pathname}`;
+    return [
+      '    <item>',
+      `      <title>${escapeXml(post.title)}</title>`,
+      `      <link>${url}</link>`,
+      `      <guid>${url}</guid>`,
+      `      <description>${escapeXml(post.description)}</description>`,
+      `      <pubDate>${rfc822(post.published ?? '')}</pubDate>`,
+      '    </item>'
+    ].join('\n');
+  });
+
+  return [
+    '<?xml version="1.0" encoding="UTF-8"?>',
+    '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">',
+    '  <channel>',
+    '    <title>tiempo blog</title>',
+    `    <link>${SITE_URL}/blog</link>`,
+    `    <atom:link href="${SITE_URL}/rss.xml" rel="self" type="application/rss+xml" />`,
+    '    <description>Releases and notes on dates, times, and the Temporal API in JavaScript and TypeScript.</description>',
+    '    <language>en</language>',
+    ...items,
+    '  </channel>',
+    '</rss>',
     ''
   ].join('\n');
 }
@@ -360,7 +446,7 @@ function generateSkillRefs(docs: DocFile[], guides: DocFile[]): void {
 /**
  * Generate llms.txt
  */
-function generateLlmsTxt(docs: DocFile[], guides: DocFile[]): void {
+function generateLlmsTxt(docs: DocFile[], guides: DocFile[], posts: DocFile[]): void {
   console.log('Generating llms.txt...');
 
   const lines: string[] = [
@@ -390,6 +476,10 @@ function generateLlmsTxt(docs: DocFile[], guides: DocFile[]): void {
     ...guides.map(
       (guide) => `- [${guide.title}](${SITE_URL}${guide.pathname}): ${guide.description}`
     ),
+    '',
+    '## Blog',
+    '',
+    ...posts.map((post) => `- [${post.title}](${SITE_URL}${post.pathname}): ${post.description}`),
     ''
   ];
 
@@ -568,20 +658,23 @@ function generateAgentSkillAssets(): void {
   console.log(`  ✓ ${PUBLIC_AGENT_SKILLS_DIR}`);
 }
 
-function generateDiscoveryFiles(docs: DocFile[]): void {
+function generateDiscoveryFiles(docs: DocFile[], posts: DocFile[]): void {
   console.log('Generating crawler discovery files...');
-  const sitemapPaths = [
-    '/',
-    '/date-fns',
-    ...docs.map((doc) => doc.pathname),
-    '/llms.txt',
-    '/.well-known/agent-skills/index.json'
+  const sitemap: SitemapEntry[] = [
+    { pathname: '/' },
+    { pathname: '/date-fns' },
+    ...docs.map((doc) => ({ pathname: doc.pathname, lastmod: doc.updated ?? doc.published })),
+    { pathname: '/blog', lastmod: posts[0]?.published },
+    { pathname: '/llms.txt' },
+    { pathname: '/.well-known/agent-skills/index.json' }
   ];
 
   fs.writeFileSync(path.join(PUBLIC_DIR, 'robots.txt'), buildRobotsTxt());
-  fs.writeFileSync(path.join(PUBLIC_DIR, 'sitemap.xml'), buildSitemapXml(sitemapPaths));
+  fs.writeFileSync(path.join(PUBLIC_DIR, 'sitemap.xml'), buildSitemapXml(sitemap));
+  fs.writeFileSync(path.join(PUBLIC_DIR, 'rss.xml'), buildRssXml(posts));
   console.log(`  ✓ ${path.join(PUBLIC_DIR, 'robots.txt')}`);
   console.log(`  ✓ ${path.join(PUBLIC_DIR, 'sitemap.xml')}`);
+  console.log(`  ✓ ${path.join(PUBLIC_DIR, 'rss.xml')}`);
 }
 
 /**
@@ -593,8 +686,9 @@ function main(): void {
   console.log('─'.repeat(50));
 
   const docs = loadDocFiles();
-  const guides = loadFolder('guides');
-  const allDocs = [...loadTopLevelDocFiles(), ...guides, ...docs];
+  const guides = loadGuides();
+  const posts = loadPosts();
+  const allDocs = [...loadTopLevelDocFiles(), ...guides, ...posts, ...docs];
   console.log(`\nFound ${allDocs.length} doc files\n`);
 
   // Guides bundled with the skill so it works without fetching the site.
@@ -602,7 +696,7 @@ function main(): void {
   generateSkillRefs(docs, skillGuides);
   console.log('');
 
-  generateLlmsTxt(docs, guides);
+  generateLlmsTxt(docs, guides, posts);
   console.log('');
 
   generateSkillMd(docs);
@@ -614,7 +708,7 @@ function main(): void {
   generateAgentSkillAssets();
   console.log('');
 
-  generateDiscoveryFiles(allDocs);
+  generateDiscoveryFiles(allDocs, posts);
   console.log('');
 
   console.log('─'.repeat(50));

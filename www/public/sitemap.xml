@@ -10,14 +10,16 @@
   <url><loc>https://tiempo.gobrand.app/docs/recipes</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/date-fns</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/ai-resources</loc></url>
-  <url><loc>https://tiempo.gobrand.app/docs/guides</loc></url>
-  <url><loc>https://tiempo.gobrand.app/docs/guides/replace-date-with-temporal</loc></url>
-  <url><loc>https://tiempo.gobrand.app/docs/guides/choose-a-date-library</loc></url>
-  <url><loc>https://tiempo.gobrand.app/docs/guides/convert-utc-to-timezone</loc></url>
-  <url><loc>https://tiempo.gobrand.app/docs/guides/dst-safe-date-math</loc></url>
-  <url><loc>https://tiempo.gobrand.app/docs/guides/start-and-end-of-day</loc></url>
-  <url><loc>https://tiempo.gobrand.app/docs/guides/store-dates-in-a-database</loc></url>
-  <url><loc>https://tiempo.gobrand.app/docs/guides/business-days-with-holidays</loc></url>
+  <url><loc>https://tiempo.gobrand.app/guides</loc></url>
+  <url><loc>https://tiempo.gobrand.app/guides/replace-date-with-temporal</loc><lastmod>2026-11-15</lastmod></url>
+  <url><loc>https://tiempo.gobrand.app/guides/choose-a-date-library</loc><lastmod>2026-11-15</lastmod></url>
+  <url><loc>https://tiempo.gobrand.app/guides/convert-utc-to-timezone</loc><lastmod>2026-11-15</lastmod></url>
+  <url><loc>https://tiempo.gobrand.app/guides/dst-safe-date-math</loc><lastmod>2026-11-15</lastmod></url>
+  <url><loc>https://tiempo.gobrand.app/guides/start-and-end-of-day</loc><lastmod>2026-11-15</lastmod></url>
+  <url><loc>https://tiempo.gobrand.app/guides/store-dates-in-a-database</loc><lastmod>2026-11-15</lastmod></url>
+  <url><loc>https://tiempo.gobrand.app/guides/business-days-with-holidays</loc><lastmod>2026-11-15</lastmod></url>
+  <url><loc>https://tiempo.gobrand.app/blog/temporal-in-node-26</loc><lastmod>2026-11-15</lastmod></url>
+  <url><loc>https://tiempo.gobrand.app/blog/tiempo-3-2</loc><lastmod>2026-11-12</lastmod></url>
   <url><loc>https://tiempo.gobrand.app/docs/conversion/to-instant</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/conversion/to-zoned-time</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/conversion/to-plain-date</loc></url>
@@ -131,6 +133,7 @@
   <url><loc>https://tiempo.gobrand.app/docs/intervals/each-minute-of-interval</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/utilities/get-quarter</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/utilities/browser-timezone</loc></url>
+  <url><loc>https://tiempo.gobrand.app/blog</loc><lastmod>2026-11-15</lastmod></url>
   <url><loc>https://tiempo.gobrand.app/llms.txt</loc></url>
   <url><loc>https://tiempo.gobrand.app/.well-known/agent-skills/index.json</loc></url>
 </urlset>

@@ -55,4 +55,4 @@ differenceInHours(end, start, { fractional: true }); // 8.5
 
 ## Good to know
 
-- Guide: [Add days across daylight saving time](https://tiempo.gobrand.app/docs/guides/dst-safe-date-math)
+- Guide: [Add days across daylight saving time](https://tiempo.gobrand.app/guides/dst-safe-date-math)

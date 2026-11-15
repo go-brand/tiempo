@@ -58,4 +58,4 @@ toIso9075(loggedAt, { representation: 'time' }); // 23:30:15
 ## Good to know
 
 - Fractional seconds are cut off, not rounded.
-- Guide: [Store dates in a database](https://tiempo.gobrand.app/docs/guides/store-dates-in-a-database)
+- Guide: [Store dates in a database](https://tiempo.gobrand.app/guides/store-dates-in-a-database)

@@ -74,9 +74,10 @@ export function markdownAssetPath(pathname: string): string | null {
   if (normalizedPath === "/date-fns") {
     return "/.well-known/markdown/docs/date-fns.md";
   }
-  if (normalizedPath !== "/docs" && !normalizedPath.startsWith("/docs/")) {
-    return null;
-  }
+  const section = ["/docs", "/guides", "/blog"].find(
+    (prefix) => normalizedPath === prefix || normalizedPath.startsWith(`${prefix}/`),
+  );
+  if (!section || normalizedPath === "/blog") return null;
 
   const docsPath = normalizedPath === "/docs" ? "/docs/index" : normalizedPath;
   return `/.well-known/markdown${docsPath}.md`;
@@ -102,10 +103,13 @@ export function canonicalRedirect(requestUrl: string): Response | null {
   const url = new URL(requestUrl);
   const insecure = url.protocol === "http:" && url.hostname === CANONICAL_HOST;
   const trailingSlash = url.pathname.length > 1 && url.pathname.endsWith("/");
-  if (!insecure && !trailingSlash) return null;
+  // Guides moved from /docs/guides to /guides.
+  const movedGuide = /^\/docs\/guides(\/|$)/.test(url.pathname);
+  if (!insecure && !trailingSlash && !movedGuide) return null;
 
   if (insecure) url.protocol = "https:";
   if (trailingSlash) url.pathname = url.pathname.replace(/\/+$/, "") || "/";
+  if (movedGuide) url.pathname = url.pathname.replace(/^\/docs\/guides/, "/guides");
   return Response.redirect(url.toString(), 301);
 }
 

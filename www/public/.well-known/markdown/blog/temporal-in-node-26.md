@@ -1,0 +1,49 @@
+# Temporal is built into Node.js 26: what changes for your date code
+
+Node.js 26 has `Temporal` as a global, with no flag and no import. It is the standard replacement for `Date`, with separate types for exact moments, moments in a timezone, calendar dates, and clock times. Here is what that changes in practice.
+
+## You can create Temporal values without an import
+
+On Node.js 26, this works in any file:
+
+```js
+const today = Temporal.Now.plainDateISO('Europe/Madrid');
+const meeting = Temporal.ZonedDateTime.from('2026-11-16T09:00:00+01:00[Europe/Madrid]');
+```
+
+On Node.js 22 and 24, and in browsers without Temporal, import it from [`@js-temporal/polyfill`](https://github.com/js-temporal/temporal-polyfill) instead. Browser support is arriving release by release; check [MDN's compatibility table](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Temporal#browser_compatibility) before you drop the polyfill from front-end code.
+
+## Native and polyfill values work together in tiempo
+
+tiempo depends on the polyfill, so it runs on every supported runtime. It also accepts values created by native `Temporal`, and you can mix the two:
+
+```ts
+import { addDays, differenceInCalendarDays, toIso } from '@gobrand/tiempo';
+
+const checkIn = Temporal.PlainDate.from('2026-11-16'); // native on Node.js 26
+const checkOut = addDays(checkIn, 3);
+
+checkOut.toString(); // "2026-11-19"
+differenceInCalendarDays(checkOut, checkIn); // 3
+toIso(Temporal.Instant.from('2026-11-16T08:00:00Z')); // "2026-11-16T08:00:00Z"
+```
+
+tiempo checks values by their Temporal type rather than with `instanceof`, which is what makes mixing work. Its test suite runs every test twice on Node.js 26: once against the polyfill and once against native `Temporal`.
+
+## The polyfill is most of the bundle
+
+The polyfill is a complete implementation of Temporal, including timezone and calendar handling, and it dominates bundle size. We measured browser bundles that import tiempo with esbuild, gzipped:
+
+| Import | With the polyfill | Without it |
+|---|---|---|
+| `addDays` | 47.5 KB | 0.4 KB |
+| `format` | 48.9 KB | 2.0 KB |
+| all of tiempo | 55.5 KB | 8.7 KB |
+
+On a server this rarely matters. In a browser bundle it does, and it is the cost of running everywhere today. As native support spreads, the polyfill becomes something only older runtimes need.
+
+## What to do now
+
+- **New code:** use Temporal types for dates and times, whether or not your runtime has them built in. Code written against the polyfill runs unchanged on native Temporal.
+- **Existing `Date` code:** start where bugs come from, usually timezone conversion and date math across daylight saving changes. See [Replace JavaScript Date with Temporal](https://tiempo.gobrand.app/guides/replace-date-with-temporal).
+- **date-fns users:** tiempo keeps most function names and argument orders. See [Coming from date-fns](https://tiempo.gobrand.app/docs/date-fns).

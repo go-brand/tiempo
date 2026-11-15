@@ -81,4 +81,4 @@ toDate(value).toISOString(); // "2026-03-15T14:30:00.000Z"
 
 - [Installation](https://tiempo.gobrand.app/docs/installation): native Temporal and the polyfill
 - [API conventions](https://tiempo.gobrand.app/docs/api-conventions)
-- [Convert UTC to a user's timezone](https://tiempo.gobrand.app/docs/guides/convert-utc-to-timezone)
+- [Convert UTC to a user's timezone](https://tiempo.gobrand.app/guides/convert-utc-to-timezone)

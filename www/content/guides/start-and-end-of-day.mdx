@@ -1,6 +1,7 @@
 ---
 title: Start and end of day in a timezone
 description: Get midnight in the user's timezone, query a day of records stored in UTC, and handle days with 23 or 25 hours
+published: 2026-11-15
 ---
 
 "Today's orders" means today where the business is, not today in UTC. Midnight in Los Angeles is 07:00 or 08:00 UTC, depending on the time of year.
@@ -78,4 +79,4 @@ const from = startOfDay(today('America/Los_Angeles'), 'America/Los_Angeles');
 
 - [startOfDay](/docs/boundaries/start-of-day), [endOfDay](/docs/boundaries/end-of-day), [today](/docs/current-time/today)
 - [startOfWeek](/docs/boundaries/start-of-week) and [startOfMonth](/docs/boundaries/start-of-month) work the same way
-- [Add days across daylight saving time](/docs/guides/dst-safe-date-math)
+- [Add days across daylight saving time](/guides/dst-safe-date-math)

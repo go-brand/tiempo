@@ -60,13 +60,13 @@ The full mapping is at [tiempo.gobrand.app/docs/date-fns](https://tiempo.gobrand
 
 Guides:
 
-- [Replace JavaScript Date with Temporal](https://tiempo.gobrand.app/docs/guides/replace-date-with-temporal)
-- [Choose a JavaScript date library](https://tiempo.gobrand.app/docs/guides/choose-a-date-library)
-- [Convert UTC to a user's timezone](https://tiempo.gobrand.app/docs/guides/convert-utc-to-timezone)
-- [Add days across daylight saving time](https://tiempo.gobrand.app/docs/guides/dst-safe-date-math)
-- [Start and end of day in a timezone](https://tiempo.gobrand.app/docs/guides/start-and-end-of-day)
-- [Store dates in a database](https://tiempo.gobrand.app/docs/guides/store-dates-in-a-database)
-- [Count business days with holidays](https://tiempo.gobrand.app/docs/guides/business-days-with-holidays)
+- [Replace JavaScript Date with Temporal](https://tiempo.gobrand.app/guides/replace-date-with-temporal)
+- [Choose a JavaScript date library](https://tiempo.gobrand.app/guides/choose-a-date-library)
+- [Convert UTC to a user's timezone](https://tiempo.gobrand.app/guides/convert-utc-to-timezone)
+- [Add days across daylight saving time](https://tiempo.gobrand.app/guides/dst-safe-date-math)
+- [Start and end of day in a timezone](https://tiempo.gobrand.app/guides/start-and-end-of-day)
+- [Store dates in a database](https://tiempo.gobrand.app/guides/store-dates-in-a-database)
+- [Count business days with holidays](https://tiempo.gobrand.app/guides/business-days-with-holidays)
 
 For coding agents: [llms.txt](https://tiempo.gobrand.app/llms.txt), or install the Agent Skill with `npx skills add go-brand/tiempo`.
 

@@ -52,4 +52,4 @@ endOfDay(sale); // 2026-05-20T23:59:59.999999999-04:00[America/New_York]
 ## Good to know
 
 - For a half-open range (`>= start` and `< end`), use the next day's `startOfDay` as `end` instead.
-- Guide: [Start and end of day in a timezone](https://tiempo.gobrand.app/docs/guides/start-and-end-of-day)
+- Guide: [Start and end of day in a timezone](https://tiempo.gobrand.app/guides/start-and-end-of-day)

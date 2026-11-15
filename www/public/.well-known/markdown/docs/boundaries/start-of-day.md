@@ -55,4 +55,4 @@ startOfDay(flight); // 2026-09-06T01:00:00-03:00[America/Santiago]
 ## Good to know
 
 - An `Instant` uses the UTC day: 23:30 UTC on 14 March is already 15 March in Madrid. Convert with [toZonedTime](https://tiempo.gobrand.app/docs/conversion/to-zoned-time) to use a user's day.
-- Guide: [Start and end of day in a timezone](https://tiempo.gobrand.app/docs/guides/start-and-end-of-day)
+- Guide: [Start and end of day in a timezone](https://tiempo.gobrand.app/guides/start-and-end-of-day)

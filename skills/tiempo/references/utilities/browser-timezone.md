@@ -25,4 +25,4 @@ const meeting = toZonedTime('2026-03-10T16:00:00Z', timezone); // the meeting in
 
 ## Good to know
 
-- Guide: [Convert UTC to a user's timezone](https://tiempo.gobrand.app/docs/guides/convert-utc-to-timezone)
+- Guide: [Convert UTC to a user's timezone](https://tiempo.gobrand.app/guides/convert-utc-to-timezone)
