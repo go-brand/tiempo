@@ -1,6 +1,7 @@
 import { loader } from 'fumadocs-core/source';
 import { blog, docs, guides } from 'fumadocs-mdx:collections/server';
 import { lucideIconsPlugin } from 'fumadocs-core/source/lucide-icons';
+import { toFumadocsSource } from 'fumadocs-mdx/runtime/server';
 
 export const source = loader({
   source: docs.toFumadocsSource(),
@@ -14,7 +15,7 @@ export const guidesSource = loader({
 });
 
 export const blogSource = loader({
-  source: blog.toFumadocsSource(),
+  source: toFumadocsSource(blog, []),
   baseUrl: '/blog',
 });
 
