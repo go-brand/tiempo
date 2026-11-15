@@ -19,7 +19,7 @@ describe('agent site generation', () => {
       [
         'User-agent: *',
         'Allow: /',
-        'Content-Signal: ai-train=no, search=yes, ai-input=yes',
+        'Content-Signal: ai-train=yes, search=yes, ai-input=yes',
         '',
         'Sitemap: https://tiempo.gobrand.app/sitemap.xml',
         ''

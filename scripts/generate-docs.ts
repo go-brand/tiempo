@@ -157,44 +157,45 @@ function parseMdx(content: string): {
 }
 
 /**
- * Load all MDX doc files
+ * Load the MDX pages of one docs folder, in meta.json order
  */
-function loadDocFiles(): DocFile[] {
+function loadFolder(category: string): DocFile[] {
+  const categoryDir = path.join(DOCS_DIR, category);
+  const metaPath = path.join(categoryDir, 'meta.json');
+  if (!fs.existsSync(metaPath)) return [];
+
+  const meta: MetaJson = JSON.parse(fs.readFileSync(metaPath, 'utf-8'));
   const docs: DocFile[] = [];
 
-  for (const category of CATEGORIES) {
-    const categoryDir = path.join(DOCS_DIR, category);
-    if (!fs.existsSync(categoryDir)) continue;
-
-    // Load meta.json to get page order
-    const metaPath = path.join(categoryDir, 'meta.json');
-    if (!fs.existsSync(metaPath)) continue;
-
-    const meta: MetaJson = JSON.parse(fs.readFileSync(metaPath, 'utf-8'));
-
-    for (const slug of meta.pages) {
-      const filePath = path.join(categoryDir, `${slug}.mdx`);
-      if (!fs.existsSync(filePath)) {
-        console.warn(`Warning: ${filePath} not found (listed in meta.json)`);
-        continue;
-      }
-
-      const content = fs.readFileSync(filePath, 'utf-8');
-      const { frontmatter, body } = parseMdx(content);
-
-      docs.push({
-        slug,
-        category,
-        title: frontmatter.title || slug,
-        description: frontmatter.description || '',
-        body,
-        filePath,
-        pathname: `/docs/${category}/${slug}`
-      });
+  for (const slug of meta.pages) {
+    const filePath = path.join(categoryDir, `${slug}.mdx`);
+    if (!fs.existsSync(filePath)) {
+      console.warn(`Warning: ${filePath} not found (listed in meta.json)`);
+      continue;
     }
+
+    const content = fs.readFileSync(filePath, 'utf-8');
+    const { frontmatter, body } = parseMdx(content);
+
+    docs.push({
+      slug,
+      category,
+      title: frontmatter.title || slug,
+      description: frontmatter.description || '',
+      body,
+      filePath,
+      pathname: `/docs/${category}/${slug}`
+    });
   }
 
   return docs;
+}
+
+/**
+ * Load the function reference pages
+ */
+function loadDocFiles(): DocFile[] {
+  return CATEGORIES.flatMap((category) => loadFolder(category));
 }
 
 function loadTopLevelDocFiles(): DocFile[] {
@@ -226,7 +227,7 @@ export function buildRobotsTxt(): string {
   return [
     'User-agent: *',
     'Allow: /',
-    'Content-Signal: ai-train=no, search=yes, ai-input=yes',
+    'Content-Signal: ai-train=yes, search=yes, ai-input=yes',
     '',
     `Sitemap: ${SITE_URL}/sitemap.xml`,
     ''
@@ -359,7 +360,7 @@ function generateSkillRefs(docs: DocFile[], guides: DocFile[]): void {
 /**
  * Generate llms.txt
  */
-function generateLlmsTxt(docs: DocFile[]): void {
+function generateLlmsTxt(docs: DocFile[], guides: DocFile[]): void {
   console.log('Generating llms.txt...');
 
   const lines: string[] = [
@@ -383,6 +384,12 @@ function generateLlmsTxt(docs: DocFile[]): void {
     `- [Type Matrix](${DOCS_URL}/type-matrix): Input, timezone, and return mappings for every public function`,
     `- [Recipes](${DOCS_URL}/recipes): Common timezone-safe datetime workflows`,
     `- [AI Resources](${DOCS_URL}/ai-resources): Machine-readable documentation and Agent Skill discovery`,
+    '',
+    '## Guides',
+    '',
+    ...guides.map(
+      (guide) => `- [${guide.title}](${SITE_URL}${guide.pathname}): ${guide.description}`
+    ),
     ''
   ];
 
@@ -586,7 +593,8 @@ function main(): void {
   console.log('─'.repeat(50));
 
   const docs = loadDocFiles();
-  const allDocs = [...loadTopLevelDocFiles(), ...docs];
+  const guides = loadFolder('guides');
+  const allDocs = [...loadTopLevelDocFiles(), ...guides, ...docs];
   console.log(`\nFound ${allDocs.length} doc files\n`);
 
   // Guides bundled with the skill so it works without fetching the site.
@@ -594,7 +602,7 @@ function main(): void {
   generateSkillRefs(docs, skillGuides);
   console.log('');
 
-  generateLlmsTxt(docs);
+  generateLlmsTxt(docs, guides);
   console.log('');
 
   generateSkillMd(docs);

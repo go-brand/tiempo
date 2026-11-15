@@ -1,0 +1,76 @@
+---
+title: Store dates in a database
+description: Which column type to use for timestamps, birthdays, and future appointments, and how to read them back with Temporal
+---
+
+Most date bugs start with storing the wrong kind of value. Decide what the value is first; the column follows.
+
+| The value is | Example | Store | Read back with |
+|---|---|---|---|
+| A moment that happened | `created_at`, `paid_at`, logs | UTC timestamp | `toZonedTime(value, timezone)` |
+| A calendar date | birthday, due date, holiday | `date` / `'YYYY-MM-DD'` | `toPlainDate(value)` |
+| A clock time | opening hours | `time` / `'HH:mm'` | `toPlainTime(value)` |
+| A future local event | a meeting at 09:00 in Madrid | local date and time plus the IANA timezone | `Temporal.PlainDateTime` + `toZonedDateTime` |
+
+## Moments: UTC
+
+Write moments as UTC ISO strings or `timestamptz` columns. `toIso` and `toIso9075` write UTC from any timezone:
+
+```ts
+import { toZonedTime, toIso, toIso9075 } from '@gobrand/tiempo';
+
+const paidAt = toZonedTime('2026-05-20T16:45:00+02:00', 'Europe/Madrid');
+
+toIso(paidAt); // "2026-05-20T14:45:00Z"
+toIso9075(paidAt); // "2026-05-20 14:45:00"
+```
+
+Read them back into the viewer's timezone when you display them. See [Convert UTC to a user's timezone](/docs/guides/convert-utc-to-timezone).
+
+## Calendar dates: no time, no timezone
+
+A birthday stored as midnight UTC shows as the day before for anyone west of Greenwich. Store it as a date and keep it a `PlainDate`:
+
+```ts
+import { toPlainDate, format } from '@gobrand/tiempo';
+
+const birthday = toPlainDate('1990-03-15'); // from a date column
+
+birthday.toString(); // "1990-03-15"
+format(birthday, 'MMMM d'); // "March 15"
+```
+
+`PlainDate` has no timezone, so it is the same date for every reader.
+
+## Future events: keep the local time and the timezone
+
+A meeting at 09:00 in Madrid next year should stay at 09:00 even if Spain changes its DST rules before then. Storing only the UTC moment fixes the offset in advance. Store the local date and time, and the timezone, and combine them when you need the moment:
+
+```ts
+import { toIso } from '@gobrand/tiempo';
+
+// Columns: starts_at_local = '2027-03-29T09:00', timezone = 'Europe/Madrid'
+const startsAt = Temporal.PlainDateTime.from('2027-03-29T09:00').toZonedDateTime('Europe/Madrid');
+
+startsAt.hour; // 9
+toIso(startsAt); // "2027-03-29T07:00:00Z"
+```
+
+Compute the UTC moment when you need it, for reminders or queries, rather than saving it as the source of truth.
+
+## ORMs that return `Date`
+
+Many ORMs return a JavaScript `Date` for timestamp columns. `toZonedTime` accepts it, and `toDate` converts back when the ORM expects one:
+
+```ts
+import { toZonedTime, addWeeks, toDate } from '@gobrand/tiempo';
+
+const publishedAt = toZonedTime(new Date('2026-05-20T14:45:00Z'), 'America/New_York');
+
+toDate(addWeeks(publishedAt, 1)).toISOString(); // "2026-05-27T14:45:00.000Z"
+```
+
+## Related
+
+- [toIso](/docs/conversion/to-iso), [toIso9075](/docs/conversion/to-iso9075), [toPlainDate](/docs/conversion/to-plain-date)
+- [Installation: databases and ORMs](/docs/installation#databases-and-orms)

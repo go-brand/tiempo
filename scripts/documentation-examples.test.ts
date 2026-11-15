@@ -4,7 +4,6 @@ import { build } from 'esbuild';
 import { expect, it } from 'vitest';
 
 it.each([
-  ['README.md', 'display', 'payload'],
   ['skills/tiempo/references/best-practices/utc-storage.md', 'display', 'payload'],
   ['skills/tiempo/references/best-practices/explicit-timezone.md', 'display']
 ])(

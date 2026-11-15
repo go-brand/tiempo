@@ -1,0 +1,86 @@
+---
+title: Add days across daylight saving time
+description: Why adding 24 hours is not adding a day in JavaScript, and how to do date math that survives DST changes
+---
+
+Twice a year, most of North America and Europe changes its clocks. On those days a day has 23 or 25 hours, and date math that treats a day as 24 hours drifts by an hour.
+
+## The bug with `Date`
+
+A `Date` is a count of milliseconds. Adding a day usually means adding `24 * 60 * 60 * 1000`, which is 24 hours, not one calendar day:
+
+```js
+// Server running in America/New_York. DST starts on March 8, 2026.
+const reminder = new Date('2026-03-07T09:00:00-05:00');
+const tomorrow = new Date(reminder.getTime() + 24 * 60 * 60 * 1000);
+// 10:00 on March 8, not 09:00
+```
+
+`setDate(getDate() + 1)` keeps the clock time, but only in the timezone of the machine running the code, so the answer differs between a laptop and a UTC server.
+
+## Days and hours are different units
+
+With Temporal, a `ZonedDateTime` knows its timezone, so a day and 24 hours are different operations:
+
+```ts
+import { addDays, addHours, differenceInHours } from '@gobrand/tiempo';
+
+const reminder = Temporal.ZonedDateTime.from('2026-03-07T09:00:00-05:00[America/New_York]');
+
+addDays(reminder, 1); // 2026-03-08T09:00:00-04:00[America/New_York]
+addHours(reminder, 24); // 2026-03-08T10:00:00-04:00[America/New_York]
+differenceInHours(addDays(reminder, 1), reminder); // 23
+```
+
+Use `addDays`, `addWeeks`, and `addMonths` for anything a person schedules: reminders, renewals, "same time tomorrow". Use `addHours` and smaller units for durations: timeouts, token lifetimes, "in 24 hours".
+
+## A day can have 25 hours
+
+When clocks go back, the day is an hour longer. Count it from one midnight to the next:
+
+```ts
+import { startOfDay, addDays, differenceInHours } from '@gobrand/tiempo';
+
+const fallBack = Temporal.ZonedDateTime.from('2026-11-01T12:00:00-05:00[America/New_York]');
+const midnight = startOfDay(fallBack);
+
+differenceInHours(startOfDay(addDays(midnight, 1)), midnight); // 25
+```
+
+## Times that don't exist
+
+On the night clocks go forward, 02:30 in New York never happens. Temporal moves it forward by the length of the gap, so a daily 02:30 job runs at 03:30 that night and returns to 02:30 the next day:
+
+```ts
+import { addDays } from '@gobrand/tiempo';
+
+const nightly = Temporal.ZonedDateTime.from('2026-03-07T02:30:00-05:00[America/New_York]');
+
+addDays(nightly, 1); // 2026-03-08T03:30:00-04:00[America/New_York]
+addDays(nightly, 2); // 2026-03-09T02:30:00-04:00[America/New_York]
+```
+
+## Work in the user's timezone, not UTC
+
+An `Instant`, or a timestamp string ending in `Z`, has no local calendar. tiempo reads it in UTC, where there is no DST. Convert to the timezone the day belongs to before doing day math:
+
+```ts
+import { toZonedTime, addDays, toIso } from '@gobrand/tiempo';
+
+const placedAt = '2026-03-07T15:00:00Z';
+
+toIso(addDays(toZonedTime(placedAt, 'UTC'), 2)); // "2026-03-09T15:00:00Z"
+toIso(addDays(toZonedTime(placedAt, 'America/New_York'), 2)); // "2026-03-09T14:00:00Z"
+```
+
+The second result is an hour earlier in UTC because New York's clocks moved, and the delivery is still due at 10:00 local time.
+
+## Test the transitions
+
+Put a DST change in your tests: a start date one or two days before the change, and an assertion on the local time after it. The dates for any year are in the [IANA timezone database](https://www.iana.org/time-zones); for the US they are the second Sunday in March and the first Sunday in November, and for the EU the last Sundays of March and October.
+
+## Related
+
+- [addDays](/docs/arithmetic/add-days) and [addHours](/docs/arithmetic/add-hours)
+- [differenceInCalendarDays](/docs/difference/difference-in-calendar-days) counts date boundaries rather than 24-hour periods
+- [Start and end of day in a timezone](/docs/guides/start-and-end-of-day)

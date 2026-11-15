@@ -32,6 +32,15 @@ toIso(deliverBy); // "2026-01-27T19:30:00Z"
 
 New to Temporal? Start with [API conventions](https://tiempo.gobrand.app/docs/api-conventions). Coming from date-fns? See [the mapping](https://tiempo.gobrand.app/docs/date-fns).
 
+## Guides
+
+- [Replace JavaScript Date with Temporal](https://tiempo.gobrand.app/docs/guides/replace-date-with-temporal)
+- [Convert UTC to a user's timezone](https://tiempo.gobrand.app/docs/guides/convert-utc-to-timezone)
+- [Add days across daylight saving time](https://tiempo.gobrand.app/docs/guides/dst-safe-date-math)
+- [Start and end of day in a timezone](https://tiempo.gobrand.app/docs/guides/start-and-end-of-day)
+- [Store dates in a database](https://tiempo.gobrand.app/docs/guides/store-dates-in-a-database)
+- [Count business days with holidays](https://tiempo.gobrand.app/docs/guides/business-days-with-holidays)
+
 ## Using tiempo with a coding agent
 
 Point your agent at [llms.txt](https://tiempo.gobrand.app/llms.txt), a plain-text index of every function. If it supports Agent Skills, install the skill:
