@@ -29,7 +29,8 @@ describe('homepage contract', () => {
     expect(HOME_PAGE_META).toEqual(
       expect.arrayContaining([
         { property: 'og:url', content: HOME_PAGE_URL },
-        { name: 'twitter:card', content: 'summary' }
+        { name: 'twitter:card', content: 'summary_large_image' },
+        { property: 'og:image', content: 'https://tiempo.gobrand.app/og.jpg' }
       ])
     );
   });

@@ -95,11 +95,28 @@ export function addAgentHeaders(response: Response): Response {
 
 type ResponseFetcher = (request: Request) => Response | Promise<Response>;
 
+const CANONICAL_HOST = "tiempo.gobrand.app";
+
+// One URL per page for search engines: HTTPS on the production host, no trailing slash.
+export function canonicalRedirect(requestUrl: string): Response | null {
+  const url = new URL(requestUrl);
+  const insecure = url.protocol === "http:" && url.hostname === CANONICAL_HOST;
+  const trailingSlash = url.pathname.length > 1 && url.pathname.endsWith("/");
+  if (!insecure && !trailingSlash) return null;
+
+  if (insecure) url.protocol = "https:";
+  if (trailingSlash) url.pathname = url.pathname.replace(/\/+$/, "") || "/";
+  return Response.redirect(url.toString(), 301);
+}
+
 export async function handleAgentRequest(
   request: Request,
   fetchHtml: ResponseFetcher,
   fetchAsset: ResponseFetcher,
 ): Promise<Response> {
+  const redirect = canonicalRedirect(request.url);
+  if (redirect) return redirect;
+
   const pathname = new URL(request.url).pathname;
   const canFetchAsset = request.method === "GET" || request.method === "HEAD";
 
