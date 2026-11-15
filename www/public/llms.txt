@@ -28,7 +28,9 @@ Install with `npm install @gobrand/tiempo` and import functions by name: `import
 
 ## Guides
 
+- [Date and time guides](https://tiempo.gobrand.app/docs/guides): Guides to dates, times, and timezones in JavaScript and TypeScript with the Temporal API
 - [Replace JavaScript Date with Temporal](https://tiempo.gobrand.app/docs/guides/replace-date-with-temporal): How the Temporal API fixes the problems with Date, which Temporal type to use, and the Date, Moment.js, and Day.js calls you can replace
+- [Choose a JavaScript date library](https://tiempo.gobrand.app/docs/guides/choose-a-date-library): date-fns, Day.js, Luxon, Moment.js, and the Temporal API compared on timezones, immutability, plain dates, and API style
 - [Convert UTC to a user's timezone](https://tiempo.gobrand.app/docs/guides/convert-utc-to-timezone): Show a UTC timestamp in any IANA timezone in JavaScript, find the user's timezone, and send UTC back to the server
 - [Add days across daylight saving time](https://tiempo.gobrand.app/docs/guides/dst-safe-date-math): Why adding 24 hours is not adding a day in JavaScript, and how to do date math that survives DST changes
 - [Start and end of day in a timezone](https://tiempo.gobrand.app/docs/guides/start-and-end-of-day): Get midnight in the user's timezone, query a day of records stored in UTC, and handle days with 23 or 25 hours

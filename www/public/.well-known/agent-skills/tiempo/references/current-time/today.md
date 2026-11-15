@@ -39,3 +39,7 @@ const trialEnds = addDays(start, 14);
 
 differenceInDays(trialEnds, start); // 14
 ```
+
+## Good to know
+
+- Guide: [Start and end of day in a timezone](https://tiempo.gobrand.app/docs/guides/start-and-end-of-day)

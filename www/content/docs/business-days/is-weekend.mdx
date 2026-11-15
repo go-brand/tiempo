@@ -42,3 +42,7 @@ const orderPlaced = Temporal.Instant.from('2026-01-24T02:00:00Z'); // Saturday i
 isWeekend(orderPlaced); // true (an Instant is read in UTC)
 isWeekend(toZonedTime(orderPlaced, 'America/New_York')); // false (still Friday evening)
 ```
+
+## Good to know
+
+- Guide: [Count business days with holidays](/docs/guides/business-days-with-holidays)

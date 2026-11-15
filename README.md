@@ -61,6 +61,7 @@ The full mapping is at [tiempo.gobrand.app/docs/date-fns](https://tiempo.gobrand
 Guides:
 
 - [Replace JavaScript Date with Temporal](https://tiempo.gobrand.app/docs/guides/replace-date-with-temporal)
+- [Choose a JavaScript date library](https://tiempo.gobrand.app/docs/guides/choose-a-date-library)
 - [Convert UTC to a user's timezone](https://tiempo.gobrand.app/docs/guides/convert-utc-to-timezone)
 - [Add days across daylight saving time](https://tiempo.gobrand.app/docs/guides/dst-safe-date-math)
 - [Start and end of day in a timezone](https://tiempo.gobrand.app/docs/guides/start-and-end-of-day)

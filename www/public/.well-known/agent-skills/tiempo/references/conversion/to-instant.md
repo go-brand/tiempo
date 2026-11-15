@@ -44,3 +44,4 @@ toInstant(meeting); // 2026-02-10T14:05:00Z
 ## Good to know
 
 - A string without `Z` or an offset throws a `RangeError`.
+- Guide: [Replace JavaScript Date with Temporal](https://tiempo.gobrand.app/docs/guides/replace-date-with-temporal)

@@ -184,7 +184,7 @@ function loadFolder(category: string): DocFile[] {
       description: frontmatter.description || '',
       body,
       filePath,
-      pathname: `/docs/${category}/${slug}`
+      pathname: slug === 'index' ? `/docs/${category}` : `/docs/${category}/${slug}`
     });
   }
 

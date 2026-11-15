@@ -52,3 +52,7 @@ const end = Temporal.ZonedDateTime.from('2026-05-04T17:30:00+02:00[Europe/Madrid
 differenceInHours(end, start); // 8
 differenceInHours(end, start, { fractional: true }); // 8.5
 ```
+
+## Good to know
+
+- Guide: [Add days across daylight saving time](https://tiempo.gobrand.app/docs/guides/dst-safe-date-math)

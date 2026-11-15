@@ -65,3 +65,4 @@ toPlainDate(checkIn); // 2026-08-14
 
 - Without a timezone, a string must be exactly `YYYY-MM-DD`; with one, it must be a timestamp. Otherwise it throws.
 - Fields are clamped, strings are not: `{ year: 2026, month: 2, day: 30 }` gives `2026-02-28`, while `'2026-02-30'` throws a `RangeError`.
+- Guide: [Store dates in a database](/docs/guides/store-dates-in-a-database)
