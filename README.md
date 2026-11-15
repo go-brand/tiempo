@@ -8,7 +8,7 @@
 
 👉 **[Documentation](https://tiempo.gobrand.app)**
 
-![tiempo banner](./tiempo_banner.png)
+![tiempo banner](https://raw.githubusercontent.com/go-brand/tiempo/main/tiempo_banner.png)
 
 
 - **IANA timezone support** - Named timezone rules and DST handling through Temporal
@@ -36,6 +36,12 @@ toIso(tomorrow); // "2026-03-08T07:00:00Z" (23 hours later; clocks moved forward
 
 ```bash
 npm install @gobrand/tiempo
+```
+
+With Deno, from [JSR](https://jsr.io/@gobrand/tiempo):
+
+```bash
+deno add jsr:@gobrand/tiempo
 ```
 
 Runs on Node.js 22+ and in modern browsers. tiempo depends on [`@js-temporal/polyfill`](https://github.com/js-temporal/temporal-polyfill), so it works whether or not your runtime has Temporal built in, and it accepts values from native `Temporal` (Node.js 26+) too.
