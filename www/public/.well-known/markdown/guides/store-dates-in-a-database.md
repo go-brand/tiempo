@@ -1,7 +1,4 @@
----
-title: Store dates in a database
-description: Which column type to use for timestamps, birthdays, and future appointments, and how to read them back with Temporal
----
+# Store dates in a database
 
 Most date bugs start with storing the wrong kind of value. Decide what the value is first; the column follows.
 
@@ -25,7 +22,7 @@ toIso(paidAt); // "2026-05-20T14:45:00Z"
 toIso9075(paidAt); // "2026-05-20 14:45:00"
 ```
 
-Read them back into the viewer's timezone when you display them. See [Convert UTC to a user's timezone](/docs/guides/convert-utc-to-timezone).
+Read them back into the viewer's timezone when you display them. See [Convert UTC to a user's timezone](https://tiempo.gobrand.app/guides/convert-utc-to-timezone).
 
 ## Calendar dates: no time, no timezone
 
@@ -72,5 +69,5 @@ toDate(addWeeks(publishedAt, 1)).toISOString(); // "2026-05-27T14:45:00.000Z"
 
 ## Related
 
-- [toIso](/docs/conversion/to-iso), [toIso9075](/docs/conversion/to-iso9075), [toPlainDate](/docs/conversion/to-plain-date)
-- [Installation: databases and ORMs](/docs/installation#databases-and-orms)
+- [toIso](https://tiempo.gobrand.app/docs/conversion/to-iso), [toIso9075](https://tiempo.gobrand.app/docs/conversion/to-iso9075), [toPlainDate](https://tiempo.gobrand.app/docs/conversion/to-plain-date)
+- [Installation: databases and ORMs](https://tiempo.gobrand.app/docs/installation#databases-and-orms)

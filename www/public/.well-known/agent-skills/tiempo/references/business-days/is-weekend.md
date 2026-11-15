@@ -42,4 +42,4 @@ isWeekend(toZonedTime(orderPlaced, 'America/New_York')); // false (still Friday 
 
 ## Good to know
 
-- Guide: [Count business days with holidays](https://tiempo.gobrand.app/docs/guides/business-days-with-holidays)
+- Guide: [Count business days with holidays](https://tiempo.gobrand.app/guides/business-days-with-holidays)

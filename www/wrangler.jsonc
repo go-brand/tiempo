@@ -7,7 +7,7 @@
   "assets": {
     "directory": "dist/client",
     "binding": "ASSETS",
-    "run_worker_first": ["/", "/date-fns", "/docs", "/docs/*", "/.well-known/*"]
+    "run_worker_first": ["/", "/date-fns", "/docs", "/docs/*", "/guides", "/guides/*", "/blog", "/blog/*", "/.well-known/*"]
   },
   "observability": {
     "enabled": true

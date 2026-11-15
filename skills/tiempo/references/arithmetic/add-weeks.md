@@ -49,4 +49,4 @@ addWeeks(standup, 1); // 2026-03-09T09:30:00-07:00[America/Los_Angeles]
 
 ## Good to know
 
-- Guide: [Add days across daylight saving time](https://tiempo.gobrand.app/docs/guides/dst-safe-date-math)
+- Guide: [Add days across daylight saving time](https://tiempo.gobrand.app/guides/dst-safe-date-math)

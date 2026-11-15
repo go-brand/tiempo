@@ -80,4 +80,4 @@ Put a DST change in your tests: a start date one or two days before the change, 
 
 - [addDays](https://tiempo.gobrand.app/docs/arithmetic/add-days) and [addHours](https://tiempo.gobrand.app/docs/arithmetic/add-hours)
 - [differenceInCalendarDays](https://tiempo.gobrand.app/docs/difference/difference-in-calendar-days) counts date boundaries rather than 24-hour periods
-- [Start and end of day in a timezone](https://tiempo.gobrand.app/docs/guides/start-and-end-of-day)
+- [Start and end of day in a timezone](https://tiempo.gobrand.app/guides/start-and-end-of-day)

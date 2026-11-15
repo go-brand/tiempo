@@ -130,6 +130,11 @@ describe("agent readiness HTTP behavior", () => {
     ["http://tiempo.gobrand.app/docs", "https://tiempo.gobrand.app/docs"],
     ["https://tiempo.gobrand.app/docs/", "https://tiempo.gobrand.app/docs"],
     ["http://tiempo.gobrand.app/docs/recipes/?q=1", "https://tiempo.gobrand.app/docs/recipes?q=1"],
+    ["https://tiempo.gobrand.app/docs/guides", "https://tiempo.gobrand.app/guides"],
+    [
+      "https://tiempo.gobrand.app/docs/guides/dst-safe-date-math/",
+      "https://tiempo.gobrand.app/guides/dst-safe-date-math",
+    ],
   ])("permanently redirects %s to its canonical URL", (from, to) => {
     const response = canonicalRedirect(from);
 
@@ -141,6 +146,7 @@ describe("agent readiness HTTP behavior", () => {
     "https://tiempo.gobrand.app/",
     "https://tiempo.gobrand.app/docs",
     "http://localhost:3000/docs",
+    "https://tiempo.gobrand.app/guides",
   ])("leaves %s alone", (url) => {
     expect(canonicalRedirect(url)).toBeNull();
   });

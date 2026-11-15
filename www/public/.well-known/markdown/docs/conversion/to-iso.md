@@ -48,4 +48,4 @@ toIso(Temporal.Instant.from('2026-03-31T22:15:00.250Z')); // 2026-03-31T22:15:00
 ## Good to know
 
 - The result never includes the timezone name. Use `zoned.toString()` to keep it: `2026-06-02T09:30:00-07:00[America/Los_Angeles]`.
-- Guide: [Store dates in a database](https://tiempo.gobrand.app/docs/guides/store-dates-in-a-database)
+- Guide: [Store dates in a database](https://tiempo.gobrand.app/guides/store-dates-in-a-database)

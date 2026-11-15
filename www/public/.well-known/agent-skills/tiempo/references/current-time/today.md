@@ -42,4 +42,4 @@ differenceInDays(trialEnds, start); // 14
 
 ## Good to know
 
-- Guide: [Start and end of day in a timezone](https://tiempo.gobrand.app/docs/guides/start-and-end-of-day)
+- Guide: [Start and end of day in a timezone](https://tiempo.gobrand.app/guides/start-and-end-of-day)

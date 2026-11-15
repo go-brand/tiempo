@@ -1,0 +1,75 @@
+---
+title: 'tiempo 3.2: parse, calendar differences, and weekday navigation'
+description: tiempo 3.2 adds parse, five calendar difference functions, areIntervalsOverlapping, nextDay and previousDay, weeks that start on Sunday, and holidays for business days.
+published: 2026-11-12
+author: Ruben Costa
+---
+
+tiempo 3.2 fills gaps people hit when moving from date-fns. Every new function has a reference page, and every example on it runs in the test suite.
+
+```bash
+npm install @gobrand/tiempo@3.2
+```
+
+## parse
+
+`parse` reads text written in a known pattern, with the same tokens as `format`. Temporal itself only reads ISO 8601, so this covers spreadsheet exports and typed-in dates:
+
+```ts
+import { parse } from '@gobrand/tiempo';
+
+parse('20/01/2026', 'dd/MM/yyyy').toString(); // "2026-01-20"
+parse('01/20/2026 3:45 PM', 'MM/dd/yyyy h:mm a', { timeZone: 'America/New_York' }).toString(); // "2026-01-20T15:45:00-05:00[America/New_York]"
+```
+
+Without a `timeZone` it returns a `PlainDate`, so a date stays a date. [Reference](/docs/formatting/parse)
+
+## Calendar differences
+
+`differenceInDays` counts complete 24-hour days. For labels like "tomorrow" or "in 3 days", you want the number of calendar dates crossed instead:
+
+```ts
+import { differenceInCalendarDays, differenceInDays } from '@gobrand/tiempo';
+
+const now = Temporal.ZonedDateTime.from('2026-11-11T23:00:00+01:00[Europe/Madrid]');
+const due = Temporal.ZonedDateTime.from('2026-11-12T09:00:00+01:00[Europe/Madrid]');
+
+differenceInCalendarDays(due, now); // 1
+differenceInDays(due, now); // 0
+```
+
+The same pair exists for weeks, months, quarters, and years. [Reference](/docs/difference/difference-in-calendar-days)
+
+## Overlapping intervals and weekday navigation
+
+`areIntervalsOverlapping` compares two `{ start, end }` intervals, across timezones. `nextDay` and `previousDay` move to the next or previous Monday, Friday, or any day of the week, and keep the time of day:
+
+```ts
+import { areIntervalsOverlapping, nextDay } from '@gobrand/tiempo';
+
+const standup = {
+  start: Temporal.ZonedDateTime.from('2026-11-11T09:00:00+01:00[Europe/Madrid]'),
+  end: Temporal.ZonedDateTime.from('2026-11-11T09:30:00+01:00[Europe/Madrid]')
+};
+const call = {
+  start: Temporal.ZonedDateTime.from('2026-11-11T03:15:00-05:00[America/New_York]'),
+  end: Temporal.ZonedDateTime.from('2026-11-11T04:00:00-05:00[America/New_York]')
+};
+
+areIntervalsOverlapping(standup, call); // true
+nextDay(Temporal.PlainDate.from('2026-11-11'), 1).toString(); // "2026-11-16"
+```
+
+Days of the week use Temporal's numbers: 1 is Monday and 7 is Sunday.
+
+## Weeks that start on Sunday, and holidays
+
+- `startOfWeek`, `endOfWeek`, `isSameWeek`, and `eachWeekOfInterval` accept `{ weekStartsOn: 7 }` for calendars where weeks start on Sunday. date-fns's `0` for Sunday throws, so a migrated call can't silently use the wrong day.
+- `addBusinessDays`, `subBusinessDays`, and `differenceInBusinessDays` accept a list of holidays. See [Count business days with holidays](/guides/business-days-with-holidays).
+- `isWithinInterval` accepts `PlainDate` and `PlainTime` ranges. A time range whose start is after its end, such as 22:00 to 06:00, runs past midnight.
+
+## Fixed
+
+`isSameWeek` returned `true` for any two dates in calendars without ISO weeks, where Temporal leaves the week fields undefined.
+
+The full list is on the [date-fns mapping page](/docs/date-fns) and in the [type matrix](/docs/type-matrix).

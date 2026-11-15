@@ -52,4 +52,4 @@ toZonedTime(arrival, 'America/New_York'); // 2026-06-10T13:00:00-04:00[America/N
 
 ## Good to know
 
-- Guide: [Add days across daylight saving time](https://tiempo.gobrand.app/docs/guides/dst-safe-date-math)
+- Guide: [Add days across daylight saving time](https://tiempo.gobrand.app/guides/dst-safe-date-math)

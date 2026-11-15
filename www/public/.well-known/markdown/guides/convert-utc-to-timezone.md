@@ -77,4 +77,4 @@ toIso(addDays(inMadrid, 1)); // "2026-06-16T18:00:00Z"
 
 - [toZonedTime](https://tiempo.gobrand.app/docs/conversion/to-zoned-time) and [toIso](https://tiempo.gobrand.app/docs/conversion/to-iso)
 - [format](https://tiempo.gobrand.app/docs/formatting/format) tokens and locales
-- [Store dates in a database](https://tiempo.gobrand.app/docs/guides/store-dates-in-a-database)
+- [Store dates in a database](https://tiempo.gobrand.app/guides/store-dates-in-a-database)

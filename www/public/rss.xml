@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>tiempo blog</title>
+    <link>https://tiempo.gobrand.app/blog</link>
+    <atom:link href="https://tiempo.gobrand.app/rss.xml" rel="self" type="application/rss+xml" />
+    <description>Releases and notes on dates, times, and the Temporal API in JavaScript and TypeScript.</description>
+    <language>en</language>
+    <item>
+      <title>Temporal is built into Node.js 26: what changes for your date code</title>
+      <link>https://tiempo.gobrand.app/blog/temporal-in-node-26</link>
+      <guid>https://tiempo.gobrand.app/blog/temporal-in-node-26</guid>
+      <description>Node.js 26 ships the Temporal API without a flag. What that means for the polyfill, for mixing native and polyfill values, and for bundle size.</description>
+      <pubDate>Sun, 15 Nov 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>tiempo 3.2: parse, calendar differences, and weekday navigation</title>
+      <link>https://tiempo.gobrand.app/blog/tiempo-3-2</link>
+      <guid>https://tiempo.gobrand.app/blog/tiempo-3-2</guid>
+      <description>tiempo 3.2 adds parse, five calendar difference functions, areIntervalsOverlapping, nextDay and previousDay, weeks that start on Sunday, and holidays for business days.</description>
+      <pubDate>Thu, 12 Nov 2026 00:00:00 GMT</pubDate>
+    </item>
+  </channel>
+</rss>

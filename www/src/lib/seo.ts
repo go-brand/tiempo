@@ -24,12 +24,80 @@ export function pageMeta({ title, description, url }: PageMeta) {
   ];
 }
 
-// Function reference pages live at /docs/<category>/<function>; guides at /docs/guides/<slug>.
+// Function reference pages live at /docs/<category>/<function>.
 export function docsPageTitle(title: string, url: string): string {
   const segments = url.split('/').filter(Boolean);
   if (segments.length === 1) return 'tiempo docs: date-fns-style functions for the Temporal API';
-  if (segments.length === 3 && segments[1] !== 'guides') {
-    return `${title} for the Temporal API · tiempo`;
-  }
+  if (segments.length === 3) return `${title} for the Temporal API · tiempo`;
   return `${title} · tiempo`;
+}
+
+export function guideTitle(title: string, url: string): string {
+  return url === '/guides' ? `${title} · tiempo` : `${title} · tiempo guides`;
+}
+
+export function blogTitle(title: string): string {
+  return `${title} · tiempo blog`;
+}
+
+const PUBLISHER = {
+  '@type': 'Organization',
+  name: 'Go Brand',
+  url: 'https://gobrand.app'
+};
+
+type Article = {
+  type: 'TechArticle' | 'BlogPosting';
+  title: string;
+  description: string;
+  url: string;
+  published: string;
+  updated?: string;
+  author?: string;
+  section: { name: string; url: string };
+};
+
+// schema.org article plus breadcrumbs: Home > section > article.
+export function articleStructuredData(article: Article) {
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': article.type,
+        headline: article.title,
+        description: article.description,
+        url: article.url,
+        mainEntityOfPage: article.url,
+        image: OG_IMAGE_URL,
+        datePublished: article.published,
+        dateModified: article.updated ?? article.published,
+        author: article.author ? { '@type': 'Person', name: article.author } : PUBLISHER,
+        publisher: PUBLISHER,
+        inLanguage: 'en'
+      },
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'tiempo', item: `${SITE_URL}/` },
+          { '@type': 'ListItem', position: 2, name: article.section.name, item: article.section.url },
+          { '@type': 'ListItem', position: 3, name: article.title, item: article.url }
+        ]
+      }
+    ]
+  } as const;
+}
+
+// About 220 words a minute; code blocks are not counted.
+export function readingMinutes(text: string): number {
+  const words = text.split(/\s+/).filter(Boolean).length;
+  return Math.max(1, Math.round(words / 220));
+}
+
+export function formatDay(day: string): string {
+  return new Date(`${day}T00:00:00Z`).toLocaleDateString('en-US', {
+    timeZone: 'UTC',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
 }

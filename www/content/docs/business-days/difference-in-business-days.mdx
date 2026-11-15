@@ -77,4 +77,4 @@ differenceInBusinessDays(end, start, holidays); // 8
 - Swapping the arguments always negates the result (unlike date-fns). From a business day it undoes `addBusinessDays` with the same holidays: `differenceInBusinessDays(addBusinessDays(date, n, holidays), date, holidays) === n`.
 - Only dates matter; times of day are ignored. Instant inputs use their UTC date and ZonedDateTime inputs use the date in their own timezone. Convert both to one timezone first to count from a single point of view.
 - Mixing a PlainDate with an Instant or ZonedDateTime is a TypeScript error and throws a `TypeError`.
-- Guide: [Count business days with holidays](/docs/guides/business-days-with-holidays)
+- Guide: [Count business days with holidays](/guides/business-days-with-holidays)

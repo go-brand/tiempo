@@ -65,4 +65,4 @@ addDays(toZonedTime(checkIn, 'America/New_York'), 2); // 2026-03-09T15:00:00-04:
 
 - A local time skipped by a DST change moves forward by the gap: 02:30 on March 7 plus one day is 03:30 on March 8 in New York.
 - To skip weekends, use [addBusinessDays](https://tiempo.gobrand.app/docs/business-days/add-business-days).
-- Guide: [Add days across daylight saving time](https://tiempo.gobrand.app/docs/guides/dst-safe-date-math)
+- Guide: [Add days across daylight saving time](https://tiempo.gobrand.app/guides/dst-safe-date-math)

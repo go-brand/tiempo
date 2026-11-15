@@ -1,7 +1,4 @@
----
-title: Choose a JavaScript date library
-description: date-fns, Day.js, Luxon, Moment.js, and the Temporal API compared on timezones, immutability, plain dates, and API style
----
+# Choose a JavaScript date library
 
 JavaScript has several date libraries, and the language now has its own date and time API, Temporal. This page compares them on the things that cause bugs: timezones, mutation, and values that are dates rather than moments.
 
@@ -54,12 +51,12 @@ startOfMonth(Temporal.PlainDate.from('2026-04-15')).toString(); // "2026-04-01"
 ## Which one to use
 
 - **Starting a new project:** Temporal, directly or through tiempo. It is the API the language is moving to, and its types make timezone and date-only bugs hard to write.
-- **Using date-fns today:** tiempo keeps most function names and argument orders. See [Coming from date-fns](/docs/date-fns). If you only need timezones and want to keep `Date`, `@date-fns/tz` is the smaller change.
-- **Using Moment.js today:** Day.js is the smallest change. Temporal is the larger change that removes mutation and adds plain dates; see [Replace JavaScript Date with Temporal](/docs/guides/replace-date-with-temporal).
+- **Using date-fns today:** tiempo keeps most function names and argument orders. See [Coming from date-fns](https://tiempo.gobrand.app/docs/date-fns). If you only need timezones and want to keep `Date`, `@date-fns/tz` is the smaller change.
+- **Using Moment.js today:** Day.js is the smallest change. Temporal is the larger change that removes mutation and adds plain dates; see [Replace JavaScript Date with Temporal](https://tiempo.gobrand.app/guides/replace-date-with-temporal).
 - **Need timezones and don't want a polyfill on older runtimes:** Luxon uses the runtime's `Intl` data and no polyfill.
 
 ## Related
 
-- [Replace JavaScript Date with Temporal](/docs/guides/replace-date-with-temporal)
-- [Coming from date-fns](/docs/date-fns)
-- [Installation](/docs/installation): native Temporal and the polyfill
+- [Replace JavaScript Date with Temporal](https://tiempo.gobrand.app/guides/replace-date-with-temporal)
+- [Coming from date-fns](https://tiempo.gobrand.app/docs/date-fns)
+- [Installation](https://tiempo.gobrand.app/docs/installation): native Temporal and the polyfill
