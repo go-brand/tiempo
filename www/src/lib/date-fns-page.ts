@@ -1,20 +1,15 @@
+import { pageMeta } from './seo';
+
 export const DATE_FNS_PAGE_URL = 'https://tiempo.gobrand.app/date-fns';
 export const DATE_FNS_PAGE_TITLE = 'date-fns for the Temporal API · tiempo';
 export const DATE_FNS_PAGE_DESCRIPTION =
   'Moving from date-fns to Temporal? tiempo keeps addDays, format, differenceInDays and 100+ familiar functions, with explicit timezones and DST-safe math.';
 
-export const DATE_FNS_PAGE_META = [
-  { title: DATE_FNS_PAGE_TITLE },
-  { name: 'description', content: DATE_FNS_PAGE_DESCRIPTION },
-  { property: 'og:title', content: DATE_FNS_PAGE_TITLE },
-  { property: 'og:description', content: DATE_FNS_PAGE_DESCRIPTION },
-  { property: 'og:type', content: 'website' },
-  { property: 'og:url', content: DATE_FNS_PAGE_URL },
-  { property: 'og:site_name', content: 'Tiempo' },
-  { name: 'twitter:card', content: 'summary' },
-  { name: 'twitter:title', content: DATE_FNS_PAGE_TITLE },
-  { name: 'twitter:description', content: DATE_FNS_PAGE_DESCRIPTION }
-] as const;
+export const DATE_FNS_PAGE_META = pageMeta({
+  title: DATE_FNS_PAGE_TITLE,
+  description: DATE_FNS_PAGE_DESCRIPTION,
+  url: DATE_FNS_PAGE_URL
+});
 
 // The same task in both libraries: two days after an order placed just
 // before the US switches to daylight saving time (March 8, 2026).

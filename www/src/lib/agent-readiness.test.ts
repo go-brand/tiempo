@@ -1,6 +1,7 @@
 import { describe, expect, test } from "vitest";
 import {
   addAgentHeaders,
+  canonicalRedirect,
   handleAgentRequest,
   markdownAssetPath,
   prefersMarkdown,
@@ -123,5 +124,24 @@ describe("agent readiness HTTP behavior", () => {
 
     expect(response.status).toBe(404);
     expect(renderedHtml).toBe(false);
+  });
+
+  test.each([
+    ["http://tiempo.gobrand.app/docs", "https://tiempo.gobrand.app/docs"],
+    ["https://tiempo.gobrand.app/docs/", "https://tiempo.gobrand.app/docs"],
+    ["http://tiempo.gobrand.app/docs/recipes/?q=1", "https://tiempo.gobrand.app/docs/recipes?q=1"],
+  ])("permanently redirects %s to its canonical URL", (from, to) => {
+    const response = canonicalRedirect(from);
+
+    expect(response?.status).toBe(301);
+    expect(response?.headers.get("location")).toBe(to);
+  });
+
+  test.each([
+    "https://tiempo.gobrand.app/",
+    "https://tiempo.gobrand.app/docs",
+    "http://localhost:3000/docs",
+  ])("leaves %s alone", (url) => {
+    expect(canonicalRedirect(url)).toBeNull();
   });
 });

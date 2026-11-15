@@ -8,6 +8,7 @@ import defaultMdxComponents from 'fumadocs-ui/mdx';
 import { baseOptions } from '@/lib/layout.shared';
 import { useFumadocsLoader } from 'fumadocs-core/source/client';
 import { Suspense } from 'react';
+import { SITE_URL, docsPageTitle, pageMeta } from '@/lib/seo';
 
 export const Route = createFileRoute('/docs/$')({
   component: Page,
@@ -16,6 +17,14 @@ export const Route = createFileRoute('/docs/$')({
     const data = await serverLoader({ data: slugs });
     await clientLoader.preload(data.path);
     return data;
+  },
+  head: ({ loaderData }) => {
+    if (!loaderData) return {};
+    const url = `${SITE_URL}${loaderData.url}`;
+    return {
+      meta: pageMeta({ title: loaderData.title, description: loaderData.description, url }),
+      links: [{ rel: 'canonical', href: url }]
+    };
   },
 });
 
@@ -29,6 +38,9 @@ const serverLoader = createServerFn({
 
     return {
       path: page.path,
+      url: page.url,
+      title: docsPageTitle(page.data.title, page.url),
+      description: page.data.description ?? '',
       pageTree: await source.serializePageTree(source.getPageTree()),
     };
   });
