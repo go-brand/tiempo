@@ -1,0 +1,80 @@
+# Convert UTC to a user's timezone
+
+Servers and databases should store moments in UTC. People want to see them in their own timezone. This guide covers the round trip.
+
+## Show a UTC timestamp in a timezone
+
+`toZonedTime` takes the moment and an IANA timezone name, and returns a `ZonedDateTime`: the same moment, with that place's calendar and clock.
+
+```ts
+import { toZonedTime, format } from '@gobrand/tiempo';
+
+const createdAt = '2026-06-15T18:00:00Z'; // from your API
+
+format(toZonedTime(createdAt, 'America/Los_Angeles'), 'MMM d, h:mm a'); // "Jun 15, 11:00 AM"
+format(toZonedTime(createdAt, 'Europe/Madrid'), 'd MMM, HH:mm'); // "15 Jun, 20:00"
+format(toZonedTime(createdAt, 'Asia/Tokyo'), 'd MMM, HH:mm'); // "16 Jun, 03:00"
+```
+
+In Tokyo it is already the next day. Anything that depends on the date, such as "today", grouping by day, or a calendar view, needs the timezone too.
+
+## Inputs it accepts
+
+`toZonedTime` accepts an ISO string with `Z` or an offset, milliseconds since the epoch, a `Date`, or a Temporal value. ORMs usually return a `Date` or a string, and both work:
+
+```ts
+import { toZonedTime } from '@gobrand/tiempo';
+
+toZonedTime(new Date('2026-06-15T18:00:00Z'), 'Europe/London').hour; // 19
+toZonedTime(1781546400000, 'Europe/London').hour; // 19
+toZonedTime('2026-06-15T20:00:00+02:00', 'Europe/London').hour; // 19
+```
+
+A string without `Z` or an offset, such as `'2026-06-15T18:00:00'`, is not a moment: it has no timezone, so `toZonedTime` rejects it. If it is a local time you know the timezone of, build it with `Temporal.PlainDateTime.from(value).toZonedDateTime(timezone)`.
+
+## Find the user's timezone
+
+In the browser, `browserTimezone()` returns the timezone the device is set to. On a server, there is no user timezone; save it from the browser to the user's profile and read it from there.
+
+```ts
+import { browserTimezone, toZonedTime, format } from '@gobrand/tiempo';
+
+const timezone = browserTimezone(); // e.g. 'Europe/Madrid'
+
+format(toZonedTime('2026-06-15T18:00:00Z', timezone), 'd MMM yyyy, HH:mm');
+```
+
+Use IANA names like `'America/New_York'`, not abbreviations like `EST`. Abbreviations are ambiguous and don't say when DST applies.
+
+## Format for the reader's language
+
+Pass a locale for translated month and weekday names:
+
+```ts
+import { toZonedTime, format } from '@gobrand/tiempo';
+
+const meeting = toZonedTime('2026-06-15T18:00:00Z', 'Europe/Madrid');
+
+format(meeting, "EEEE d 'de' MMMM, HH:mm", { locale: 'es-ES' }); // "lunes 15 de junio, 20:00"
+format(meeting, 'EEEE d MMMM, HH:mm', { locale: 'de-DE' }); // "Montag 15 Juni, 20:00"
+```
+
+## Send UTC back
+
+A `ZonedDateTime` still knows the exact moment. `toIso` writes it as a UTC string for your API or database:
+
+```ts
+import { toZonedTime, addDays, toIso, isEqual } from '@gobrand/tiempo';
+
+const inMadrid = toZonedTime('2026-06-15T18:00:00Z', 'Europe/Madrid');
+const inTokyo = toZonedTime('2026-06-15T18:00:00Z', 'Asia/Tokyo');
+
+isEqual(inMadrid, inTokyo); // true
+toIso(addDays(inMadrid, 1)); // "2026-06-16T18:00:00Z"
+```
+
+## Related
+
+- [toZonedTime](https://tiempo.gobrand.app/docs/conversion/to-zoned-time) and [toIso](https://tiempo.gobrand.app/docs/conversion/to-iso)
+- [format](https://tiempo.gobrand.app/docs/formatting/format) tokens and locales
+- [Store dates in a database](https://tiempo.gobrand.app/docs/guides/store-dates-in-a-database)

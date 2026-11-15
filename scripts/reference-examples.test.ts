@@ -25,8 +25,10 @@ const REFERENCE_SECTIONS = [
 ];
 
 const EXECUTABLE_PAGES = [
+  'README.md',
   'www/content/docs/date-fns.mdx',
   'www/content/docs/recipes.mdx',
+  ...files('www/content/docs/guides', '.mdx'),
   ...REFERENCE_SECTIONS.flatMap((section) => files(`www/content/docs/${section}`, '.mdx'))
 ];
 

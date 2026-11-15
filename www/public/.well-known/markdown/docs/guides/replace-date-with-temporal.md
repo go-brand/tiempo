@@ -1,0 +1,84 @@
+# Replace JavaScript Date with Temporal
+
+`Temporal` is the date and time API that replaces `Date` in JavaScript. It is built into Node.js 26 and recent browsers, and the [polyfill](https://tiempo.gobrand.app/docs/installation#where-temporal-comes-from) covers everything else. tiempo adds date-fns-style functions on top of it.
+
+## What is wrong with `Date`
+
+- **It has no timezone.** A `Date` is a UTC timestamp displayed in whatever timezone the machine uses, so the same code gives different answers on a laptop and on a server.
+- **It can't hold a plain date.** A birthday becomes midnight UTC, which is the previous day in the Americas.
+- **It is mutable.** `setDate` changes the object, including every other reference to it.
+- **Parsing is inconsistent.** `new Date('2026-03-15')` is UTC midnight, `new Date('2026-03-15T00:00')` is local midnight.
+- **Months start at 0.** March is `2`.
+
+## Pick the Temporal type
+
+| You have | Use | Example |
+|---|---|---|
+| An exact moment, such as a log entry or `created_at` | `Temporal.Instant` | `2026-03-15T14:30:00Z` |
+| A moment as people in one place see it | `Temporal.ZonedDateTime` | 10:30 in New York on March 15 |
+| A date with no time | `Temporal.PlainDate` | a birthday, a due date |
+| A time with no date | `Temporal.PlainTime` | opens at 09:00 |
+
+Every Temporal value is immutable. Months run from 1 to 12, and days of the week from 1 (Monday) to 7 (Sunday).
+
+```ts
+import { toZonedTime, toPlainDate } from '@gobrand/tiempo';
+
+const meeting = toZonedTime('2026-03-15T14:30:00Z', 'America/New_York');
+
+meeting.month; // 3
+meeting.dayOfWeek; // 7
+meeting.hour; // 10
+toPlainDate('2026-03-15').toString(); // "2026-03-15"
+```
+
+## Common replacements
+
+| `Date` | Moment.js / Day.js | tiempo |
+|---|---|---|
+| `new Date()` | `moment()` | `now(timezone)`, `today(timezone)` |
+| `new Date(iso)` | `moment(iso)` | `toZonedTime(iso, timezone)`, `toInstant(iso)` |
+| `date.toISOString()` | `m.toISOString()` | `toIso(value)` |
+| `date.setDate(date.getDate() + 1)` | `m.add(1, 'day')` | `addDays(value, 1)` |
+| `date.getTime() < other.getTime()` | `m.isBefore(other)` | `isBefore(value, other)` |
+| manual midnight math | `m.startOf('day')` | `startOfDay(value)` |
+| `toLocaleString` options | `m.format('YYYY-MM-DD')` | `format(value, 'yyyy-MM-dd')` |
+| `(b - a) / 86400000` | `b.diff(a, 'days')` | `differenceInDays(b, a)` |
+| — | `m.tz('Asia/Tokyo')` | `toZonedTime(value, 'Asia/Tokyo')` |
+
+Format tokens follow date-fns and Unicode: `yyyy` is the year and `dd` the day of the month. Moment's `YYYY` and `DD` mean something else. If you use date-fns today, most names are the same; see [Coming from date-fns](https://tiempo.gobrand.app/docs/date-fns).
+
+## A worked example
+
+Show a timestamp from the server in the user's timezone, add a week, and send it back:
+
+```ts
+import { toZonedTime, addWeeks, format, toIso } from '@gobrand/tiempo';
+
+const startsAt = toZonedTime('2026-03-02T17:00:00Z', 'America/New_York');
+const nextSession = addWeeks(startsAt, 1);
+
+format(nextSession, "EEE MMM d 'at' h:mm a"); // "Mon Mar 9 at 12:00 PM"
+toIso(nextSession); // "2026-03-09T16:00:00Z"
+```
+
+The session stays at noon in New York after the clocks change on March 8, so its UTC time moves by an hour. With `Date` and `getTime() + 7 * 86400000`, it would move to 13:00 local.
+
+## Libraries that still need `Date`
+
+Some libraries, such as date pickers, take or return a `Date`. Convert at the edge and keep Temporal values everywhere else:
+
+```ts
+import { toZonedTime, toDate } from '@gobrand/tiempo';
+
+const picked = new Date('2026-03-15T14:30:00Z'); // from a date picker
+const value = toZonedTime(picked, 'Europe/Paris');
+
+toDate(value).toISOString(); // "2026-03-15T14:30:00.000Z"
+```
+
+## Related
+
+- [Installation](https://tiempo.gobrand.app/docs/installation): native Temporal and the polyfill
+- [API conventions](https://tiempo.gobrand.app/docs/api-conventions)
+- [Convert UTC to a user's timezone](https://tiempo.gobrand.app/docs/guides/convert-utc-to-timezone)

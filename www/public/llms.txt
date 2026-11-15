@@ -26,6 +26,15 @@ Install with `npm install @gobrand/tiempo` and import functions by name: `import
 - [Recipes](https://tiempo.gobrand.app/docs/recipes): Common timezone-safe datetime workflows
 - [AI Resources](https://tiempo.gobrand.app/docs/ai-resources): Machine-readable documentation and Agent Skill discovery
 
+## Guides
+
+- [Replace JavaScript Date with Temporal](https://tiempo.gobrand.app/docs/guides/replace-date-with-temporal): How the Temporal API fixes the problems with Date, which Temporal type to use, and the Date, Moment.js, and Day.js calls you can replace
+- [Convert UTC to a user's timezone](https://tiempo.gobrand.app/docs/guides/convert-utc-to-timezone): Show a UTC timestamp in any IANA timezone in JavaScript, find the user's timezone, and send UTC back to the server
+- [Add days across daylight saving time](https://tiempo.gobrand.app/docs/guides/dst-safe-date-math): Why adding 24 hours is not adding a day in JavaScript, and how to do date math that survives DST changes
+- [Start and end of day in a timezone](https://tiempo.gobrand.app/docs/guides/start-and-end-of-day): Get midnight in the user's timezone, query a day of records stored in UTC, and handle days with 23 or 25 hours
+- [Store dates in a database](https://tiempo.gobrand.app/docs/guides/store-dates-in-a-database): Which column type to use for timestamps, birthdays, and future appointments, and how to read them back with Temporal
+- [Count business days with holidays](https://tiempo.gobrand.app/docs/guides/business-days-with-holidays): Add business days, count working days between dates, and skip public holidays in TypeScript with Temporal
+
 ## Conversion
 
 - [toInstant](https://tiempo.gobrand.app/docs/conversion/to-instant): Turn a string, timestamp, Date, or ZonedDateTime into an Instant.

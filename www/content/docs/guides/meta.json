@@ -1,0 +1,12 @@
+{
+  "title": "Guides",
+  "description": "Solve common date and time problems in JavaScript with Temporal",
+  "pages": [
+    "replace-date-with-temporal",
+    "convert-utc-to-timezone",
+    "dst-safe-date-math",
+    "start-and-end-of-day",
+    "store-dates-in-a-database",
+    "business-days-with-holidays"
+  ]
+}
