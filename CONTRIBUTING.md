@@ -10,7 +10,7 @@ Thank you for your interest in contributing to tiempo! We welcome contributions 
    cd tiempo
    ```
 
-2. **Install dependencies**
+2. **Install dependencies** (Node 22.18 or later: build scripts are TypeScript run by Node's built-in type stripping)
    ```bash
    pnpm install
    ```

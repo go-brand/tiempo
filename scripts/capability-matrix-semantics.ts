@@ -1,4 +1,4 @@
-export const temporalInputKinds = ['Instant', 'ZonedDateTime', 'PlainDate', 'PlainTime'] as const;
+const temporalInputKinds = ['Instant', 'ZonedDateTime', 'PlainDate', 'PlainTime'] as const;
 
 export type TemporalInputKind = (typeof temporalInputKinds)[number];
 

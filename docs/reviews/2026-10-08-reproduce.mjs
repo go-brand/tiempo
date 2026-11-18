@@ -1,5 +1,7 @@
 // Review probes for expected public behavior. These failed on reviewed commit
-// 6219c0a and now serve as a source/built-package check. Run with: node --import tsx docs/reviews/2026-10-08-reproduce.mjs
+// 6219c0a and now serve as a source/built-package check. Run against source with a TypeScript loader
+// (e.g. node --import tsx, which is no longer a dev dependency), or against a build:
+// pnpm build && node docs/reviews/2026-10-08-reproduce.mjs "$PWD/dist/index.js"
 // Optionally pass a freshly built dist/index.js path as the first argument.
 import assert from 'node:assert/strict';
 import vm from 'node:vm';

@@ -13,7 +13,7 @@ import * as ts from 'typescript';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { capabilityCell, capabilityMatrixIntro } from './capability-matrix-semantics';
+import { capabilityCell, capabilityMatrixIntro } from './capability-matrix-semantics.ts';
 
 const OUT_PATH = 'www/content/docs/type-matrix.mdx';
 const DOCS_DIR = 'www/content/docs';

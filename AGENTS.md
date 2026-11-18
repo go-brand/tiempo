@@ -1,6 +1,6 @@
 # tiempo
 
-date-fns-style functions for the Temporal API, published as `@gobrand/tiempo`. TypeScript, Vitest, tsup. The library uses Temporal only: no `Date` (except the `toDate`/`Date`-input interop boundary), no date-fns, no moment.
+date-fns-style functions for the Temporal API, published as `@gobrand/tiempo`. TypeScript, Vitest, esbuild. The library uses Temporal only: no `Date` (except the `toDate`/`Date`-input interop boundary), no date-fns, no moment.
 
 ## Layout
 
