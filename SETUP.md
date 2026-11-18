@@ -121,7 +121,7 @@ tiempo/
 ├── README.md
 ├── package.json
 ├── tsconfig.json
-└── tsup.config.ts
+└── scripts/build.ts       # esbuild build (dist/*.js)
 ```
 
 ## Commands

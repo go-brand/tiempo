@@ -9,22 +9,27 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as DateFnsRouteImport } from './routes/date-fns'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as BlogIndexRouteImport } from './routes/blog/index'
-import { Route as GuidesSplatRouteImport } from './routes/guides/$'
-import { Route as DocsSplatRouteImport } from './routes/docs/$'
-import { Route as BlogSplatRouteImport } from './routes/blog/$'
+import { Route as DateFnsRouteImport } from './routes/date-fns'
 import { Route as ApiSearchRouteImport } from './routes/api/search'
+import { Route as BlogIndexRouteImport } from './routes/blog/index'
+import { Route as BlogSplatRouteImport } from './routes/blog/$'
+import { Route as DocsSplatRouteImport } from './routes/docs/$'
+import { Route as GuidesSplatRouteImport } from './routes/guides/$'
 
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DateFnsRoute = DateFnsRouteImport.update({
   id: '/date-fns',
   path: '/date-fns',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const ApiSearchRoute = ApiSearchRouteImport.update({
+  id: '/api/search',
+  path: '/api/search',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BlogIndexRoute = BlogIndexRouteImport.update({
@@ -32,9 +37,9 @@ const BlogIndexRoute = BlogIndexRouteImport.update({
   path: '/blog/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const GuidesSplatRoute = GuidesSplatRouteImport.update({
-  id: '/guides/$',
-  path: '/guides/$',
+const BlogSplatRoute = BlogSplatRouteImport.update({
+  id: '/blog/$',
+  path: '/blog/$',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DocsSplatRoute = DocsSplatRouteImport.update({
@@ -42,14 +47,9 @@ const DocsSplatRoute = DocsSplatRouteImport.update({
   path: '/docs/$',
   getParentRoute: () => rootRouteImport,
 } as any)
-const BlogSplatRoute = BlogSplatRouteImport.update({
-  id: '/blog/$',
-  path: '/blog/$',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiSearchRoute = ApiSearchRouteImport.update({
-  id: '/api/search',
-  path: '/api/search',
+const GuidesSplatRoute = GuidesSplatRouteImport.update({
+  id: '/guides/$',
+  path: '/guides/$',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -123,6 +123,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/date-fns': {
       id: '/date-fns'
       path: '/date-fns'
@@ -130,11 +137,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DateFnsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/api/search': {
+      id: '/api/search'
+      path: '/api/search'
+      fullPath: '/api/search'
+      preLoaderRoute: typeof ApiSearchRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/blog/': {
@@ -144,11 +151,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/guides/$': {
-      id: '/guides/$'
-      path: '/guides/$'
-      fullPath: '/guides/$'
-      preLoaderRoute: typeof GuidesSplatRouteImport
+    '/blog/$': {
+      id: '/blog/$'
+      path: '/blog/$'
+      fullPath: '/blog/$'
+      preLoaderRoute: typeof BlogSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/docs/$': {
@@ -158,18 +165,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DocsSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/blog/$': {
-      id: '/blog/$'
-      path: '/blog/$'
-      fullPath: '/blog/$'
-      preLoaderRoute: typeof BlogSplatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/search': {
-      id: '/api/search'
-      path: '/api/search'
-      fullPath: '/api/search'
-      preLoaderRoute: typeof ApiSearchRouteImport
+    '/guides/$': {
+      id: '/guides/$'
+      path: '/guides/$'
+      fullPath: '/guides/$'
+      preLoaderRoute: typeof GuidesSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
