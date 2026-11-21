@@ -51,6 +51,8 @@ export namespace Temporal {
   export type PlainTime = PolyfillTemporal.PlainTime;
   export type PlainTimeLike = PolyfillTemporal.PlainTimeLike;
   export type PlainYearMonth = PolyfillTemporal.PlainYearMonth;
+  export type Duration = PolyfillTemporal.Duration;
+  export type DurationLike = PolyfillTemporal.DurationLike;
 }
 
 /**
@@ -79,4 +81,8 @@ export function isPlainDate(value: unknown): value is Temporal.PlainDate {
 
 export function isPlainTime(value: unknown): value is Temporal.PlainTime {
   return brand(value) === 'Temporal.PlainTime';
+}
+
+export function isDuration(value: unknown): value is Temporal.Duration {
+  return brand(value) === 'Temporal.Duration';
 }

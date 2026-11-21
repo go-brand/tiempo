@@ -4,12 +4,12 @@
   <url><loc>https://tiempo.gobrand.app/date-fns</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/installation</loc></url>
-  <url><loc>https://tiempo.gobrand.app/docs/api-conventions</loc></url>
-  <url><loc>https://tiempo.gobrand.app/docs/typescript</loc></url>
-  <url><loc>https://tiempo.gobrand.app/docs/type-matrix</loc></url>
-  <url><loc>https://tiempo.gobrand.app/docs/recipes</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/date-fns</loc></url>
+  <url><loc>https://tiempo.gobrand.app/docs/api-conventions</loc></url>
+  <url><loc>https://tiempo.gobrand.app/docs/recipes</loc></url>
+  <url><loc>https://tiempo.gobrand.app/docs/typescript</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/ai-resources</loc></url>
+  <url><loc>https://tiempo.gobrand.app/docs/type-matrix</loc></url>
   <url><loc>https://tiempo.gobrand.app/guides</loc></url>
   <url><loc>https://tiempo.gobrand.app/guides/replace-date-with-temporal</loc><lastmod>2026-11-15</lastmod></url>
   <url><loc>https://tiempo.gobrand.app/guides/choose-a-date-library</loc><lastmod>2026-11-15</lastmod></url>
@@ -17,6 +17,7 @@
   <url><loc>https://tiempo.gobrand.app/guides/dst-safe-date-math</loc><lastmod>2026-11-15</lastmod></url>
   <url><loc>https://tiempo.gobrand.app/guides/start-and-end-of-day</loc><lastmod>2026-11-15</lastmod></url>
   <url><loc>https://tiempo.gobrand.app/guides/store-dates-in-a-database</loc><lastmod>2026-11-15</lastmod></url>
+  <url><loc>https://tiempo.gobrand.app/guides/temporal-in-fullstack-typescript</loc><lastmod>2026-11-21</lastmod></url>
   <url><loc>https://tiempo.gobrand.app/guides/business-days-with-holidays</loc><lastmod>2026-11-15</lastmod></url>
   <url><loc>https://tiempo.gobrand.app/blog/temporal-in-node-26</loc><lastmod>2026-11-15</lastmod></url>
   <url><loc>https://tiempo.gobrand.app/blog/tiempo-3-2</loc><lastmod>2026-11-12</lastmod></url>
@@ -34,6 +35,7 @@
   <url><loc>https://tiempo.gobrand.app/docs/formatting/parse</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/formatting/simple-format</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/formatting/intl-format-distance</loc></url>
+  <url><loc>https://tiempo.gobrand.app/docs/formatting/format-duration</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/arithmetic/add-years</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/arithmetic/add-quarters</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/arithmetic/add-months</loc></url>
@@ -131,6 +133,7 @@
   <url><loc>https://tiempo.gobrand.app/docs/intervals/each-day-of-interval</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/intervals/each-hour-of-interval</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/intervals/each-minute-of-interval</loc></url>
+  <url><loc>https://tiempo.gobrand.app/docs/intervals/interval-to-duration</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/utilities/get-quarter</loc></url>
   <url><loc>https://tiempo.gobrand.app/docs/utilities/browser-timezone</loc></url>
   <url><loc>https://tiempo.gobrand.app/blog</loc><lastmod>2026-11-15</lastmod></url>

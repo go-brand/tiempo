@@ -5,11 +5,13 @@ description: Use when working with dates, times, timezones, or the Temporal API 
 
 # tiempo - Timezone-Safe Datetime Handling
 
-date-fns-style functions for the Temporal API. Coming from date-fns? See the [mapping](references/date-fns.md).
+date-fns-style functions for the Temporal API with zero-bundle Intl localization (`format`, `intlFormatDistance`, `formatDuration`). Coming from date-fns? See the [mapping](references/date-fns.md).
 
 ```bash
 npm install @gobrand/tiempo
 ```
+
+Import from `@gobrand/tiempo` (includes `@js-temporal/polyfill`) or `@gobrand/tiempo/native` on runtimes with built-in `Temporal` (Node.js 26+, modern browsers) for zero polyfill bundle overhead.
 
 ## Core Rules
 
@@ -58,6 +60,7 @@ npm install @gobrand/tiempo
 | `parse()` | Read a date or datetime written in a known pattern, using the same tokens as format | [details](references/formatting/parse.md) |
 | `simpleFormat()` | Format a date, a time, or both in a short human-friendly style. | [details](references/formatting/simple-format.md) |
 | `intlFormatDistance()` | Describe the time between two moments, like "in 3 days" or "2 hours ago". | [details](references/formatting/intl-format-distance.md) |
+| `formatDuration()` | Format a Temporal.Duration or duration object as localized human-readable text with Intl.DurationFormat. | [details](references/formatting/format-duration.md) |
 
 ## Arithmetic
 
@@ -195,6 +198,7 @@ npm install @gobrand/tiempo
 | `eachDayOfInterval()` | List every day from start to end, including both | [details](references/intervals/each-day-of-interval.md) |
 | `eachHourOfInterval()` | List the start of every hour from start to end | [details](references/intervals/each-hour-of-interval.md) |
 | `eachMinuteOfInterval()` | List the start of every minute from start to end | [details](references/intervals/each-minute-of-interval.md) |
+| `intervalToDuration()` | Break down the span between two dates, times, or moments into a Temporal.Duration. | [details](references/intervals/interval-to-duration.md) |
 
 ## Utilities
 

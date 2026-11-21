@@ -21,6 +21,24 @@ import { Temporal } from '@js-temporal/polyfill';
 
 The examples in these docs use `Temporal` without an import. tiempo accepts values from either source, and you can mix them.
 
+## Zero-polyfill native entry (`@gobrand/tiempo/native`)
+
+If your app targets runtimes with built-in `Temporal` (Node.js 26+, modern browsers, or your own global polyfill), import from `@gobrand/tiempo/native` to keep `@js-temporal/polyfill` out of your bundle:
+
+```ts
+import { toZonedTime, addDays, format } from '@gobrand/tiempo/native';
+```
+
+Every function and TypeScript signature is identical to `@gobrand/tiempo`. Measured minified browser bundles (esbuild):
+
+| Import | `@gobrand/tiempo` (with polyfill) | `@gobrand/tiempo/native` (zero polyfill) |
+|---|---|---|
+| `addDays` + `toInstant` | 47.5 kB gzip | **0.56 kB gzip** |
+| `format` + `toInstant` | 48.9 kB gzip | **2.1 kB gzip** |
+| Full library (`*`) | 55.5 kB gzip | **8.8 kB gzip** |
+
+Importing `@gobrand/tiempo/native` on a runtime without `globalThis.Temporal` throws a `TypeError` immediately. Use the default `@gobrand/tiempo` import when you need the bundled polyfill.
+
 ## First conversion
 
 Most apps receive timestamps as ISO strings or `Date` objects. Convert them into the timezone you care about, work with them, and send UTC back:

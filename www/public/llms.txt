@@ -1,8 +1,8 @@
 # tiempo
 
-> date-fns-style functions for the Temporal API: timezone conversion, formatting, DST-safe arithmetic, comparison, sorting, business days, and intervals.
+> date-fns-style functions for the Temporal API: timezone conversion, zero-bundle Intl formatting and duration/relative-time formatting, DST-safe arithmetic, comparison, sorting, business days, and intervals.
 
-Install with `npm install @gobrand/tiempo` and import functions by name: `import { addDays, format } from '@gobrand/tiempo'`.
+Install with `npm install @gobrand/tiempo` and import functions by name: `import { addDays, format } from '@gobrand/tiempo'`. On runtimes with native `Temporal` (Node.js 26+, modern browsers), import from `'@gobrand/tiempo/native'` for zero polyfill bundle overhead.
 
 ## Core rules
 
@@ -35,6 +35,7 @@ Install with `npm install @gobrand/tiempo` and import functions by name: `import
 - [Add days across daylight saving time](https://tiempo.gobrand.app/guides/dst-safe-date-math): Why adding 24 hours is not adding a day in JavaScript, and how to do date math that survives DST changes
 - [Start and end of day in a timezone](https://tiempo.gobrand.app/guides/start-and-end-of-day): Get midnight in the user's timezone, query a day of records stored in UTC, and handle days with 23 or 25 hours
 - [Store dates in a database](https://tiempo.gobrand.app/guides/store-dates-in-a-database): Which column type to use for timestamps, birthdays, and future appointments, and how to read them back with Temporal
+- [Use Temporal in Next.js, tRPC, Zod, Prisma, and Drizzle](https://tiempo.gobrand.app/guides/temporal-in-fullstack-typescript): Serialize Temporal values across Next.js Server and Client Components, tRPC with SuperJSON, Zod schemas, and Prisma or Drizzle queries
 - [Count business days with holidays](https://tiempo.gobrand.app/guides/business-days-with-holidays): Add business days, count working days between dates, and skip public holidays in TypeScript with Temporal
 
 ## Blog
@@ -64,6 +65,7 @@ Install with `npm install @gobrand/tiempo` and import functions by name: `import
 - [parse](https://tiempo.gobrand.app/docs/formatting/parse): Read a date or datetime written in a known pattern, using the same tokens as format
 - [simpleFormat](https://tiempo.gobrand.app/docs/formatting/simple-format): Format a date, a time, or both in a short human-friendly style.
 - [intlFormatDistance](https://tiempo.gobrand.app/docs/formatting/intl-format-distance): Describe the time between two moments, like "in 3 days" or "2 hours ago".
+- [formatDuration](https://tiempo.gobrand.app/docs/formatting/format-duration): Format a Temporal.Duration or duration object as localized human-readable text with Intl.DurationFormat.
 
 ## Arithmetic
 
@@ -164,6 +166,7 @@ Install with `npm install @gobrand/tiempo` and import functions by name: `import
 - [eachDayOfInterval](https://tiempo.gobrand.app/docs/intervals/each-day-of-interval): List every day from start to end, including both
 - [eachHourOfInterval](https://tiempo.gobrand.app/docs/intervals/each-hour-of-interval): List the start of every hour from start to end
 - [eachMinuteOfInterval](https://tiempo.gobrand.app/docs/intervals/each-minute-of-interval): List the start of every minute from start to end
+- [intervalToDuration](https://tiempo.gobrand.app/docs/intervals/interval-to-duration): Break down the span between two dates, times, or moments into a Temporal.Duration.
 
 ## Utilities
 

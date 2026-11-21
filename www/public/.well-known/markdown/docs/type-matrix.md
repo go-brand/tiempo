@@ -38,6 +38,7 @@ Each row combines a function's overloads. For the exact input → output pairs a
 | Function | Instant | Zoned | PlainDate | PlainTime | Other in | Returns |
 |----------|:-------:|:-----:|:---------:|:---------:|----------|---------|
 | `format` | ✅ | ✅ | ✅ | · | · | `string` |
+| `formatDuration` | · | · | · | · | `Duration` | `string` |
 | `formatPlainDate` | · | · | ✅ | · | · | `string` |
 | `intlFormatDistance` | ✅ | ✅ | · | · | · | `string` |
 | `parse` | · | · | · | · | `string` | `ZonedDateTime` / `PlainDate` |
@@ -179,6 +180,7 @@ Each row combines a function's overloads. For the exact input → output pairs a
 | `eachQuarterOfInterval` | ✅ | ✅ | ✅ | · | · | `ZonedDateTime[]` / `PlainDate[]` |
 | `eachWeekOfInterval` | ✅ | ✅ | ✅ | · | · | `PlainDate[]` / `ZonedDateTime[]` |
 | `eachYearOfInterval` | ✅ | ✅ | ✅ | · | · | `PlainDate[]` / `ZonedDateTime[]` |
+| `intervalToDuration` | ✅ | ✅ | ✅ | ✅ | · | `Duration` |
 
 ## Utilities
 
@@ -520,6 +522,12 @@ format(input: PlainDate, formatStr: string, options?: FormatPlainDateOptions & {
 format(input: Instant | ZonedDateTime, formatStr: string, options?: FormatOptions): string
 ```
 
+### formatDuration
+
+```ts
+formatDuration(duration: Duration | DurationLike, options?: FormatDurationOptions): string
+```
+
 ### formatPlainDate
 
 ```ts
@@ -530,6 +538,14 @@ formatPlainDate(date: PlainDate, formatStr: string, options?: FormatPlainDateOpt
 
 ```ts
 getQuarter(input: Instant | ZonedDateTime | PlainDate): 1 | 2 | 3 | 4
+```
+
+### intervalToDuration
+
+```ts
+intervalToDuration(interval: { start: PlainDate; end: PlainDate; }): Duration
+intervalToDuration(interval: { start: PlainTime; end: PlainTime; }): Duration
+intervalToDuration(interval: { start: Instant | ZonedDateTime; end: Instant | ZonedDateTime; }): Duration
 ```
 
 ### intlFormatDistance

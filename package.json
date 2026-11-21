@@ -48,6 +48,10 @@
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
+    },
+    "./native": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/native/index.js"
     }
   },
   "publishConfig": {

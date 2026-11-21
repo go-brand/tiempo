@@ -1,0 +1,72 @@
+---
+title: intervalToDuration
+description: Break down the span between two dates, times, or moments into a Temporal.Duration.
+---
+
+Returns the exact `Temporal.Duration` from `start` to `end`. For timeline values, the breakdown uses `start`'s timezone and calendar (UTC for `Instant`), so daylight saving transitions keep calendar days intact. Pairs with [`formatDuration`](/docs/formatting/format-duration).
+
+## Signature
+
+```ts
+function intervalToDuration(interval: {
+  start: Temporal.PlainDate;
+  end: Temporal.PlainDate;
+}): Temporal.Duration;
+
+function intervalToDuration(interval: {
+  start: Temporal.PlainTime;
+  end: Temporal.PlainTime;
+}): Temporal.Duration;
+
+function intervalToDuration(interval: {
+  start: Temporal.Instant | Temporal.ZonedDateTime;
+  end: Temporal.Instant | Temporal.ZonedDateTime;
+}): Temporal.Duration;
+```
+
+## Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `interval.start` | `Temporal.Instant \| Temporal.ZonedDateTime \| Temporal.PlainDate \| Temporal.PlainTime` | Start of the interval. |
+| `interval.end` | Same domain as `interval.start` | End of the interval. Mixing domains is a TypeScript error and throws a `TypeError`. |
+
+## Returns
+
+A `Temporal.Duration` broken down from years through nanoseconds (or hours through nanoseconds for `PlainTime`). Negative when `end` is before `start`.
+
+## Examples
+
+### Break down an interval across DST
+
+```ts
+import { intervalToDuration, formatDuration } from '@gobrand/tiempo';
+
+const start = Temporal.ZonedDateTime.from('2025-03-08T09:00:00-05:00[America/New_York]');
+const end = Temporal.ZonedDateTime.from('2025-03-10T10:30:00-04:00[America/New_York]');
+
+const duration = intervalToDuration({ start, end });
+duration.toString(); // "P2DT1H30M"
+formatDuration(duration); // "2 days, 1 hour, 30 minutes"
+```
+
+### Calendar dates and wall-clock times
+
+```ts
+import { intervalToDuration } from '@gobrand/tiempo';
+
+intervalToDuration({
+  start: Temporal.PlainDate.from('2025-01-15'),
+  end: Temporal.PlainDate.from('2026-04-20')
+}).toString(); // "P1Y3M5D"
+
+intervalToDuration({
+  start: Temporal.PlainTime.from('09:15'),
+  end: Temporal.PlainTime.from('17:45')
+}).toString(); // "PT8H30M"
+```
+
+## Good to know
+
+- When `start` and `end` are in different timezones, `end` is projected into `start`'s timezone and calendar before computing the duration.
+- Reversed intervals (`end` before `start`) return a negative `Temporal.Duration` (`duration.sign === -1`) instead of throwing.

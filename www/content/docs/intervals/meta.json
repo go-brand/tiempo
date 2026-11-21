@@ -9,6 +9,7 @@
     "each-week-of-interval",
     "each-day-of-interval",
     "each-hour-of-interval",
-    "each-minute-of-interval"
+    "each-minute-of-interval",
+    "interval-to-duration"
   ]
 }

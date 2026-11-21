@@ -113,6 +113,8 @@ export { roundToNearestHour, type RoundToNearestHourOptions } from './roundToNea
 export { roundToNearestMinute, type RoundToNearestMinuteOptions } from './roundToNearestMinute';
 export { roundToNearestSecond, type RoundToNearestSecondOptions } from './roundToNearestSecond';
 export { intlFormatDistance, type IntlFormatDistanceOptions } from './intlFormatDistance';
+export { formatDuration, type FormatDurationOptions, type DurationUnit } from './formatDuration';
+export { intervalToDuration } from './intervalToDuration';
 export { isPlainDateBefore } from './isPlainDateBefore';
 export { isPlainDateAfter } from './isPlainDateAfter';
 export { isPlainDateEqual } from './isPlainDateEqual';

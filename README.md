@@ -11,11 +11,13 @@
 ![tiempo banner](https://raw.githubusercontent.com/go-brand/tiempo/main/tiempo_banner.png)
 
 
-- **IANA timezone support** - Named timezone rules and DST handling through Temporal
-- **DST-aware math** - `addDays(1)` means tomorrow, even across clock changes
-- **Nanosecond precision** - When milliseconds aren't enough
-- **Type-safe** - Full TypeScript, catches datetime errors at compile time
-- **Familiar API** - date-fns names and argument order ([mapping](https://tiempo.gobrand.app/docs/date-fns))
+- **IANA timezone support** — Named timezone rules and DST handling through Temporal
+- **DST-aware math** — `addDays(1)` means tomorrow, even across 23- and 25-hour clock changes
+- **Zero-polyfill native entry** — Import from `@gobrand/tiempo/native` on Node.js 26+ and modern browsers (`< 1 kB` gzip per tree-shaken function)
+- **Zero-bundle localization** — `format`, `intlFormatDistance`, and `formatDuration` use standard `Intl` (`DateTimeFormat`, `RelativeTimeFormat`, `DurationFormat`) with no locale files to ship
+- **Type-safe domains** — Full TypeScript; mixing `PlainDate`, `PlainTime`, and timestamps fails at compile time and throws a `TypeError`
+- **Familiar API** — 100+ date-fns-style functions with matching names and argument order ([mapping](https://tiempo.gobrand.app/docs/date-fns))
+- **Tested on both runtimes** — Full test suite runs against `@js-temporal/polyfill` and native Node.js 26+ `Temporal` on every commit
 
 ```typescript
 import { toZonedTime, addDays, format, toIso } from '@gobrand/tiempo';
@@ -44,7 +46,23 @@ With Deno, from [JSR](https://jsr.io/@gobrand/tiempo):
 deno add jsr:@gobrand/tiempo
 ```
 
-Runs on Node.js 22+ and in modern browsers. tiempo depends on [`@js-temporal/polyfill`](https://github.com/js-temporal/temporal-polyfill), so it works whether or not your runtime has Temporal built in, and it accepts values from native `Temporal` (Node.js 26+) too.
+Runs on Node.js 22+ and in modern browsers. By default, `@gobrand/tiempo` uses [`@js-temporal/polyfill`](https://github.com/js-temporal/temporal-polyfill) so it works everywhere and also accepts native `Temporal` values.
+
+### Zero-polyfill native entry (`@gobrand/tiempo/native`)
+
+On runtimes with built-in `Temporal` (Node.js 26+, modern browsers, or your own global polyfill), import from `@gobrand/tiempo/native` to keep `@js-temporal/polyfill` completely out of your bundle:
+
+```typescript
+import { toZonedTime, addDays, format } from '@gobrand/tiempo/native';
+```
+
+Measured minified browser bundles (esbuild):
+
+| Import | `@gobrand/tiempo` (with polyfill) | `@gobrand/tiempo/native` (zero polyfill) |
+|---|---|---|
+| `addDays` + `toInstant` | 47.5 kB gzip | **0.56 kB gzip** |
+| `format` + `toInstant` | 48.9 kB gzip | **2.1 kB gzip** |
+| Full library (`*`) | 55.5 kB gzip | **8.8 kB gzip** |
 
 ## Coming from date-fns
 
@@ -72,6 +90,7 @@ Guides:
 - [Add days across daylight saving time](https://tiempo.gobrand.app/guides/dst-safe-date-math)
 - [Start and end of day in a timezone](https://tiempo.gobrand.app/guides/start-and-end-of-day)
 - [Store dates in a database](https://tiempo.gobrand.app/guides/store-dates-in-a-database)
+- [Use Temporal in Next.js, tRPC, Zod, Prisma, and Drizzle](https://tiempo.gobrand.app/guides/temporal-in-fullstack-typescript)
 - [Count business days with holidays](https://tiempo.gobrand.app/guides/business-days-with-holidays)
 
 For coding agents: [llms.txt](https://tiempo.gobrand.app/llms.txt), or install the Agent Skill with `npx skills add go-brand/tiempo`.

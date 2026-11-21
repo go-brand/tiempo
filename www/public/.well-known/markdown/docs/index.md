@@ -10,6 +10,8 @@ Temporal has separate types for an exact moment, a moment in a timezone, a calen
 - **Daylight saving time.** `addDays` moves to the next calendar day, so a 09:00 reminder stays at 09:00 when the clocks change.
 - **Dates that aren't moments.** Birthdays, due dates and holidays stay `PlainDate`s; no timezone is invented for them.
 - **Mix-ups.** Comparing a calendar date with a timestamp is a TypeScript error and a runtime `TypeError`, not a silent guess.
+- **Zero-bundle localization.** `format`, `intlFormatDistance`, and `formatDuration` delegate to `Intl.DateTimeFormat`, `Intl.RelativeTimeFormat`, and `Intl.DurationFormat` with no locale files to import.
+- **Zero-polyfill native entry.** Import from `@gobrand/tiempo/native` on Node.js 26+ and modern browsers for tree-shaken bundles starting under 1 kB gzip.
 - **Precision.** Nanosecond timestamps survive the round trip; `Date` stops at milliseconds.
 
 ## A quick look
@@ -42,6 +44,7 @@ Task-focused guides live in [Guides](https://tiempo.gobrand.app/guides):
 - [Add days across daylight saving time](https://tiempo.gobrand.app/guides/dst-safe-date-math)
 - [Start and end of day in a timezone](https://tiempo.gobrand.app/guides/start-and-end-of-day)
 - [Store dates in a database](https://tiempo.gobrand.app/guides/store-dates-in-a-database)
+- [Use Temporal in Next.js, tRPC, Zod, Prisma, and Drizzle](https://tiempo.gobrand.app/guides/temporal-in-fullstack-typescript)
 - [Count business days with holidays](https://tiempo.gobrand.app/guides/business-days-with-holidays)
 
 ## Using tiempo with a coding agent

@@ -9,6 +9,7 @@
     "dst-safe-date-math",
     "start-and-end-of-day",
     "store-dates-in-a-database",
+    "temporal-in-fullstack-typescript",
     "business-days-with-holidays"
   ]
 }

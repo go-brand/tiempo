@@ -40,7 +40,7 @@ date-fns is a set of functions that take and return `Date`s, so you import only 
 
 Temporal is the standard replacement for `Date`. It has separate types for an exact moment (`Instant`), a moment in a timezone (`ZonedDateTime`), a date (`PlainDate`), and a clock time (`PlainTime`), with nanosecond precision and every IANA timezone. It is built into Node.js 26 and recent browsers, and [`@js-temporal/polyfill`](https://github.com/js-temporal/temporal-polyfill) provides it elsewhere.
 
-Temporal's own API is methods on those types. tiempo adds the date-fns functions on top, so code reads the same as date-fns code while keeping Temporal's types:
+Temporal's own API is methods on those types. tiempo adds the date-fns functions on top, with localized formatting (`format`, `intlFormatDistance`, `formatDuration`) powered by standard `Intl` with zero locale bundles. On runtimes with built-in `Temporal`, import from `@gobrand/tiempo/native` to drop the polyfill from your bundle completely (under 1 kB gzip for individual functions):
 
 ```ts
 import { toZonedTime, addDays, startOfMonth, format } from '@gobrand/tiempo';

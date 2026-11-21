@@ -7,6 +7,7 @@
     "format-plain-date",
     "parse",
     "simple-format",
-    "intl-format-distance"
+    "intl-format-distance",
+    "format-duration"
   ]
 }

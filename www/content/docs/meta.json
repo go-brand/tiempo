@@ -3,11 +3,10 @@
     "---Getting Started---",
     "index",
     "installation",
-    "api-conventions",
-    "typescript",
-    "type-matrix",
-    "recipes",
     "date-fns",
+    "api-conventions",
+    "recipes",
+    "typescript",
     "ai-resources",
     "---Conversion---",
     "...conversion",
@@ -32,6 +31,8 @@
     "---Intervals---",
     "...intervals",
     "---Utilities---",
-    "...utilities"
+    "...utilities",
+    "---Reference---",
+    "type-matrix"
   ]
 }

@@ -21,7 +21,7 @@ differenceInDays(end, start); // 10
 
 ## Same name, same job
 
-These work like date-fns, with Temporal inputs: `addDays`, `addWeeks`, `addMonths`, `addQuarters`, `addYears`, `addHours`, `addMinutes`, `addSeconds`, `addMilliseconds` and their `sub*` counterparts; `startOf*`/`endOf*` for day, week, month, quarter and year; `differenceIn*` from nanoseconds to years; `differenceInCalendarDays`, `differenceInCalendarWeeks`, `differenceInCalendarMonths`, `differenceInCalendarQuarters`, `differenceInCalendarYears`; `each*OfInterval`; `isSame*`; `isBefore`, `isAfter`, `isEqual`, `isWithinInterval`, `areIntervalsOverlapping`, `isPast`, `isFuture`, `isWeekend`; `compareAsc`, `compareDesc`, `min`, `max`, `clamp`, `closestTo`; `addBusinessDays`, `subBusinessDays`, `differenceInBusinessDays`; `getQuarter`; `roundToNearestHour`/`Minute`/`Second`; `format` (same `yyyy-MM-dd` tokens).
+These work like date-fns, with Temporal inputs: `addDays`, `addWeeks`, `addMonths`, `addQuarters`, `addYears`, `addHours`, `addMinutes`, `addSeconds`, `addMilliseconds` and their `sub*` counterparts; `startOf*`/`endOf*` for day, week, month, quarter and year; `differenceIn*` from nanoseconds to years; `differenceInCalendarDays`, `differenceInCalendarWeeks`, `differenceInCalendarMonths`, `differenceInCalendarQuarters`, `differenceInCalendarYears`; `each*OfInterval`; `intervalToDuration`; `formatDuration`; `isSame*`; `isBefore`, `isAfter`, `isEqual`, `isWithinInterval`, `areIntervalsOverlapping`, `isPast`, `isFuture`, `isWeekend`; `compareAsc`, `compareDesc`, `min`, `max`, `clamp`, `closestTo`; `addBusinessDays`, `subBusinessDays`, `differenceInBusinessDays`; `getQuarter`; `roundToNearestHour`/`Minute`/`Second`; `format` (same `yyyy-MM-dd` tokens, localized via `Intl.DateTimeFormat`).
 
 ## Different on purpose
 
@@ -39,7 +39,8 @@ These work like date-fns, with Temporal inputs: `addDays`, `addWeeks`, `addMonth
 | `parse(str, fmt, referenceDate)` | `parse(str, fmt)`, `parse(str, fmt, { timeZone })` | No reference date: the text must hold a year, month, and day, and `yy` is rejected |
 | `addBusinessDays(date, n)` plus your own holiday loop | `addBusinessDays(date, n, holidays)` | Pass the holidays that apply to you |
 | `roundToNearestMinutes(date, { nearestTo: 15 })` | `roundToNearestMinute(date, { nearestTo: 15 })` | Singular name, like `roundToNearestHour` and `roundToNearestSecond` |
-| `formatDistance(a, b)` | `intlFormatDistance(a, b)` | Built on `Intl.RelativeTimeFormat` |
+| `formatDistance(a, b)` | `intlFormatDistance(a, b)` | Built on `Intl.RelativeTimeFormat`, zero locale bundles |
+| `formatDuration(d)` | `formatDuration(d)` | Built on `Intl.DurationFormat`, zero locale bundles |
 | `formatISO(date)` | `toIso(date)` | |
 | `formatISO9075(date)` | `toIso9075(date)` | |
 | `set(date, { hours: 9 })`, `setMonth` … | `date.with({ hour: 9 })` | Temporal already does this |
@@ -54,3 +55,35 @@ These work like date-fns, with Temporal inputs: `addDays`, `addWeeks`, `addMonth
 - **PlainDate stays a date.** `addMonths(date, 1)` returns a PlainDate with no time or timezone attached.
 - **Domains don't mix.** Comparing a PlainDate with an Instant is a TypeScript error and a runtime `TypeError`. Convert explicitly so the timezone is your choice.
 - **Values are immutable.** Every function returns a new value.
+
+## Prevent `Date` and `date-fns` regressions with ESLint
+
+When migrating a codebase incrementally, block new `date-fns` imports and `new Date()` calls in `eslint.config.js` while leaving legacy files untouched:
+
+```js
+// eslint.config.js
+export default [
+  {
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['date-fns', 'date-fns/*', 'date-fns-tz', '@date-fns/tz'],
+              message: 'Use @gobrand/tiempo instead of date-fns.'
+            }
+          ]
+        }
+      ],
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector: "NewExpression[callee.name='Date']",
+          message: 'Use @gobrand/tiempo (now, today, toInstant, toZonedTime) instead of new Date().'
+        }
+      ]
+    }
+  }
+];
+```

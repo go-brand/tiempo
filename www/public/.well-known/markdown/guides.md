@@ -8,4 +8,5 @@ Each guide answers one question about dates and times in JavaScript, with exampl
 - [Add days across daylight saving time](https://tiempo.gobrand.app/guides/dst-safe-date-math): Why 24 hours is not a day, and date math that survives DST
 - [Start and end of day in a timezone](https://tiempo.gobrand.app/guides/start-and-end-of-day): Midnight in the user's timezone and one-day database queries
 - [Store dates in a database](https://tiempo.gobrand.app/guides/store-dates-in-a-database): Column types for timestamps, birthdays, and future events
+- [Use Temporal in Next.js, tRPC, Zod, Prisma, and Drizzle](https://tiempo.gobrand.app/guides/temporal-in-fullstack-typescript): Serialize and validate Temporal values across full-stack TypeScript boundaries
 - [Count business days with holidays](https://tiempo.gobrand.app/guides/business-days-with-holidays): Due dates and working-day counts that skip weekends and holidays

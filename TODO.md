@@ -52,8 +52,8 @@ date-fns has full quarter support; tiempo has none.
 
 ## 4. Duration humanizing
 
-- [ ] `intervalToDuration` (span → `{ years, months, days, ... }`)
-- [ ] `formatDuration` (duration → "2 hours 30 minutes")
+- [x] `intervalToDuration` (span → `{ years, months, days, ... }`)
+- [x] `formatDuration` (duration → "2 hours 30 minutes")
 
 **Why:** complements existing `intlFormatDistance`. Different job: exact breakdown, not fuzzy "in 3 days".
 **Temporal fit:** best fit in date-fns. `Temporal.Duration` is native. `since` / `until` with `largestUnit` returns a Duration directly. `formatDuration` via `Intl.DurationFormat` (or `Duration.toLocaleString`).
