@@ -106,7 +106,53 @@ export function formatDuration(
 
   if (Object.keys(record).length === 0) return '';
 
-  const DurationFormat = (Intl as unknown as { DurationFormat: DurationFormatConstructor })
+  const DurationFormat = (Intl as unknown as { DurationFormat?: DurationFormatConstructor })
     .DurationFormat;
-  return new DurationFormat(locale, intlOptions).format(record);
+  if (typeof DurationFormat === 'function') {
+    return new DurationFormat(locale, intlOptions).format(record);
+  }
+  return fallbackFormatDuration(record, locale, style);
+}
+
+const SINGULAR_UNIT: Record<DurationUnit, string> = {
+  years: 'year',
+  months: 'month',
+  weeks: 'week',
+  days: 'day',
+  hours: 'hour',
+  minutes: 'minute',
+  seconds: 'second',
+  milliseconds: 'millisecond',
+  microseconds: 'microsecond',
+  nanoseconds: 'nanosecond'
+};
+
+function fallbackFormatDuration(
+  record: Partial<Record<DurationUnit, number>>,
+  locale: string | string[],
+  style: 'long' | 'short' | 'narrow' | 'digital'
+): string {
+  if (style === 'digital') {
+    const negative = Object.values(record).some((value) => value !== undefined && value < 0);
+    const hours = Math.abs(record.hours ?? 0);
+    const minutes = Math.abs(record.minutes ?? 0);
+    const seconds = Math.abs(record.seconds ?? 0);
+    const clock = [
+      hours.toString(),
+      minutes.toString().padStart(2, '0'),
+      seconds.toString().padStart(2, '0')
+    ].join(':');
+    return negative ? `-${clock}` : clock;
+  }
+
+  const parts = (Object.entries(record) as [DurationUnit, number][]).map(([unit, value], index) => {
+    const displayValue = index > 0 && value < 0 ? Math.abs(value) : value;
+    return new Intl.NumberFormat(locale, {
+      style: 'unit',
+      unit: SINGULAR_UNIT[unit],
+      unitDisplay: style
+    }).format(displayValue);
+  });
+
+  return new Intl.ListFormat(locale, { style, type: 'unit' }).format(parts);
 }

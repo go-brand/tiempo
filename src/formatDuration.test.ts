@@ -67,6 +67,26 @@ describe('formatDuration', () => {
     expect(formatDuration(duration)).toBe('2 days, 1 hour, 30 minutes');
   });
 
+  it('falls back cleanly when Intl.DurationFormat is unavailable (Node 22)', () => {
+    const intl = Intl as unknown as { DurationFormat?: unknown };
+    const original = intl.DurationFormat;
+    intl.DurationFormat = undefined;
+    try {
+      expect(formatDuration({ hours: 2, minutes: 30 })).toBe('2 hours, 30 minutes');
+      expect(formatDuration({ hours: 2, minutes: 30 }, { style: 'short' })).toBe('2 hr, 30 min');
+      expect(formatDuration({ hours: 2, minutes: 30 }, { style: 'narrow' })).toBe('2h 30m');
+      expect(formatDuration({ hours: 1, minutes: 5, seconds: 9 }, { style: 'digital' })).toBe(
+        '1:05:09'
+      );
+      expect(formatDuration({ hours: 2, minutes: 30 }, { locale: 'es-ES' })).toBe(
+        '2 horas y 30 minutos'
+      );
+      expect(formatDuration({ hours: -2, minutes: -30 })).toBe('-2 hours, 30 minutes');
+    } finally {
+      intl.DurationFormat = original;
+    }
+  });
+
   it('rejects non-duration inputs at typecheck', () => {
     // @ts-expect-error formatDuration expects a Duration or DurationLike, not a PlainDate.
     () => formatDuration(Temporal.PlainDate.from('2025-01-01'));
