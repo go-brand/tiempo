@@ -1,6 +1,6 @@
 {
   "name": "@gobrand/tiempo",
-  "version": "3.3.0",
+  "version": "3.3.1",
   "private": false,
   "description": "date-fns-style functions for the Temporal API: timezone conversion, DST-safe date math, formatting, parsing, and business days, in TypeScript",
   "keywords": [
