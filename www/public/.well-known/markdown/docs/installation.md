@@ -21,23 +21,17 @@ import { Temporal } from '@js-temporal/polyfill';
 
 The examples in these docs use `Temporal` without an import. tiempo accepts values from either source, and you can mix them.
 
-## Zero-polyfill native entry (`@gobrand/tiempo/native`)
+## Native entry (`@gobrand/tiempo/native`)
 
-If your app targets runtimes with built-in `Temporal` (Node.js 26+, modern browsers, or your own global polyfill), import from `@gobrand/tiempo/native` to keep `@js-temporal/polyfill` out of your bundle:
+By default, `@gobrand/tiempo` includes `@js-temporal/polyfill` so your app works everywhere out of the box (Node.js 22+, Safari, older browsers) with zero setup.
+
+Targeting Node.js 26+ or browsers with built-in `Temporal`? Import from `@gobrand/tiempo/native` to drop the polyfill completely — **under 1 kB gzip** per function (`0.56 kB` for `addDays` + `toInstant`, `2.1 kB` for `format`, `8.8 kB` for the full library):
 
 ```ts
 import { toZonedTime, addDays, format } from '@gobrand/tiempo/native';
 ```
 
-Every function and TypeScript signature is identical to `@gobrand/tiempo`. Measured minified browser bundles (esbuild):
-
-| Import | `@gobrand/tiempo` (with polyfill) | `@gobrand/tiempo/native` (zero polyfill) |
-|---|---|---|
-| `addDays` + `toInstant` | 47.5 kB gzip | **0.56 kB gzip** |
-| `format` + `toInstant` | 48.9 kB gzip | **2.1 kB gzip** |
-| Full library (`*`) | 55.5 kB gzip | **8.8 kB gzip** |
-
-Importing `@gobrand/tiempo/native` on a runtime without `globalThis.Temporal` throws a `TypeError` immediately. Use the default `@gobrand/tiempo` import when you need the bundled polyfill.
+Every function and TypeScript type is identical. Importing `@gobrand/tiempo/native` on a runtime without `globalThis.Temporal` throws a `TypeError` immediately.
 
 ## First conversion
 

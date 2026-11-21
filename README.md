@@ -46,23 +46,15 @@ With Deno, from [JSR](https://jsr.io/@gobrand/tiempo):
 deno add jsr:@gobrand/tiempo
 ```
 
-Runs on Node.js 22+ and in modern browsers. By default, `@gobrand/tiempo` uses [`@js-temporal/polyfill`](https://github.com/js-temporal/temporal-polyfill) so it works everywhere and also accepts native `Temporal` values.
+Works everywhere out of the box (Node.js 22+ and all modern browsers) — `@gobrand/tiempo` includes [`@js-temporal/polyfill`](https://github.com/js-temporal/temporal-polyfill) so your app never breaks on older runtimes, and accepts native `Temporal` values too.
 
-### Zero-polyfill native entry (`@gobrand/tiempo/native`)
+### Native entry (`@gobrand/tiempo/native`)
 
-On runtimes with built-in `Temporal` (Node.js 26+, modern browsers, or your own global polyfill), import from `@gobrand/tiempo/native` to keep `@js-temporal/polyfill` completely out of your bundle:
+Targeting Node.js 26+ or browsers with built-in `Temporal`? Import from `@gobrand/tiempo/native` to drop the polyfill completely — **under 1 kB gzip** per function (`0.56 kB` for `addDays` + `toInstant`, `2.1 kB` for `format`, `8.8 kB` for the full library):
 
 ```typescript
 import { toZonedTime, addDays, format } from '@gobrand/tiempo/native';
 ```
-
-Measured minified browser bundles (esbuild):
-
-| Import | `@gobrand/tiempo` (with polyfill) | `@gobrand/tiempo/native` (zero polyfill) |
-|---|---|---|
-| `addDays` + `toInstant` | 47.5 kB gzip | **0.56 kB gzip** |
-| `format` + `toInstant` | 48.9 kB gzip | **2.1 kB gzip** |
-| Full library (`*`) | 55.5 kB gzip | **8.8 kB gzip** |
 
 ## Coming from date-fns
 
