@@ -8,7 +8,7 @@ description: Use when working with dates, times, timezones, or the Temporal API 
 date-fns-style functions for the Temporal API with zero-bundle Intl localization (`format`, `intlFormatDistance`, `formatDuration`). Coming from date-fns? See the [mapping](references/date-fns.md).
 
 ```bash
-npm install @gobrand/tiempo
+pnpm add @gobrand/tiempo
 ```
 
 Import from `@gobrand/tiempo` (includes `@js-temporal/polyfill`) or `@gobrand/tiempo/native` on runtimes with built-in `Temporal` (Node.js 26+, modern browsers) for zero polyfill bundle overhead.

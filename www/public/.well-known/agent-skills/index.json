@@ -6,7 +6,7 @@
       "type": "skill-md",
       "description": "Use tiempo for timezone-safe date and time handling with the Temporal API in TypeScript and JavaScript.",
       "url": "/.well-known/agent-skills/tiempo/SKILL.md",
-      "digest": "sha256:4b347ac92290c88298705ad087b2db487b75c13131a7180ce2ec8e3ad9679e09"
+      "digest": "sha256:7925fec1226d6886a09cffb10c9a0d9e5c69e78614fbbf925c949e857a2df5a3"
     }
   ]
 }

@@ -2,7 +2,7 @@
 
 > date-fns-style functions for the Temporal API: timezone conversion, zero-bundle Intl formatting and duration/relative-time formatting, DST-safe arithmetic, comparison, sorting, business days, and intervals.
 
-Install with `npm install @gobrand/tiempo` and import functions by name: `import { addDays, format } from '@gobrand/tiempo'`. On runtimes with native `Temporal` (Node.js 26+, modern browsers), import from `'@gobrand/tiempo/native'` for zero polyfill bundle overhead.
+Install with `pnpm add @gobrand/tiempo` and import functions by name: `import { addDays, format } from '@gobrand/tiempo'`. On runtimes with native `Temporal` (Node.js 26+, modern browsers), import from `'@gobrand/tiempo/native'` for zero polyfill bundle overhead.
 
 ## Core rules
 

@@ -37,14 +37,10 @@ toIso(tomorrow); // "2026-03-08T07:00:00Z" (23 hours later; clocks moved forward
 ## Install
 
 ```bash
-npm install @gobrand/tiempo
+pnpm add @gobrand/tiempo
 ```
 
-With Deno, from [JSR](https://jsr.io/@gobrand/tiempo):
-
-```bash
-deno add jsr:@gobrand/tiempo
-```
+Also works with `bun add @gobrand/tiempo`, `npm install @gobrand/tiempo`, or Deno from [JSR](https://jsr.io/@gobrand/tiempo) (`deno add jsr:@gobrand/tiempo`).
 
 Works everywhere out of the box (Node.js 22+ and all modern browsers) — `@gobrand/tiempo` includes [`@js-temporal/polyfill`](https://github.com/js-temporal/temporal-polyfill) so your app never breaks on older runtimes, and accepts native `Temporal` values too.
 
