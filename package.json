@@ -58,12 +58,12 @@
     "access": "public"
   },
   "scripts": {
-    "generate:timezones": "tsx scripts/generate-timezone-types.ts",
-    "generate:matrix": "tsx scripts/generate-capability-matrix.ts",
-    "generate:docs": "tsx scripts/generate-docs.ts",
-    "build": "pnpm generate:timezones && pnpm generate:matrix && pnpm generate:docs && tsup && tsc -p tsconfig.build.json --emitDeclarationOnly && tsx scripts/fix-declaration-imports.ts && pnpm smoke:package",
+    "generate:timezones": "node scripts/generate-timezone-types.ts",
+    "generate:matrix": "node scripts/generate-capability-matrix.ts",
+    "generate:docs": "node scripts/generate-docs.ts",
+    "build": "pnpm generate:timezones && pnpm generate:matrix && pnpm generate:docs && node scripts/build.ts && tsc -p tsconfig.build.json --emitDeclarationOnly && node scripts/fix-declaration-imports.ts && pnpm smoke:package",
     "clean": "git clean -xdf .cache .turbo dist node_modules tsconfig.tsbuildinfo",
-    "smoke:package": "tsc -p smoke/tsconfig.json && tsx smoke/consumer.ts",
+    "smoke:package": "tsc -p smoke/tsconfig.json && node smoke/consumer.ts",
     "test": "vitest",
     "format": "oxfmt",
     "format:check": "oxfmt --check",
@@ -76,14 +76,12 @@
     "@js-temporal/polyfill": "^0.5.1"
   },
   "devDependencies": {
-    "@types/node": "^22.10.5",
-    "esbuild": "^0.27.2",
+    "@types/node": "22.19.6",
+    "esbuild": "0.27.2",
     "jsr": "0.14.3",
     "oxfmt": "0.78.0",
-    "tsup": "^8.5.0",
-    "tsx": "^4.21.0",
-    "typescript": "^5.9.3",
-    "vitest": "^3.2.4"
+    "typescript": "5.9.3",
+    "vitest": "4.1.12"
   },
   "engines": {
     "node": ">=22"

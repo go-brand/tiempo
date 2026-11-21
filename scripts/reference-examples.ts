@@ -15,7 +15,7 @@ const STATEMENT =
  * Rewrites `expression; // result` lines into recorded checks. The expected
  * value is a quoted string, an array literal, or the comment's first word.
  */
-export function instrument(code: string): string {
+function instrument(code: string): string {
   return code
     .split('\n')
     .map((line) => {

@@ -14,7 +14,7 @@ export function isWeekendDay(dayOfWeek: number): boolean {
  * Adds days counting only Monday–Friday. The result keeps the input's type,
  * time of day, and timezone.
  */
-export function addWeekdays<T extends { dayOfWeek: number; add(duration: { days: number }): T }>(
+function addWeekdays<T extends { dayOfWeek: number; add(duration: { days: number }): T }>(
   start: T,
   days: number
 ): T {

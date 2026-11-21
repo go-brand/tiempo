@@ -125,9 +125,10 @@ Make the release validation explicitly run once, for example `pnpm exec vitest r
 Run [the reproduction script](./2026-10-08-reproduce.mjs) from the repository root:
 
 ```sh
+# Source probes need a TypeScript loader; tsx was removed from the dev dependencies after this review.
 node --import tsx docs/reviews/2026-10-08-reproduce.mjs
-# Optional: verify another freshly built artifact using its absolute path.
-node --import tsx docs/reviews/2026-10-08-reproduce.mjs /absolute/path/to/dist/index.js
+# Verify a freshly built artifact using its absolute path (plain Node).
+node docs/reviews/2026-10-08-reproduce.mjs /absolute/path/to/dist/index.js
 ```
 
 The expanded audit script produced identical results against source and the previously built artifact of the same commit. It runs 18 probes on Node 26: two positive controls pass, 13 assertions demonstrate defects, and three separately labeled compatibility probes reproduce the native input limitation. It explicitly selects the shipped polyfill path so a shell's test-only environment setting cannot silently change the result. The audit also checked reversed endpoints in every interval family, reversed PlainDate quarter endpoints, mixed native/polyfill comparison arguments, and a minified browser bundle containing only a `toInstant` consumer. These additional checks confirmed the corresponding claims. The minified browser consumer failed without a process shim and succeeded with one.
